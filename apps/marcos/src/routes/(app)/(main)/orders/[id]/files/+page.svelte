@@ -13,6 +13,7 @@
 	import { Input } from '@/components/ui/input';
 	import Photos from '@/components/business-related/file/Photos.svelte';
 	import { trackEvent } from '@/shared/analytics.utilities';
+	import Progress from '@/components/ui/progress/progress.svelte';
 
 	interface Props {
 		data: PageData;
@@ -22,6 +23,8 @@
 
 	let inputFiles: FileList | undefined = $state();
 	let loading = $state(false);
+	let uploading = $state(false);
+	let loadingProgress = $state(0);
 	let loadingText = $state('');
 	let files = $state(data.files ?? []);
 
@@ -114,44 +117,65 @@
 		}
 
 		loadingText = 'Cargando archivo, por favor no cierre la ventana';
-		loading = true;
+		uploading = true;
 		const filesToUpload = [...inputFiles];
-		const uploads = filesToUpload.map((f) => uploadIndividualFile(f));
+		let progresses = Array(filesToUpload.length).fill(0);
+
+		const uploads = filesToUpload.map((f, i) =>
+			uploadIndividualFile(f, (p) => {
+				progresses[i] = p;
+				loadingProgress = Math.round(progresses.reduce((a, b) => a + b, 0) / progresses.length);
+			})
+		);
 		const results = await Promise.all(uploads);
 		const uploadedFiles = results.filter((f) => f != null);
 		files = [...files, ...uploadedFiles];
 		inputFiles = undefined;
-		loading = false;
+		uploading = false;
+		loadingProgress = 0;
 
 		if (results.filter((f) => f == null).length > 0) {
 			toast.error('Algunos archivos no pudieron cargarse');
 		}
 	}
 
-	async function uploadIndividualFile(fileToUpload: File): Promise<MMSSFile | undefined> {
+	async function uploadIndividualFile(
+		fileToUpload: File,
+		onProgress: (p: number) => void
+	): Promise<MMSSFile | undefined> {
 		const file = await createFile(fileToUpload.name);
 		if (file == null) return;
-		await uploadToS3(file.uploadUrl!, fileToUpload);
+		await uploadToS3(file.uploadUrl!, fileToUpload, onProgress);
 		return getFile(file.id);
 	}
 
-	async function uploadToS3(presignedUrl: string, file: File): Promise<boolean> {
-		try {
-			const response = await fetch(presignedUrl, {
-				method: 'PUT',
-				body: file
-			});
+	async function uploadToS3(
+		presignedUrl: string,
+		file: File,
+		onProgress: (p: number) => void
+	): Promise<boolean> {
+		return new Promise((resolve) => {
+			const xhr = new XMLHttpRequest();
+			xhr.open('PUT', presignedUrl, true);
 
-			if (response.ok) {
-				return true;
-			} else {
+			xhr.upload.onprogress = (event) => {
+				if (event.lengthComputable) {
+					onProgress(Math.round((event.loaded / event.total) * 100));
+				}
+			};
+
+			xhr.onload = () => {
+				onProgress(100);
+				resolve(xhr.status >= 200 && xhr.status < 300);
+			};
+
+			xhr.onerror = () => {
 				toast.error('Ocurrió un error al cargar el archivo. Por favor, intente nuevamente.');
-				return false;
-			}
-		} catch (error) {
-			toast.error('Ocurrió un error al cargar el archivo. Por favor, intente nuevamente.');
-			return false;
-		}
+				resolve(false);
+			};
+
+			xhr.send(file);
+		});
 	}
 </script>
 
@@ -161,7 +185,7 @@
 	<div class="flex w-full flex-row items-end justify-between">
 		<SimpleHeading icon={IconType.CAMERA}>Archivos y fotos</SimpleHeading>
 
-		{#if !loading}
+		{#if !(loading || uploading)}
 			<Button
 				text="Volver al pedido"
 				icon={IconType.ORDER_PICKED_UP}
@@ -175,7 +199,18 @@
 		<Box>
 			<ProgressBar text={loadingText} />
 		</Box>
-	{:else}
+	{/if}
+	{#if uploading}
+		<Box>
+			<div class="flex flex-col items-center gap-3 text-center">
+				<span class="text-md font-medium">Cargando archivos...</span>
+				<Progress value={loadingProgress} />
+				<p>{loadingProgress}%</p>
+			</div>
+		</Box>
+	{/if}
+
+	{#if !loading && !uploading}
 		<div class="flex flex-col gap-2">
 			<Box title="Carga de archivos">
 				<div class="flex flex-col gap-2 md:flex-row">
