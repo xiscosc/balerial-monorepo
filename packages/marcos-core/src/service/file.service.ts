@@ -1,10 +1,8 @@
 import mime from 'mime-types';
 import { v4 as uuidv4 } from 'uuid';
-import { S3Client } from '@aws-sdk/client-s3';
 import { FileRepositoryDynamoDb } from '../repository/dynamodb/file.repository.dynamodb';
 
 import type { FileDto } from '../repository/dto/file.dto';
-import { S3Util } from '../data/s3.util';
 import { OrderAuditTrailService } from './order-audit-trail.service';
 import {
 	ICoreConfiguration,
@@ -12,8 +10,9 @@ import {
 } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
 import { FileType, File } from '../types/file.type';
-import { S3EventRecord } from 'aws-lambda';
 import { getLogger } from '../logger/logger';
+import { BalerialCloudFileService } from '@balerial/s3/service';
+import { Readable } from 'stream';
 
 interface IFileMetadata extends Record<string, string> {
 	store_id: string;
@@ -33,14 +32,21 @@ export class FileService {
 	public static readonly optimizedImageSize = { width: 2160 };
 	public static readonly optimizedImageQuality = { quality: 80 };
 	public static readonly thumbnailImageSize = { width: 80, height: 80 };
+	private static readonly expiryTag = {
+		Key: 'expiry',
+		Value: 'true'
+	};
 	private repository: FileRepositoryDynamoDb;
 	private orderAuditTrailServiceOrder: OrderAuditTrailService;
-	private s3Client: S3Client;
+	private balerialFileCloudService: BalerialCloudFileService;
 
 	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
 		this.repository = new FileRepositoryDynamoDb(config);
 		this.orderAuditTrailServiceOrder = new OrderAuditTrailService(config);
-		this.s3Client = new S3Client(getClientConfiguration(config));
+		this.balerialFileCloudService = new BalerialCloudFileService(
+			this.config.filesBucket!,
+			getClientConfiguration(config)
+		);
 
 		if (this.config.filesBucket == null) {
 			throw Error('files bucket is needed');
@@ -66,9 +72,7 @@ export class FileService {
 			file_id: id,
 			type
 		};
-		const uploadUrl = await S3Util.getPresignedUploadUrl(
-			this.s3Client,
-			this.config.filesBucket!,
+		const uploadUrl = await this.balerialFileCloudService.getPresignedUploadUrl(
 			storageKey,
 			mimeType,
 			300,
@@ -121,43 +125,37 @@ export class FileService {
 			return;
 		}
 
-		const originalFile = await S3Util.getFileFromS3(
-			this.s3Client,
-			this.config.filesBucket!,
-			fileDto.key
-		);
+		const originalFileHeaders = await this.balerialFileCloudService.getObjectHeaders(fileDto.key);
 
-		if (originalFile == null) {
+		if (originalFileHeaders == null) {
 			return;
 		}
 
+		const originalFileContentType = originalFileHeaders.contentType as string | undefined;
+
 		if (fileDto.optimizedKey == null) {
 			fileDto.optimizedKey = `optimized/${fileDto.key}${optimizationAndThumbnailTypeInfo?.optimizedExtension ?? ''}`;
-			await S3Util.uploadToS3(
-				this.s3Client,
-				this.config.filesBucket!,
+			await this.balerialFileCloudService.upload(
 				fileDto.optimizedKey,
 				optimizedImage,
-				optimizationAndThumbnailTypeInfo?.optimizedContentType ?? originalFile.contentType,
+				optimizationAndThumbnailTypeInfo?.optimizedContentType ?? originalFileContentType,
 				true
 			);
 		}
 
 		if (fileDto.thumbnailKey == null) {
 			fileDto.thumbnailKey = `thumbnail/${fileDto.key}${optimizationAndThumbnailTypeInfo?.thumbnailExtension ?? ''}`;
-			await S3Util.uploadToS3(
-				this.s3Client,
-				this.config.filesBucket!,
+			await this.balerialFileCloudService.upload(
 				fileDto.thumbnailKey,
 				thumbnailImage,
-				optimizationAndThumbnailTypeInfo?.thumbnailContentType ?? originalFile.contentType
+				optimizationAndThumbnailTypeInfo?.thumbnailContentType ?? originalFileContentType
 			);
 		}
 
 		await this.repository.createFile(fileDto);
 
 		if (fileDto.optimizedKey != null) {
-			await S3Util.tagFilesForExpiry(this.s3Client, this.config.filesBucket!, [fileDto.key]);
+			await this.balerialFileCloudService.tagFile(fileDto.optimizedKey, [FileService.expiryTag]);
 		}
 	}
 
@@ -183,7 +181,15 @@ export class FileService {
 		for (let i = 0; i < batches.length; i++) {
 			const batch = batches[i];
 			logger.info(`Processing batch ${i + 1} of ${batches.length}`);
-			await S3Util.tagFilesForExpiry(this.s3Client, this.config.filesBucket!, batch, logger);
+			const promises = batch.map((key) =>
+				this.balerialFileCloudService.tagFile(key, [FileService.expiryTag])
+			);
+			const results = await Promise.allSettled(promises);
+			results.forEach((result) => {
+				if (result.status === 'rejected') {
+					getLogger().error({ err: result.reason }, 'tagFile promise failed');
+				}
+			});
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
 	}
@@ -194,16 +200,13 @@ export class FileService {
 	}: {
 		bucketName: string;
 		key: string;
-	}): Promise<{ content: Buffer; orderId: string; fileId: string } | undefined> {
+	}): Promise<{ content: Readable; orderId: string; fileId: string } | undefined> {
 		if (bucketName !== this.config.filesBucket) {
 			throw Error('Incorrect bucket');
 		}
 
-		const metadata = (await S3Util.getObjectMetadata(
-			this.s3Client,
-			this.config.filesBucket,
-			key
-		)) as IFileMetadata | undefined;
+		const headers = await this.balerialFileCloudService.getObjectHeaders(key);
+		const metadata = headers?.metadata as IFileMetadata | undefined;
 
 		if (
 			metadata == null ||
@@ -213,7 +216,7 @@ export class FileService {
 			return undefined;
 		}
 
-		const result = await S3Util.getFileFromS3(this.s3Client, this.config.filesBucket!, key);
+		const result = await this.balerialFileCloudService.getFile(key);
 		return result
 			? {
 					content: result.file,
@@ -221,13 +224,6 @@ export class FileService {
 					fileId: metadata.file_id
 				}
 			: undefined;
-	}
-
-	public async getFileContents(orderId: string, id: string): Promise<Buffer | undefined> {
-		const fileDto = await this.repository.getFile(orderId, id);
-		if (fileDto == null) return undefined;
-		const result = await S3Util.getFileFromS3(this.s3Client, this.config.filesBucket!, fileDto.key);
-		return result?.file;
 	}
 
 	public async getFilesByOrder(orderId: string): Promise<File[]> {
@@ -250,36 +246,28 @@ export class FileService {
 		const file = FileService.fromDto(dto);
 		if (file.type !== FileType.NO_ART) {
 			promises.push(
-				S3Util.tagFilesForExpiry(
-					this.s3Client,
-					this.config.filesBucket!,
-					FileService.getAllFileKeys(dto)
+				...FileService.getAllFileKeys(dto).map((key) =>
+					this.balerialFileCloudService.tagFile(key, [FileService.expiryTag])
 				)
 			);
 		}
 
-		await Promise.all(promises);
-	}
-
-	public static getInfoFromS3EventRecord(recrod: S3EventRecord) {
-		return S3Util.getInfoFromS3EventRecord(recrod);
+		const results = await Promise.allSettled(promises);
+		results.forEach((result) => {
+			if (result.status === 'rejected') {
+				getLogger().error({ err: result.reason }, 'deleteFile promise failed');
+			}
+		});
 	}
 
 	private async processFileToDownload(fileDto: FileDto): Promise<File> {
-		const downloadUrl = await S3Util.getPresignedDownloadUrl(
-			this.s3Client,
-			this.config.filesBucket!,
+		const downloadUrl = await this.balerialFileCloudService.getPresignedDownloadUrl(
 			fileDto.optimizedKey ?? fileDto.key,
 			600
 		);
 
 		const thumbnailDownloadUrl = fileDto.thumbnailKey
-			? await S3Util.getPresignedDownloadUrl(
-					this.s3Client,
-					this.config.filesBucket!,
-					fileDto.thumbnailKey,
-					600
-				)
+			? await this.balerialFileCloudService.getPresignedDownloadUrl(fileDto.thumbnailKey, 600)
 			: undefined;
 
 		return FileService.fromDto(fileDto, downloadUrl, thumbnailDownloadUrl);

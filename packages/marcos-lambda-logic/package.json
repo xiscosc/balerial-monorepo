@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@marcsimolduressonsardina/core": "workspace:*",
+		"@balerial/s3": "workspace:*",
 		"luxon": "3.6.1",
 		"posthog-node": "4.12.0"
 	}

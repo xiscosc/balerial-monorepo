@@ -10,6 +10,7 @@ import sharp from 'sharp';
 import { PostHog } from 'posthog-node';
 import type { Logger } from 'pino';
 import { createPostHogClient } from './utils/posthog.utils';
+import { getInfoFromS3EventRecord, streamToBuffer } from '@balerial/s3/util';
 
 export type OptimizeImagesInput = {
 	s3Records: S3EventRecord[];
@@ -63,7 +64,7 @@ async function processImage(
 	logger: Logger,
 	posthogClient?: PostHog
 ) {
-	const eventInfo = FileService.getInfoFromS3EventRecord(record);
+	const eventInfo = getInfoFromS3EventRecord(record);
 	let orderIdFromFile: string | undefined;
 
 	try {
@@ -76,11 +77,12 @@ async function processImage(
 		const { content, orderId, fileId } = originalImageData;
 		orderIdFromFile = orderId;
 
-		const optimizedImage = await sharp(content)
+		const buffer = await streamToBuffer(content);
+		const optimizedImage = await sharp(buffer)
 			.resize(FileService.optimizedImageSize)
 			.webp(FileService.optimizedImageQuality)
 			.toBuffer();
-		const thumbnail = await sharp(content).resize(FileService.thumbnailImageSize).webp().toBuffer();
+		const thumbnail = await sharp(buffer).resize(FileService.thumbnailImageSize).webp().toBuffer();
 
 		const types: OptmizationAndThumbnailTypeInfo = {
 			optimizedContentType: 'image/webp',

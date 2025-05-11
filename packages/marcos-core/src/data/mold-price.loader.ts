@@ -1,22 +1,25 @@
-import { S3Client } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 import { read } from 'xlsx';
 
 import { PricingService } from '../service/pricing.service';
-import { S3Util } from './s3.util';
 import { ListPrice, PricingFormula, PricingType } from '../types/pricing.type';
 import {
 	ICoreConfiguration,
 	ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
+import { BalerialCloudFileService } from '@balerial/s3/service';
 
 export class MoldPriceLoader {
 	private service: PricingService;
-	private s3Client: S3Client;
+	private balerialFileCloudService: BalerialCloudFileService;
+
 	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
 		this.service = new PricingService(config);
-		this.s3Client = new S3Client(getClientConfiguration(config));
+		this.balerialFileCloudService = new BalerialCloudFileService(
+			this.config.moldPricesBucket!,
+			getClientConfiguration(config)
+		);
 
 		if (this.config.moldPricesBucket == null) {
 			throw Error('mold bucket is needed');
@@ -28,9 +31,7 @@ export class MoldPriceLoader {
 		url: string;
 	}> {
 		const filename = `${uuidv4()}.xlsx`;
-		const url = await S3Util.getPresignedUploadUrl(
-			this.s3Client,
-			this.config.moldPricesBucket!,
+		const url = await this.balerialFileCloudService.getPresignedUploadUrl(
 			filename,
 			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 			350
@@ -126,12 +127,7 @@ export class MoldPriceLoader {
 	}
 
 	private async getExcelFromS3(fileName: string): Promise<ArrayBuffer> {
-		const url = await S3Util.getPresignedDownloadUrl(
-			this.s3Client,
-			this.config.moldPricesBucket!,
-			fileName,
-			3600
-		);
+		const url = await this.balerialFileCloudService.getPresignedDownloadUrl(fileName, 3600);
 
 		try {
 			// Using fetch instead of S3Client since it does not work on Cloudflare Pages

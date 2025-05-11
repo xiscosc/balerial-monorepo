@@ -8,8 +8,6 @@ import {
 	ReportDate,
 	WeeklyReport
 } from '../types/report.type';
-import { S3Util } from '../data/s3.util';
-import { S3Client } from '@aws-sdk/client-s3';
 import { getClientConfiguration } from '../configuration/configuration.util';
 import { createHash } from 'crypto';
 import {
@@ -18,9 +16,12 @@ import {
 } from '../configuration/core-configuration.interface';
 import { Customer, Order, OrderAuditTrailType, OrderStatus } from '../types';
 import { CustomerService } from './customer.service';
-
+import { BalerialCloudFileService } from '@balerial/s3/service';
+import { readFile } from 'fs/promises';
+import { streamToBuffer } from '@balerial/s3/util';
 export class ReportService {
-	private s3Client: S3Client;
+	private balerialFileCloudService: BalerialCloudFileService;
+
 	constructor(
 		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
 		private orderAuditTrailService: OrderAuditTrailService,
@@ -31,7 +32,10 @@ export class ReportService {
 			throw Error('reports bucket is mandatory');
 		}
 
-		this.s3Client = new S3Client(getClientConfiguration(config));
+		this.balerialFileCloudService = new BalerialCloudFileService(
+			this.config.reportsBucket!,
+			getClientConfiguration(config)
+		);
 	}
 
 	async generateAndStoreDailyReport(date: ReportDate): Promise<DailyReport> {
@@ -102,21 +106,23 @@ export class ReportService {
 	}
 
 	async getDailyReport({ year, month, day }: ReportDate): Promise<DailyReport> {
-		const reportFromS3 = await this.getFromS3(this.generateKeyForDailyReport({ year, month, day }));
+		const reportFromS3 = await this.downloadFile(
+			this.generateKeyForDailyReport({ year, month, day })
+		);
 		return reportFromS3 == null
 			? { date: { year, month, day }, orders: [], items: [], hash: '' }
 			: (reportFromS3 as DailyReport);
 	}
 
 	async getWeeklyReport(year: number, week: number): Promise<WeeklyReport> {
-		const reportFromS3 = await this.getFromS3(this.generateKeyForWeeklyReport(year, week));
+		const reportFromS3 = await this.downloadFile(this.generateKeyForWeeklyReport(year, week));
 		return reportFromS3 == null
 			? { date: { year, week }, dailyReports: [] }
 			: (reportFromS3 as WeeklyReport);
 	}
 
 	async getMonthlyReport(year: number, month: number): Promise<MonthlyReport> {
-		const reportFromS3 = await this.getFromS3(this.generateKeyForMonthlyReport(year, month));
+		const reportFromS3 = await this.downloadFile(this.generateKeyForMonthlyReport(year, month));
 		return reportFromS3 == null
 			? { date: { year, month }, dailyReports: [] }
 			: (reportFromS3 as MonthlyReport);
@@ -285,20 +291,20 @@ export class ReportService {
 	private async storeToS3(report: DailyReport | WeeklyReport | MonthlyReport, key: string) {
 		const jsonString = JSON.stringify(report);
 		const buffer = Buffer.from(jsonString, 'utf-8');
-		await S3Util.uploadToS3(
-			this.s3Client,
-			this.config.reportsBucket!,
-			key,
-			buffer,
-			'application/json'
-		);
+		await this.balerialFileCloudService.upload(key, buffer, 'application/json');
 	}
 
-	private async getFromS3(
+	private async downloadFile(
 		key: string
 	): Promise<DailyReport | WeeklyReport | MonthlyReport | undefined> {
-		const result = await S3Util.getFileFromS3(this.s3Client, this.config.reportsBucket!, key);
-		return result == null ? undefined : JSON.parse(result.file.toString('utf-8'));
+		const result = await this.balerialFileCloudService.getFile(key);
+
+		if (result == null) {
+			return undefined;
+		}
+
+		const buffer = await streamToBuffer(result.file);
+		return JSON.parse(buffer.toString('utf-8'));
 	}
 
 	private async getDailyReportsBetweenDates(

@@ -255,6 +255,31 @@ importers:
         specifier: 5.8.3
         version: 5.8.3
 
+  packages/balerial-s3:
+    dependencies:
+      '@aws-sdk/client-s3':
+        specifier: 3.782.0
+        version: 3.782.0
+      '@aws-sdk/s3-request-presigner':
+        specifier: 3.782.0
+        version: 3.782.0
+    devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@smithy/types':
+        specifier: 4.2.0
+        version: 4.2.0
+      '@types/aws-lambda':
+        specifier: 8.10.149
+        version: 8.10.149
+      typescript:
+        specifier: 5.8.3
+        version: 5.8.3
+
   packages/eslint-config:
     devDependencies:
       '@typescript-eslint/eslint-plugin':
@@ -290,18 +315,12 @@ importers:
 
   packages/marcos-core:
     dependencies:
-      '@aws-sdk/client-s3':
-        specifier: 3.782.0
-        version: 3.782.0
-      '@aws-sdk/s3-request-presigner':
-        specifier: 3.782.0
-        version: 3.782.0
       '@balerial/dynamo':
         specifier: workspace:*
         version: link:../balerial-dynamo
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
+      '@balerial/s3':
+        specifier: workspace:*
+        version: link:../balerial-s3
       luxon:
         specifier: 3.6.1
         version: 3.6.1
@@ -333,9 +352,6 @@ importers:
       '@smithy/types':
         specifier: 4.2.0
         version: 4.2.0
-      '@types/aws-lambda':
-        specifier: 8.10.149
-        version: 8.10.149
       '@types/lodash':
         specifier: 4.17.15
         version: 4.17.15
@@ -354,6 +370,9 @@ importers:
 
   packages/marcos-lambda-logic:
     dependencies:
+      '@balerial/s3':
+        specifier: workspace:*
+        version: link:../balerial-s3
       '@marcsimolduressonsardina/core':
         specifier: workspace:*
         version: link:../marcos-core
