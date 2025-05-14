@@ -31,7 +31,7 @@ const mockEvent: S3CreateEvent = {
 					arn: `arn:aws:s3:::${process.env.FILES_BUCKET || 'your_local_or_dev_bucket_name'}`
 				},
 				object: {
-					key: '3d71bcf9-c1b7-44a4-abca-913e220bc8d1/photo/3bfdd2e1-daf3-4897-be17-c1b046bf2ba3.jpeg',
+					key: 'abf2237b-268c-41bb-9f28-b09c601a064f/photo/9f812938-b843-40e6-a202-bf5acb5fa85b.png',
 					size: 1024,
 					eTag: '0123456789abcdef0123456789abcdef',
 					sequencer: '0A1B2C3D4E5F678901'

@@ -131,7 +131,7 @@ export class FileService {
 			return;
 		}
 
-		const originalFileContentType = originalFileHeaders.contentType as string | undefined;
+		const originalFileContentType = originalFileHeaders.contentType;
 
 		if (fileDto.optimizedKey == null) {
 			fileDto.optimizedKey = `optimized/${fileDto.key}${optimizationAndThumbnailTypeInfo?.optimizedExtension ?? ''}`;
@@ -155,7 +155,7 @@ export class FileService {
 		await this.repository.createFile(fileDto);
 
 		if (fileDto.optimizedKey != null) {
-			await this.balerialFileCloudService.tagFile(fileDto.optimizedKey, [FileService.expiryTag]);
+			await this.balerialFileCloudService.tagFile(fileDto.key, [FileService.expiryTag]);
 		}
 	}
 
