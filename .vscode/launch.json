@@ -16,10 +16,10 @@
 			"runtimeExecutable": "npx", // Use npx to run tsx
 			"args": [
 				"tsx", // Command to run
-				"${workspaceFolder}/apps/aws/test/test-optimize-images.ts" // Script to execute with tsx
+				"${workspaceFolder}/apps/marcos-aws/test/test-optimize-images.ts" // Script to execute with tsx
 			],
-			"cwd": "${workspaceFolder}/apps/aws", // Set working directory to load .env correctly
-			"envFile": "${workspaceFolder}/apps/aws/.env", // Load environment variables
+			"cwd": "${workspaceFolder}/apps/marcos-aws", // Set working directory to load .env correctly
+			"envFile": "${workspaceFolder}/apps/marcos-aws/.env", // Load environment variables
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"skipFiles": [
@@ -38,10 +38,10 @@
 			"runtimeExecutable": "npx", // Use npx to run tsx
 			"args": [
 				"tsx", // Command to run
-				"${workspaceFolder}/apps/aws/test/test-optimize-storage.ts" // Script to execute with tsx
+				"${workspaceFolder}/apps/marcos-aws/test/test-optimize-storage.ts" // Script to execute with tsx
 			],
-			"cwd": "${workspaceFolder}/apps/aws", // Set working directory to load .env correctly
-			"envFile": "${workspaceFolder}/apps/aws/.env", // Load environment variables
+			"cwd": "${workspaceFolder}/apps/marcos-aws", // Set working directory to load .env correctly
+			"envFile": "${workspaceFolder}/apps/marcos-aws/.env", // Load environment variables
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
 			"skipFiles": [

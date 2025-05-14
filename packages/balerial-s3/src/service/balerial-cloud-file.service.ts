@@ -14,6 +14,15 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { type AwsCredentialIdentity } from '@smithy/types';
 import type { Readable } from 'stream';
 
+interface S3ObjectHeaders {
+	contentType?: string;
+	contentLength?: number;
+	contentEncoding?: string;
+	contentLanguage?: string;
+	contentDisposition?: string;
+	metadata?: Record<string, string>;
+}
+
 export class BalerialCloudFileService {
 	private s3Client: S3Client;
 
@@ -44,9 +53,7 @@ export class BalerialCloudFileService {
 		});
 	}
 
-	public async getObjectHeaders(
-		key: string
-	): Promise<Record<string, string | number | Record<string, string>> | undefined> {
+	public async getObjectHeaders(key: string): Promise<S3ObjectHeaders | undefined> {
 		try {
 			const headResult = await this.s3Client.send(
 				new HeadObjectCommand({
