@@ -1,0 +1,26 @@
+{
+	"name": "@balerial/s3",
+	"version": "1.0.0",
+	"exports": {
+		"./service": "./src/service/balerial-cloud-file.service.ts",
+		"./util": "./src/util/file.utils.ts"
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"format": "prettier --write ."
+	},
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"@repo/eslint-config": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
+		"typescript": "5.8.3",
+		"@smithy/types": "4.2.0",
+		"@types/aws-lambda": "8.10.149"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "3.782.0",
+		"@aws-sdk/s3-request-presigner": "3.782.0"
+	}
+}

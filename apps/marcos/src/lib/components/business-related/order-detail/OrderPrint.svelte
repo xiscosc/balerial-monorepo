@@ -75,17 +75,19 @@
 						<tbody>
 							<tr>
 								<td>
-									<Qr
-										size={85}
-										qrData={generateQrString({
-											orderId: order.id,
-											origin: internal ? QrOrigin.INTERNAL : QrOrigin.CUSTOMER
-										})}
-									></Qr>
-									<div class="customer-text">
-										<p class="customer-bottom">{order.publicId}</p>
-									</div>
-								</td>
+									<div class="qr-container">
+										<Qr
+											size={94}
+											qrData={generateQrString({
+												orderId: order.id,
+												origin: internal ? QrOrigin.INTERNAL : QrOrigin.CUSTOMER
+											})}
+										></Qr>
+										<div class="id-text">
+											<p class="customer-bottom">{order.publicId}</p>
+										</div>
+									</div></td
+								>
 								<td>
 									<img
 										class="logo"
@@ -441,6 +443,18 @@
 	.customer-bottom {
 		margin: 0;
 		text-align: center;
+	}
+
+	.id-text {
+		font-size: xx-small;
+	}
+
+	.qr-container {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 1px;
 	}
 
 	table {

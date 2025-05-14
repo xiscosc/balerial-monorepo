@@ -7,7 +7,8 @@
 
 	const qrOptions: QRCodeRenderersOptions = {
 		margin: 0,
-		width: size
+		scale: 10,
+		errorCorrectionLevel: 'Q'
 	};
 
 	let qrString: string | undefined = $state();
@@ -18,5 +19,9 @@
 </script>
 
 {#if qrString}
-	<img src={qrString} alt="qr" />
+	<div
+		style="width: {size}px; height: {size}px; display: flex; justify-content: center; align-items: center;"
+	>
+		<img src={qrString} alt="qr" style="height: 100%; object-fit: contain;" />
+	</div>
 {/if}
