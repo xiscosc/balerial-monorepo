@@ -1,8 +1,9 @@
+import { qrOriginMapCodes, qrOriginMapCodesReverse } from '@/shared/mappings/qr.mapping';
 import { QrOrigin, type QrInfo } from '@/type/qr.type';
 import { validate as uuidValidate } from 'uuid';
 
 export function generateQrString(info: QrInfo): string {
-	return btoa(JSON.stringify(info));
+	return `${qrOriginMapCodes[info.origin]}${info.orderId}`;
 }
 
 export function parseQrString(qrString: string | undefined): QrInfo | undefined {
@@ -14,6 +15,15 @@ export function parseQrString(qrString: string | undefined): QrInfo | undefined 
 		return {
 			orderId: qrString,
 			origin: QrOrigin.LEGACY
+		};
+	}
+
+	const origin = qrOriginMapCodesReverse[qrString.slice(0, 2)];
+	const orderId = qrString.slice(2);
+	if (origin != null && uuidValidate(orderId)) {
+		return {
+			orderId,
+			origin
 		};
 	}
 
