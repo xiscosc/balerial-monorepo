@@ -109,6 +109,7 @@ export const load = (async ({ params, locals }) => {
 	const { id } = params;
 	return {
 		info: loadData(locals.user!, id),
+		orderId: id,
 		isPriceManager: AuthService.isAdmin(locals.user),
 		promoteForm,
 		locationForm,
