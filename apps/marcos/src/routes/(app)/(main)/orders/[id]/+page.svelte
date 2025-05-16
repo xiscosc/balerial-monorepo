@@ -29,6 +29,7 @@
 	import { isSmBreakpoint } from '@/stores/breakpoint.store';
 	import WhatsAppOrderButtons from '@/components/business-related/order-detail/WhatsAppOrderButtons.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import { trackEvent } from '@/shared/analytics.utilities';
 
 	let formLoading = $state(false);
 
@@ -46,6 +47,10 @@
 				const order = info.fullOrder?.order;
 				if (order != null && OrderUtilities.isOrderTemp(order)) {
 					goto(`/orders/${order.id}/link`);
+				}
+
+				if (order == null) {
+					trackEvent('Order not found', { orderId: data.orderId });
 				}
 			});
 		}
