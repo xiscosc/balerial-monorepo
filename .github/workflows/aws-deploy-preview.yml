@@ -20,9 +20,13 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup node
         uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
 
       - name: Download Sharp Layer
         run: curl -L https://github.com/pH200/sharp-layer/releases/latest/download/release-arm64.zip --output apps/marcos-aws/sharp-layer.zip

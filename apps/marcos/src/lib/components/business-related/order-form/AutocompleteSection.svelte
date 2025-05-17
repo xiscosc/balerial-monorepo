@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Fuse from 'fuse.js';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import { type ListPrice, type PricingType } from '@marcsimolduressonsardina/core/type';
 	import { formulasStringMap } from '@/shared/mappings/pricing.mapping';
@@ -10,19 +9,23 @@
 	import Input from '@/components/ui/input/input.svelte';
 	import { PricingUtilites } from '@marcsimolduressonsardina/core/util';
 	import Icon from '@/components/generic/icon/Icon.svelte';
+	import { AutocompleteSectionStateClass } from '@/components/business-related/order-form/AutocompleteSection.state.svelte';
 
-	interface Props {
+	let {
+		sectionTitle,
+		label,
+		addValue,
+		pricingType,
+		prices,
+		added
+	}: {
 		sectionTitle: string;
 		label: string;
 		addValue: (pricingType: PricingType, value?: string) => void;
 		pricingType: PricingType;
 		prices: ListPrice[];
 		added: boolean;
-	}
-
-	let { sectionTitle, label, addValue, pricingType, prices, added }: Props = $props();
-
-	let autocompleteInput = $state('');
+	} = $props();
 
 	function getSelectLabel(price: ListPrice) {
 		if (price.description == null || price.description === '') {
@@ -31,20 +34,12 @@
 		return `${price.description} (${PricingUtilites.getPriceString(price, formulasStringMap)})`;
 	}
 
-	function addFunction(id: string) {
-		addValue(pricingType, id);
-		autocompleteInput = '';
-	}
+	let autocompleteInput = $state('');
+	const autocompleteState = new AutocompleteSectionStateClass(addValue, prices);
 
-	const fuse = new Fuse(prices, {
-		keys: ['id', 'description'],
-		isCaseSensitive: false,
-		threshold: 0.1
+	$effect(() => {
+		autocompleteState.setIsAdded(added);
 	});
-
-	let filteredPrices: ListPrice[] = $derived(
-		autocompleteInput.length < 2 ? [] : fuse.search(autocompleteInput).map((result) => result.item)
-	);
 </script>
 
 <Spacer title={sectionTitle} />
@@ -54,17 +49,22 @@
 		id="autocomplete-search"
 		bind:value={autocompleteInput}
 		placeholder="Referencia... (mínimo 2 caracteres)"
-		success={added}
+		success={autocompleteState.isAdded()}
+		oninput={() => autocompleteState.setAutocompleteInput(autocompleteInput)}
 	/>
 </div>
-{#if autocompleteInput.length >= 2}
+{#if autocompleteState.getAutocompleteInput().length >= 2}
 	<ScrollArea class="h-72 rounded-md border lg:col-span-2">
 		<div class="p-4">
 			<h4 class="mb-4 text-sm font-medium leading-none">Búsqueda de marcos / molduras</h4>
-			{#each filteredPrices as price}
+			{#each autocompleteState.getFilteredPrices() as price}
 				<button
 					class="flexr-row flex w-full items-center gap-2 rounded-md p-2 hover:bg-gray-50"
-					onclick={() => addFunction(price.id)}
+					onclick={() => {
+						autocompleteState.add(pricingType, price.id);
+						autocompleteInput = '';
+						autocompleteState.setAutocompleteInput('');
+					}}
 					type="button"
 				>
 					<Icon type={IconType.ADD} />
@@ -72,7 +72,7 @@
 				</button>
 				<Separator class="my-2 last:hidden" />
 			{/each}
-			{#if filteredPrices.length === 0}
+			{#if autocompleteState.getFilteredPrices().length === 0}
 				<div class="flex flex-row items-center gap-2 p-2">
 					<Icon type={IconType.NOT_FOUND} />
 					<span>No se encontraron resultados</span>
