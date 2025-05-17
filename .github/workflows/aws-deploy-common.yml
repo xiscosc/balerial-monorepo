@@ -1,5 +1,3 @@
-name: AWS Deploy Common
-
 on:
   workflow_call:
     inputs:
@@ -22,6 +20,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: ${{ inputs.env_name }}
+    name: Deploy to AWS ${{ inputs.env_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,8 +32,11 @@ jobs:
       - name: Download Sharp Layer
         run: curl -L https://github.com/pH200/sharp-layer/releases/latest/download/release-arm64.zip --output apps/marcos-aws/sharp-layer.zip
 
-      - name: Install
-        run: bun install --cwd apps/marcos-aws
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm i --prefix apps/marcos-aws
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
