@@ -24,6 +24,7 @@
 		"aws-lambda": "1.0.7",
 		"constructs": "10.4.2",
 		"dotenv": "16.5.0",
+		"source-map-support": "0.5.21",
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"@marcsimolduressonsardina/lambda": "workspace:*",
 		"@balerial/dynamo": "workspace:*"
