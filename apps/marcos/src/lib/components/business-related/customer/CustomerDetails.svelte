@@ -13,7 +13,7 @@
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
-	import { trackEvent } from '@/shared/analytics.utilities';
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 
 	interface Props {
 		customer: Customer;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import Qr from '@/components/generic/Qr.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { DateTime } from 'luxon';
@@ -9,9 +9,9 @@
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonAction } from '@/components/generic/button/button.enum';
 	import OrderInfoStep from '@/components/business-related/order-detail/OrderInfoStep.svelte';
-	import { generateQrString } from '@/shared/qr.utilities';
 	import { QrOrigin } from '@/type/qr.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
+	import { QrUtilities } from '@/shared/order/qr.utilities';
 
 	interface Props {
 		data: PageData;
@@ -27,7 +27,10 @@
 		property="og:image"
 		content="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
 	/>
-	<meta property="og:url" content={OrderUtilities.getOrderPublicUrl(data.fullOrder.order)} />
+	<meta
+		property="og:url"
+		content={OrderRepresentationUtilities.getOrderPublicUrl(data.fullOrder.order)}
+	/>
 	<meta property="og:type" content="website" />
 </svelte:head>
 
@@ -52,7 +55,7 @@
 			<div class="flex rounded-xl border p-3">
 				<Qr
 					size={125}
-					qrData={generateQrString({
+					qrData={QrUtilities.generateQrString({
 						orderId: data.fullOrder.order.id,
 						origin: QrOrigin.CUSTOMER_V2
 					})}

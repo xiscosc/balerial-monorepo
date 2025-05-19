@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import OrderCard from '@/components/business-related/order-list/OrderCard.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
@@ -35,7 +35,7 @@
 		<div class="flex w-full flex-col place-content-center items-center justify-center gap-2">
 			<WhatsAppButton
 				label="Enviar mensaje todos finalizados"
-				message={OrderUtilities.getWhatsappFinishedText(
+				message={OrderRepresentationUtilities.getWhatsappFinishedText(
 					fullOrders
 						.map((fullOrder) => fullOrder.order)
 						.filter((order) => order.status === OrderStatus.FINISHED)

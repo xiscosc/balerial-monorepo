@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 import { orderStatusMap } from '@/shared/mappings/order.mapping';
-import { OrderUtilities } from '@/shared/order.utilities';
+import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import type { FullOrder } from '@marcsimolduressonsardina/core/type';
@@ -132,7 +132,7 @@ export class ListStateClass implements ListState {
 			const body: { orders: FullOrder[]; nextKey?: Record<string, string | number> } =
 				await response.json();
 			this.lastKey = body.nextKey;
-			return OrderUtilities.hydrateFullOrderDates(body.orders);
+			return OrderRepresentationUtilities.hydrateFullOrderDates(body.orders);
 		} else {
 			this.lastKey = undefined;
 			return [];
@@ -158,6 +158,6 @@ export class ListStateClass implements ListState {
 
 		const response = await getGlobalProfiler().measure(listResponse);
 		const body: { results: FullOrder[] } = await response.json();
-		return OrderUtilities.hydrateFullOrderDates(body.results);
+		return OrderRepresentationUtilities.hydrateFullOrderDates(body.results);
 	}
 }

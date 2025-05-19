@@ -7,6 +7,8 @@
 	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
 	import Button from '@/components/generic/button/Button.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
+	import { Skeleton } from '@/components/ui/skeleton';
+
 	interface Props {
 		files: MMSSFile[];
 		deleteFunction: (id: string) => Promise<void>;
@@ -17,6 +19,7 @@
 	let isOpen = $state(false);
 	let isLoading = $state(false);
 	let sheetLoading = $state(false);
+	let picturesLoaded = $state(Array(files.length).fill(false));
 
 	async function handleDelete() {
 		sheetLoading = true;
@@ -46,19 +49,22 @@
 		isLoading = true;
 		isOpen = true;
 	}
-
-	function imageLoaded() {
-		isLoading = false;
-	}
 </script>
 
 <div class="flex flex-wrap gap-2">
 	{#each files as file, i}
 		<button class="aspect-square w-16 overflow-hidden rounded-sm" onclick={() => openGallery(i)}>
+			{#if !picturesLoaded[i]}
+				<Skeleton class="h-full w-full" />
+			{/if}
 			<img
 				src={file.thumbnailDownloadUrl ?? file.downloadUrl}
 				alt={file.originalFilename}
 				class="h-full w-full object-cover transition-transform hover:scale-105"
+				onload={() => {
+					picturesLoaded[i] = true;
+				}}
+				class:hidden={!picturesLoaded[i]}
 			/>
 		</button>
 	{/each}
@@ -91,7 +97,9 @@
 			<img
 				src={files[currentIndex].downloadUrl}
 				alt={files[currentIndex].originalFilename}
-				onload={imageLoaded}
+				onload={() => {
+					isLoading = false;
+				}}
 				class:hidden={isLoading}
 				class="pointer-events-auto max-h-[90vh] max-w-[90vw] rounded-sm object-contain"
 			/>

@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { CustomerUtilites } from '@/shared/customer.utilities';
 	import type { Customer, Order } from '@marcsimolduressonsardina/core/type';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { trackEvent } from '@/shared/analytics.utilities';
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 
 	interface Props {
 		label: string;
@@ -39,7 +38,7 @@
 		await Promise.all(promises);
 		label = `${tempLabel}`;
 
-		const newWindowUrl = CustomerUtilites.getWhatsappLink(customer, message);
+		const newWindowUrl = getWhatsappLink(customer, message);
 		window.open(newWindowUrl, '_blank');
 		orders.forEach((order) => {
 			order.notified = true;
@@ -60,6 +59,12 @@
 	function trackWhatsAppClicked() {
 		trackEvent('WhatsApp clicked', { action: label, customerId: customer.id });
 	}
+
+	function getWhatsappLink(customer: Customer, text?: string): string {
+		const link = `https://wa.me/${customer.phone.replace('+', '')}`;
+		const encodedText = text == null ? '' : `?text=${encodeURI(text)}`;
+		return link + encodedText;
+	}
 </script>
 
 {#if notifyOrder && !disabled}
@@ -75,6 +80,6 @@
 		style={ButtonStyle.WHATSAPP}
 		{disabled}
 		{tooltipText}
-		link={CustomerUtilites.getWhatsappLink(customer, message)}
+		link={getWhatsappLink(customer, message)}
 	></Button>
 {/if}

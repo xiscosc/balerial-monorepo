@@ -29,7 +29,7 @@
 	import { isSmBreakpoint } from '@/stores/breakpoint.store';
 	import WhatsAppOrderButtons from '@/components/business-related/order-detail/WhatsAppOrderButtons.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import { trackEvent } from '@/shared/analytics.utilities';
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 
 	let formLoading = $state(false);
 

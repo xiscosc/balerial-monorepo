@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { DateTime } from 'luxon';
 	import { otherForPrintPricingTypes } from '@/shared/mappings/pricing.mapping';
 	import {
@@ -18,16 +18,18 @@
 
 	const others = [
 		...otherForPrintPricingTypes
-			.map((t) => OrderUtilities.getOrderElementByPricingType(order, calculatedItem, t))
+			.map((t) =>
+				OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, t)
+			)
 			.flat(),
-		...OrderUtilities.getExtras(calculatedItem)
+		...OrderRepresentationUtilities.getExtras(calculatedItem)
 	];
 
 	const enWeekDay = DateTime.fromJSDate(order.item.deliveryDate).weekdayShort as string;
 	const esWeekDay = weekDayMap[enWeekDay] ?? enWeekDay;
 	const discount =
 		calculatedItem.discount > 0
-			? `(${OrderUtilities.getDiscountRepresentation(calculatedItem.discount)})`
+			? `(${OrderRepresentationUtilities.getDiscountRepresentation(calculatedItem.discount)})`
 			: '';
 
 	onMount(() => {
@@ -89,7 +91,7 @@
 							</tr>
 							<tr>
 								<td>
-									{#each OrderUtilities.getOrderMolds(order) as mold}
+									{#each OrderRepresentationUtilities.getOrderMolds(order) as mold}
 										{mold}<br />
 									{/each}
 									{#if order.item.floatingDistance > 0}
@@ -97,24 +99,24 @@
 									{/if}
 								</td>
 								<td>
-									{#each OrderUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.GLASS) as glass}
+									{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.GLASS) as glass}
 										{glass}<br />
 									{/each}
 								</td>
 								<td>
-									{#each OrderUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.BACK) as back}
+									{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.BACK) as back}
 										{back}<br />
 									{/each}
 								</td>
 								<td>
-									{#if OrderUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.PP).length > 0}
-										{OrderUtilities.getOrderElementByPricingType(
+									{#if OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.PP).length > 0}
+										{OrderRepresentationUtilities.getOrderElementByPricingType(
 											order,
 											calculatedItem,
 											PricingType.PP
 										)[0]}
 										{order.item.pp}cm <br />
-										{#each OrderUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.PP).slice(1) as pp}
+										{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.PP).slice(1) as pp}
 											{pp}<br />
 										{/each}
 									{/if}
@@ -142,7 +144,7 @@
 							</tr>
 							<tr>
 								<td>
-									{OrderUtilities.getWorkingDimensions(order)}
+									{OrderRepresentationUtilities.getWorkingDimensions(order)}
 									{#if order.item.dimensionsType === DimensionsType.EXTERIOR}
 										<br />
 										<strong>
@@ -175,14 +177,14 @@
 								<tr>
 									<th colspan="2" class="list-th"> Otros </th>
 								</tr>
-								{#each OrderUtilities.groupInPairs(others) as pair}
+								{#each OrderRepresentationUtilities.groupInPairs(others) as pair}
 									<tr>
 										<td class="list-td">
-											{OrderUtilities.getPrintableListRepresentatiom(pair[0])}
+											{OrderRepresentationUtilities.getPrintableListRepresentatiom(pair[0])}
 										</td>
 										<td class="list-td">
 											{#if pair[1].length > 0}
-												{OrderUtilities.getPrintableListRepresentatiom(pair[1])}
+												{OrderRepresentationUtilities.getPrintableListRepresentatiom(pair[1])}
 											{/if}
 										</td>
 									</tr>
@@ -208,13 +210,13 @@
 										</td>
 									</tr>
 								{/if}
-								{#each OrderUtilities.groupInPairs(order.item.predefinedObservations) as pair}
+								{#each OrderRepresentationUtilities.groupInPairs(order.item.predefinedObservations) as pair}
 									<tr>
 										<td class="list-td">
-											{OrderUtilities.getPrintableListRepresentatiom(pair[0])}
+											{OrderRepresentationUtilities.getPrintableListRepresentatiom(pair[0])}
 										</td>
 										<td class="list-td">
-											{OrderUtilities.getPrintableListRepresentatiom(pair[1])}
+											{OrderRepresentationUtilities.getPrintableListRepresentatiom(pair[1])}
 										</td>
 									</tr>
 								{/each}

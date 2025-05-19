@@ -12,7 +12,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { Input } from '@/components/ui/input';
 	import Photos from '@/components/business-related/file/Photos.svelte';
-	import { trackEvent } from '@/shared/analytics.utilities';
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 	import Progress from '@/components/ui/progress/progress.svelte';
 
 	interface Props {

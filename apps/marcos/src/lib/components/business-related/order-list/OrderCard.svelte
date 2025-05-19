@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
@@ -19,7 +19,9 @@
 	const order = fullOrder.order;
 	const calculatedItem = fullOrder.calculatedItem;
 	let measures = $derived(`${order.item.height}x${order.item.width} cm`);
-	let mold = $derived(OrderUtilities.getFirstMoldDescriptionFromOrder(order, calculatedItem));
+	let mold = $derived(
+		OrderRepresentationUtilities.getFirstMoldDescriptionFromOrder(order, calculatedItem)
+	);
 </script>
 
 {#snippet infoPiece(icon: IconType, title: string, value: string, redText: boolean = false)}
