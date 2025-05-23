@@ -10,7 +10,7 @@ export class ChipSetStateClass implements ChipSetState {
 	private filledList: SvelteMap<string, boolean> = $state(new SvelteMap());
 	public selectedValues: string[] = $derived(
 		Array.from(this.filledList.entries())
-			.filter(([_, filled]) => filled)
+			.filter(([, filled]) => filled)
 			.map(([value]) => value)
 	);
 

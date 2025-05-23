@@ -11,7 +11,7 @@
 
 	export let order: Order;
 	export let counters: ISameDayOrderCounters;
-	export let hasFiles: Boolean;
+	export let hasFiles: boolean;
 	let whatsAppNotified = false;
 
 	function handleAfterNotify() {
@@ -62,8 +62,8 @@
 	{:else}
 		<Button
 			icon={IconType.WHATSAPP}
-			text={'Enviar mensaje finalizado'}
-			tooltipText={'Faltan fotos'}
+			text="Enviar mensaje finalizado"
+			tooltipText="Faltan fotos"
 			link={`/orders/${order.id}/whatsapp`}
 			style={ButtonStyle.WHATSAPP}
 			disabled={!hasFiles}

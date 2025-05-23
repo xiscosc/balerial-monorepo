@@ -52,7 +52,7 @@
 </script>
 
 <div class="flex flex-wrap gap-2">
-	{#each files as file, i}
+	{#each files as file, i (file.id)}
 		<button class="aspect-square w-16 overflow-hidden rounded-sm" onclick={() => openGallery(i)}>
 			{#if !picturesLoaded[i]}
 				<Skeleton class="h-full w-full" />
@@ -137,7 +137,7 @@
 				<Icon type={IconType.CLOSE}></Icon>
 			</button>
 			<BottomSheet
-				title={'Eliminar imagen'}
+				title="Eliminar imagen"
 				description="Esta acción no se puede deshacer"
 				iconType={IconType.TRASH}
 				customTriggerStyle={true}

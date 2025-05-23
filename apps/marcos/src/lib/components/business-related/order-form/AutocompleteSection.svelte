@@ -57,7 +57,7 @@
 	<ScrollArea class="h-72 rounded-md border lg:col-span-2">
 		<div class="p-4">
 			<h4 class="mb-4 text-sm font-medium leading-none">Búsqueda de marcos / molduras</h4>
-			{#each autocompleteState.getFilteredPrices() as price}
+			{#each autocompleteState.getFilteredPrices() as price (price.id)}
 				<button
 					class="flexr-row flex w-full items-center gap-2 rounded-md p-2 hover:bg-gray-50"
 					onclick={() => {

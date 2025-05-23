@@ -1,4 +1,9 @@
-import { config } from "@repo/eslint-config/svelte";
+import { config as baseSvelteConfig } from '@repo/eslint-config/svelte';
 
 /** @type {import("eslint").Linter.Config} */
-export default config;
+export default [
+	...baseSvelteConfig,
+	{
+		ignores: ['src/lib/components/ui/**']
+	}
+];

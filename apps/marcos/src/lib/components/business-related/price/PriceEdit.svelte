@@ -161,7 +161,7 @@
 				{:else}
 					<div class="flex flex-col gap-2">
 						<div class="flex w-full flex-col place-content-center gap-2 lg:grid lg:grid-cols-2">
-							<Spacer line={false} title={'Datos básicos'} />
+							<Spacer line={false} title="Datos básicos" />
 
 							<Form.Field {form} name="id">
 								<Form.Control>
@@ -202,7 +202,7 @@
 												bind:value={$formData.type}
 												disabled={!isNew}
 											>
-												{#each Object.entries(pricingTypesMap) as [p, label]}
+												{#each Object.entries(pricingTypesMap) as [p, label] (p)}
 													<option value={p}>{label}</option>
 												{/each}
 											</NativeSelect.Root>
@@ -227,7 +227,7 @@
 												bind:value={$formData.formula}
 												disabled={!isNew}
 											>
-												{#each Object.entries(formulasMap) as [p, label]}
+												{#each Object.entries(formulasMap) as [p, label] (p)}
 													<option value={p}>{label}</option>
 												{/each}
 											</NativeSelect.Root>
@@ -237,7 +237,7 @@
 								<Form.FieldErrors />
 							</Form.Field>
 
-							<Spacer title={'Datos del precio'} />
+							<Spacer title="Datos del precio" />
 
 							{#if isAreaFit}
 								{#if $formData.formula === PricingFormula.FORMULA_FIT_AREA}
@@ -262,9 +262,9 @@
 									</div>
 
 									{#if areas.length > 0}
-										<Spacer title={'Trozos añadidos'} />
+										<Spacer title="Trozos añadidos" />
 										<div class="flex flex-col gap-3 lg:col-span-2">
-											{#each areas as area}
+											{#each areas as area (area)}
 												<Step
 													icon={IconType.RULER}
 													title="Medidas ≤ {area.d1} x {area.d2}"
@@ -302,9 +302,9 @@
 										<Button text="Añadir" icon={IconType.PLUS} onClick={handleAddAreaM2} />
 									</div>
 									{#if areasM2.length > 0}
-										<Spacer title={'Trozos añadidos'} />
+										<Spacer title="Trozos añadidos" />
 										<div class="flex flex-col gap-3 lg:col-span-2">
-											{#each areasM2 as area}
+											{#each areasM2 as area (area)}
 												<Step
 													icon={IconType.RULER}
 													title="Área ≤ {area.a} m2"
@@ -321,12 +321,7 @@
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>Precio:</Form.Label>
-											<Input
-												type="number"
-												step="0.01"
-												name="priority"
-												bind:value={$formData.price}
-											/>
+											<Input {...props} type="number" step="0.01" bind:value={$formData.price} />
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />
@@ -336,7 +331,7 @@
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>Alto máximo:</Form.Label>
-											<Input type="number" step="0.01" name="maxD1" bind:value={$formData.maxD1} />
+											<Input {...props} type="number" step="0.01" bind:value={$formData.maxD1} />
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />
@@ -346,20 +341,20 @@
 									<Form.Control>
 										{#snippet children({ props })}
 											<Form.Label>Ancho Máximo:</Form.Label>
-											<Input type="number" step="0.01" name="maxD2" bind:value={$formData.maxD2} />
+											<Input {...props} type="number" step="0.01" bind:value={$formData.maxD2} />
 										{/snippet}
 									</Form.Control>
 									<Form.FieldErrors />
 								</Form.Field>
 							{/if}
 
-							<Spacer title={'Otros datos'} />
+							<Spacer title="Otros datos" />
 
 							<Form.Field {form} name="priority">
 								<Form.Control>
 									{#snippet children({ props })}
 										<Form.Label>Prioridad (Cuanto más alto, antes saldrá en la lista):</Form.Label>
-										<Input type="number" step="1" name="priority" bind:value={$formData.priority} />
+										<Input {...props} type="number" step="1" bind:value={$formData.priority} />
 									{/snippet}
 								</Form.Control>
 								<Form.FieldErrors />
@@ -369,12 +364,7 @@
 								<Form.Control>
 									{#snippet children({ props })}
 										<Form.Label>Precio mínimo:</Form.Label>
-										<Input
-											type="number"
-											step="0.01"
-											name="minPrice"
-											bind:value={$formData.minPrice}
-										/>
+										<Input {...props} type="number" step="0.01" bind:value={$formData.minPrice} />
 									{/snippet}
 								</Form.Control>
 								<Form.FieldErrors />
@@ -387,7 +377,7 @@
 											class="flex h-10 flex-row items-center justify-between rounded-md border px-2"
 										>
 											<Form.Label>Descuento permitido</Form.Label>
-											<Switch bind:checked={$formData.discountAllowed} />
+											<Switch {...props} bind:checked={$formData.discountAllowed} />
 										</div>
 									{/snippet}
 								</Form.Control>

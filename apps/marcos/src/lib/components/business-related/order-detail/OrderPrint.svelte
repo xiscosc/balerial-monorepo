@@ -144,7 +144,7 @@
 							</tr>
 							<tr>
 								<td>
-									{#each OrderRepresentationUtilities.getOrderMolds(order) as mold}
+									{#each OrderRepresentationUtilities.getOrderMolds(order) as mold (mold)}
 										{mold}<br />
 									{/each}
 									{#if order.item.floatingDistance > 0}
@@ -152,12 +152,12 @@
 									{/if}
 								</td>
 								<td>
-									{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.GLASS) as glass}
+									{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.GLASS) as glass (glass)}
 										{glass}<br />
 									{/each}
 								</td>
 								<td>
-									{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.BACK) as back}
+									{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.BACK) as back (back)}
 										{back}<br />
 									{/each}
 								</td>
@@ -169,7 +169,7 @@
 											PricingType.PP
 										)[0]}
 										{order.item.pp}cm <br />
-										{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.PP).slice(1) as pp}
+										{#each OrderRepresentationUtilities.getOrderElementByPricingType(order, calculatedItem, PricingType.PP).slice(1) as pp (pp)}
 											{pp}<br />
 										{/each}
 									{/if}
@@ -230,7 +230,7 @@
 								<tr>
 									<th colspan="2" class="list-th"> Otros </th>
 								</tr>
-								{#each OrderRepresentationUtilities.groupInPairs(others) as pair}
+								{#each OrderRepresentationUtilities.groupInPairs(others) as pair (pair)}
 									<tr>
 										<td class="list-td">
 											{OrderRepresentationUtilities.getPrintableListRepresentatiom(pair[0])}
@@ -263,7 +263,7 @@
 										</td>
 									</tr>
 								{/if}
-								{#each OrderRepresentationUtilities.groupInPairs(order.item.predefinedObservations) as pair}
+								{#each OrderRepresentationUtilities.groupInPairs(order.item.predefinedObservations) as pair (pair)}
 									<tr>
 										<td class="list-td">
 											{OrderRepresentationUtilities.getPrintableListRepresentatiom(pair[0])}

@@ -111,7 +111,7 @@
 				{#snippet trigger()}
 					<Button
 						disabled={totalOrders > 0}
-						tooltipText={'El cliente tiene pedidos o presupuestos'}
+						tooltipText="El cliente tiene pedidos o presupuestos"
 						icon={IconType.TRASH}
 						text="Eliminar cliente"
 						action={ButtonAction.TRIGGER}

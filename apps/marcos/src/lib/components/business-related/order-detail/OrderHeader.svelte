@@ -26,7 +26,6 @@
 
 	let { fullOrder, locationForm, locations, statusForm }: Props = $props();
 	const order = fullOrder.order;
-	const calculatedItem = fullOrder.calculatedItem;
 	const totals = fullOrder.totals;
 </script>
 

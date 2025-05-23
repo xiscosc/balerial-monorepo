@@ -241,7 +241,7 @@
 			{#if videos.length > 0}
 				<Box title="Vídeos" collapsible>
 					<div class="flex flex-col gap-2">
-						{#each videos as file}
+						{#each videos as file (file.id)}
 							<UploadedFile
 								fileType={FileType.VIDEO}
 								fileName={file.originalFilename}
@@ -257,7 +257,7 @@
 			{#if other.length > 0 || noArt.length > 0}
 				<Box title="Otros archivos" collapsible>
 					<div class="flex flex-col gap-2">
-						{#each other as file}
+						{#each other as file (file.id)}
 							<UploadedFile
 								fileType={file.type}
 								fileName={file.originalFilename}
@@ -266,7 +266,7 @@
 								id={file.id}
 							/>
 						{/each}
-						{#each noArt as file}
+						{#each noArt as file (file.id)}
 							<UploadedFile
 								fileType={file.type}
 								fileName={file.originalFilename}

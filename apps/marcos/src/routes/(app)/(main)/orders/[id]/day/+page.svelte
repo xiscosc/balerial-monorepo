@@ -24,7 +24,7 @@
 
 <div class="space flex w-full flex-col gap-4">
 	{#await data.orders}
-		<ProgressBar text={'Cargando pedidos del día'} />
+		<ProgressBar text="Cargando pedidos del día" />
 	{:then fullOrders}
 		<SimpleHeading icon={IconType.DAY}>
 			<div class="flex flex-col lg:flex-row lg:gap-2">

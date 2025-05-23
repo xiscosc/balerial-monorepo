@@ -9,12 +9,13 @@
 		"sync-deps": "syncpack fix-mismatches"
 	},
 	"devDependencies": {
-		"@tsconfig/node22": "22.0.1",
-		"prettier": "3.4.2",
+		"@tsconfig/node22": "22.0.2",
+		"prettier": "3.5.3",
 		"prettier-plugin-tailwindcss": "0.6.11",
-		"prettier-plugin-svelte": "3.3.3",
-		"syncpack": "13.0.2",
+		"prettier-plugin-svelte": "3.4.0",
+		"syncpack": "13.0.4",
 		"turbo": "2.5.3",
+		"eslint": "9.27.0",
 		"typescript": "5.8.3"
 	},
 	"packageManager": "pnpm@10.11.0",

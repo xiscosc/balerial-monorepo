@@ -19,7 +19,7 @@
 		"@repo/typescript-config": "workspace:*",
 		"typescript": "5.8.3",
 		"@types/lodash": "4.17.16",
-		"@smithy/types": "4.2.0"
+		"@smithy/types": "4.3.0"
 	},
 	"dependencies": {
 		"@aws-sdk/client-dynamodb": "3.812.0",

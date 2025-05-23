@@ -17,7 +17,7 @@
 	});
 </script>
 
-{#each values as value}
+{#each values as value (value)}
 	<button
 		class="flex w-full flex-row items-center justify-center gap-2 rounded-sm bg-gray-800 p-1 text-sm text-white"
 		class:bg-indigo-800={chipSetState.isSelected(value)}

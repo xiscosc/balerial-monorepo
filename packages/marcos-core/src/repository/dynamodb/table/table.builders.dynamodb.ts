@@ -59,7 +59,8 @@ export const listPricingTableBuilder = new BalerialDynamoTableBuilder()
 		DynamoDbIndexKeyType.string,
 		'id',
 		DynamoDbIndexKeyType.string
-	);
+	)
+	.setPublicPrimaryIndex();
 
 export const orderAuditTrailTableBuilder = new BalerialDynamoTableBuilder()
 	.setPrimaryIndex('uuid', DynamoDbIndexKeyType.string)
@@ -102,4 +103,5 @@ export const orderTableBuilder = new BalerialDynamoTableBuilder()
 		'timestamp',
 		DynamoDbIndexKeyType.number
 	)
-	.addSecondaryIndex(OrderSecondaryIndexNames.PublicId, 'publicId', DynamoDbIndexKeyType.string);
+	.addSecondaryIndex(OrderSecondaryIndexNames.PublicId, 'publicId', DynamoDbIndexKeyType.string)
+	.setPublicSecondaryIndexes([OrderSecondaryIndexNames.PublicId]);

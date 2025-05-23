@@ -70,7 +70,7 @@
 				success={selectorState.isAdded()}
 			>
 				<option value=""></option>
-				{#each selectorState.getOrderedPrices() as orderedPrice}
+				{#each selectorState.getOrderedPrices() as orderedPrice (orderedPrice.stateId)}
 					<option value={orderedPrice.stateId} data-mold={orderedPrice.value.moldId}
 						>{getSelectLabel(orderedPrice.value)}</option
 					>

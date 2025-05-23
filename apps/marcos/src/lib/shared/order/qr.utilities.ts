@@ -30,7 +30,7 @@ export class QrUtilities {
 
 		try {
 			return JSON.parse(atob(qrString)) as QrInfo;
-		} catch (e: unknown) {
+		} catch {
 			return undefined;
 		}
 	}

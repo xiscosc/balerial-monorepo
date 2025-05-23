@@ -7,7 +7,7 @@
 	import { browser } from '$app/environment';
 	import { Input } from '@/components/ui/input';
 	import { DateTime } from 'luxon';
-	import { Profiler, type ProfilerConfig } from '@/shared/profiler/profiler';
+	import { type ProfilerConfig } from '@/shared/profiler/profiler';
 	import { toast, Toaster } from 'svelte-sonner';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonStyle } from '@/components/generic/button/button.enum';

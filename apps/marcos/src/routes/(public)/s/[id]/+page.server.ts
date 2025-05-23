@@ -34,7 +34,7 @@ export const load = (async ({ params, locals }) => {
 		return {
 			fullOrder
 		};
-	} catch (error) {
+	} catch {
 		redirect(303, 'https://marcsimoldures.com/');
 	}
 }) satisfies PageServerLoad;

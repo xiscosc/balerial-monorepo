@@ -15,7 +15,7 @@
 {/snippet}
 
 <div class="mx-auto flex w-full flex-col overflow-hidden rounded-md md:max-w-md">
-	<div class={`rounded-t-md bg-gray-400 p-2 text-white`}>
+	<div class="rounded-t-md bg-gray-400 p-2 text-white">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2 space-x-1 rounded-lg px-3 py-1 pr-2 text-sm">
 				<Icon type={IconType.LOADING} />
