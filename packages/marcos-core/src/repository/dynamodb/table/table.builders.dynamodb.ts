@@ -104,4 +104,4 @@ export const orderTableBuilder = new BalerialDynamoTableBuilder()
 		DynamoDbIndexKeyType.number
 	)
 	.addSecondaryIndex(OrderSecondaryIndexNames.PublicId, 'publicId', DynamoDbIndexKeyType.string)
-	.setPublicSecondaryIndexes([OrderSecondaryIndexNames.PublicId]);
+	.setPublicSecondaryIndexes([OrderSecondaryIndexNames.ShortId]);
