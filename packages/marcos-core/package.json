@@ -23,7 +23,7 @@
 		"@smithy/types": "4.2.0",
 		"@types/luxon": "3.6.2",
 		"@types/mime-types": "2.1.4",
-		"@types/node": "22.14.0",
+		"@types/node": "22.15.24",
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"typescript": "5.8.3"
@@ -34,7 +34,7 @@
 		"luxon": "3.6.1",
 		"nanoid": "5.1.5",
 		"mime-types": "3.0.1",
-		"pino": "9.6.0",
+		"pino": "9.7.0",
 		"pino-pretty": "13.0.0",
 		"uuid": "11.1.0",
 		"xlsx": "0.18.5"
