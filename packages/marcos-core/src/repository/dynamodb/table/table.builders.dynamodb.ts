@@ -42,7 +42,8 @@ export const customerTableBuilder = new BalerialDynamoTableBuilder()
 		DynamoDbIndexKeyType.string,
 		'phone',
 		DynamoDbIndexKeyType.string
-	);
+	)
+	.setPublicPrimaryIndex();
 
 export const fileTableBuilder = new BalerialDynamoTableBuilder().setPrimaryIndex(
 	'orderUuid',
@@ -59,8 +60,7 @@ export const listPricingTableBuilder = new BalerialDynamoTableBuilder()
 		DynamoDbIndexKeyType.string,
 		'id',
 		DynamoDbIndexKeyType.string
-	)
-	.setPublicPrimaryIndex();
+	);
 
 export const orderAuditTrailTableBuilder = new BalerialDynamoTableBuilder()
 	.setPrimaryIndex('uuid', DynamoDbIndexKeyType.string)
