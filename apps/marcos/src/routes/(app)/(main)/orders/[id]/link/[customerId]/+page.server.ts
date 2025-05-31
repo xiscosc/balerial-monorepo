@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
-import { trackServerEvent } from '@/server/shared/analytics/posthog';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export const load = (async ({ params, locals }) => {
 	const { id, customerId } = params;

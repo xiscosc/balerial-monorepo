@@ -18,14 +18,14 @@
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"typescript": "5.8.3",
-		"@types/lodash": "4.17.16",
-		"@smithy/types": "4.2.0"
+		"@types/lodash": "4.17.17",
+		"@smithy/types": "4.3.0"
 	},
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "3.786.0",
-		"@aws-sdk/lib-dynamodb": "3.786.0",
-		"aws-cdk-lib": "2.189.0",
+		"@aws-sdk/client-dynamodb": "3.817.0",
+		"@aws-sdk/lib-dynamodb": "3.817.0",
+		"aws-cdk-lib": "2.199.0",
 		"lodash": "4.17.21",
-		"pino": "9.6.0"
+		"pino": "9.7.0"
 	}
 }

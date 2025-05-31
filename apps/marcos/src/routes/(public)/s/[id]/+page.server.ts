@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PublicReceiptService } from '@marcsimolduressonsardina/core/service';
 import { AuthService } from '$lib/server/service/auth.service';
-import { trackAnonymousServerEvent } from '@/server/shared/analytics/posthog';
+import { trackAnonymousServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params as { id: string };
@@ -34,7 +34,7 @@ export const load = (async ({ params, locals }) => {
 		return {
 			fullOrder
 		};
-	} catch (error) {
+	} catch {
 		redirect(303, 'https://marcsimoldures.com/');
 	}
 }) satisfies PageServerLoad;

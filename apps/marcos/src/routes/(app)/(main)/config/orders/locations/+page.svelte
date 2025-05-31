@@ -34,7 +34,7 @@
 		<!-- Form to add a new location -->
 		<div class="mt-4 space-y-4">
 			<!-- Existing locations list -->
-			{#each locations as location, index}
+			{#each locations as location, index (location)}
 				<LocationItem text={location}>
 					<Button
 						text="Eliminar"

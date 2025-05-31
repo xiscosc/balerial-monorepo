@@ -5,7 +5,7 @@
 	import { ButtonAction, ButtonText } from '@/components/generic/button/button.enum';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { OrderActionNames, orderStatusMap } from '@/shared/mappings/order.mapping';
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import Divider from '@/components/generic/Divider.svelte';
@@ -36,7 +36,7 @@
 	}
 
 	let newStatus = $state<OrderStatus>();
-	const statuses = OrderUtilities.getPossibleNextStatuses(fullOrder.order.status);
+	const statuses = OrderRepresentationUtilities.getPossibleNextStatuses(fullOrder.order.status);
 	const order = fullOrder.order;
 </script>
 
@@ -72,8 +72,8 @@
 								<Form.Label>Nueva ubicación:</Form.Label>
 								<NativeSelect.Root name={props.name} bind:value={$formData.location}>
 									<option></option>
-									{#each locations as l}
-										<option value={l}>{l}</option>
+									{#each locations as location (location)}
+										<option value={location}>{location}</option>
 									{/each}
 								</NativeSelect.Root>
 							{/snippet}

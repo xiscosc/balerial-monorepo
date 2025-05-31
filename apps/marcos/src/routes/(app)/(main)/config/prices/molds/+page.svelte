@@ -106,7 +106,7 @@
 				);
 				return false;
 			}
-		} catch (error) {
+		} catch {
 			toast.error('Ocurrió un error al procesar el archivo. Puede deberse a un error de formato.');
 			return false;
 		}
@@ -125,7 +125,7 @@
 				toast.error('Ocurrió un error al cargar el archivo. Por favor, intente nuevamente.');
 				return false;
 			}
-		} catch (error) {
+		} catch {
 			toast.error('Ocurrió un error al cargar el archivo. Por favor, intente nuevamente.');
 			return false;
 		}

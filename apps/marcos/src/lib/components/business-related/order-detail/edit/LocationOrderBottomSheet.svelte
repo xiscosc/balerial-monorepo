@@ -60,8 +60,8 @@
 							<Form.Label>Nueva ubicación:</Form.Label>
 							<NativeSelect.Root name={props.name} bind:value={$formData.location}>
 								<option></option>
-								{#each locations as l}
-									<option value={l}>{l}</option>
+								{#each locations as location (location)}
+									<option value={location}>{location}</option>
 								{/each}
 							</NativeSelect.Root>
 						{/snippet}

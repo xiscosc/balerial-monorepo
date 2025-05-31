@@ -4,7 +4,8 @@ export enum IconSize {
 	BIG = 24,
 	XL = 32,
 	XXL = 45,
-	XXXL = 60
+	XXXL = 60,
+	XXXXL = 80
 }
 
 export enum IconType {

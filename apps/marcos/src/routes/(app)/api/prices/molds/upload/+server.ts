@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import { AuthService } from '@/server/service/auth.service';
 import { MoldPriceLoader } from '@marcsimolduressonsardina/core/data';
-import { trackServerEvent } from '@/server/shared/analytics/posthog';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export async function GET({ locals }) {
 	if (!AuthService.isAdmin(locals.user)) {

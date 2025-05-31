@@ -34,11 +34,26 @@ export class MmSsStack extends Stack {
 
 		const storeTableArns = [...Object.entries(tables.storeTables)]
 			.map((entry) => entry[1])
-			.map((table) => table.tableArn);
+			.map((tableInfo) => tableInfo.table.tableArn);
 
 		const analyticsTableArns = [...Object.entries(tables.analyticsTables)]
 			.map((entry) => entry[1])
-			.map((table) => table.tableArn);
+			.map((tableInfo) => tableInfo.table.tableArn);
+
+		const publicTableArns = [...Object.entries(tables.storeTables)]
+			.map((entry) => entry[1])
+			.filter((tableInfo) => tableInfo.primaryIndexIsPublic)
+			.map((tableInfo) => tableInfo.table.tableArn);
+
+		const publicSecondaryIndexArns = [...Object.entries(tables.storeTables)]
+			.map((entry) => entry[1])
+			.filter((tableInfo) => tableInfo.publicSecondaryIndexes.length > 0)
+			.map((tableInfo) =>
+				tableInfo.publicSecondaryIndexes.map(
+					(index) => `${tableInfo.table.tableArn}/index/${index}`
+				)
+			)
+			.flat();
 
 		// Read policy
 		const mainStoreReadPolicy = new ManagedPolicy(
@@ -96,6 +111,21 @@ export class MmSsStack extends Stack {
 			}
 		);
 
+		// Public track orders policy
+		const publicTrackOrdersPolicy = new ManagedPolicy(
+			this,
+			`${this.props.envName}-public-track-orders-policy`,
+			{
+				managedPolicyName: `${this.props.envName}-public-track-orders-policy`,
+				statements: [
+					new PolicyStatement({
+						actions: ['dynamodb:Query'],
+						resources: [...publicTableArns, ...publicSecondaryIndexArns]
+					})
+				]
+			}
+		);
+
 		new CfnOutput(this, `${this.props.envName}-main-store-read-policy-output`, {
 			value: mainStoreReadPolicy.managedPolicyArn,
 			description: 'The ARN of the main store read policy',
@@ -106,6 +136,12 @@ export class MmSsStack extends Stack {
 			value: mainStoreWritePolicy.managedPolicyArn,
 			description: 'The ARN of the main store write policy',
 			exportName: `${this.props.envName}-main-store-write-policy-output`
+		});
+
+		new CfnOutput(this, `${this.props.envName}-public-track-orders-policy-output`, {
+			value: publicTrackOrdersPolicy.managedPolicyArn,
+			description: 'The ARN of the public track orders policy',
+			exportName: `${this.props.envName}-public-track-orders-policy-output`
 		});
 	}
 }

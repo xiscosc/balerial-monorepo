@@ -47,7 +47,7 @@
 		</Table.Row>
 	</Table.Header>
 	<Table.Body>
-		{#each prices as price}
+		{#each prices as price (price.id)}
 			<Table.Row>
 				<Table.Cell class="font-medium">{price.id}</Table.Cell>
 				<Table.Cell>

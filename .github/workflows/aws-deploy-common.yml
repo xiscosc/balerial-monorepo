@@ -1,0 +1,70 @@
+on:
+  workflow_call:
+    inputs:
+      cdk_env_name:
+        required: true
+        type: string
+      env_name:
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY:
+        required: true
+      AWS_SECRET_KEY:
+        required: true
+      POSTHOG_KEY:
+        required: true
+    outputs: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.env_name }}
+    name: Deploy to AWS ${{ inputs.env_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Download Sharp Layer
+        run: curl -L https://github.com/pH200/sharp-layer/releases/latest/download/release-arm64.zip --output apps/marcos-aws/sharp-layer.zip
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm i --prefix apps/marcos-aws
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: 'eu-central-1'
+
+      - name: Bootstrap
+        run: bun run --cwd apps/marcos-aws cdk bootstrap
+        env:
+          CDK_ENV_NAME: ${{ inputs.cdk_env_name }}
+          ALLOWED_UPLOAD_ORIGINS: ${{ vars.ALLOWED_UPLOAD_ORIGINS }}
+          MAIN_STORE_ID: ${{ vars.MAIN_STORE_ID }}
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+
+      - name: Diff stack
+        run: bun run --cwd apps/marcos-aws cdk diff
+        env:
+          CDK_ENV_NAME: ${{ inputs.cdk_env_name }}
+          ALLOWED_UPLOAD_ORIGINS: ${{ vars.ALLOWED_UPLOAD_ORIGINS }}
+          MAIN_STORE_ID: ${{ vars.MAIN_STORE_ID }}
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
+
+      - name: Deploy stack
+        run: bun run --cwd apps/marcos-aws cdk deploy --all --require-approval never
+        env:
+          CDK_ENV_NAME: ${{ inputs.cdk_env_name }}
+          ALLOWED_UPLOAD_ORIGINS: ${{ vars.ALLOWED_UPLOAD_ORIGINS }}
+          MAIN_STORE_ID: ${{ vars.MAIN_STORE_ID }}
+          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}

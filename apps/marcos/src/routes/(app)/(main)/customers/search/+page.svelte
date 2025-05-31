@@ -25,7 +25,7 @@
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.USER}>Clientes</SimpleHeading>
 	<div class="flex flex-col gap-2">
-		<Box title={'Buscar cliente por teléfono'}>
+		<Box title="Buscar cliente por teléfono">
 			{#if $submitting}
 				<ProgressBar />
 			{:else}
@@ -45,7 +45,7 @@
 			{/if}
 		</Box>
 
-		<Box title={'Buscar cliente por nombre'}>
+		<Box title="Buscar cliente por nombre">
 			<div class="flex flex-col gap-2">
 				<div>
 					<label class="block text-sm font-medium text-gray-700" for="phone">Nombre:</label>
@@ -62,7 +62,7 @@
 			</div>
 		</Box>
 
-		<Box title={'Gestión'}>
+		<Box title="Gestión">
 			<div class="flex flex-col gap-2 md:flex-row">
 				{#if data.canSeeList}
 					<Button

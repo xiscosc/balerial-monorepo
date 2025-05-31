@@ -5,7 +5,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
-import { trackServerEvent } from '@/server/shared/analytics/posthog';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export const load = async ({ url }) => {
 	const phone = url.searchParams.get('phone');

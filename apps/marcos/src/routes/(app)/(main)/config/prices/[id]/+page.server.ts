@@ -14,7 +14,7 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/analytics/posthog';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 async function getListPrice(id: string, pricingService: PricingService): Promise<ListPrice> {
 	if (id == null) throw fail(400);
