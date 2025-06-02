@@ -22,10 +22,7 @@
 	}
 
 	let { data, locations, order }: Props = $props();
-	const form = superForm(data, {
-		validators: zodClient(locationOrderSchema),
-		id: 'location-order-form'
-	});
+	const form = superForm(data, { validators: zodClient(locationOrderSchema) });
 
 	const { form: formData, enhance, submitting } = form;
 </script>
