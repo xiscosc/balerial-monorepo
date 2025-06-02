@@ -17,7 +17,6 @@ import {
 import { Customer, Order, OrderAuditTrailType, OrderStatus } from '../types';
 import { CustomerService } from './customer.service';
 import { BalerialCloudFileService } from '@balerial/s3/service';
-import { readFile } from 'fs/promises';
 import { streamToBuffer } from '@balerial/s3/util';
 export class ReportService {
 	private balerialFileCloudService: BalerialCloudFileService;

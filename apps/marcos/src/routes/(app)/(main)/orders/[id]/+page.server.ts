@@ -24,7 +24,7 @@ import {
 	promoteOrderSchema,
 	statusOrderSchema
 } from '$lib/shared/form-schema/order.form-schema';
-import { trackServerEvent } from '@/server/shared/analytics/posthog';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 import { OrderActionNames } from '@/shared/mappings/order.mapping';
 
 async function setOrderStatus(

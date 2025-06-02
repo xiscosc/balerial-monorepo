@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Html5Qrcode, Html5QrcodeScannerState, type Html5QrcodeResult } from 'html5-qrcode';
+	import { Html5Qrcode, Html5QrcodeScannerState } from 'html5-qrcode';
 	import { onMount, onDestroy } from 'svelte';
 
 	let html5QrCode: Html5Qrcode;
@@ -20,18 +20,18 @@
 		if (html5QrCode && html5QrCode.getState() !== Html5QrcodeScannerState.NOT_STARTED) {
 			html5QrCode
 				.stop()
-				.then((ignore) => {})
-				.catch((err) => {});
+				.then(() => {})
+				.catch(() => {});
 		}
 	});
 
-	function onScanSuccess(decodedText: string, decodedResult: Html5QrcodeResult) {
+	function onScanSuccess(decodedText: string) {
 		html5QrCode
 			.stop()
-			.then((ignore) => {
+			.then(() => {
 				scannedText = decodedText;
 			})
-			.catch((err) => {});
+			.catch(() => {});
 	}
 </script>
 

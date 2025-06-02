@@ -26,11 +26,12 @@
 	import Step from '@/components/generic/Step.svelte';
 	import { DateTime } from 'luxon';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
-	import { isSmBreakpoint } from '@/stores/breakpoint.store';
+
 	import WhatsAppOrderButtons from '@/components/business-related/order-detail/WhatsAppOrderButtons.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import { trackEvent } from '@/shared/analytics.utilities';
-
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { BreakpointStateClass } from '@/state/breakpoint/breakpoint.state.svelte';
+	import { onDestroy } from 'svelte';
 	let formLoading = $state(false);
 
 	interface Props {
@@ -40,6 +41,7 @@
 	let { data }: Props = $props();
 
 	let derivedInfo = $derived(getGlobalProfiler().measure(data.info));
+	const breakpointState = new BreakpointStateClass();
 
 	$effect(() => {
 		if (data.info) {
@@ -54,6 +56,10 @@
 				}
 			});
 		}
+	});
+
+	onDestroy(() => {
+		breakpointState.destroy();
 	});
 </script>
 
@@ -71,7 +77,7 @@
 {/snippet}
 
 {#snippet deleteOrderSection(mobile: boolean, isPriceManager: boolean, order?: Order)}
-	{#if isPriceManager && order && ((mobile && $isSmBreakpoint) || (!mobile && !$isSmBreakpoint))}
+	{#if isPriceManager && order && ((mobile && breakpointState.isSm()) || (!mobile && !breakpointState.isSm()))}
 		<div class="lg:mt-3 lg:break-inside-avoid">
 			<Box title="Administración">
 				<DeleteOrderBottomSheet {order}></DeleteOrderBottomSheet>
@@ -81,11 +87,11 @@
 {/snippet}
 
 {#snippet notificationSection(entries: OrderAuditTrailEntry[], mobile: boolean)}
-	{#if entries.length > 0 && ((mobile && $isSmBreakpoint) || (!mobile && !$isSmBreakpoint))}
+	{#if entries.length > 0 && ((mobile && breakpointState.isSm()) || (!mobile && !breakpointState.isSm()))}
 		<div class="lg:mt-3 lg:break-inside-avoid">
 			<Box title="Avisos al cliente">
 				<div class="flex flex-col gap-2">
-					{#each entries as entry}
+					{#each entries as entry (entry.id)}
 						<Step
 							icon={IconType.WHATSAPP}
 							title={entry.userName}
@@ -159,7 +165,7 @@
 						<Divider hideOnDesktop={true}></Divider>
 						<Button
 							disabled={!info.hasFiles}
-							tooltipText={'Faltan fotos'}
+							tooltipText="Faltan fotos"
 							icon={IconType.PRINTER}
 							text="Imprimir"
 							action={ButtonAction.LINK}
@@ -186,7 +192,7 @@
 				{/if}
 
 				{#if formLoading}
-					<span class=""> <ProgressBar text={'Aplicando cambios...'} /> </span>
+					<span class=""> <ProgressBar text="Aplicando cambios..." /> </span>
 				{/if}
 
 				<div class="lg:mt-3 lg:break-inside-avoid">

@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { PublicReceiptService } from '@marcsimolduressonsardina/core/service';
 import { AuthService } from '$lib/server/service/auth.service';
-import { trackAnonymousServerEvent } from '@/server/shared/analytics/posthog';
+import { trackAnonymousServerEvent } from '@/server/shared/server-analytics/posthog';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 
 export const load = (async ({ params, locals }) => {

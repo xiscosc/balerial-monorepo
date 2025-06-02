@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { DateTime } from 'luxon';
 	import Box from '@/components/generic/Box.svelte';
 	import { DimensionsType, OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
@@ -36,7 +36,7 @@
 		<OrderInfoStep
 			iconType={IconType.RULER}
 			title="Medidas de trabajo"
-			value={OrderUtilities.getWorkingDimensions(order)}
+			value={OrderRepresentationUtilities.getWorkingDimensions(order)}
 		/>
 
 		{#if order.item.dimensionsType === DimensionsType.EXTERIOR}

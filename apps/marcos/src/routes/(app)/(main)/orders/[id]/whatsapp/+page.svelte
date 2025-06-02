@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Box from '@/components/generic/Box.svelte';
 
-	import { OrderUtilities } from '@/shared/order.utilities';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import type { PageData } from './$types';
 
 	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
@@ -68,7 +68,7 @@
 
 							<WhatsAppButton
 								label="Enviar mensaje finalizado"
-								message={OrderUtilities.getWhatsappFinishedText([data.order])}
+								message={OrderRepresentationUtilities.getWhatsappFinishedText([data.order])}
 								customer={data.order.customer}
 								{handleAfterNotify}
 								notifyOrder={true}

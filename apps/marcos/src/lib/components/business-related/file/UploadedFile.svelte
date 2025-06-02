@@ -9,7 +9,7 @@
 		id?: string;
 		fileName?: string;
 		downloadUrl?: string;
-		onDelete?: any;
+		onDelete?: (id: string) => Promise<void>;
 		fileType: FileType;
 	}
 
@@ -18,11 +18,13 @@
 		fileName = '',
 		downloadUrl = undefined,
 		fileType,
-		onDelete = async (id: string) => {}
+		onDelete = undefined
 	}: Props = $props();
 
 	async function deleteFile() {
-		await onDelete(id);
+		if (onDelete) {
+			await onDelete(id);
+		}
 	}
 
 	let subtitle = $derived(

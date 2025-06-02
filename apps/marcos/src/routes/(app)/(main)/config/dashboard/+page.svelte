@@ -119,7 +119,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each dashboardReport.topOrders as topOrder}
+					{#each dashboardReport.topOrders as topOrder (topOrder.order.id)}
 						<Table.Row>
 							<Table.Cell>
 								<a
@@ -162,7 +162,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each dashboardReport.topCustomers as topCustomer}
+					{#each dashboardReport.topCustomers as topCustomer (topCustomer.customer.id)}
 						<Table.Row>
 							<Table.Cell>
 								<a href={`/customers/${topCustomer.customer.id}`} class="flex flex-row gap-1">
@@ -186,7 +186,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each dashboardReport.topItems as topItem}
+					{#each dashboardReport.topItems as topItem (topItem.id)}
 						<Table.Row>
 							<Table.Cell>
 								<span class="rounded-lg bg-gray-100 px-2 py-1 font-mono text-gray-800">

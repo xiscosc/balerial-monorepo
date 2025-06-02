@@ -5,6 +5,7 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Button from '@/components/generic/button/Button.svelte';
 	import OrderSkeletonCard from '@/components/business-related/order-detail/OrderSkeletonCard.svelte';
+	import { GenericTools } from '@/shared/generic/generic.tools';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -56,7 +57,7 @@
 
 {#snippet loadingSkeleton()}
 	<div class="flex w-full flex-col gap-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-		{#each Array(loadingCount) as _}
+		{#each GenericTools.getIterableNumberList(loadingCount) as i (i)}
 			<OrderSkeletonCard></OrderSkeletonCard>
 		{/each}
 	</div>
@@ -72,11 +73,11 @@
 	</Box>
 {:else}
 	<div class="flex w-full flex-col gap-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-		{#each allOrders as fullOrder}
+		{#each allOrders as fullOrder (fullOrder.order.id)}
 			<OrderCard {fullOrder} {showCustomer} />
 		{/each}
 		{#if paginationLoading}
-			{#each Array(Math.min(5, loadingCount)) as _}
+			{#each GenericTools.getIterableNumberList(Math.min(5, loadingCount)) as i (i)}
 				<OrderSkeletonCard></OrderSkeletonCard>
 			{/each}
 		{:else if paginationAvailable}
