@@ -9,8 +9,6 @@
 			"env": [
 				"AWS_ACCESS_KEY_ID",
 				"AWS_SECRET_ACCESS_KEY",
-				"TRACK_AWS_ACCESS_KEY_ID",
-				"TRACK_AWS_SECRET_ACCESS_KEY",
 				"AWS_DEFAULT_REGION",
 				"AWS_REGION",
 				"LIST_PRICING_TABLE",
@@ -34,45 +32,11 @@
 				"MAINTENANCE_MODE",
 				"ENV_NAME",
 				"MAIN_STORE_ID",
-				"PUBLIC_PROFILER_CONFIG",
-				"STORE_ID",
-				"POSTHOG_KEY"
+				"PUBLIC_PROFILER_CONFIG"
 			]
 		},
 		"lint": {
-			"dependsOn": ["^lint"],
-			"env": [
-				"AWS_ACCESS_KEY_ID",
-				"AWS_SECRET_ACCESS_KEY",
-				"TRACK_AWS_ACCESS_KEY_ID",
-				"TRACK_AWS_SECRET_ACCESS_KEY",
-				"AWS_DEFAULT_REGION",
-				"AWS_REGION",
-				"LIST_PRICING_TABLE",
-				"CONFIG_TABLE",
-				"MOLD_PRICES_BUCKET",
-				"FILES_BUCKET",
-				"REPORTS_BUCKET",
-				"ITEM_ORDER_TABLE",
-				"ORDER_TABLE",
-				"FILE_TABLE",
-				"ORDER_AUDIT_TRAIL_TABLE",
-				"CUSTOMER_TABLE",
-				"CALCULATED_ITEM_ORDER_TABLE",
-				"AUTH_DEBUG",
-				"PUBLIC_DOMAIN_URL",
-				"PUBLIC_POSTHOG_KEY",
-				"AUTH_SECRET",
-				"AUTH_AUTH0_ID",
-				"AUTH_AUTH0_SECRET",
-				"AUTH_AUTH0_ISSUER",
-				"MAINTENANCE_MODE",
-				"ENV_NAME",
-				"MAIN_STORE_ID",
-				"PUBLIC_PROFILER_CONFIG",
-				"STORE_ID",
-				"POSTHOG_KEY"
-			]
+			"dependsOn": ["^lint"]
 		},
 		"check-types": {
 			"dependsOn": ["^check-types"]

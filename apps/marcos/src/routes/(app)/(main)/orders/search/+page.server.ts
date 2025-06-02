@@ -5,7 +5,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { orderPublicIdSchema } from '@/shared/form-schema/order.form-schema';
 import { AuthService } from '$lib/server/service/auth.service';
 import { OrderService } from '@marcsimolduressonsardina/core/service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog.js';
+import { trackServerEvent } from '@/server/shared/analytics/posthog.js';
 
 export const load = async () => {
 	const form = await superValidate(zod(orderPublicIdSchema));

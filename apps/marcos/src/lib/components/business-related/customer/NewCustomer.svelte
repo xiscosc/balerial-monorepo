@@ -35,7 +35,7 @@
 	<div>
 		<form method="POST" use:enhance class="flex flex-col gap-2">
 			{#if $submitting}
-				<ProgressBar text="Guardando cambios" />
+				<ProgressBar text={'Guardando cambios'} />
 			{:else}
 				<Form.Field {form} name="name">
 					<Form.Control>

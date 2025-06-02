@@ -79,7 +79,7 @@
 					></Button>
 				{:else}
 					<BottomSheet
-						title="Eliminar elemento"
+						title={'Eliminar elemento'}
 						description="Esta acción no se puede deshacer"
 						iconType={IconType.TRASH}
 					>
@@ -115,7 +115,7 @@
 	{#if textList.length > 0}
 		<div class="px-2">
 			<ul class="flex flex-col gap-1">
-				{#each textList as value (value)}
+				{#each textList as value}
 					<li class="whitespace-normal break-words text-sm text-gray-800">{value}</li>
 				{/each}
 			</ul>

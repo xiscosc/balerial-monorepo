@@ -11,9 +11,7 @@ export class BalerialDynamoTable {
 		private readonly tableName: string,
 		private primaryIndex: IPrimaryDynamoDbIndex,
 		private secondaryIndexesMap: Map<string, ISecondaryDynamoDbIndex>,
-		private defaultFilters: DynamoFilterElement[],
-		private publicSecondaryIndexNames: string[],
-		private primaryIndexIsPublic: boolean
+		private defaultFilters: DynamoFilterElement[]
 	) {}
 
 	public static create(builder: BalerialDynamoTableBuilder): BalerialDynamoTable {
@@ -31,9 +29,7 @@ export class BalerialDynamoTable {
 			tableName,
 			primaryIndex,
 			builder.getSecondaryIndexesMap(),
-			builder.getDefaultFilters(),
-			builder.getPublicSecondaryIndexNames(),
-			builder.getPrimaryIndexIsPublic()
+			builder.getDefaultFilters()
 		);
 	}
 
@@ -60,14 +56,6 @@ export class BalerialDynamoTable {
 	public getTableName(): string {
 		return this.tableName;
 	}
-
-	public getPublicSecondaryIndexNames(): string[] {
-		return this.publicSecondaryIndexNames;
-	}
-
-	public getPrimaryIndexIsPublic(): boolean {
-		return this.primaryIndexIsPublic;
-	}
 }
 
 export class BalerialDynamoTableBuilder {
@@ -75,8 +63,6 @@ export class BalerialDynamoTableBuilder {
 	private secondaryIndexesMap: Map<string, ISecondaryDynamoDbIndex> = new Map();
 	private tableName?: string;
 	private defaultFilters: DynamoFilterElement[] = [];
-	private publicSecondaryIndexNames: string[] = [];
-	private primaryIndexIsPublic: boolean = false;
 
 	public getPrimaryIndex(): IPrimaryDynamoDbIndex | undefined {
 		return this.primaryIndex;
@@ -92,14 +78,6 @@ export class BalerialDynamoTableBuilder {
 
 	public getDefaultFilters(): DynamoFilterElement[] {
 		return this.defaultFilters;
-	}
-
-	public getPublicSecondaryIndexNames(): string[] {
-		return this.publicSecondaryIndexNames;
-	}
-
-	public getPrimaryIndexIsPublic(): boolean {
-		return this.primaryIndexIsPublic;
 	}
 
 	public setPrimaryIndex(
@@ -133,24 +111,6 @@ export class BalerialDynamoTableBuilder {
 			sortKeyName,
 			sortKeyType
 		});
-		return this;
-	}
-
-	public setPublicSecondaryIndexes(indexNames: string[]): this {
-		for (const indexName of indexNames) {
-			if (!this.secondaryIndexesMap.has(indexName)) {
-				throw new Error(`Secondary index ${indexName} does not exist`);
-			}
-		}
-
-		this.publicSecondaryIndexNames = [
-			...new Set([...this.publicSecondaryIndexNames, ...indexNames])
-		];
-		return this;
-	}
-
-	public setPublicPrimaryIndex(): this {
-		this.primaryIndexIsPublic = true;
 		return this;
 	}
 

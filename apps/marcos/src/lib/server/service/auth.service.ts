@@ -13,9 +13,7 @@ import {
 	MOLD_PRICES_BUCKET,
 	ORDER_AUDIT_TRAIL_TABLE,
 	ORDER_TABLE,
-	REPORTS_BUCKET,
-	TRACK_AWS_ACCESS_KEY_ID,
-	TRACK_AWS_SECRET_ACCESS_KEY
+	REPORTS_BUCKET
 } from '$env/static/private';
 import type { CustomSession } from '$lib/type/api.type';
 import {
@@ -62,8 +60,8 @@ export class AuthService {
 			listPricingTable: PUBLIC_REPOSITORY,
 			orderTable: ORDER_TABLE,
 			credentials: {
-				accessKeyId: TRACK_AWS_ACCESS_KEY_ID,
-				secretAccessKey: TRACK_AWS_SECRET_ACCESS_KEY
+				accessKeyId: AWS_ACCESS_KEY_ID,
+				secretAccessKey: AWS_SECRET_ACCESS_KEY
 			}
 		};
 	}

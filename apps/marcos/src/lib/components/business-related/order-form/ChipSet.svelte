@@ -1,36 +1,22 @@
 <script lang="ts">
-	import { ChipSetStateClass } from '@/components/business-related/order-form/ChipSet.state.svelte';
-	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
-	import Icon from '@/components/generic/icon/Icon.svelte';
+	import ObservationChip from '@/components/business-related/order-form/ObservationChip.svelte';
 
-	let {
-		values,
-		filledValues = $bindable([])
-	}: {
+	interface Props {
 		values: string[];
 		filledValues: string[];
-	} = $props();
+	}
 
-	const chipSetState = new ChipSetStateClass(values, $state.snapshot(filledValues));
+	let { values, filledValues = $bindable([]) }: Props = $props();
+	const initialFilledValues = filledValues;
+
+	let filledList: boolean[] = $state(values.map((value) => initialFilledValues.includes(value)));
 	$effect(() => {
-		filledValues = [...chipSetState.selectedValues];
+		filledValues = values
+			.map((value, index) => (filledList[index] ? value : null))
+			.filter((value) => value != null);
 	});
 </script>
 
-{#each values as value (value)}
-	<button
-		class="flex w-full flex-row items-center justify-center gap-2 rounded-sm bg-gray-800 p-1 text-sm text-white"
-		class:bg-indigo-800={chipSetState.isSelected(value)}
-		type="button"
-		onclick={() => {
-			chipSetState.toggle(value);
-		}}
-	>
-		{#if chipSetState.isSelected(value)}
-			<Icon type={IconType.DONE} size={IconSize.SMALL} />
-		{/if}
-		<span>
-			{value}
-		</span>
-	</button>
+{#each values as value, i}
+	<ObservationChip text={value} bind:clicked={filledList[i]} />
 {/each}

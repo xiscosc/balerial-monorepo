@@ -1,7 +1,7 @@
 <script lang="ts">
 	import OrderPrint from '@/components/business-related/order-detail/OrderPrint.svelte';
 	import type { PageData } from './$types';
-	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
+	import { OrderUtilities } from '@/shared/order.utilities';
 	interface Props {
 		data: PageData;
 	}
@@ -16,10 +16,7 @@
 		property="og:image"
 		content="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
 	/>
-	<meta
-		property="og:url"
-		content={OrderRepresentationUtilities.getOrderPublicUrl(data.fullOrder.order)}
-	/>
+	<meta property="og:url" content={OrderUtilities.getOrderPublicUrl(data.fullOrder.order)} />
 	<meta property="og:type" content="website" />
 </svelte:head>
 

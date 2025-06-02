@@ -11,11 +11,13 @@
 	import * as Tabs from '@/components/ui/tabs/index.js';
 	import PriceTable from '@/components/business-related/price/PriceTable.svelte';
 	import { PricingType, type AllPrices, type ListPrice } from '@marcsimolduressonsardina/core/type';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 
-	let { data }: { data: PageData } = $props();
+	interface Props {
+		data: PageData;
+	}
+
+	let { data }: Props = $props();
 	let selectedType: PricingType = $state(data.pricingType);
-	let measuredPricing = getGlobalProfiler().measure(data.pricing);
 
 	function sortPricing(priceList: ListPrice[]): ListPrice[] {
 		return priceList.sort((a, b) => b.priority - a.priority);
@@ -58,9 +60,9 @@
 			></Button>
 		</div>
 	</SimpleHeading>
-	{#await measuredPricing}
+	{#await data.pricing}
 		<Box>
-			<ProgressBar text="Cargando precios" />
+			<ProgressBar text={'Cargando precios'} />
 		</Box>
 	{:then pricing}
 		<Box>

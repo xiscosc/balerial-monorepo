@@ -10,9 +10,9 @@ import {
 	type Order
 } from '@marcsimolduressonsardina/core/type';
 import { CalculatedItemUtilities, otherExtraId } from '@marcsimolduressonsardina/core/util';
-import { customerMoldIds, discountMap } from '../mappings/order.mapping';
+import { customerMoldIds, discountMap } from './mappings/order.mapping';
 
-export class OrderRepresentationUtilities {
+export class OrderUtilities {
 	private static bullCharacter = '\u2022';
 
 	public static getOrderMolds(order: Order | ExternalOrder): string[] {
@@ -49,7 +49,7 @@ export class OrderRepresentationUtilities {
 			item.ppDimensions
 		);
 
-		return `${this.formatNumber(totalHeight)}x${this.formatNumber(totalWidth)} cm`;
+		return `${OrderUtilities.formatNumber(totalHeight)}x${OrderUtilities.formatNumber(totalWidth)} cm`;
 	}
 
 	public static getFirstMoldDescriptionFromOrder(
@@ -77,12 +77,12 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getWhatsappTicketText(order: Order): string {
-		const url = this.getOrderPublicUrl(order);
+		const url = OrderUtilities.getOrderPublicUrl(order);
 		return `Su pedido \`\`\`${order.publicId}\`\`\` ha sido registrado correctamente, puede consultar aquí su resguardo ${url} . Marcs i Moldures Son Sardina.`;
 	}
 
 	public static getWhatsappQuoteText(order: Order): string {
-		const url = this.getOrderPublicUrl(order);
+		const url = OrderUtilities.getOrderPublicUrl(order);
 		return `Aquí tiene una copia de su presupuesto \`\`\`${order.publicId}\`\`\` :  ${url} . Marcs i Moldures Son Sardina.`;
 	}
 
@@ -90,11 +90,13 @@ export class OrderRepresentationUtilities {
 		const greeting =
 			'Nuestro horario es de lunes a viernes de 09:00 a 18:00 y los sábados de 09:30 a 13:15. Marcs i Moldures Son Sardina.';
 		if (orders.length === 1) {
-			const url = this.getOrderPublicUrl(orders[0]);
+			const url = OrderUtilities.getOrderPublicUrl(orders[0]);
 			return `Hemos terminado su pedido \`\`\`${orders[0].publicId}\`\`\` puede pasar a buscarlo. Aquí tiene el resguardo ${url} . ${greeting}`;
 		} else {
 			const orderLines = orders
-				.map((order) => `* \`\`\`${order.publicId}\`\`\` \n ${this.getOrderPublicUrl(order)}`)
+				.map(
+					(order) => `* \`\`\`${order.publicId}\`\`\` \n ${OrderUtilities.getOrderPublicUrl(order)}`
+				)
 				.join('\n');
 
 			return `\n Hemos terminado sus pedidos:\n${orderLines}\nPuede pasar a buscarlos. ${greeting}`;
@@ -129,7 +131,7 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static hydrateFullOrderDates(fullOrders: FullOrder[]): FullOrder[] {
-		return fullOrders.map((fo) => this.hydrateFullOrder(fo) as FullOrder);
+		return fullOrders.map((fo) => OrderUtilities.hydrateFullOrder(fo) as FullOrder);
 	}
 
 	public static hydrateFullOrder(
@@ -161,7 +163,7 @@ export class OrderRepresentationUtilities {
 
 	public static getPrintableListRepresentatiom(element: string): string {
 		if (element.length > 0) {
-			return `${this.bullCharacter} ${element}`;
+			return `${OrderUtilities.bullCharacter} ${element}`;
 		}
 
 		return '';

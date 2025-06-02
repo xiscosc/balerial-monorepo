@@ -1,12 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import { initPosthog } from '@/shared/analytics.utilities';
 	import ExternalOrderPrint from '@/components/business-related/order-detail/ExternalOrderPrint.svelte';
 	import { onMount } from 'svelte';
 	import type { ExternalFullOrder } from '@marcsimolduressonsardina/core/type';
 	import { browser } from '$app/environment';
 	import { page } from '$app/state';
-	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
+	import { OrderUtilities } from '@/shared/order.utilities';
 	interface Props {
 		data: PageData;
 	}
@@ -39,9 +39,7 @@
 			if (orderString) {
 				try {
 					const parsedOrder = JSON.parse(decodeURIComponent(orderString));
-					fullOrder = OrderRepresentationUtilities.hydrateFullOrder(
-						parsedOrder
-					) as ExternalFullOrder;
+					fullOrder = OrderUtilities.hydrateFullOrder(parsedOrder) as ExternalFullOrder;
 				} catch (error) {
 					console.error('Error parsing order from cookie:', error);
 					notFound = true;

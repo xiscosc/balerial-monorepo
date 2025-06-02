@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import OrderCard from '@/components/business-related/order-list/OrderCard.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
-	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
+	import { OrderUtilities } from '@/shared/order.utilities';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
@@ -24,7 +24,7 @@
 
 <div class="space flex w-full flex-col gap-4">
 	{#await data.orders}
-		<ProgressBar text="Cargando pedidos del día" />
+		<ProgressBar text={'Cargando pedidos del día'} />
 	{:then fullOrders}
 		<SimpleHeading icon={IconType.DAY}>
 			<div class="flex flex-col lg:flex-row lg:gap-2">
@@ -35,7 +35,7 @@
 		<div class="flex w-full flex-col place-content-center items-center justify-center gap-2">
 			<WhatsAppButton
 				label="Enviar mensaje todos finalizados"
-				message={OrderRepresentationUtilities.getWhatsappFinishedText(
+				message={OrderUtilities.getWhatsappFinishedText(
 					fullOrders
 						.map((fullOrder) => fullOrder.order)
 						.filter((order) => order.status === OrderStatus.FINISHED)
