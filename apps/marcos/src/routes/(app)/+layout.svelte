@@ -7,7 +7,7 @@
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { type Snippet } from 'svelte';
-	import { initPosthog } from '@/shared/analytics.utilities';
+	import { initPosthog } from '@/shared/fronted-analytics/posthog';
 
 	interface Props {
 		data: LayoutData;

@@ -21,10 +21,10 @@
 		Búsqueda de clientes - {data.decodedSearchQuery}
 	</SimpleHeading>
 	{#await measuredCustomers}
-		<Box><ProgressBar text={'Buscando clientes'} /></Box>
+		<Box><ProgressBar text="Buscando clientes" /></Box>
 	{:then customers}
 		<div class="flex w-full flex-col gap-1 lg:grid lg:grid-cols-4">
-			{#each customers as customer}
+			{#each customers as customer (customer.id)}
 				<Button
 					textType={ButtonText.GRAY}
 					link={`/customers/${customer.id}`}

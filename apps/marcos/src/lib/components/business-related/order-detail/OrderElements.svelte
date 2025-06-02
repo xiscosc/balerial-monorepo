@@ -13,7 +13,7 @@
 <Box title="Elementos" collapsible>
 	<div class="flex flex-col gap-2">
 		<div class="text-md space-y-2 text-gray-700">
-			{#each fullOrder.calculatedItem.parts as part}
+			{#each fullOrder.calculatedItem.parts as part (part)}
 				<CartItem
 					{part}
 					hideDeleteButton={true}

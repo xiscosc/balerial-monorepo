@@ -7,6 +7,7 @@
 	import Input from '@/components/ui/input/input.svelte';
 	import type { Snippet } from 'svelte';
 	import * as NativeSelect from '@/components/ui/native-select/index.js';
+	import { PricingSelectorSectionStateClass } from '@/components/business-related/order-form/PricingSelectorSection.state.svelte';
 
 	interface Props {
 		sectionTitle: string;
@@ -36,95 +37,25 @@
 		added,
 		children = undefined
 	}: Props = $props();
+
 	function getSelectLabel(price: ListPriceWithMold): string {
 		return price.description ?? price.id;
 	}
 
-	function generateMap(
-		ps: ListPriceWithMold[],
-		eps: ListPriceWithMold[] = []
-	): Map<string, ListPriceWithMold> {
-		const pm = new Map<string, ListPriceWithMold>();
-		ps.forEach((p) => {
-			pm.set(getId(p), p);
-		});
+	let selectedId = $state<string | undefined>(undefined);
+	let extraInfo = $state<string | undefined>(undefined);
 
-		eps.forEach((p) => {
-			pm.set(getId(p), p);
-		});
-
-		return pm;
-	}
-
-	function getId(p: ListPriceWithMold): string {
-		return `${p.id}${p.moldId ? '_' + p.moldId : ''}`;
-	}
-
-	function insertElementsBeforeKey(
-		originalArray: ListPriceWithMold[],
-		newArray: ListPriceWithMold[],
-		key: string
-	): ListPriceWithMold[] {
-		const keyIndex = originalArray.findIndex((p) => p.id === key);
-		if (keyIndex === -1) {
-			return originalArray;
-		}
-
-		return [...originalArray.slice(0, keyIndex), ...newArray, ...originalArray.slice(keyIndex)];
-	}
-
-	function getDefaultPrices(
-		pi: ListPriceWithMold[],
-		epi: ListPriceWithMold[],
-		keyFound: boolean,
-		key?: string
-	): ListPriceWithMold[] {
-		const defaultPrices = pi.filter((p) => p.priority > 0).sort((a, b) => b.priority - a.priority);
-		if (!keyFound || key == null) {
-			return [...defaultPrices, ...epi]
-				.filter((p) => p.priority > 0)
-				.sort((a, b) => b.priority - a.priority);
-		} else {
-			return insertElementsBeforeKey(defaultPrices, epi, key);
-		}
-	}
-
-	function getNormalPrices(
-		pi: ListPriceWithMold[],
-		epi: ListPriceWithMold[],
-		keyFound: boolean,
-		key?: string
-	): ListPriceWithMold[] {
-		const normalPrices = pi.filter((p) => p.priority === 0);
-		if (!keyFound || key == null) {
-			return [...normalPrices, ...epi].filter((p) => p.priority === 0);
-		} else {
-			return insertElementsBeforeKey(normalPrices, epi, key);
-		}
-	}
-
-	let selectedId: string | undefined = $state();
-	let extraInfo: string | undefined = $state();
-	let pricesMap: Map<string, ListPriceWithMold> = $derived(generateMap(prices, extraPrices));
-	let keyFound = $derived(
-		locationIdForExtraPrices !== null &&
-			prices.findIndex((p) => p.id === locationIdForExtraPrices) > -1
+	const selectorState = new PricingSelectorSectionStateClass(
+		prices,
+		locationIdForExtraPrices,
+		showExtraInfo,
+		addValue
 	);
-	let defaultPrices = $derived(
-		getDefaultPrices(prices, extraPrices, keyFound, locationIdForExtraPrices)
-	);
-	let normalPrices = $derived(
-		getNormalPrices(prices, extraPrices, keyFound, locationIdForExtraPrices)
-	);
-	let isButtonDisabled = $derived(selectedId == null);
-	let canBeAdded = $derived(!showExtraInfo || (extraInfo != null && extraInfo.length > 0));
 
-	function addFunction() {
-		if (!isButtonDisabled && selectedId != null) {
-			const element = pricesMap.get(selectedId)!;
-			addValue(element.type, element.id, element.moldId, showExtraInfo ? extraInfo : undefined);
-		}
-	}
+	$effect(() => {
+		selectorState.setIsAdded(added);
+		selectorState.setExtraPrices(extraPrices);
+	});
 </script>
 
 <Spacer title={sectionTitle} />
@@ -132,13 +63,17 @@
 	<div class="flex flex-col justify-center gap-3 lg:grid lg:grid-cols-2 lg:items-end">
 		<div class="flex flex-col gap-2">
 			<Label for="priceId">{label}:</Label>
-			<NativeSelect.Root name="priceId" bind:value={selectedId} success={added}>
+			<NativeSelect.Root
+				name="priceId"
+				bind:value={selectedId}
+				onchange={() => selectorState.setSelectedId(selectedId)}
+				success={selectorState.isAdded()}
+			>
 				<option value=""></option>
-				{#each defaultPrices as price}
-					<option value={getId(price)} data-mold={price.moldId}>{getSelectLabel(price)}</option>
-				{/each}
-				{#each normalPrices as price}
-					<option value={getId(price)} data-mold={price.moldId}>{getSelectLabel(price)}</option>
+				{#each selectorState.getOrderedPrices() as orderedPrice (orderedPrice.stateId)}
+					<option value={orderedPrice.stateId} data-mold={orderedPrice.value.moldId}
+						>{getSelectLabel(orderedPrice.value)}</option
+					>
 				{/each}
 			</NativeSelect.Root>
 		</div>
@@ -146,17 +81,23 @@
 		{#if showExtraInfo}
 			<div class="flex flex-col gap-2">
 				<Label for="extraInfoValue">Número:</Label>
-				<Input type="text" name="extraInfoValue" bind:value={extraInfo} success={added} />
+				<Input
+					type="text"
+					name="extraInfoValue"
+					bind:value={extraInfo}
+					oninput={() => selectorState.setExtraInfo(extraInfo)}
+					success={selectorState.isAdded()}
+				/>
 			</div>
 			{@render children?.()}
 			<div class="w-full lg:col-span-2 lg:w-auto">
 				<Button
 					icon={IconType.PLUS}
 					iconSize={IconSize.BIG}
-					disabled={!canBeAdded}
-					tooltipText={!canBeAdded ? 'Falta número' : undefined}
+					disabled={!selectorState.getCanBeAdded()}
+					tooltipText={selectorState.getTooltipText()}
 					text="Añadir a la lista"
-					onClick={() => addFunction()}
+					onClick={() => selectorState.add()}
 				></Button>
 			</div>
 		{:else}
@@ -165,9 +106,10 @@
 				<Button
 					icon={IconType.PLUS}
 					iconSize={IconSize.BIG}
-					disabled={!canBeAdded}
+					disabled={!selectorState.getCanBeAdded()}
+					tooltipText={selectorState.getTooltipText()}
 					text="Añadir a la lista"
-					onClick={() => addFunction()}
+					onClick={() => selectorState.add()}
 				></Button>
 			</div>
 		{/if}

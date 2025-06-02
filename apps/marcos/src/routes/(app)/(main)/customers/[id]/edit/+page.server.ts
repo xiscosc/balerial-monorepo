@@ -6,7 +6,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/analytics/posthog';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;

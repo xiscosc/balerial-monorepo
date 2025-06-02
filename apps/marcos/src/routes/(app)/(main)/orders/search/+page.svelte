@@ -12,10 +12,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 
 	let { data } = $props();
-	const form = superForm(data.form, {
-		validators: zodClient(orderPublicIdSchema),
-		id: 'location-order-form'
-	});
+	const form = superForm(data.form, { validators: zodClient(orderPublicIdSchema) });
 	const { form: formData, enhance, submitting } = form;
 </script>
 

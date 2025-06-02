@@ -22,10 +22,7 @@
 	}
 
 	let { data, locations, order }: Props = $props();
-	const form = superForm(data, {
-		validators: zodClient(locationOrderSchema),
-		id: 'location-order-form'
-	});
+	const form = superForm(data, { validators: zodClient(locationOrderSchema) });
 
 	const { form: formData, enhance, submitting } = form;
 </script>
@@ -60,8 +57,8 @@
 							<Form.Label>Nueva ubicación:</Form.Label>
 							<NativeSelect.Root name={props.name} bind:value={$formData.location}>
 								<option></option>
-								{#each locations as l}
-									<option value={l}>{l}</option>
+								{#each locations as location (location)}
+									<option value={location}>{location}</option>
 								{/each}
 							</NativeSelect.Root>
 						{/snippet}
