@@ -10,23 +10,17 @@ export interface MssStackProps extends StackProps {
 	postHogKey: string;
 }
 
-export type TableInfo = {
-	table: Table;
-	primaryIndexIsPublic: boolean;
-	publicSecondaryIndexes: string[];
-};
-
 export type StoreTables = {
-	customerTable: TableInfo;
-	orderTable: TableInfo;
-	calculatedItemOrderTable: TableInfo;
-	listPricingTable: TableInfo;
-	fileTable: TableInfo;
-	configTable: TableInfo;
+	customerTable: Table;
+	orderTable: Table;
+	calculatedItemOrderTable: Table;
+	listPricingTable: Table;
+	fileTable: Table;
+	configTable: Table;
 };
 
 export type AnalyticsTables = {
-	orderAuditTrailTable: TableInfo;
+	orderAuditTrailTable: Table;
 };
 
 export type DynamoTableSet = {

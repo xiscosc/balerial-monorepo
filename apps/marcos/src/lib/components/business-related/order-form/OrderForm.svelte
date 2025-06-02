@@ -49,7 +49,6 @@
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import { GenericTools } from '@/shared/generic/generic.tools';
 
 	type TempParts = { pre: PreCalculatedItemPart; post: CalculatedItemPart }[];
 
@@ -81,6 +80,8 @@
 	let total: number = $state(0.0);
 	let totalPerUnit: number = $state(0.0);
 	let totalPerUnitWithoutDiscount: number = $state(0.0);
+	let totalPerUnitDiscount: number = $state(0.0);
+	let totalDiscount: number = $state(0.0);
 	let totalWithoutDiscount: number = $state(0.0);
 	let predefinedObservations: string[] = $state(
 		$form.predefinedObservations.length > 0 ? $form.predefinedObservations : []
@@ -341,8 +342,10 @@
 		const allParts = [...eParts, ...parts.map((p) => p.post)];
 		totalPerUnitWithoutDiscount = CalculatedItemUtilities.calculatePartsCost(allParts, false);
 		totalPerUnit = CalculatedItemUtilities.calculatePartsCost(allParts, true, discountNumber);
+		totalPerUnitDiscount = totalPerUnitWithoutDiscount - totalPerUnit;
 		totalWithoutDiscount = totalPerUnitWithoutDiscount * quantity;
 		total = totalPerUnit * quantity;
+		totalDiscount = totalPerUnitDiscount * quantity;
 	}
 
 	function updatePP(aPP: boolean, up: number, down: number, left: number, right: number) {
@@ -704,7 +707,7 @@
 
 {#snippet cartItemList(parts: TempParts)}
 	<div class="flex flex-col gap-2 lg:col-span-2">
-		{#each parts as part (part)}
+		{#each parts as part}
 			<CartItem
 				part={part.post}
 				partToDelete={part}
@@ -717,7 +720,7 @@
 
 {#snippet cartItemExtraList(parts: CalculatedItemPart[])}
 	<div class="flex flex-col gap-2 lg:col-span-2">
-		{#each parts as part (part)}
+		{#each parts as part}
 			<CartItem {part} partToDelete={part} {deleteExtraPart} />
 		{/each}
 	</div>
@@ -732,13 +735,13 @@
 		<div class="flex flex-col gap-2">
 			{#if $submitting}
 				<Box>
-					<ProgressBar text="Guardando" />
+					<ProgressBar text={'Guardando'} />
 				</Box>
 			{:else}
 				{#if isExternal}
 					<Box>
 						<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
-							<Spacer title="Datos tienda externa" line={false} />
+							<Spacer title={'Datos tienda externa'} line={false} />
 							<div class="flex flex-col gap-2 lg:col-span-2">
 								<Label for="height">Margen (%):</Label>
 								<Input
@@ -758,10 +761,10 @@
 				{/if}
 				<Box>
 					{#await profiledPrices}
-						<ProgressBar text="Cargando precios" />
+						<ProgressBar text={'Cargando precios'} />
 					{:then pricing}
 						<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
-							<Spacer title="Datos de la obra" line={false} />
+							<Spacer title={'Datos de la obra'} line={false} />
 
 							<div class="flex flex-col gap-2">
 								<Label for="height">Alto (cm):</Label>
@@ -790,8 +793,8 @@
 							</div>
 
 							<PricingSelectorSection
-								sectionTitle="PP / Fondo"
-								label="Tipo"
+								sectionTitle={'PP / Fondo'}
+								label={'Tipo'}
 								prices={pricing.ppPrices}
 								addValue={addFromPricingSelector}
 								showExtraInfo={true}
@@ -823,7 +826,7 @@
 								</div>
 
 								{#if asymetricPP}
-									<Spacer title="Medidas PP (cm)" />
+									<Spacer title={'Medidas PP (cm)'} />
 
 									<div class="flex flex-col gap-2">
 										<Label for="upPP">Arriba:</Label>
@@ -879,7 +882,7 @@
 								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP)
 							)}
 
-							<Spacer title="Medidas de trabajo" />
+							<Spacer title={'Medidas de trabajo'} />
 
 							<div class="grid grid-cols-1 lg:col-span-2">
 								<div class="rounded-md border-2 border-gray-300 p-4">
@@ -958,8 +961,8 @@
 							{/if}
 
 							<AutocompleteSection
-								sectionTitle="Molduras"
-								label="Moldura/Marco"
+								sectionTitle={'Molduras'}
+								label={'Moldura/Marco'}
 								prices={pricing.moldPrices}
 								addValue={addFromPricingSelector}
 								pricingType={PricingType.MOLD}
@@ -984,8 +987,8 @@
 							</div>
 
 							<PricingSelectorSection
-								sectionTitle="Cristal"
-								label="Tipo de cristal"
+								sectionTitle={'Cristal'}
+								label={'Tipo de cristal'}
 								prices={pricing.glassPrices}
 								addValue={addFromPricingSelector}
 								added={addedGlass}
@@ -996,8 +999,8 @@
 							)}
 
 							<PricingSelectorSection
-								sectionTitle="Trasera"
-								label="Tipo de trasera"
+								sectionTitle={'Trasera'}
+								label={'Tipo de trasera'}
 								prices={pricing.backPrices}
 								addValue={addFromPricingSelector}
 								added={addedBack}
@@ -1008,11 +1011,11 @@
 							)}
 
 							<PricingSelectorSection
-								sectionTitle="Montajes"
-								label="Tipo de montaje"
+								sectionTitle={'Montajes'}
+								label={'Tipo de montaje'}
 								prices={pricing.labourPrices}
 								extraPrices={fabricPrices}
-								locationIdForExtraPrices="CINTA_CANTO_LIENZO_BLANCA"
+								locationIdForExtraPrices={'CINTA_CANTO_LIENZO_BLANCA'}
 								addValue={addFromPricingSelector}
 								added={addedLabour}
 							/>
@@ -1025,8 +1028,8 @@
 
 							<PricingSelectorWithQuantitySection
 								added={addedHanger}
-								sectionTitle="Colgadores"
-								label="Colgador"
+								sectionTitle={'Colgadores'}
+								label={'Colgador'}
 								prices={pricing.hangerPrices}
 								addItem={addHangerElementsFromSelector}
 							/>
@@ -1037,8 +1040,8 @@
 
 							<PricingSelectorWithQuantitySection
 								added={addedOther}
-								sectionTitle="Suministros"
-								label="Elemento"
+								sectionTitle={'Suministros'}
+								label={'Elemento'}
 								prices={pricing.otherPrices}
 								addItem={addOtherElementsFromSelector}
 							/>
@@ -1048,8 +1051,8 @@
 							)}
 
 							<PricingSelectorSection
-								sectionTitle="Transporte"
-								label="Tipo de transporte"
+								sectionTitle={'Transporte'}
+								label={'Tipo de transporte'}
 								prices={pricing.transportPrices}
 								addValue={addFromPricingSelector}
 								added={addedTransport}
@@ -1059,7 +1062,7 @@
 								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.TRANSPORT)
 							)}
 
-							<Spacer title="Elementos extra" />
+							<Spacer title={'Elementos extra'} />
 
 							{#if isExternal}
 								<div class="col-span-2">
@@ -1091,8 +1094,8 @@
 							<div class="flex flex-col gap-2">
 								<Label for="otherQuantityElements">Cantidad</Label>
 								<NativeSelect.Root name="otherQuantityElements" bind:value={otherQuantity}>
-									{#each GenericTools.getIterableStringList(10, 1) as i (i)}
-										<option value={i}>{i}</option>
+									{#each Array(10) as _, i (i)}
+										<option value={String(i + 1)}>{i + 1}</option>
 									{/each}
 								</NativeSelect.Root>
 							</div>
@@ -1108,7 +1111,7 @@
 
 							{@render cartItemExtraList(extraParts)}
 
-							<Spacer title="Descripción de la obra" />
+							<Spacer title={'Descripción de la obra'} />
 
 							<div class="flex flex-col gap-2 lg:col-span-2">
 								<Label for="description">Descripción:</Label>
@@ -1140,7 +1143,7 @@
 								bind:filledValues={$form.predefinedObservations}
 							/>
 
-							<Spacer title="Otros datos" />
+							<Spacer title={'Otros datos'} />
 
 							<div class="flex flex-col gap-2 lg:col-span-2">
 								<Label for="quantity">Cantidad:</Label>
@@ -1209,7 +1212,7 @@
 									success={addedDiscount}
 								>
 									<option></option>
-									{#each Object.entries(discountMap) as [key, value] (key)}
+									{#each Object.entries(discountMap) as [key, value]}
 										<option value={String(value)}>{key}</option>
 									{/each}
 								</NativeSelect.Root>
@@ -1246,10 +1249,10 @@
 						alertItemsWitouthDiscount={isDiscountNotAllowedPresent}
 					></OrderPriceDetails>
 					{#if missingReasons.length > 0}
-						<Box title="Rellene todos los campos" icon={IconType.LIST}>
+						<Box title={'Rellene todos los campos'} icon={IconType.LIST}>
 							<div class="px-4">
 								<ul class="list-disc">
-									{#each missingReasons as reason (reason)}
+									{#each missingReasons as reason}
 										<li>{reason}</li>
 									{/each}
 								</ul>

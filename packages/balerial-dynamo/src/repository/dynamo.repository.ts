@@ -140,7 +140,7 @@ export class BalerialDynamoRepository<T> {
 
 			return {
 				elements,
-				endKey: response.LastEvaluatedKey as Record<string, string | number> | undefined
+				endKey: response.LastEvaluatedKey
 			};
 		} catch (error: unknown) {
 			this.logError('scan', error);

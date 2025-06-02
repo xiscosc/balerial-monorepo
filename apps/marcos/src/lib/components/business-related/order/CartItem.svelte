@@ -1,23 +1,23 @@
-<script lang="ts" generics="T">
+<script lang="ts">
 	import type { CalculatedItemPart } from '@marcsimolduressonsardina/core/type';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Step from '@/components/generic/Step.svelte';
 
-	interface Props<T> {
+	interface Props {
 		part: CalculatedItemPart;
-		partToDelete?: T;
-		deleteExtraPart?: (partToDelete: T) => void;
+		partToDelete?: any;
+		deleteExtraPart?: (partToDelete: any) => void;
 		hideDeleteButton?: boolean;
 		showNoDiscountAllowed?: boolean;
 	}
 
 	let {
 		part,
-		partToDelete = undefined,
-		deleteExtraPart = undefined,
+		partToDelete = {},
+		deleteExtraPart = (p: any) => {},
 		hideDeleteButton = false,
 		showNoDiscountAllowed = false
-	}: Props<T> = $props();
+	}: Props = $props();
 
 	let noDiscountAllowed = $derived(!part.discountAllowed && showNoDiscountAllowed);
 </script>
@@ -27,6 +27,6 @@
 	title="{part.description}{noDiscountAllowed ? '*' : ''} {part.floating ? '(Flot)' : ''}"
 	subtitle="{(part.price * part.quantity).toFixed(2)} €"
 	quantity={part.quantity}
-	deleteFunction={() => partToDelete !== undefined && deleteExtraPart?.(partToDelete)}
+	deleteFunction={() => deleteExtraPart(partToDelete)}
 	showDelete={!hideDeleteButton}
 />

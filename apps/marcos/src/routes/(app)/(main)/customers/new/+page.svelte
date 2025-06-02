@@ -7,5 +7,5 @@
 
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.USER_PLUS}>Crear cliente</SimpleHeading>
-	<NewCustomer title="" {data} />
+	<NewCustomer title={''} {data} />
 </div>

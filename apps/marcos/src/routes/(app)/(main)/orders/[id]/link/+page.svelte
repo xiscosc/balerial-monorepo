@@ -20,7 +20,7 @@
 		data: PageData;
 	}
 
-	let timer: ReturnType<typeof setTimeout>;
+	let timer: NodeJS.Timeout;
 	let { data }: Props = $props();
 	let firstTimeSearch = $state(true);
 	let loading = $state(false);
@@ -72,11 +72,11 @@
 			{data}
 			link
 			icon={IconType.PHONE}
-			title="Vincular por teléfono o crear nuevo cliente"
-			buttonText="Vincular"
+			title={'Vincular por teléfono o crear nuevo cliente'}
+			buttonText={'Vincular'}
 		/>
 
-		<Box title="Buscar cliente por nombre" icon={IconType.SEARCH}>
+		<Box title={'Buscar cliente por nombre'} icon={IconType.SEARCH}>
 			<div class="flex flex-col gap-3">
 				<div>
 					<label class="block text-sm font-medium text-gray-700" for="phone">Nombre:</label>
@@ -97,7 +97,7 @@
 					<ScrollArea class="h-72 rounded-md border lg:col-span-2">
 						<div class="p-4">
 							<h4 class="mb-4 text-sm font-medium leading-none">Clientes encontrados</h4>
-							{#each customers as customer (customer.id)}
+							{#each customers as customer}
 								<button
 									onclick={() => goto(`/orders/${data.fullOrder.order.id}/link/${customer.id}`)}
 									class="flexr-row flex w-full items-center gap-2 rounded-md p-2 hover:bg-gray-50"

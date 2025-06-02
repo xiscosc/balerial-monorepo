@@ -1,5 +1,5 @@
 import { dev } from '$app/environment';
-import { buildPostHogServer } from '@/server/shared/server-analytics/posthog';
+import { buildPostHogServer } from '@/server/shared/analytics/posthog';
 import type { HandleServerError } from '@sveltejs/kit';
 
 const client = buildPostHogServer();

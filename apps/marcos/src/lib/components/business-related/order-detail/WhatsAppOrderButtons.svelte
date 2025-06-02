@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
+	import { OrderUtilities } from '@/shared/order.utilities';
 	import Button from '@/components/generic/button/Button.svelte';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
@@ -11,7 +11,7 @@
 
 	export let order: Order;
 	export let counters: ISameDayOrderCounters;
-	export let hasFiles: boolean;
+	export let hasFiles: Boolean;
 	let whatsAppNotified = false;
 
 	function handleAfterNotify() {
@@ -23,7 +23,7 @@
 {#if order.status === OrderStatus.QUOTE}
 	<WhatsAppButton
 		label="Enviar presupuesto"
-		message={OrderRepresentationUtilities.getWhatsappQuoteText(order)}
+		message={OrderUtilities.getWhatsappQuoteText(order)}
 		customer={order.customer}
 		tooltipText="Faltan fotos"
 		disabled={!hasFiles}
@@ -31,7 +31,7 @@
 {:else}
 	<WhatsAppButton
 		label="Enviar resguardo"
-		message={OrderRepresentationUtilities.getWhatsappTicketText(order)}
+		message={OrderUtilities.getWhatsappTicketText(order)}
 		customer={order.customer}
 		tooltipText="Faltan fotos"
 		disabled={!hasFiles}
@@ -51,7 +51,7 @@
 	{#if counters.totalCount === 1}
 		<WhatsAppButton
 			label="Enviar mensaje finalizado"
-			message={OrderRepresentationUtilities.getWhatsappFinishedText([order])}
+			message={OrderUtilities.getWhatsappFinishedText([order])}
 			customer={order.customer}
 			notifyOrder={true}
 			{handleAfterNotify}
@@ -62,8 +62,8 @@
 	{:else}
 		<Button
 			icon={IconType.WHATSAPP}
-			text="Enviar mensaje finalizado"
-			tooltipText="Faltan fotos"
+			text={'Enviar mensaje finalizado'}
+			tooltipText={'Faltan fotos'}
 			link={`/orders/${order.id}/whatsapp`}
 			style={ButtonStyle.WHATSAPP}
 			disabled={!hasFiles}

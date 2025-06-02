@@ -1,6 +1,6 @@
 import { BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
-import type { DynamoTableSet, TableInfo } from '../types.js';
+import type { DynamoTableSet } from '../types.js';
 import {
 	customerTableBuilder,
 	configTableBuilder,
@@ -30,7 +30,7 @@ export function createDynamoTables(scope: Construct, envName: string): DynamoTab
 	};
 }
 
-function createCustomerTable(scope: Construct, envName: string): TableInfo {
+function createCustomerTable(scope: Construct, envName: string): Table {
 	const balerialTable = customerTableBuilder.setTableName(`${envName}-customer-v2`).build();
 	const table = createTable(
 		scope,
@@ -40,48 +40,32 @@ function createCustomerTable(scope: Construct, envName: string): TableInfo {
 	);
 
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
-function createConfigTable(scope: Construct, envName: string): TableInfo {
+function createConfigTable(scope: Construct, envName: string): Table {
 	const balerialTable = configTableBuilder.setTableName(`${envName}-config`).build();
 	const table = createTable(scope, envName, `${envName}-config`, balerialTable.getPrimaryIndex());
 
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
-function createFileTable(scope: Construct, envName: string): TableInfo {
+function createFileTable(scope: Construct, envName: string): Table {
 	const balerialTable = fileTableBuilder.setTableName(`${envName}-file`).build();
 	const table = createTable(scope, envName, `${envName}-file`, balerialTable.getPrimaryIndex());
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
-function createOrderTable(scope: Construct, envName: string): TableInfo {
+function createOrderTable(scope: Construct, envName: string): Table {
 	const balerialTable = orderTableBuilder.setTableName(`${envName}-order-v2`).build();
 	const table = createTable(scope, envName, `${envName}-order-v2`, balerialTable.getPrimaryIndex());
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
-function createListPricingTable(scope: Construct, envName: string): TableInfo {
+function createListPricingTable(scope: Construct, envName: string): Table {
 	const balerialTable = listPricingTableBuilder.setTableName(`${envName}-list-pricing-v2`).build();
 	const table = createTable(
 		scope,
@@ -90,14 +74,10 @@ function createListPricingTable(scope: Construct, envName: string): TableInfo {
 		balerialTable.getPrimaryIndex()
 	);
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
-function createCalculatedItemOrderTable(scope: Construct, envName: string): TableInfo {
+function createCalculatedItemOrderTable(scope: Construct, envName: string): Table {
 	const balerialTable = calculatedItemTableBuilder
 		.setTableName(`${envName}-calculated-item-order`)
 		.build();
@@ -108,14 +88,10 @@ function createCalculatedItemOrderTable(scope: Construct, envName: string): Tabl
 		balerialTable.getPrimaryIndex()
 	);
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
-function createOrderAuditTrailTable(scope: Construct, envName: string): TableInfo {
+function createOrderAuditTrailTable(scope: Construct, envName: string): Table {
 	const balerialTable = orderAuditTrailTableBuilder
 		.setTableName(`${envName}-order-audit-trail-v3`)
 		.build();
@@ -127,11 +103,7 @@ function createOrderAuditTrailTable(scope: Construct, envName: string): TableInf
 	);
 
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
-	return {
-		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
-	};
+	return table;
 }
 
 function createTable(

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '@/components/generic/button/Button.svelte';
 	import type { PageData } from './$types';
-	import { ButtonStyle, ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 
 	let { data }: { data: PageData } = $props();

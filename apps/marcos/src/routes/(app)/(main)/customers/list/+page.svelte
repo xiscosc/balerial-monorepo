@@ -39,7 +39,7 @@
 <div class="space flex w-full flex-col gap-4">
 	<SimpleHeading icon={IconType.LIST}>Listado de clientes</SimpleHeading>
 	<div class="flex w-full flex-col gap-1 lg:grid lg:grid-cols-4">
-		{#each customers as customer (customer.id)}
+		{#each customers as customer}
 			<Button
 				textType={ButtonText.GRAY}
 				link={`/customers/${customer.id}`}

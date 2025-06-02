@@ -22,7 +22,7 @@ import type {
 import { OrderService, PricingService } from '@marcsimolduressonsardina/core/service';
 import { InvalidSizeError } from '@marcsimolduressonsardina/core/error';
 import { cornersId, otherExtraId, quoteDeliveryDate } from '@marcsimolduressonsardina/core/util';
-import { trackServerEvent } from '../server-analytics/posthog';
+import { trackServerEvent } from '../analytics/posthog';
 
 type OrderTypeForm = z.infer<typeof orderSchema>;
 type QuoteTypeForm = z.infer<typeof quoteSchema>;

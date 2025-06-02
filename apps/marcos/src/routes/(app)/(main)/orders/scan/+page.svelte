@@ -30,7 +30,7 @@
 				<Icon type={IconType.ALERT} size={IconSize.XXXL} />
 				<p class="text-center text-xl font-semibold">El formato del resguardo es incorrecto</p>
 			{:else if loading}
-				<ProgressBar text="Buscando pedido..." />
+				<ProgressBar text={'Buscando pedido...'} />
 			{:else}
 				<OrderScanner bind:scannedText />
 			{/if}

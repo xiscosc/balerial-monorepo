@@ -1,6 +1,6 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { PostHogContext } from '@/server/shared/server-analytics/posthog';
+import type { PostHogContext } from '@/server/shared/analytics/posthog';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 declare global {
 	namespace App {

@@ -46,18 +46,18 @@ export function createLambdas(
 		},
 		environment: {
 			STORE_ID: mainStoreId,
-			ORDER_AUDIT_TRAIL_TABLE: tables.analyticsTables.orderAuditTrailTable.table.tableName,
-			ORDER_TABLE: tables.storeTables.orderTable.table.tableName,
-			CUSTOMER_TABLE: tables.storeTables.customerTable.table.tableName,
+			ORDER_AUDIT_TRAIL_TABLE: tables.analyticsTables.orderAuditTrailTable.tableName,
+			ORDER_TABLE: tables.storeTables.orderTable.tableName,
+			CUSTOMER_TABLE: tables.storeTables.customerTable.tableName,
 			REPORTS_BUCKET: buckets.reportsBucket.bucketName,
-			CALCULATED_ITEM_ORDER_TABLE: tables.storeTables.calculatedItemOrderTable.table.tableName
+			CALCULATED_ITEM_ORDER_TABLE: tables.storeTables.calculatedItemOrderTable.tableName
 		}
 	});
 
-	tables.analyticsTables.orderAuditTrailTable.table.grantReadData(reportsMainStoreLambda);
-	tables.storeTables.orderTable.table.grantReadData(reportsMainStoreLambda);
-	tables.storeTables.customerTable.table.grantReadData(reportsMainStoreLambda);
-	tables.storeTables.calculatedItemOrderTable.table.grantReadData(reportsMainStoreLambda);
+	tables.analyticsTables.orderAuditTrailTable.grantReadData(reportsMainStoreLambda);
+	tables.storeTables.orderTable.grantReadData(reportsMainStoreLambda);
+	tables.storeTables.customerTable.grantReadData(reportsMainStoreLambda);
+	tables.storeTables.calculatedItemOrderTable.grantReadData(reportsMainStoreLambda);
 	buckets.reportsBucket.grantReadWrite(reportsMainStoreLambda);
 
 	const generateReportsRule = new Rule(scope, `${envName}-reportsEventRule`, {
@@ -85,7 +85,7 @@ export function createLambdas(
 		},
 		environment: {
 			STORE_ID: mainStoreId,
-			FILE_TABLE: tables.storeTables.fileTable.table.tableName,
+			FILE_TABLE: tables.storeTables.fileTable.tableName,
 			FILES_BUCKET: buckets.filesBucket.bucketName,
 			POSTHOG_KEY: postHogKey,
 			ENV_NAME: envName
@@ -93,7 +93,7 @@ export function createLambdas(
 		layers: [sharpLayer]
 	});
 
-	tables.storeTables.fileTable.table.grantReadWriteData(imageOptimizationLambda);
+	tables.storeTables.fileTable.grantReadWriteData(imageOptimizationLambda);
 	buckets.filesBucket.grantReadWrite(imageOptimizationLambda);
 
 	// Trigger lambda when an object is stored on the bucket

@@ -4,8 +4,6 @@
 			"mode": "auto"
 		}
 	],
-	"eslint.runtime": "node",
-	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "svelte"],
 	"editor.formatOnSave": true,
 	"prettier.configPath": ".prettierrc",
 	"[svelte]": {

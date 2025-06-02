@@ -13,7 +13,7 @@
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { trackEvent } from '@/shared/analytics.utilities';
 
 	interface Props {
 		customer: Customer;
@@ -111,7 +111,7 @@
 				{#snippet trigger()}
 					<Button
 						disabled={totalOrders > 0}
-						tooltipText="El cliente tiene pedidos o presupuestos"
+						tooltipText={'El cliente tiene pedidos o presupuestos'}
 						icon={IconType.TRASH}
 						text="Eliminar cliente"
 						action={ButtonAction.TRIGGER}

@@ -13,7 +13,7 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { trackServerEvent } from '@/server/shared/analytics/posthog';
 
 export const load = async () => {
 	const form = await superValidate(zod(listPriceSchemaNew));
