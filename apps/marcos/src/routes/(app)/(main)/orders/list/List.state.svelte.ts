@@ -54,7 +54,6 @@ export class ListStateClass implements ListState {
 				this.orders = this.getList(this.status, undefined);
 			} else {
 				this.paginatedOrders = undefined;
-				// Don't auto-search here, let inputSearchValue handle it
 			}
 		});
 	}
@@ -89,6 +88,10 @@ export class ListStateClass implements ListState {
 
 	public setStatus(value: OrderStatus) {
 		this.status = value;
+
+		if (this.searchValue.length >= 3) {
+			this.orders = this.search(this.searchValue, this.status);
+		}
 	}
 
 	public getStatus() {
@@ -112,9 +115,6 @@ export class ListStateClass implements ListState {
 				// Force the effect to re-run by toggling a trigger
 				this.orders = this.search(value, this.status);
 			}, 400);
-		} else if (value.length === 0) {
-			// Immediate clear when empty
-			this.orders = this.isAdmin ? this.getList(this.status, undefined) : Promise.resolve([]);
 		}
 	}
 
