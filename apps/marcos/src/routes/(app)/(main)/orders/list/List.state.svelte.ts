@@ -54,7 +54,7 @@ export class ListStateClass implements ListState {
 				this.orders = this.getList(this.status, undefined);
 			} else {
 				this.paginatedOrders = undefined;
-				this.orders = this.search(this.searchValue, this.status);
+				// Don't auto-search here, let inputSearchValue handle it
 			}
 		});
 	}
@@ -104,11 +104,18 @@ export class ListStateClass implements ListState {
 	public inputSearchValue(value: string) {
 		clearTimeout(this.timer);
 		this.searchValue = value;
-		this.orders = undefined;
 		this.lastKey = undefined;
-		this.timer = setTimeout(() => {
-			this.orders = this.search(value, this.status);
-		}, 400);
+
+		// Don't let the effect trigger immediately for search
+		if (value.length >= 3) {
+			this.timer = setTimeout(() => {
+				// Force the effect to re-run by toggling a trigger
+				this.orders = this.search(value, this.status);
+			}, 400);
+		} else if (value.length === 0) {
+			// Immediate clear when empty
+			this.orders = this.isAdmin ? this.getList(this.status, undefined) : Promise.resolve([]);
+		}
 	}
 
 	private async getList(
