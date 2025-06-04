@@ -13,20 +13,20 @@ interface AutocompleteSectionState {
 export class AutocompleteSectionStateClass implements AutocompleteSectionState {
 	private added: boolean = $state(false);
 	private autocompleteInput: string = $state('');
-	private fuse: Fuse<ListPrice> = new Fuse([], {
+	private fuse: Fuse<ListPrice> | null = new Fuse([], {
 		keys: ['id', 'description'],
 		isCaseSensitive: false,
 		threshold: 0.1
 	});
 	private filteredPrices: ListPrice[] = $derived(
-		this.fuse.search(this.autocompleteInput).map((result) => result.item)
+		this.fuse?.search(this.autocompleteInput).map((result) => result.item) ?? []
 	);
 
 	constructor(
 		private addCallback: (pricingType: PricingType, value?: string) => void,
-		private prices: ListPrice[]
+		prices: ListPrice[]
 	) {
-		this.fuse.setCollection(prices);
+		this.fuse?.setCollection(prices);
 	}
 
 	public isAdded() {
@@ -51,5 +51,10 @@ export class AutocompleteSectionStateClass implements AutocompleteSectionState {
 
 	public add(pricingType: PricingType, id?: string) {
 		this.addCallback(pricingType, id);
+	}
+
+	public destroy() {
+		this.fuse?.setCollection([]);
+		this.fuse = null;
 	}
 }

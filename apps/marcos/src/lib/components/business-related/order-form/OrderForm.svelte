@@ -384,7 +384,14 @@
 		const newPrices = [fabricDefaultPricing];
 		const orderDimensions = getOrderDimensions();
 		const sortedMolds = moldPartsToCalculate.sort();
-		sortedMolds.forEach((t) => {
+
+		// Remove duplicates
+		const sortedMoldsMap = new Map<
+			string,
+			{ pre: PreCalculatedItemPart; post: CalculatedItemPart }
+		>(sortedMolds.map((t) => [t.pre.id, t]));
+
+		sortedMoldsMap.values().forEach((t) => {
 			[fabricIds.long, fabricIds.short].forEach((id) => {
 				newPrices.push(
 					PricingUtilites.generateCrossbarPricing(

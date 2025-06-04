@@ -10,6 +10,7 @@
 	import { PricingUtilites } from '@marcsimolduressonsardina/core/util';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { AutocompleteSectionStateClass } from '@/components/business-related/order-form/AutocompleteSection.state.svelte';
+	import { onDestroy } from 'svelte';
 
 	let {
 		sectionTitle,
@@ -39,6 +40,10 @@
 
 	$effect(() => {
 		autocompleteState.setIsAdded(added);
+	});
+
+	onDestroy(() => {
+		autocompleteState.destroy();
 	});
 </script>
 
