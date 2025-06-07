@@ -14,7 +14,7 @@
 	import Photos from '@/components/business-related/file/Photos.svelte';
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 	import Progress from '@/components/ui/progress/progress.svelte';
-
+	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	interface Props {
 		data: PageData;
 	}
@@ -36,14 +36,9 @@
 	async function deleteFile(id: string) {
 		loadingText = 'Eliminando archivo, por favor no cierre la ventana';
 		loading = true;
-		const response = await fetch(`/api/orders/${data!.order!.id}/files/${id}`, {
-			method: 'DELETE',
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		if (response.status !== 200) {
+		try {
+			await OrderApiGateway.deleteOrderFile(data!.order!.id, id);
+		} catch {
 			toast.error('Error al eliminar el fichero');
 			loading = false;
 			return;
@@ -56,58 +51,36 @@
 	async function createNoArtFile() {
 		loadingText = 'Cargando archivo, por favor no cierre la ventana';
 		loading = true;
-		const response = await fetch(`/api/orders/${data!.order!.id}/files`, {
-			method: 'POST',
-			body: JSON.stringify({ filename: 'Sin obra', fileType: FileType.NO_ART }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		if (response.status !== 200) {
+		try {
+			const file = await OrderApiGateway.createOrderFile(
+				data!.order!.id,
+				'Sin obra',
+				FileType.NO_ART
+			);
+			files = [...files, file];
+		} catch {
 			toast.error('Error al procesar el fichero');
-			return;
 		}
 
-		const file = (await response.json()) as MMSSFile;
-		files = [...files, file];
 		loading = false;
 	}
 
 	async function createFile(filename: string): Promise<MMSSFile | undefined> {
-		const response = await fetch(`/api/orders/${data!.order!.id}/files`, {
-			method: 'POST',
-			body: JSON.stringify({ filename }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		if (response.status !== 200) {
+		try {
+			const file = await OrderApiGateway.createOrderFile(data!.order!.id, filename);
+			return file;
+		} catch {
 			toast.error('Error al procesar el fichero');
-			return;
 		}
-
-		const file = (await response.json()) as MMSSFile;
-		return file;
 	}
 
 	async function getFile(id: string): Promise<MMSSFile | undefined> {
-		const response = await fetch(`/api/orders/${data!.order!.id}/files/${id}`, {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		if (response.status !== 200) {
-			toast.error('Error al obtener fichero');
-
-			return;
+		try {
+			const file = await OrderApiGateway.getOrderFile(data!.order!.id, id);
+			return file;
+		} catch {
+			toast.error('Error al obtener el fichero');
 		}
-
-		const file = (await response.json()) as MMSSFile;
-		return file;
 	}
 
 	async function loadFile() {
