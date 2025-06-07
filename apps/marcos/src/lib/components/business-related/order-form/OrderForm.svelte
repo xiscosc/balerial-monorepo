@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { dateProxy, superForm } from 'sveltekit-superforms';
 	import { Toaster, toast } from 'svelte-sonner';
-
-	import type { PreCalculatedItemPartRequest } from '@/type/api.type';
 	import {
 		type CalculatedItemPart,
 		type ListPrice,
-		type ListPriceWithMold,
 		type PPDimensions,
 		type PreCalculatedItemPart,
 		PricingType,
@@ -41,17 +38,16 @@
 	import {
 		CalculatedItemUtilities,
 		cornersId,
-		fabricDefaultPricing,
-		fabricIds,
-		otherExtraId,
-		PricingUtilites
+		otherExtraId
 	} from '@marcsimolduressonsardina/core/util';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { GenericTools } from '@/shared/generic/generic.tools';
-
-	type TempParts = { pre: PreCalculatedItemPart; post: CalculatedItemPart }[];
+	import {
+		OrderFormItemsState,
+		type OrderItem
+	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -85,19 +81,8 @@
 	let predefinedObservations: string[] = $state(
 		$form.predefinedObservations.length > 0 ? $form.predefinedObservations : []
 	);
-	let partsToCalculate: PreCalculatedItemPart[] = $state.raw(
-		$form.partsToCalculate.length > 0
-			? $form.partsToCalculate.map((p) => ({ ...p, type: p.type as PricingType }))
-			: []
-	);
 
-	let partsToCalulatePreview: TempParts = $state.raw([]);
-	let extraParts: CalculatedItemPart[] = $state.raw(
-		$form.extraParts.length > 0 ? $form.extraParts : [CalculatedItemUtilities.getCornersPricing()]
-	);
-
-	// Fabric vars
-	let fabricPrices: ListPriceWithMold[] = $state([fabricDefaultPricing]);
+	const orderFormItemsState = new OrderFormItemsState();
 
 	// PP vars
 	let asymetricPP = $state($form.ppDimensions != null);
@@ -132,32 +117,12 @@
 	let otherQuantity: string = $state('1');
 
 	async function handleDimensionsChangeEvent() {
-		if (partsToCalulatePreview.length > 0) {
+		orderFormItemsState.setOrderDimensions(getOrderDimensions());
+		if (!orderFormItemsState.isEmpty()) {
 			toast.info(`Las dimensiones han cambiado, recalculando el precio...`);
-
-			const promises = partsToCalculate.map((p) => getPartToCalculateWihtPre(p));
-			const parts = (await Promise.all(promises)).filter((p) => p != null) as {
-				pre: PreCalculatedItemPart;
-				post: CalculatedItemPart;
-			}[];
-
-			const validatedParts = parts.map((p) => p.pre);
-			partsToCalculate = validatedParts;
-			$form.partsToCalculate = partsToCalculate;
-			partsToCalulatePreview = parts;
+			await orderFormItemsState.updateAllOrderItems(showError);
 			toast.success(`Precios actualizados`);
 		}
-	}
-
-	async function getPartToCalculateWihtPre(
-		partToCalculate: PreCalculatedItemPart
-	): Promise<{ pre: PreCalculatedItemPart; post: CalculatedItemPart } | undefined> {
-		const part = await getPartToCalculate(partToCalculate);
-		if (!part) {
-			return;
-		}
-
-		return { pre: partToCalculate, post: part };
 	}
 
 	function extractNumber(input: string | number): number {
@@ -177,6 +142,14 @@
 		return typeof input === 'number' && !isNaN(input);
 	}
 
+	function showError(id: string, errorMessage?: string) {
+		if (errorMessage) {
+			toast.error(errorMessage);
+		} else {
+			toast.error(`Error al calcular el precio. Puede ser que el precio ya no exista (${id}).`);
+		}
+	}
+
 	function getOrderDimensions() {
 		const width = $form.width;
 		const height = $form.height;
@@ -193,27 +166,21 @@
 		}
 	}
 
-	function deletePrecalculatedPreview(part: {
-		pre: PreCalculatedItemPart;
-		post: CalculatedItemPart;
-	}) {
-		partsToCalulatePreview = partsToCalulatePreview.filter((p) => p !== part);
-		partsToCalculate = partsToCalculate.filter((p) => p !== part.pre);
-		$form.partsToCalculate = partsToCalculate;
+	function deletePrecalculatedPreview(part: OrderItem) {
+		orderFormItemsState.deletePart(part.pre);
 	}
 
 	function deleteExtraPart(part: CalculatedItemPart) {
-		extraParts = extraParts.filter((p) => p !== part);
-		extraParts = [...extraParts];
-		$form.extraParts = extraParts;
+		orderFormItemsState.removeOtherItem(part);
 	}
 
 	function updateMarkupOnCorners() {
-		const cornersPart = extraParts.find((p) => p.priceId === cornersId);
+		const cornersPart = orderFormItemsState.getOtherItems().find((p) => p.priceId === cornersId);
 		if (cornersPart) {
-			deleteExtraPart(cornersPart);
-			extraParts = [...extraParts, CalculatedItemUtilities.getCornersPricing($form.markup ?? 0)];
-			$form.extraParts = extraParts;
+			orderFormItemsState.removeOtherItem(cornersPart);
+			orderFormItemsState.addOtherItem(
+				CalculatedItemUtilities.getCornersPricing($form.markup ?? 0)
+			);
 		}
 	}
 
@@ -235,57 +202,7 @@
 			extraInfo
 		};
 
-		await processPartToCalculate(partToCalculate);
-	}
-
-	async function processPartToCalculate(partToCalculate: PreCalculatedItemPart) {
-		const part = await getPartToCalculate(partToCalculate);
-		if (!part) {
-			return;
-		}
-
-		partsToCalulatePreview = [...partsToCalulatePreview, { pre: partToCalculate, post: part }];
-		partsToCalculate = [...partsToCalculate, partToCalculate];
-		$form.partsToCalculate = partsToCalculate;
-	}
-
-	async function getPartToCalculate(
-		partToCalculate: PreCalculatedItemPart
-	): Promise<CalculatedItemPart | undefined> {
-		const orderDimensions = getOrderDimensions();
-		const markup = $form.markup;
-		const request: PreCalculatedItemPartRequest = {
-			orderDimensions,
-			partToCalculate,
-			markup: markup ?? 0
-		};
-		const response = await fetch('/api/prices', {
-			method: 'POST',
-			body: JSON.stringify(request),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		if (response.status !== 200) {
-			if (response.status === 500) {
-				toast.error(
-					`Error al calcular el precio. Puede ser que el precio ya no exista (${partToCalculate.id}).`
-				);
-			}
-
-			if (response.status === 400) {
-				const errorResponse = await response.json();
-				toast.error(
-					errorResponse.error ?? 'Error al calcular el precio. Por favor, revise los datos.'
-				);
-			}
-
-			return;
-		}
-
-		const part = (await response.json()) as CalculatedItemPart;
-		return part;
+		orderFormItemsState.addPart(partToCalculate, showError);
 	}
 
 	async function addOtherElementsFromSelector(id: string, quantity: number) {
@@ -307,7 +224,7 @@
 				type: selected.type
 			};
 
-			await processPartToCalculate(partToCalculate);
+			await orderFormItemsState.addPart(partToCalculate, showError);
 		}
 	}
 
@@ -321,8 +238,7 @@
 				discountAllowed: true,
 				floating: false
 			};
-			extraParts = [part, ...extraParts];
-			$form.extraParts = extraParts;
+			orderFormItemsState.addOtherItem(part);
 		}
 
 		// Reset the inputs
@@ -332,7 +248,7 @@
 	}
 
 	function updateTotal(
-		parts: TempParts,
+		parts: OrderItem[],
 		eParts: CalculatedItemPart[],
 		discount: string,
 		quantity: number
@@ -378,38 +294,6 @@
 
 		totalHeightBox = totalHeight;
 		totalWidthBox = totalWidth;
-	}
-
-	function updateFabricPrices(moldPartsToCalculate: TempParts) {
-		const newPrices = [fabricDefaultPricing];
-		const orderDimensions = getOrderDimensions();
-		const sortedMolds = moldPartsToCalculate.sort();
-
-		// Remove duplicates
-		const sortedMoldsMap = new Map<
-			string,
-			{ pre: PreCalculatedItemPart; post: CalculatedItemPart }
-		>(sortedMolds.map((t) => [t.pre.id, t]));
-
-		sortedMoldsMap.values().forEach((t) => {
-			[fabricIds.long, fabricIds.short].forEach((id) => {
-				newPrices.push(
-					PricingUtilites.generateCrossbarPricing(
-						id,
-						0,
-						t.post.description,
-						PricingUtilites.getFabricCrossbarDimension(
-							id,
-							orderDimensions.totalHeight,
-							orderDimensions.totalWidth
-						),
-						t.pre.id
-					)
-				);
-			});
-		});
-
-		fabricPrices = newPrices;
 	}
 
 	function calculateMissingLabels(
@@ -491,7 +375,7 @@
 	}
 
 	function calculateAddedPPMeasures(
-		parts: TempParts,
+		parts: OrderItem[],
 		asymetricPP: boolean,
 		ppIsNumber: boolean,
 		ppValue: number
@@ -511,7 +395,10 @@
 		return false;
 	}
 
-	function calculateAddedFloatingDistance(moldParts: TempParts, floatingDistance: number): boolean {
+	function calculateAddedFloatingDistance(
+		moldParts: OrderItem[],
+		floatingDistance: number
+	): boolean {
 		const floatingMoldsCount = moldParts.filter((p) => p.post.floating).length;
 		if (floatingDistance === 0 && floatingMoldsCount === 0) {
 			return true;
@@ -525,7 +412,7 @@
 	}
 
 	function calculateAddedAsymetricPPMeasures(
-		parts: TempParts,
+		parts: OrderItem[],
 		asymetricPP: boolean,
 		upIsNumber: boolean,
 		upValue: number,
@@ -570,32 +457,16 @@
 
 	// Added vars
 	let exteriorDimensions = $derived($form.dimenstionsType === DimensionsType.EXTERIOR);
-	let addedOther = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.OTHER).length > 0
-	);
-	let addedPP = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP).length > 0
-	);
-	let addedHanger = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.HANGER).length > 0
-	);
-	let addedTransport = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.TRANSPORT).length > 0
-	);
-	let addedBack = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.BACK).length > 0
-	);
+	let addedOther = $derived(orderFormItemsState.typeIsAdded(PricingType.OTHER));
+	let addedPP = $derived(orderFormItemsState.typeIsAdded(PricingType.PP));
+	let addedHanger = $derived(orderFormItemsState.typeIsAdded(PricingType.HANGER));
+	let addedTransport = $derived(orderFormItemsState.typeIsAdded(PricingType.TRANSPORT));
+	let addedBack = $derived(orderFormItemsState.typeIsAdded(PricingType.BACK));
 	let addedLabour = $derived(
-		partsToCalulatePreview.filter((p) =>
-			[PricingType.FABRIC, PricingType.LABOUR].includes(p.pre.type)
-		).length > 0
+		orderFormItemsState.typeIsAdded([PricingType.FABRIC, PricingType.LABOUR])
 	);
-	let addedMold = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD).length > 0
-	);
-	let addedGlass = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.GLASS).length > 0
-	);
+	let addedMold = $derived(orderFormItemsState.typeIsAdded(PricingType.MOLD));
+	let addedGlass = $derived(orderFormItemsState.typeIsAdded(PricingType.GLASS));
 	let addedObservations = $derived(
 		$form.observations.length > 0 || $form.predefinedObservations.length > 0
 	);
@@ -608,19 +479,19 @@
 	);
 	let addedFloatingDistance = $derived(
 		calculateAddedFloatingDistance(
-			partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD),
+			orderFormItemsState.getOrderItemsByType(PricingType.MOLD),
 			$form.floatingDistance
 		)
 	);
 	let addedPPMeaseures = $derived(
 		calculateAddedPPMeasures(
-			partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP),
+			orderFormItemsState.getOrderItemsByType(PricingType.PP),
 			asymetricPP,
 			isValidNumber($form.pp),
 			extractNumber($form.pp)
 		) &&
 			calculateAddedAsymetricPPMeasures(
-				partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP),
+				orderFormItemsState.getOrderItemsByType(PricingType.PP),
 				asymetricPP,
 				isValidNumber(upPP),
 				extractNumber(upPP),
@@ -652,8 +523,11 @@
 		)
 	);
 
-	let orderedItems = $derived<TempParts>(
-		CalculatedItemUtilities.sortByPricingType([...partsToCalulatePreview], ['pre', 'type'])
+	let orderedItems = $derived<OrderItem[]>(
+		CalculatedItemUtilities.sortByPricingType(
+			[...orderFormItemsState.getOrderItems()],
+			['pre', 'type']
+		)
 	);
 	let discountActive = $derived($form.discount !== '' && parseInt($form.discount) > 0);
 	let isDiscountNotAllowedPresent = $derived(
@@ -680,36 +554,39 @@
 	});
 
 	$effect(() => {
-		updateFabricPrices(partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD));
-	});
-
-	$effect(() => {
-		updateTotal(partsToCalulatePreview, extraParts, $form.discount, $form.quantity);
+		updateTotal(
+			orderFormItemsState.getOrderItems(),
+			orderFormItemsState.getOtherItems(),
+			$form.discount,
+			$form.quantity
+		);
 	});
 
 	onMount(async () => {
-		if (partsToCalculate.length > 0) {
-			const promises = partsToCalculate.map((p) => getPartToCalculateWihtPre(p));
-			const parts = (await Promise.all(promises)).filter((p) => p != null) as {
-				pre: PreCalculatedItemPart;
-				post: CalculatedItemPart;
-			}[];
-
-			const validatedParts = parts.map((p) => p.pre);
-			partsToCalculate = validatedParts;
-			$form.partsToCalculate = partsToCalculate;
-			partsToCalulatePreview = parts;
+		orderFormItemsState.setOrderDimensions(getOrderDimensions());
+		if ($form.partsToCalculate.length > 0) {
+			toast.info(`Cargando elementos del pedido...`);
+			await orderFormItemsState.setInitialParts(
+				$form.partsToCalculate as PreCalculatedItemPart[],
+				showError
+			);
 			toast.success(`Precios actualizados`);
-		} else {
-			$form.partsToCalculate = partsToCalculate;
 		}
 
-		$form.extraParts = extraParts;
+		orderFormItemsState.setInitialOtherItems(
+			$form.extraParts.length > 0 ? $form.extraParts : [CalculatedItemUtilities.getCornersPricing()]
+		);
+
 		$form.predefinedObservations = predefinedObservations;
+
+		$effect(() => {
+			$form.partsToCalculate = orderFormItemsState.getPreCalculatedParts();
+			$form.extraParts = orderFormItemsState.getOtherItems();
+		});
 	});
 </script>
 
-{#snippet cartItemList(parts: TempParts)}
+{#snippet cartItemList(parts: OrderItem[])}
 	<div class="flex flex-col gap-2 lg:col-span-2">
 		{#each parts as part (part)}
 			<CartItem
@@ -882,9 +759,7 @@
 								{/if}
 							</PricingSelectorSection>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.PP))}
 
 							<Spacer title="Medidas de trabajo" />
 
@@ -973,9 +848,7 @@
 								added={addedMold}
 							/>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.MOLD))}
 
 							<div class="flex flex-col gap-2">
 								<Label for="floatingDistance">Distancia flotante (cm):</Label>
@@ -998,9 +871,7 @@
 								added={addedGlass}
 							/>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.GLASS)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.GLASS))}
 
 							<PricingSelectorSection
 								sectionTitle="Trasera"
@@ -1010,24 +881,20 @@
 								added={addedBack}
 							/>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.BACK)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.BACK))}
 
 							<PricingSelectorSection
 								sectionTitle="Montajes"
 								label="Tipo de montaje"
 								prices={pricing.labourPrices}
-								extraPrices={fabricPrices}
+								extraPrices={orderFormItemsState.getFabricPrices()}
 								locationIdForExtraPrices="CINTA_CANTO_LIENZO_BLANCA"
 								addValue={addFromPricingSelector}
 								added={addedLabour}
 							/>
 
 							{@render cartItemList(
-								partsToCalulatePreview.filter((p) =>
-									[PricingType.LABOUR, PricingType.FABRIC].includes(p.pre.type)
-								)
+								orderFormItemsState.getOrderItemsByType([PricingType.LABOUR, PricingType.FABRIC])
 							)}
 
 							<PricingSelectorWithQuantitySection
@@ -1038,9 +905,7 @@
 								addItem={addHangerElementsFromSelector}
 							/>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.HANGER)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.HANGER))}
 
 							<PricingSelectorWithQuantitySection
 								added={addedOther}
@@ -1050,9 +915,7 @@
 								addItem={addOtherElementsFromSelector}
 							/>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.OTHER)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.OTHER))}
 
 							<PricingSelectorSection
 								sectionTitle="Transporte"
@@ -1062,9 +925,7 @@
 								added={addedTransport}
 							/>
 
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.TRANSPORT)
-							)}
+							{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.TRANSPORT))}
 
 							<Spacer title="Elementos extra" />
 
@@ -1113,7 +974,7 @@
 								></Button>
 							</div>
 
-							{@render cartItemExtraList(extraParts)}
+							{@render cartItemExtraList(orderFormItemsState.getOtherItems())}
 
 							<Spacer title="Descripción de la obra" />
 
@@ -1235,7 +1096,7 @@
 				<Box title="Elementos añadidos" collapsible>
 					<div class="flex flex-col gap-2">
 						{@render cartItemList(orderedItems)}
-						{@render cartItemExtraList(extraParts)}
+						{@render cartItemExtraList(orderFormItemsState.getOtherItems())}
 						{#if isDiscountNotAllowedPresent}
 							<span class="text-xs text-gray-500">* Elementos con descuento no permitido</span>
 						{/if}
