@@ -64,12 +64,12 @@ export class OrderApiGateway {
 
 	public static async createOrderFile(
 		orderId: string,
-		fileName: string,
+		filename: string,
 		fileType?: FileType
 	): Promise<File> {
 		const response = await fetch(`/api/orders/${orderId}/files`, {
 			method: 'POST',
-			body: JSON.stringify({ fileName, fileType }),
+			body: JSON.stringify({ filename, fileType }),
 			headers: {
 				'content-type': 'application/json'
 			}

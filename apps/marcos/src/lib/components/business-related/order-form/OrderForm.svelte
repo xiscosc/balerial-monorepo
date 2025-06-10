@@ -562,6 +562,13 @@
 		);
 	});
 
+	$effect(() => {
+		if (!loadingInitialParts) {
+			$form.partsToCalculate = orderedItems.map((item) => item.pre);
+			$form.extraParts = orderFormItemsState.getOtherItems();
+		}
+	});
+
 	onMount(async () => {
 		orderFormItemsState.setOrderDimensions(getOrderDimensions());
 		if ($form.partsToCalculate.length > 0) {
@@ -572,17 +579,12 @@
 			toast.success(`Precios actualizados`);
 		}
 
-		loadingInitialParts = false;
 		orderFormItemsState.setInitialOtherItems(
 			$form.extraParts.length > 0 ? $form.extraParts : [CalculatedItemUtilities.getCornersPricing()]
 		);
 
 		$form.predefinedObservations = predefinedObservations;
-
-		$effect(() => {
-			$form.partsToCalculate = orderFormItemsState.getPreCalculatedParts();
-			$form.extraParts = orderFormItemsState.getOtherItems();
-		});
+		loadingInitialParts = false;
 	});
 </script>
 

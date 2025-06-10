@@ -63,7 +63,7 @@ export class OrderFormItemsState {
 	}
 
 	public getOtherItems(): CalculatedItemPart[] {
-		return Array.from(this.otherItems.values());
+		return Array.from(this.otherItems.values()).reverse();
 	}
 
 	public setOrderDimensions(orderDimensions: OrderDimensions) {
@@ -108,10 +108,6 @@ export class OrderFormItemsState {
 
 	public getFabricPrices(): ListPriceWithMold[] {
 		return this.fabricPrices;
-	}
-
-	public getPreCalculatedParts(): PreCalculatedItemPart[] {
-		return this.getOrderItems().map((orderItem) => orderItem.pre);
 	}
 
 	public isEmpty(): boolean {
