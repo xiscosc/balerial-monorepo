@@ -118,6 +118,7 @@
 
 	async function handleDimensionsChangeEvent() {
 		orderFormItemsState.setOrderDimensions(getOrderDimensions());
+		orderFormItemsState.setMarkup($form.markup);
 		if (!orderFormItemsState.isEmpty()) {
 			toast.info(`Las dimensiones han cambiado, recalculando el precio...`);
 			await orderFormItemsState.updateAllOrderItems(showError);
@@ -202,7 +203,7 @@
 			extraInfo
 		};
 
-		orderFormItemsState.addPart(partToCalculate, showError);
+		orderFormItemsState.addParts([partToCalculate], showError);
 	}
 
 	async function addOtherElementsFromSelector(id: string, quantity: number) {
@@ -224,7 +225,7 @@
 				type: selected.type
 			};
 
-			await orderFormItemsState.addPart(partToCalculate, showError);
+			await orderFormItemsState.addParts([partToCalculate], showError);
 		}
 	}
 

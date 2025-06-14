@@ -1,7 +1,5 @@
-import type {
-	CalculatedItemPart,
-	PreCalculatedItemPartRequest
-} from '@marcsimolduressonsardina/core/type';
+import type { PreCalculatedItemPartRequest } from '@/type/api.type';
+import type { CalculatedItemPart } from '@marcsimolduressonsardina/core/type';
 
 export class PriceApiGateway {
 	public static async getUploadMoldParams(): Promise<{ filename: string; url: string }> {
@@ -31,9 +29,9 @@ export class PriceApiGateway {
 		}
 	}
 
-	public static async calculatePrice(
+	public static async calculatePrices(
 		request: PreCalculatedItemPartRequest
-	): Promise<{ part?: CalculatedItemPart; errorMessage?: string }> {
+	): Promise<{ part?: CalculatedItemPart; key: string; errorMessage?: string }[]> {
 		const response = await fetch('/api/prices', {
 			method: 'POST',
 			body: JSON.stringify(request),
@@ -42,15 +40,6 @@ export class PriceApiGateway {
 			}
 		});
 
-		if (response.ok) {
-			return { part: await response.json() };
-		} else {
-			if (response.status === 400) {
-				const responseJson = await response.json();
-				return { errorMessage: responseJson.error };
-			} else {
-				return {};
-			}
-		}
+		return await response.json();
 	}
 }

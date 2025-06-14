@@ -1,11 +1,11 @@
 import { PriceApiGateway } from '@/gateway/price-api.gateway';
+import type { PreCalculatedItemPartRequest } from '@/type/api.type';
 import {
 	PricingType,
 	type CalculatedItemPart,
 	type ListPriceWithMold,
 	type OrderDimensions,
-	type PreCalculatedItemPart,
-	type PreCalculatedItemPartRequest
+	type PreCalculatedItemPart
 } from '@marcsimolduressonsardina/core/type';
 import {
 	CalculatedItemUtilities,
@@ -27,10 +27,12 @@ export class OrderFormItemsState {
 	private otherItems: Set<CalculatedItemPart>;
 	private fabricPrices: ListPriceWithMold[];
 	private orderDimensions: OrderDimensions;
+	private markup?: number;
 
 	constructor() {
 		this.items = new SvelteMap();
 		this.otherItems = new SvelteSet();
+		this.markup = $state(undefined);
 		this.orderDimensions = $state({
 			originalHeight: 0,
 			originalWidth: 0,
@@ -57,7 +59,7 @@ export class OrderFormItemsState {
 		errorCallback: (id: string, errorMessage?: string) => void
 	) {
 		this.items.clear();
-		await Promise.all(parts.map((part) => this.addPart(part, errorCallback)));
+		await this.addParts(parts, errorCallback);
 	}
 
 	public async setInitialOtherItems(parts: CalculatedItemPart[]) {
@@ -81,27 +83,43 @@ export class OrderFormItemsState {
 		this.orderDimensions = orderDimensions;
 	}
 
-	public async addPart(
-		partToAdd: PreCalculatedItemPart,
+	public setMarkup(markup: number | undefined) {
+		this.markup = markup;
+	}
+
+	public async addParts(
+		partsToAdd: PreCalculatedItemPart[],
 		errorCallback: (id: string, errorMessage?: string) => void
 	) {
-		const key = this.generateKeyFromPart(partToAdd);
-		partToAdd.quantity += this.items.get(key)?.pre.quantity ?? 0;
+		const partKeyMap = new Map<string, PreCalculatedItemPart>();
+
+		partsToAdd.forEach((part) => {
+			const key = this.generateKeyFromPart(part);
+			part.quantity += this.items.get(key)?.pre.quantity ?? 0;
+			partKeyMap.set(key, part);
+		});
 
 		const request: PreCalculatedItemPartRequest = {
-			partToCalculate: partToAdd,
-			orderDimensions: this.orderDimensions
+			partsToCalculateWithKey: Array.from(partKeyMap.entries()).map(([key, part]) => ({
+				key,
+				part
+			})),
+			orderDimensions: this.orderDimensions,
+			markup: this.markup
 		};
 
-		const calculateResponse = await PriceApiGateway.calculatePrice(request);
-		if (calculateResponse.part != null) {
-			this.items.set(key, {
-				pre: partToAdd,
-				post: calculateResponse.part
-			});
-		} else {
-			errorCallback(partToAdd.id, calculateResponse.errorMessage);
-		}
+		const calculateResponse = await PriceApiGateway.calculatePrices(request);
+
+		calculateResponse.forEach((response) => {
+			if (response.part != null) {
+				this.items.set(response.key, {
+					pre: partKeyMap.get(response.key)!,
+					post: response.part
+				});
+			} else {
+				errorCallback(partKeyMap.get(response.key)!.id, response.errorMessage);
+			}
+		});
 	}
 
 	public async updateAllOrderItems(errorCallback: (id: string, errorMessage?: string) => void) {
