@@ -523,15 +523,9 @@
 		)
 	);
 
-	let orderedItems = $derived<OrderItem[]>(
-		CalculatedItemUtilities.sortByPricingType(
-			[...orderFormItemsState.getOrderItems()],
-			['pre', 'type']
-		)
-	);
 	let discountActive = $derived($form.discount !== '' && parseInt($form.discount) > 0);
 	let isDiscountNotAllowedPresent = $derived(
-		orderedItems.find((part) => !part.post.discountAllowed) != null && discountActive
+		orderFormItemsState.hasItemsWithDiscountNotAllowed() && discountActive
 	);
 
 	$effect(() => {
@@ -564,7 +558,7 @@
 
 	$effect(() => {
 		if (!loadingInitialParts) {
-			$form.partsToCalculate = orderedItems.map((item) => item.pre);
+			$form.partsToCalculate = orderFormItemsState.getOrderItems().map((item) => item.pre);
 			$form.extraParts = orderFormItemsState.getOtherItems();
 		}
 	});
@@ -1104,7 +1098,7 @@
 
 					<Box title="Elementos añadidos" collapsible>
 						<div class="flex flex-col gap-2">
-							{@render cartItemList(orderedItems)}
+							{@render cartItemList(orderFormItemsState.getOrderItems())}
 							{@render cartItemExtraList(orderFormItemsState.getOtherItems())}
 							{#if isDiscountNotAllowedPresent}
 								<span class="text-xs text-gray-500">* Elementos con descuento no permitido</span>

@@ -8,6 +8,7 @@ import {
 	type PreCalculatedItemPartRequest
 } from '@marcsimolduressonsardina/core/type';
 import {
+	CalculatedItemUtilities,
 	fabricDefaultPricing,
 	fabricIds,
 	PricingUtilites
@@ -21,6 +22,8 @@ export type OrderItem = {
 
 export class OrderFormItemsState {
 	private items: Map<string, OrderItem>;
+	private sortedItems: OrderItem[];
+	private itemsWithDiscountNotAllowedPresent: boolean;
 	private otherItems: Set<CalculatedItemPart>;
 	private fabricPrices: ListPriceWithMold[];
 	private orderDimensions: OrderDimensions;
@@ -38,6 +41,14 @@ export class OrderFormItemsState {
 		});
 		this.fabricPrices = $derived(
 			this.calculateFabricPrices(this.orderDimensions, this.getOrderItemsByType(PricingType.MOLD))
+		);
+
+		this.sortedItems = $derived(
+			CalculatedItemUtilities.sortByPricingType(Array.from(this.items.values()), ['pre', 'type'])
+		);
+
+		this.itemsWithDiscountNotAllowedPresent = $derived(
+			this.items.values().some((item) => !item.post.discountAllowed)
 		);
 	}
 
@@ -94,8 +105,8 @@ export class OrderFormItemsState {
 	}
 
 	public async updateAllOrderItems(errorCallback: (id: string, errorMessage?: string) => void) {
-		const parts = this.getOrderItems().map((orderItem) => orderItem.pre);
-		this.setInitialParts(parts, errorCallback);
+		const parts = this.items.values().map((orderItem) => orderItem.pre);
+		this.setInitialParts(Array.from(parts), errorCallback);
 	}
 
 	public deletePart(part: PreCalculatedItemPart) {
@@ -103,7 +114,11 @@ export class OrderFormItemsState {
 	}
 
 	public getOrderItems(): OrderItem[] {
-		return Array.from(this.items.values());
+		return this.sortedItems;
+	}
+
+	public hasItemsWithDiscountNotAllowed(): boolean {
+		return this.itemsWithDiscountNotAllowedPresent;
 	}
 
 	public getFabricPrices(): ListPriceWithMold[] {
@@ -116,17 +131,17 @@ export class OrderFormItemsState {
 
 	public getOrderItemsByType(type: PricingType | PricingType[]): OrderItem[] {
 		if (Array.isArray(type)) {
-			return this.getOrderItems().filter((part) => type.includes(part.pre.type));
+			return Array.from(this.items.values()).filter((part) => type.includes(part.pre.type));
 		} else {
-			return this.getOrderItems().filter((part) => part.pre.type === type);
+			return Array.from(this.items.values()).filter((part) => part.pre.type === type);
 		}
 	}
 
 	public typeIsAdded(type: PricingType | PricingType[]): boolean {
 		if (Array.isArray(type)) {
-			return this.getOrderItems().some((part) => type.includes(part.pre.type));
+			return this.items.values().some((part) => type.includes(part.pre.type));
 		} else {
-			return this.getOrderItems().some((part) => part.pre.type === type);
+			return this.items.values().some((part) => part.pre.type === type);
 		}
 	}
 
