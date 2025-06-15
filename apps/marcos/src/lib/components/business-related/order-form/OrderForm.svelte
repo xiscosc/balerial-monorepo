@@ -566,6 +566,7 @@
 
 	onMount(async () => {
 		orderFormItemsState.setOrderDimensions(getOrderDimensions());
+		orderFormItemsState.setMarkup($form.markup);
 		if ($form.partsToCalculate.length > 0) {
 			await orderFormItemsState.setInitialParts(
 				$form.partsToCalculate as PreCalculatedItemPart[],
