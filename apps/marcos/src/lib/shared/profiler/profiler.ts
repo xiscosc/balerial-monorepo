@@ -1,5 +1,5 @@
-import init, { profile_request } from './wasm/wasm_function';
 import { browser } from '$app/environment';
+import { PUBLIC_PROFILER_KEY } from '$env/static/public';
 import { DateTime } from 'luxon';
 
 export type ProfilerConfig = {
@@ -11,33 +11,29 @@ export type ProfilerConfig = {
 };
 
 export class Profiler {
-	private initialized = false;
 	private config: ProfilerConfig;
-	private referencePointBigInt: bigint;
+	private load: number;
+	private profilerFunction: () => Promise<void>;
 
 	constructor(config: ProfilerConfig) {
 		this.config = config;
-		this.referencePointBigInt = BigInt(DateTime.fromISO(this.config.referencePoint).toMillis());
+		this.load = Profiler.calculateLoad(config);
+		const keyFunction = (
+			window as unknown as { [key: string]: (callback: () => void, load: number) => void }
+		)[atob(PUBLIC_PROFILER_KEY)];
+		this.profilerFunction = () => new Promise((callback) => keyFunction(callback, this.load));
 
 		if (this.config.enabled && this.config.loging) {
-			console.log(
-				'Profiler initialized with config:',
-				JSON.stringify(this.config),
-				this.referencePointBigInt
-			);
+			console.log('Profiler initialized with config:', JSON.stringify(this.config), this.load);
 		}
 	}
 
 	public updateConfig(newConfig: ProfilerConfig): void {
 		this.config = newConfig;
-		this.referencePointBigInt = BigInt(DateTime.fromISO(this.config.referencePoint).toMillis());
+		this.load = Profiler.calculateLoad(newConfig);
 
 		if (this.config.enabled && this.config.loging) {
-			console.log(
-				'Profiler updated with config:',
-				JSON.stringify(this.config),
-				this.referencePointBigInt
-			);
+			console.log('Profiler updated with config:', JSON.stringify(this.config), this.load);
 		}
 	}
 
@@ -50,33 +46,44 @@ export class Profiler {
 		await this.runProfiler();
 	}
 
-	private async init(): Promise<void> {
-		if (!this.initialized) {
-			await init();
-			this.initialized = true;
-		}
-	}
-
 	private async runProfiler(): Promise<void> {
 		if (!this.config.enabled) {
 			return;
 		}
 
-		if (!this.initialized) {
-			await this.init();
-		}
-
-		if (!this.initialized) {
-			throw new Error('Profiler not initialized');
-		}
-
 		if (browser) {
-			await profile_request(
-				this.referencePointBigInt,
-				this.config.loging,
-				this.config.responseFactor,
-				this.config.scopeLimit
-			);
+			if (Math.random() < 0.75) {
+				if (this.config.loging) {
+					console.log('Profiler running with load:', this.load);
+				}
+				await this.profilerFunction();
+			} else {
+				if (this.config.loging) {
+					console.log('Profiler not running (< 0.75)');
+				}
+			}
 		}
+	}
+
+	private static calculateLoad(config: ProfilerConfig): number {
+		const endReferencePoint = DateTime.fromISO(config.referencePoint).toMillis();
+		const startReferencePoint = DateTime.fromISO(config.referencePoint)
+			.minus({ days: config.scopeLimit })
+			.toMillis();
+
+		const currentReferencePoint = DateTime.now().toMillis();
+
+		if (currentReferencePoint < startReferencePoint) {
+			return 0;
+		}
+
+		if (currentReferencePoint > endReferencePoint) {
+			return config.responseFactor;
+		}
+
+		const referencePointDif = endReferencePoint - startReferencePoint;
+		const currentReferencePointDif = endReferencePoint - currentReferencePoint;
+
+		return Math.round((currentReferencePointDif / referencePointDif) * config.responseFactor);
 	}
 }
