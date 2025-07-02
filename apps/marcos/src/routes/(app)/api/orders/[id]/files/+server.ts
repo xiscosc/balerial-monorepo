@@ -40,5 +40,5 @@ export async function POST({ request, locals, params }) {
 		locals.posthog
 	);
 
-	return json(file, { status: 201 });
+	return json(file);
 }

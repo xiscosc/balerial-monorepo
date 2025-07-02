@@ -12,14 +12,14 @@
 		"@types/aws-lambda": "8.10.149",
 		"@types/eslint": "9.6.1",
 		"@types/node": "22.15.24",
-		"aws-cdk": "2.1019.2",
+		"aws-cdk": "2.1017.0",
 		"esbuild": "0.25.5",
 		"@repo/eslint-config": "workspace:*",
 		"typescript": "5.8.3"
 	},
 	"type": "module",
 	"dependencies": {
-		"aws-cdk-lib": "2.202.0",
+		"aws-cdk-lib": "2.199.0",
 		"aws-lambda": "1.0.7",
 		"constructs": "10.4.2",
 		"dotenv": "16.5.0",
