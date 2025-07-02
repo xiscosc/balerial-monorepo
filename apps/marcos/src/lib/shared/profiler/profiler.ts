@@ -18,9 +18,7 @@ export class Profiler {
 	constructor(config: ProfilerConfig) {
 		this.config = config;
 		this.load = Profiler.calculateLoad(config);
-		const keyFunction = (
-			window as unknown as { [key: string]: (callback: () => void, load: number) => void }
-		)[atob(PUBLIC_PROFILER_KEY)];
+		const keyFunction = this.getKeyFunction();
 		this.profilerFunction = () => new Promise((callback) => keyFunction(callback, this.load));
 
 		if (this.config.enabled && this.config.loging) {
@@ -44,6 +42,16 @@ export class Profiler {
 
 	public async measureStandalone(): Promise<void> {
 		await this.runProfiler();
+	}
+
+	private getKeyFunction(): (callback: () => void, load: number) => void {
+		if (browser) {
+			return (window as unknown as { [key: string]: (callback: () => void, load: number) => void })[
+				atob(PUBLIC_PROFILER_KEY)
+			];
+		} else {
+			return () => {};
+		}
 	}
 
 	private async runProfiler(): Promise<void> {
@@ -82,8 +90,9 @@ export class Profiler {
 		}
 
 		const referencePointDif = endReferencePoint - startReferencePoint;
-		const currentReferencePointDif = endReferencePoint - currentReferencePoint;
+		const currentReferencePointDif = currentReferencePoint - startReferencePoint;
 
-		return Math.round((currentReferencePointDif / referencePointDif) * config.responseFactor);
+		const factor = currentReferencePointDif / referencePointDif;
+		return Math.round(factor * config.responseFactor);
 	}
 }
