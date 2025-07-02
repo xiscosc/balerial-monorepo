@@ -17,20 +17,10 @@
 	let { data, children }: Props = $props();
 
 	initPosthog(data.envName, data.user);
-
-	const headerColors = {
-		prod: 'bg-white/90 border-gray-50',
-		pre: 'bg-red-500/80 border-red-500/80',
-		dev: 'bg-indigo-500/50 border-indigo-500/50'
-	};
-
-	const headerEmojis = {
-		pre: '🧪',
-		dev: '👷'
-	};
-
 	let onTesting = $state(data.envName !== 'prod');
-	let headerBackgroundClasses = $derived(headerColors[data.envName as keyof typeof headerColors]);
+	let headerBackgroundClasses = $derived(
+		!onTesting ? 'bg-white/90 border-gray-50' : 'bg-red-500/80 border-red-500/80'
+	);
 </script>
 
 <svelte:head>
@@ -51,11 +41,7 @@
 				class="pointer-events-none absolute inset-0 flex w-full items-center justify-center gap-3"
 			>
 				{#if onTesting}
-					<span class="text-md font-semibold">
-						ENTORNO DE PRUEBAS ({data.envName}) {headerEmojis[
-							data.envName as keyof typeof headerEmojis
-						]}
-					</span>
+					<span class="text-md font-semibold"> ENTORNO DE PRUEBAS ({data.envName}) </span>
 				{:else}
 					<Icon type={IconType.LOGO} />
 				{/if}

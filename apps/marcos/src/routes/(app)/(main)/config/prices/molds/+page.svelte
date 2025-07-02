@@ -7,7 +7,6 @@
 	import { Input } from '@/components/ui/input';
 	import Progress from '@/components/ui/progress/progress.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import { PriceApiGateway } from '@/gateway/price-api.gateway';
 
 	let files: FileList | undefined = $state();
 	let loadingText = $state('');
@@ -16,7 +15,7 @@
 
 	async function loadFile() {
 		if (validFile() && files != null) {
-			const { filename, url } = await PriceApiGateway.getUploadMoldParams();
+			const { filename, url } = await getUploadParams();
 			const file = files![0];
 			loading = true;
 			loadingText = 'Cargando archivo...';
@@ -79,10 +78,27 @@
 		return true;
 	}
 
+	async function getUploadParams(): Promise<{ filename: string; url: string }> {
+		const response = await fetch('/api/prices/molds/upload', {
+			method: 'GET',
+			headers: {
+				'content-type': 'application/json'
+			}
+		});
+
+		return await response.json();
+	}
+
 	async function startProcessing(filename: string): Promise<boolean> {
 		try {
-			const processingResult = await PriceApiGateway.triggerMoldProcessing(filename);
-			if (processingResult) {
+			const response = await fetch('/api/prices/molds/upload', {
+				method: 'POST',
+				body: JSON.stringify({ filename }),
+				headers: {
+					'content-type': 'application/json'
+				}
+			});
+			if (response.ok) {
 				return true;
 			} else {
 				toast.error(

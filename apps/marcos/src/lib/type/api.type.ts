@@ -13,7 +13,7 @@ export type WithMetadata = {
 export type CustomSession = WithMetadata & Session;
 
 export type PreCalculatedItemPartRequest = {
-	partsToCalculateWithKey: { key: string; part: PreCalculatedItemPart }[];
+	partToCalculate: PreCalculatedItemPart;
 	orderDimensions: OrderDimensions;
 	markup?: number;
 };

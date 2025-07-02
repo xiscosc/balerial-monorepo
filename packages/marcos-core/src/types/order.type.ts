@@ -24,6 +24,11 @@ export type PreCalculatedItemPart = {
 	extraInfo?: string; // For extra pp info
 };
 
+export type PreCalculatedItemPartRequest = {
+	partToCalculate: PreCalculatedItemPart;
+	orderDimensions: OrderDimensions;
+};
+
 export type PPDimensions = {
 	up: number;
 	down: number;

@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
-import { OrderApiGateway } from '@/gateway/order-api.gateway';
 import { orderStatusMap } from '@/shared/mappings/order.mapping';
+import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import type { FullOrder } from '@marcsimolduressonsardina/core/type';
@@ -127,12 +127,19 @@ export class ListStateClass implements ListState {
 		}
 
 		if (this.isAdmin) {
-			const response = await getGlobalProfiler().measure(
-				OrderApiGateway.getOrderList(status, lastKey)
-			);
-			const body = response;
+			const listResponse = fetch('/api/orders/list', {
+				method: 'POST',
+				body: JSON.stringify({ lastKey, status }),
+				headers: {
+					'content-type': 'application/json'
+				}
+			});
+
+			const response = await getGlobalProfiler().measure(listResponse);
+			const body: { orders: FullOrder[]; nextKey?: Record<string, string | number> } =
+				await response.json();
 			this.lastKey = body.nextKey;
-			return body.orders;
+			return OrderRepresentationUtilities.hydrateFullOrderDates(body.orders);
 		} else {
 			this.lastKey = undefined;
 			return [];
@@ -148,7 +155,16 @@ export class ListStateClass implements ListState {
 			return [];
 		}
 
-		const response = await getGlobalProfiler().measure(OrderApiGateway.searchOrders(query, status));
-		return response;
+		const listResponse = fetch('/api/orders/search', {
+			method: 'POST',
+			body: JSON.stringify({ query, status }),
+			headers: {
+				'content-type': 'application/json'
+			}
+		});
+
+		const response = await getGlobalProfiler().measure(listResponse);
+		const body: { results: FullOrder[] } = await response.json();
+		return OrderRepresentationUtilities.hydrateFullOrderDates(body.results);
 	}
 }

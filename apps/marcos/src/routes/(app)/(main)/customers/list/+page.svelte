@@ -6,7 +6,6 @@
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
 
 	let customers: Customer[] = $state([]);
 	let loading = $state(false);
@@ -14,7 +13,19 @@
 
 	async function loadCustomers() {
 		loading = true;
-		const customerPaginationResponse = await CustomerApiGateway.getCustomerList(lastKey);
+		const response = await fetch('/api/customers/list', {
+			method: 'POST',
+			body: JSON.stringify({ lastKey }),
+			headers: {
+				'content-type': 'application/json'
+			}
+		});
+
+		const customerPaginationResponse = (await response.json()) as {
+			customers: Customer[];
+			lastKey?: Record<string, string | number>;
+		};
+
 		customers = [...customers, ...customerPaginationResponse.customers];
 		lastKey = customerPaginationResponse.lastKey;
 		loading = false;
