@@ -46,7 +46,7 @@ async function calculatePart(
 		return {
 			part: undefined,
 			key,
-			errorMessage: error instanceof InvalidSizeError ? error.message : 'Error computing the price'
+			errorMessage: error instanceof InvalidSizeError ? error.message : 'Error calculando el precio'
 		};
 	}
 }

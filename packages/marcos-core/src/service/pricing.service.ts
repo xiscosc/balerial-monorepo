@@ -8,7 +8,8 @@ import {
 	getCrossbarPrice,
 	linearPricing,
 	fitAreaM2Pricing,
-	linearPricingShortSide
+	linearPricingShortSide,
+	leftoverPricing12
 } from '../data/static-pricing';
 import type { ListPriceDto } from '../repository/dto/list-price.dto';
 import { ListPricingRepositoryDynamoDb } from '../repository/dynamodb/list-pricing.repository.dynamodb';
@@ -247,6 +248,7 @@ export class PricingService {
 	): { d1: number; d2: number } {
 		switch (formula) {
 			case PricingFormula.FORMULA_LEFTOVER:
+			case PricingFormula.FORMULA_LEFTOVER_12:
 				return PricingService.cleanAndOrderWorkingDimensions(orderDimensions);
 			case PricingFormula.FORMULA_FIT_AREA:
 			case PricingFormula.FORMULA_FIT_AREA_M2:
@@ -278,6 +280,8 @@ export class PricingService {
 		switch (priceInfo.formula) {
 			case PricingFormula.FORMULA_LEFTOVER:
 				return leftoverPricing(priceInfo.price, d1, d2);
+			case PricingFormula.FORMULA_LEFTOVER_12:
+				return leftoverPricing12(priceInfo.price, d1, d2);
 			case PricingFormula.FORMULA_FIT_AREA:
 				return fitAreaPricing(priceInfo, d1, d2);
 			case PricingFormula.FORMULA_FIT_AREA_M2:
