@@ -12,13 +12,16 @@
 	import { IconType } from '@/components/generic/icon/icon.enum.js';
 	import Input from '@/components/ui/input/input.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
+	import { SearchCustomerState } from '@/state/search/search-customer.state.svelte';
+
 	let { data } = $props();
 	const { form, enhance, submitting } = superForm(data.form);
 
 	let searchQuery = $state('');
 
 	function triggerSearch() {
-		goto(`/customers/search-list?query=${btoa(searchQuery)}`);
+		SearchCustomerState.setSearchValue(searchQuery);
+		goto(`/customers/search-list`);
 	}
 </script>
 

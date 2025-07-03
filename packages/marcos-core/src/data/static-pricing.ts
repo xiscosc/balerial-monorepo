@@ -21,10 +21,11 @@ export function getCrossbarPrice(mPrice: number, d1: number): number {
 }
 
 export function leftoverPricing(m2Price: number, d1: number, d2: number): number {
-	const d1Min = Math.max(15, d1);
-	const d2Min = Math.max(15, d2);
-	const x = (d1Min / 100) * (d2Min / 100) * m2Price * defaultTax * 5 + 2;
-	return Math.ceil(x * 10) / 10;
+	return calculateLeftoverPricing(m2Price, d1, d2, 5);
+}
+
+export function leftoverPricing12(m2Price: number, d1: number, d2: number): number {
+	return calculateLeftoverPricing(m2Price, d1, d2, 12);
 }
 
 export function areaPricing(m2Price: number, d1: number, d2: number): number {
@@ -107,4 +108,11 @@ function sortByAreaAndPerimeter(data: MaxArea[]): MaxArea[] {
 
 function sortByArea(arr: MaxAreaM2[]): MaxAreaM2[] {
 	return arr.sort((x, y) => x.a - y.a);
+}
+
+function calculateLeftoverPricing(m2Price: number, d1: number, d2: number, factor: number): number {
+	const d1Min = Math.max(15, d1);
+	const d2Min = Math.max(15, d2);
+	const x = (d1Min / 100) * (d2Min / 100) * m2Price * defaultTax * factor + 2;
+	return Math.ceil(x * 10) / 10;
 }

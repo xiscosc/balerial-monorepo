@@ -13,6 +13,7 @@ export enum PricingType {
 export enum PricingFormula {
 	FORMULA_LINEAR = 'formula_linear',
 	FORMULA_LEFTOVER = 'formula_leftover',
+	FORMULA_LEFTOVER_12 = 'formula_leftover_12',
 	FORMULA_FIT_AREA = 'formula_fit_area',
 	FORMULA_AREA = 'formula_area',
 	FORMULA_LINEAR_SHORT_SIDE = 'formula_linear_short_side',

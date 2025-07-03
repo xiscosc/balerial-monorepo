@@ -260,6 +260,7 @@ export class OrderService {
 	async moveQuoteToOrder(order: Order, deliveryDate: Date): Promise<Order> {
 		if (order.status !== OrderStatus.QUOTE) return order;
 		order.createdAt = DateTime.now().toJSDate();
+		order.user = this.config.user;
 		order.item.deliveryDate = deliveryDate;
 		order.status = OrderStatus.PENDING;
 		const newDto = OrderService.toDto(order);
@@ -279,6 +280,7 @@ export class OrderService {
 		const oldStatus = order.status;
 		order.createdAt = DateTime.now().toJSDate();
 		order.item.deliveryDate = quoteDeliveryDate;
+		order.user = this.config.user;
 		order.status = OrderStatus.QUOTE;
 		order.notified = false;
 		order.amountPayed = 0;

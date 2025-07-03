@@ -4,6 +4,7 @@
 	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 
 	interface Props {
 		label: string;
@@ -34,7 +35,7 @@
 
 		const tempLabel = label;
 		label = 'Cargando...';
-		const promises = orders.map((order) => notifySingleOrder(order.id));
+		const promises = orders.map((order) => OrderApiGateway.notifyOrder(order.id));
 		await Promise.all(promises);
 		label = `${tempLabel}`;
 
@@ -45,15 +46,6 @@
 		});
 
 		handleAfterNotify();
-	}
-
-	async function notifySingleOrder(orderId: string) {
-		fetch(`/api/orders/${orderId}/notify`, {
-			method: 'GET',
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
 	}
 
 	function trackWhatsAppClicked() {

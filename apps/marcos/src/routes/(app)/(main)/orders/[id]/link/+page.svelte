@@ -15,6 +15,7 @@
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
 
 	interface Props {
 		data: PageData;
@@ -34,17 +35,10 @@
 			return;
 		}
 
-		const listResponse = fetch('/api/customers/search', {
-			method: 'POST',
-			body: JSON.stringify({ query: searchQuery }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		const response = await getGlobalProfiler().measure(listResponse);
-		const body: { customers: Customer[] } = await response.json();
-		customers = [...body.customers];
+		const responseCustomers = await getGlobalProfiler().measure(
+			CustomerApiGateway.searchCustomers(searchQuery)
+		);
+		customers = [...responseCustomers];
 		loading = false;
 		firstTimeSearch = false;
 	}

@@ -26,7 +26,8 @@ export const formulasMap: Record<PricingFormula, string> = {
 	[PricingFormula.FORMULA_FIT_AREA]: 'Precio por trozos (≤ d1 x d2)',
 	[PricingFormula.FORMULA_LINEAR_SHORT_SIDE]: 'Precio por metro lineal (sólo medida corta)',
 	[PricingFormula.FORMULA_LINEAR]: 'Precio por metro lineal (perímetro)',
-	[PricingFormula.FORMULA_LEFTOVER]: 'Precio con fórmula m2 * precio * IVA * 5 + 2'
+	[PricingFormula.FORMULA_LEFTOVER]: 'Precio con fórmula m2 * precio * IVA * 5 + 2',
+	[PricingFormula.FORMULA_LEFTOVER_12]: 'Precio con fórmula m2 * precio * IVA * 12 + 2'
 };
 
 export const formulasStringMap: Record<PricingFormula, string> = {
@@ -36,5 +37,6 @@ export const formulasStringMap: Record<PricingFormula, string> = {
 	[PricingFormula.FORMULA_FIT_AREA_M2]: '',
 	[PricingFormula.FORMULA_LINEAR]: ' / m',
 	[PricingFormula.FORMULA_LINEAR_SHORT_SIDE]: ' / m',
-	[PricingFormula.FORMULA_LEFTOVER]: ' * m2 * IVA * 5 + 2'
+	[PricingFormula.FORMULA_LEFTOVER]: ' * m2 * IVA * 5 + 2',
+	[PricingFormula.FORMULA_LEFTOVER_12]: ' * m2 * IVA * 12 + 2'
 };

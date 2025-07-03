@@ -25,6 +25,7 @@ const listPriceSchema = {
 	type: z.enum(newEditablePricingTypes as [string, ...string[]]),
 	formula: z.enum([
 		PricingFormula.FORMULA_LEFTOVER,
+		PricingFormula.FORMULA_LEFTOVER_12,
 		PricingFormula.FORMULA_FIT_AREA,
 		PricingFormula.FORMULA_FIT_AREA_M2,
 		PricingFormula.FORMULA_AREA,
