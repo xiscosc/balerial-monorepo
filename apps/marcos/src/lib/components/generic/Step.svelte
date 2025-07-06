@@ -54,7 +54,7 @@
 				</div>
 				{#if quantity > 1}
 					<span
-						class="absolute -right-1 -top-1 rounded-full border border-red-800 bg-red-500 px-1 text-xs font-medium text-white"
+						class="animate-in zoom-in-50 absolute -right-1 -top-1 rounded-full border border-red-800 bg-red-500 px-1 text-xs font-medium text-white transition-all duration-300 ease-out"
 					>
 						{quantity}
 					</span>

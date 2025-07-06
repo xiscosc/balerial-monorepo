@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { dateProxy, superForm } from 'sveltekit-superforms';
 	import { Toaster, toast } from 'svelte-sonner';
-
-	import type { PreCalculatedItemPartRequest } from '@/type/api.type';
 	import {
 		type CalculatedItemPart,
 		type ListPrice,
-		type ListPriceWithMold,
 		type PPDimensions,
 		type PreCalculatedItemPart,
 		PricingType,
@@ -41,17 +38,16 @@
 	import {
 		CalculatedItemUtilities,
 		cornersId,
-		fabricDefaultPricing,
-		fabricIds,
-		otherExtraId,
-		PricingUtilites
+		otherExtraId
 	} from '@marcsimolduressonsardina/core/util';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { GenericTools } from '@/shared/generic/generic.tools';
-
-	type TempParts = { pre: PreCalculatedItemPart; post: CalculatedItemPart }[];
+	import {
+		OrderFormItemsState,
+		type OrderItem
+	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -62,6 +58,7 @@
 	}
 
 	let { data, title, isNew = true, children = undefined, isExternal = false }: Props = $props();
+	const orderFormItemsState = new OrderFormItemsState();
 	let profiledPrices = $derived(getGlobalProfiler().measure(data.pricing));
 
 	const { form, errors, enhance, submitting } = superForm(data.form, {
@@ -69,6 +66,7 @@
 	});
 	const proxyDate = dateProxy(form, 'deliveryDate', { format: 'date' });
 
+	let loadingInitialParts = $state(true);
 	if (isNew) {
 		$form.height = ($form.height === 0 ? '' : $form.height) as unknown as number;
 		$form.width = ($form.width === 0 ? '' : $form.width) as unknown as number;
@@ -85,19 +83,6 @@
 	let predefinedObservations: string[] = $state(
 		$form.predefinedObservations.length > 0 ? $form.predefinedObservations : []
 	);
-	let partsToCalculate: PreCalculatedItemPart[] = $state.raw(
-		$form.partsToCalculate.length > 0
-			? $form.partsToCalculate.map((p) => ({ ...p, type: p.type as PricingType }))
-			: []
-	);
-
-	let partsToCalulatePreview: TempParts = $state.raw([]);
-	let extraParts: CalculatedItemPart[] = $state.raw(
-		$form.extraParts.length > 0 ? $form.extraParts : [CalculatedItemUtilities.getCornersPricing()]
-	);
-
-	// Fabric vars
-	let fabricPrices: ListPriceWithMold[] = $state([fabricDefaultPricing]);
 
 	// PP vars
 	let asymetricPP = $state($form.ppDimensions != null);
@@ -132,32 +117,13 @@
 	let otherQuantity: string = $state('1');
 
 	async function handleDimensionsChangeEvent() {
-		if (partsToCalulatePreview.length > 0) {
+		orderFormItemsState.setOrderDimensions(getOrderDimensions());
+		orderFormItemsState.setMarkup($form.markup);
+		if (!orderFormItemsState.isEmpty()) {
 			toast.info(`Las dimensiones han cambiado, recalculando el precio...`);
-
-			const promises = partsToCalculate.map((p) => getPartToCalculateWihtPre(p));
-			const parts = (await Promise.all(promises)).filter((p) => p != null) as {
-				pre: PreCalculatedItemPart;
-				post: CalculatedItemPart;
-			}[];
-
-			const validatedParts = parts.map((p) => p.pre);
-			partsToCalculate = validatedParts;
-			$form.partsToCalculate = partsToCalculate;
-			partsToCalulatePreview = parts;
+			await orderFormItemsState.updateAllOrderItems(showError);
 			toast.success(`Precios actualizados`);
 		}
-	}
-
-	async function getPartToCalculateWihtPre(
-		partToCalculate: PreCalculatedItemPart
-	): Promise<{ pre: PreCalculatedItemPart; post: CalculatedItemPart } | undefined> {
-		const part = await getPartToCalculate(partToCalculate);
-		if (!part) {
-			return;
-		}
-
-		return { pre: partToCalculate, post: part };
 	}
 
 	function extractNumber(input: string | number): number {
@@ -177,6 +143,14 @@
 		return typeof input === 'number' && !isNaN(input);
 	}
 
+	function showError(id: string, errorMessage?: string) {
+		if (errorMessage) {
+			toast.error(errorMessage);
+		} else {
+			toast.error(`Error al calcular el precio. Puede ser que el precio ya no exista (${id}).`);
+		}
+	}
+
 	function getOrderDimensions() {
 		const width = $form.width;
 		const height = $form.height;
@@ -193,27 +167,21 @@
 		}
 	}
 
-	function deletePrecalculatedPreview(part: {
-		pre: PreCalculatedItemPart;
-		post: CalculatedItemPart;
-	}) {
-		partsToCalulatePreview = partsToCalulatePreview.filter((p) => p !== part);
-		partsToCalculate = partsToCalculate.filter((p) => p !== part.pre);
-		$form.partsToCalculate = partsToCalculate;
+	function deletePrecalculatedPreview(part: OrderItem) {
+		orderFormItemsState.deletePart(part.pre);
 	}
 
 	function deleteExtraPart(part: CalculatedItemPart) {
-		extraParts = extraParts.filter((p) => p !== part);
-		extraParts = [...extraParts];
-		$form.extraParts = extraParts;
+		orderFormItemsState.removeOtherItem(part);
 	}
 
 	function updateMarkupOnCorners() {
-		const cornersPart = extraParts.find((p) => p.priceId === cornersId);
+		const cornersPart = orderFormItemsState.getOtherItems().find((p) => p.priceId === cornersId);
 		if (cornersPart) {
-			deleteExtraPart(cornersPart);
-			extraParts = [...extraParts, CalculatedItemUtilities.getCornersPricing($form.markup ?? 0)];
-			$form.extraParts = extraParts;
+			orderFormItemsState.removeOtherItem(cornersPart);
+			orderFormItemsState.addOtherItem(
+				CalculatedItemUtilities.getCornersPricing($form.markup ?? 0)
+			);
 		}
 	}
 
@@ -235,57 +203,7 @@
 			extraInfo
 		};
 
-		await processPartToCalculate(partToCalculate);
-	}
-
-	async function processPartToCalculate(partToCalculate: PreCalculatedItemPart) {
-		const part = await getPartToCalculate(partToCalculate);
-		if (!part) {
-			return;
-		}
-
-		partsToCalulatePreview = [...partsToCalulatePreview, { pre: partToCalculate, post: part }];
-		partsToCalculate = [...partsToCalculate, partToCalculate];
-		$form.partsToCalculate = partsToCalculate;
-	}
-
-	async function getPartToCalculate(
-		partToCalculate: PreCalculatedItemPart
-	): Promise<CalculatedItemPart | undefined> {
-		const orderDimensions = getOrderDimensions();
-		const markup = $form.markup;
-		const request: PreCalculatedItemPartRequest = {
-			orderDimensions,
-			partToCalculate,
-			markup: markup ?? 0
-		};
-		const response = await fetch('/api/prices', {
-			method: 'POST',
-			body: JSON.stringify(request),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		if (response.status !== 200) {
-			if (response.status === 500) {
-				toast.error(
-					`Error al calcular el precio. Puede ser que el precio ya no exista (${partToCalculate.id}).`
-				);
-			}
-
-			if (response.status === 400) {
-				const errorResponse = await response.json();
-				toast.error(
-					errorResponse.error ?? 'Error al calcular el precio. Por favor, revise los datos.'
-				);
-			}
-
-			return;
-		}
-
-		const part = (await response.json()) as CalculatedItemPart;
-		return part;
+		orderFormItemsState.addParts([partToCalculate], showError);
 	}
 
 	async function addOtherElementsFromSelector(id: string, quantity: number) {
@@ -307,7 +225,7 @@
 				type: selected.type
 			};
 
-			await processPartToCalculate(partToCalculate);
+			await orderFormItemsState.addParts([partToCalculate], showError);
 		}
 	}
 
@@ -321,8 +239,7 @@
 				discountAllowed: true,
 				floating: false
 			};
-			extraParts = [part, ...extraParts];
-			$form.extraParts = extraParts;
+			orderFormItemsState.addOtherItem(part);
 		}
 
 		// Reset the inputs
@@ -332,7 +249,7 @@
 	}
 
 	function updateTotal(
-		parts: TempParts,
+		parts: OrderItem[],
 		eParts: CalculatedItemPart[],
 		discount: string,
 		quantity: number
@@ -378,38 +295,6 @@
 
 		totalHeightBox = totalHeight;
 		totalWidthBox = totalWidth;
-	}
-
-	function updateFabricPrices(moldPartsToCalculate: TempParts) {
-		const newPrices = [fabricDefaultPricing];
-		const orderDimensions = getOrderDimensions();
-		const sortedMolds = moldPartsToCalculate.sort();
-
-		// Remove duplicates
-		const sortedMoldsMap = new Map<
-			string,
-			{ pre: PreCalculatedItemPart; post: CalculatedItemPart }
-		>(sortedMolds.map((t) => [t.pre.id, t]));
-
-		sortedMoldsMap.values().forEach((t) => {
-			[fabricIds.long, fabricIds.short].forEach((id) => {
-				newPrices.push(
-					PricingUtilites.generateCrossbarPricing(
-						id,
-						0,
-						t.post.description,
-						PricingUtilites.getFabricCrossbarDimension(
-							id,
-							orderDimensions.totalHeight,
-							orderDimensions.totalWidth
-						),
-						t.pre.id
-					)
-				);
-			});
-		});
-
-		fabricPrices = newPrices;
 	}
 
 	function calculateMissingLabels(
@@ -491,7 +376,7 @@
 	}
 
 	function calculateAddedPPMeasures(
-		parts: TempParts,
+		parts: OrderItem[],
 		asymetricPP: boolean,
 		ppIsNumber: boolean,
 		ppValue: number
@@ -511,7 +396,10 @@
 		return false;
 	}
 
-	function calculateAddedFloatingDistance(moldParts: TempParts, floatingDistance: number): boolean {
+	function calculateAddedFloatingDistance(
+		moldParts: OrderItem[],
+		floatingDistance: number
+	): boolean {
 		const floatingMoldsCount = moldParts.filter((p) => p.post.floating).length;
 		if (floatingDistance === 0 && floatingMoldsCount === 0) {
 			return true;
@@ -525,7 +413,7 @@
 	}
 
 	function calculateAddedAsymetricPPMeasures(
-		parts: TempParts,
+		parts: OrderItem[],
 		asymetricPP: boolean,
 		upIsNumber: boolean,
 		upValue: number,
@@ -570,32 +458,16 @@
 
 	// Added vars
 	let exteriorDimensions = $derived($form.dimenstionsType === DimensionsType.EXTERIOR);
-	let addedOther = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.OTHER).length > 0
-	);
-	let addedPP = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP).length > 0
-	);
-	let addedHanger = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.HANGER).length > 0
-	);
-	let addedTransport = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.TRANSPORT).length > 0
-	);
-	let addedBack = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.BACK).length > 0
-	);
+	let addedOther = $derived(orderFormItemsState.typeIsAdded(PricingType.OTHER));
+	let addedPP = $derived(orderFormItemsState.typeIsAdded(PricingType.PP));
+	let addedHanger = $derived(orderFormItemsState.typeIsAdded(PricingType.HANGER));
+	let addedTransport = $derived(orderFormItemsState.typeIsAdded(PricingType.TRANSPORT));
+	let addedBack = $derived(orderFormItemsState.typeIsAdded(PricingType.BACK));
 	let addedLabour = $derived(
-		partsToCalulatePreview.filter((p) =>
-			[PricingType.FABRIC, PricingType.LABOUR].includes(p.pre.type)
-		).length > 0
+		orderFormItemsState.typeIsAdded([PricingType.FABRIC, PricingType.LABOUR])
 	);
-	let addedMold = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD).length > 0
-	);
-	let addedGlass = $derived(
-		partsToCalulatePreview.filter((p) => p.pre.type === PricingType.GLASS).length > 0
-	);
+	let addedMold = $derived(orderFormItemsState.typeIsAdded(PricingType.MOLD));
+	let addedGlass = $derived(orderFormItemsState.typeIsAdded(PricingType.GLASS));
 	let addedObservations = $derived(
 		$form.observations.length > 0 || $form.predefinedObservations.length > 0
 	);
@@ -608,19 +480,19 @@
 	);
 	let addedFloatingDistance = $derived(
 		calculateAddedFloatingDistance(
-			partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD),
+			orderFormItemsState.getOrderItemsByType(PricingType.MOLD),
 			$form.floatingDistance
 		)
 	);
 	let addedPPMeaseures = $derived(
 		calculateAddedPPMeasures(
-			partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP),
+			orderFormItemsState.getOrderItemsByType(PricingType.PP),
 			asymetricPP,
 			isValidNumber($form.pp),
 			extractNumber($form.pp)
 		) &&
 			calculateAddedAsymetricPPMeasures(
-				partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP),
+				orderFormItemsState.getOrderItemsByType(PricingType.PP),
 				asymetricPP,
 				isValidNumber(upPP),
 				extractNumber(upPP),
@@ -652,12 +524,9 @@
 		)
 	);
 
-	let orderedItems = $derived<TempParts>(
-		CalculatedItemUtilities.sortByPricingType([...partsToCalulatePreview], ['pre', 'type'])
-	);
 	let discountActive = $derived($form.discount !== '' && parseInt($form.discount) > 0);
 	let isDiscountNotAllowedPresent = $derived(
-		orderedItems.find((part) => !part.post.discountAllowed) != null && discountActive
+		orderFormItemsState.hasItemsWithDiscountNotAllowed() && discountActive
 	);
 
 	$effect(() => {
@@ -680,36 +549,42 @@
 	});
 
 	$effect(() => {
-		updateFabricPrices(partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD));
+		updateTotal(
+			orderFormItemsState.getOrderItems(),
+			orderFormItemsState.getOtherItems(),
+			$form.discount,
+			$form.quantity
+		);
 	});
 
 	$effect(() => {
-		updateTotal(partsToCalulatePreview, extraParts, $form.discount, $form.quantity);
+		if (!loadingInitialParts) {
+			$form.partsToCalculate = orderFormItemsState.getOrderItems().map((item) => item.pre);
+			$form.extraParts = orderFormItemsState.getOtherItems();
+		}
 	});
 
 	onMount(async () => {
-		if (partsToCalculate.length > 0) {
-			const promises = partsToCalculate.map((p) => getPartToCalculateWihtPre(p));
-			const parts = (await Promise.all(promises)).filter((p) => p != null) as {
-				pre: PreCalculatedItemPart;
-				post: CalculatedItemPart;
-			}[];
-
-			const validatedParts = parts.map((p) => p.pre);
-			partsToCalculate = validatedParts;
-			$form.partsToCalculate = partsToCalculate;
-			partsToCalulatePreview = parts;
+		orderFormItemsState.setOrderDimensions(getOrderDimensions());
+		orderFormItemsState.setMarkup($form.markup);
+		if ($form.partsToCalculate.length > 0) {
+			await orderFormItemsState.setInitialParts(
+				$form.partsToCalculate as PreCalculatedItemPart[],
+				showError
+			);
 			toast.success(`Precios actualizados`);
-		} else {
-			$form.partsToCalculate = partsToCalculate;
 		}
 
-		$form.extraParts = extraParts;
+		orderFormItemsState.setInitialOtherItems(
+			$form.extraParts.length > 0 ? $form.extraParts : [CalculatedItemUtilities.getCornersPricing()]
+		);
+
 		$form.predefinedObservations = predefinedObservations;
+		loadingInitialParts = false;
 	});
 </script>
 
-{#snippet cartItemList(parts: TempParts)}
+{#snippet cartItemList(parts: OrderItem[])}
 	<div class="flex flex-col gap-2 lg:col-span-2">
 		{#each parts as part (part)}
 			<CartItem
@@ -735,538 +610,530 @@
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.FORM}>{title}</SimpleHeading>
 
-	<form use:enhance method="post">
-		<div class="flex flex-col gap-2">
-			{#if $submitting}
-				<Box>
-					<ProgressBar text="Guardando" />
-				</Box>
-			{:else}
-				{#if isExternal}
+	{#if loadingInitialParts}
+		<Box>
+			<ProgressBar text="Iniciando edición del pedido..." />
+		</Box>
+	{:else}
+		<form use:enhance method="post">
+			<div class="flex flex-col gap-2">
+				{#if $submitting}
 					<Box>
-						<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
-							<Spacer title="Datos tienda externa" line={false} />
-							<div class="flex flex-col gap-2 lg:col-span-2">
-								<Label for="height">Margen (%):</Label>
-								<Input
-									type="number"
-									step="1"
-									min="0"
-									name="height"
-									bind:value={$form.markup}
-									onchange={() => {
-										handleDimensionsChangeEvent();
-										updateMarkupOnCorners();
-									}}
-								/>
-							</div>
-						</div>
+						<ProgressBar text="Guardando" />
 					</Box>
-				{/if}
-				<Box>
-					{#await profiledPrices}
-						<ProgressBar text="Cargando precios" />
-					{:then pricing}
-						<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
-							<Spacer title="Datos de la obra" line={false} />
-
-							<div class="flex flex-col gap-2">
-								<Label for="height">Alto (cm):</Label>
-								<Input
-									type="number"
-									step="0.01"
-									name="height"
-									onchange={() => handleDimensionsChangeEvent()}
-									bind:value={$form.height}
-									success={$form.height > 10}
-									error={$errors.height ? true : false}
-								/>
+				{:else}
+					{#if isExternal}
+						<Box>
+							<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
+								<Spacer title="Datos tienda externa" line={false} />
+								<div class="flex flex-col gap-2 lg:col-span-2">
+									<Label for="height">Margen (%):</Label>
+									<Input
+										type="number"
+										step="1"
+										min="0"
+										name="height"
+										bind:value={$form.markup}
+										onchange={() => {
+											handleDimensionsChangeEvent();
+											updateMarkupOnCorners();
+										}}
+									/>
+								</div>
 							</div>
+						</Box>
+					{/if}
+					<Box>
+						{#await profiledPrices}
+							<ProgressBar text="Cargando precios" />
+						{:then pricing}
+							<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
+								<Spacer title="Datos de la obra" line={false} />
 
-							<div class="flex flex-col gap-2">
-								<Label for="width">Ancho (cm):</Label>
-								<Input
-									type="number"
-									step="0.01"
-									name="width"
-									onchange={() => handleDimensionsChangeEvent()}
-									bind:value={$form.width}
-									success={$form.width > 10}
-									error={$errors.width ? true : false}
-								/>
-							</div>
-
-							<PricingSelectorSection
-								sectionTitle="PP / Fondo"
-								label="Tipo"
-								prices={pricing.ppPrices}
-								addValue={addFromPricingSelector}
-								showExtraInfo={true}
-								added={addedPP}
-							>
-								<div class="flex flex-1 flex-col gap-2">
-									<Label for="pp">Medida PP (cm):</Label>
+								<div class="flex flex-col gap-2">
+									<Label for="height">Alto (cm):</Label>
 									<Input
 										type="number"
 										step="0.01"
-										name="pp"
+										name="height"
 										onchange={() => handleDimensionsChangeEvent()}
-										bind:value={$form.pp}
-										success={addedPPMeaseures}
-										disabled={asymetricPP}
-										error={$errors.pp ? true : false}
+										bind:value={$form.height}
+										success={$form.height > 10}
+										error={$errors.height ? true : false}
 									/>
+								</div>
+
+								<div class="flex flex-col gap-2">
+									<Label for="width">Ancho (cm):</Label>
+									<Input
+										type="number"
+										step="0.01"
+										name="width"
+										onchange={() => handleDimensionsChangeEvent()}
+										bind:value={$form.width}
+										success={$form.width > 10}
+										error={$errors.width ? true : false}
+									/>
+								</div>
+
+								<PricingSelectorSection
+									sectionTitle="PP / Fondo"
+									label="Tipo"
+									prices={pricing.ppPrices}
+									addValue={addFromPricingSelector}
+									showExtraInfo={true}
+									added={addedPP}
+								>
+									<div class="flex flex-1 flex-col gap-2">
+										<Label for="pp">Medida PP (cm):</Label>
+										<Input
+											type="number"
+											step="0.01"
+											name="pp"
+											onchange={() => handleDimensionsChangeEvent()}
+											bind:value={$form.pp}
+											success={addedPPMeaseures}
+											disabled={asymetricPP}
+											error={$errors.pp ? true : false}
+										/>
+									</div>
+
+									<div
+										class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+									>
+										<Label for="pp">PP Asimétrico</Label>
+										<Switch
+											name="ppAsymetric"
+											bind:checked={asymetricPP}
+											onchange={() => handleDimensionsChangeEvent()}
+										/>
+									</div>
+
+									{#if asymetricPP}
+										<Spacer title="Medidas PP (cm)" />
+
+										<div class="flex flex-col gap-2">
+											<Label for="upPP">Arriba:</Label>
+											<Input
+												type="number"
+												step="0.01"
+												name="upPP"
+												onchange={() => handleDimensionsChangeEvent()}
+												bind:value={upPP}
+												success={addedPPMeaseures}
+											/>
+										</div>
+
+										<div class="flex flex-col gap-2">
+											<Label for="downPP">Abajo:</Label>
+											<Input
+												type="number"
+												step="0.01"
+												name="downPP"
+												onchange={() => handleDimensionsChangeEvent()}
+												bind:value={downPP}
+												success={addedPPMeaseures}
+											/>
+										</div>
+
+										<div class="flex flex-col gap-2">
+											<Label for="leftPP">Izquierda:</Label>
+											<Input
+												type="number"
+												step="0.01"
+												name="leftPP"
+												onchange={() => handleDimensionsChangeEvent()}
+												bind:value={leftPP}
+												success={addedPPMeaseures}
+											/>
+										</div>
+
+										<div class="flex flex-col gap-2">
+											<Label for="rightPP">Derecha:</Label>
+											<Input
+												type="number"
+												step="0.01"
+												name="rightPP"
+												onchange={() => handleDimensionsChangeEvent()}
+												bind:value={rightPP}
+												success={addedPPMeaseures}
+											/>
+										</div>
+									{/if}
+								</PricingSelectorSection>
+
+								{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.PP))}
+
+								<Spacer title="Medidas de trabajo" />
+
+								<div class="grid grid-cols-1 lg:col-span-2">
+									<div class="rounded-md border-2 border-gray-300 p-4">
+										<p class="text-center text-xl text-gray-600">
+											Alto: {totalHeightBox}cm | Ancho: {totalWidthBox}cm
+										</p>
+									</div>
+								</div>
+
+								<div class="col-span-2 flex flex-row justify-between text-sm font-medium">
+									<label class="flex items-center space-x-2">
+										<input
+											class="radio"
+											type="radio"
+											checked
+											name="radio-direct"
+											bind:group={$form.dimenstionsType}
+											value={DimensionsType.NORMAL}
+										/>
+										<p>Nor.</p>
+									</label>
+									<label class="flex items-center space-x-2">
+										<input
+											class="radio"
+											type="radio"
+											bind:group={$form.dimenstionsType}
+											name="radio-direct"
+											value={DimensionsType.EXTERIOR}
+										/>
+										<p>Ext.</p>
+									</label>
+									<label class="flex items-center space-x-2">
+										<input
+											class="radio"
+											type="radio"
+											name="radio-direct"
+											bind:group={$form.dimenstionsType}
+											value={DimensionsType.ROUNDED}
+										/>
+										<p>Redo.</p>
+									</label>
+									<label class="flex items-center space-x-2">
+										<input
+											class="radio"
+											type="radio"
+											name="radio-direct"
+											bind:group={$form.dimenstionsType}
+											value={DimensionsType.WINDOW}
+										/>
+										<p>Vent.</p>
+									</label>
+								</div>
+
+								{#if exteriorDimensions}
+									<div class="flex flex-col gap-2">
+										<Label for="exteriorHeight">Alto Exterior (cm):</Label>
+										<Input
+											type="number"
+											step="0.01"
+											name="exteriorHeight"
+											bind:value={$form.exteriorHeight}
+											success={$form.exteriorHeight != null && $form.exteriorHeight > 0}
+										/>
+									</div>
+
+									<div class="flex flex-col gap-2">
+										<Label for="exteriorWidth">Ancho Exterior (cm):</Label>
+										<Input
+											type="number"
+											step="0.01"
+											name="exteriorWidth"
+											bind:value={$form.exteriorWidth}
+											success={$form.exteriorWidth != null && $form.exteriorWidth > 0}
+										/>
+									</div>
+								{/if}
+
+								<AutocompleteSection
+									sectionTitle="Molduras"
+									label="Moldura/Marco"
+									prices={pricing.moldPrices}
+									addValue={addFromPricingSelector}
+									pricingType={PricingType.MOLD}
+									added={addedMold}
+								/>
+
+								{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.MOLD))}
+
+								<div class="flex flex-col gap-2">
+									<Label for="floatingDistance">Distancia flotante (cm):</Label>
+									<Input
+										type="number"
+										step="0.01"
+										min="0.00"
+										name="floatingDistance"
+										bind:value={$form.floatingDistance}
+										success={addedFloatingDistance}
+										onchange={() => handleDimensionsChangeEvent()}
+									/>
+								</div>
+
+								<PricingSelectorSection
+									sectionTitle="Cristal"
+									label="Tipo de cristal"
+									prices={pricing.glassPrices}
+									addValue={addFromPricingSelector}
+									added={addedGlass}
+								/>
+
+								{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.GLASS))}
+
+								<PricingSelectorSection
+									sectionTitle="Trasera"
+									label="Tipo de trasera"
+									prices={pricing.backPrices}
+									addValue={addFromPricingSelector}
+									added={addedBack}
+								/>
+
+								{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.BACK))}
+
+								<PricingSelectorSection
+									sectionTitle="Montajes"
+									label="Tipo de montaje"
+									prices={pricing.labourPrices}
+									extraPrices={orderFormItemsState.getFabricPrices()}
+									locationIdForExtraPrices="CINTA_CANTO_LIENZO_BLANCA"
+									addValue={addFromPricingSelector}
+									added={addedLabour}
+								/>
+
+								{@render cartItemList(
+									orderFormItemsState.getOrderItemsByType([PricingType.LABOUR, PricingType.FABRIC])
+								)}
+
+								<PricingSelectorWithQuantitySection
+									added={addedHanger}
+									sectionTitle="Colgadores"
+									label="Colgador"
+									prices={pricing.hangerPrices}
+									addItem={addHangerElementsFromSelector}
+								/>
+
+								{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.HANGER))}
+
+								<PricingSelectorWithQuantitySection
+									added={addedOther}
+									sectionTitle="Suministros"
+									label="Elemento"
+									prices={pricing.otherPrices}
+									addItem={addOtherElementsFromSelector}
+								/>
+
+								{@render cartItemList(orderFormItemsState.getOrderItemsByType(PricingType.OTHER))}
+
+								<PricingSelectorSection
+									sectionTitle="Transporte"
+									label="Tipo de transporte"
+									prices={pricing.transportPrices}
+									addValue={addFromPricingSelector}
+									added={addedTransport}
+								/>
+
+								{@render cartItemList(
+									orderFormItemsState.getOrderItemsByType(PricingType.TRANSPORT)
+								)}
+
+								<Spacer title="Elementos extra" />
+
+								{#if isExternal}
+									<div class="col-span-2">
+										<Banner
+											icon={IconType.ALERT}
+											text="A los precios de los elementos extra no se les aplica el margen. Introduzca el precio con el margen ya aplicado."
+											color="amber"
+											title="Aviso"
+										></Banner>
+									</div>
+								{/if}
+
+								<div class="flex flex-col gap-2 lg:col-span-2">
+									<Label for="otherElementName">Nombre del elemento:</Label>
+									<Input type="text" name="otherElementName" bind:value={otherName} />
+								</div>
+
+								<div class="flex flex-col gap-2">
+									<Label for="otherElementPrice">Precio del elemento:</Label>
+									<Input
+										type="number"
+										step="0.01"
+										min="0"
+										name="otherElementPrice"
+										bind:value={otherPrice}
+									/>
+								</div>
+
+								<div class="flex flex-col gap-2">
+									<Label for="otherQuantityElements">Cantidad</Label>
+									<NativeSelect.Root name="otherQuantityElements" bind:value={otherQuantity}>
+										{#each GenericTools.getIterableStringList(10, 1) as i (i)}
+											<option value={i}>{i}</option>
+										{/each}
+									</NativeSelect.Root>
+								</div>
+
+								<div class="lg:col-span-2">
+									<Button
+										text="Añadir a la lista"
+										onClick={() => addOtherElement()}
+										icon={IconType.PLUS}
+										iconSize={IconSize.BIG}
+									></Button>
+								</div>
+
+								{@render cartItemExtraList(orderFormItemsState.getOtherItems())}
+
+								<Spacer title="Descripción de la obra" />
+
+								<div class="flex flex-col gap-2 lg:col-span-2">
+									<Label for="description">Descripción:</Label>
+									<Textarea
+										success={addedDescription}
+										name="description"
+										bind:value={$form.description}
+									></Textarea>
+								</div>
+
+								{#if $form.description.length === 0}
+									<ChipSet
+										values={defaultDescriptions}
+										bind:filledValues={$form.predefinedDescriptions}
+									/>
+								{/if}
+
+								<div class="flex flex-col gap-2 lg:col-span-2">
+									<Label for="observations">Observaciones:</Label>
+									<Textarea
+										success={addedObservations}
+										name="observations"
+										bind:value={$form.observations}
+									></Textarea>
+								</div>
+
+								<ChipSet
+									values={defaultObservations}
+									bind:filledValues={$form.predefinedObservations}
+								/>
+
+								<Spacer title="Otros datos" />
+
+								<div class="flex flex-col gap-2 lg:col-span-2">
+									<Label for="quantity">Cantidad:</Label>
+									<div
+										class="shadow-xs flex flex-row justify-between gap-3 rounded-md border p-2 lg:col-span-2"
+									>
+										<input
+											class="text-md w-full px-2"
+											type="number"
+											step="1"
+											min="1"
+											bind:value={$form.quantity}
+										/>
+
+										<div class="flex flex-row gap-2">
+											<Button
+												icon={IconType.PLUS}
+												buttonType={ButtonType.SMALL}
+												text=""
+												action={ButtonAction.CLICK}
+												onClick={() => {
+													$form.quantity += 1;
+												}}
+											></Button>
+											<Button
+												icon={IconType.MINUS}
+												textType={ButtonText.GRAY}
+												buttonType={ButtonType.SMALL}
+												style={ButtonStyle.ORDER_GENERIC}
+												action={ButtonAction.CLICK}
+												text=""
+												disabled={$form.quantity <= 1}
+												onClick={() => {
+													$form.quantity -= 1;
+												}}
+											></Button>
+										</div>
+									</div>
+								</div>
+
+								{#if !$form.instantDelivery}
+									<div class="flex flex-col gap-2">
+										<Label for="deliveryDate">Fecha de entrega (Sólo pedidos):</Label>
+										<Input
+											name="deliveryDate"
+											type="date"
+											bind:value={$proxyDate}
+											error={$errors.deliveryDate ? true : false}
+										/>
+									</div>
+								{/if}
+
+								<div
+									class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+									class:lg:col-span-2={$form.instantDelivery}
+								>
+									<Label for="instantDelivery">Al momento</Label>
+									<Switch name="instantDelivery" bind:checked={$form.instantDelivery} />
+								</div>
+
+								<div class="flex flex-col gap-2">
+									<Label for="discount">Descuento:</Label>
+									<NativeSelect.Root
+										name="discount"
+										bind:value={$form.discount}
+										success={addedDiscount}
+									>
+										<option></option>
+										{#each Object.entries(discountMap) as [key, value] (key)}
+											<option value={String(value)}>{key}</option>
+										{/each}
+									</NativeSelect.Root>
 								</div>
 
 								<div
 									class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
 								>
-									<Label for="pp">PP Asimétrico</Label>
-									<Switch
-										name="ppAsymetric"
-										bind:checked={asymetricPP}
-										onchange={() => handleDimensionsChangeEvent()}
-									/>
-								</div>
-
-								{#if asymetricPP}
-									<Spacer title="Medidas PP (cm)" />
-
-									<div class="flex flex-col gap-2">
-										<Label for="upPP">Arriba:</Label>
-										<Input
-											type="number"
-											step="0.01"
-											name="upPP"
-											onchange={() => handleDimensionsChangeEvent()}
-											bind:value={upPP}
-											success={addedPPMeaseures}
-										/>
-									</div>
-
-									<div class="flex flex-col gap-2">
-										<Label for="downPP">Abajo:</Label>
-										<Input
-											type="number"
-											step="0.01"
-											name="downPP"
-											onchange={() => handleDimensionsChangeEvent()}
-											bind:value={downPP}
-											success={addedPPMeaseures}
-										/>
-									</div>
-
-									<div class="flex flex-col gap-2">
-										<Label for="leftPP">Izquierda:</Label>
-										<Input
-											type="number"
-											step="0.01"
-											name="leftPP"
-											onchange={() => handleDimensionsChangeEvent()}
-											bind:value={leftPP}
-											success={addedPPMeaseures}
-										/>
-									</div>
-
-									<div class="flex flex-col gap-2">
-										<Label for="rightPP">Derecha:</Label>
-										<Input
-											type="number"
-											step="0.01"
-											name="rightPP"
-											onchange={() => handleDimensionsChangeEvent()}
-											bind:value={rightPP}
-											success={addedPPMeaseures}
-										/>
-									</div>
-								{/if}
-							</PricingSelectorSection>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.PP)
-							)}
-
-							<Spacer title="Medidas de trabajo" />
-
-							<div class="grid grid-cols-1 lg:col-span-2">
-								<div class="rounded-md border-2 border-gray-300 p-4">
-									<p class="text-center text-xl text-gray-600">
-										Alto: {totalHeightBox}cm | Ancho: {totalWidthBox}cm
-									</p>
+									<Label for="hasArrow"><Icon type={IconType.DOWN} /></Label>
+									<Switch name="hasArrow" bind:checked={$form.hasArrow} />
 								</div>
 							</div>
+						{/await}
+					</Box>
 
-							<div class="col-span-2 flex flex-row justify-between text-sm font-medium">
-								<label class="flex items-center space-x-2">
-									<input
-										class="radio"
-										type="radio"
-										checked
-										name="radio-direct"
-										bind:group={$form.dimenstionsType}
-										value={DimensionsType.NORMAL}
-									/>
-									<p>Nor.</p>
-								</label>
-								<label class="flex items-center space-x-2">
-									<input
-										class="radio"
-										type="radio"
-										bind:group={$form.dimenstionsType}
-										name="radio-direct"
-										value={DimensionsType.EXTERIOR}
-									/>
-									<p>Ext.</p>
-								</label>
-								<label class="flex items-center space-x-2">
-									<input
-										class="radio"
-										type="radio"
-										name="radio-direct"
-										bind:group={$form.dimenstionsType}
-										value={DimensionsType.ROUNDED}
-									/>
-									<p>Redo.</p>
-								</label>
-								<label class="flex items-center space-x-2">
-									<input
-										class="radio"
-										type="radio"
-										name="radio-direct"
-										bind:group={$form.dimenstionsType}
-										value={DimensionsType.WINDOW}
-									/>
-									<p>Vent.</p>
-								</label>
-							</div>
-
-							{#if exteriorDimensions}
-								<div class="flex flex-col gap-2">
-									<Label for="exteriorHeight">Alto Exterior (cm):</Label>
-									<Input
-										type="number"
-										step="0.01"
-										name="exteriorHeight"
-										bind:value={$form.exteriorHeight}
-										success={$form.exteriorHeight != null && $form.exteriorHeight > 0}
-									/>
-								</div>
-
-								<div class="flex flex-col gap-2">
-									<Label for="exteriorWidth">Ancho Exterior (cm):</Label>
-									<Input
-										type="number"
-										step="0.01"
-										name="exteriorWidth"
-										bind:value={$form.exteriorWidth}
-										success={$form.exteriorWidth != null && $form.exteriorWidth > 0}
-									/>
-								</div>
+					<Box title="Elementos añadidos" collapsible>
+						<div class="flex flex-col gap-2">
+							{@render cartItemList(orderFormItemsState.getOrderItems())}
+							{@render cartItemExtraList(orderFormItemsState.getOtherItems())}
+							{#if isDiscountNotAllowedPresent}
+								<span class="text-xs text-gray-500">* Elementos con descuento no permitido</span>
 							{/if}
-
-							<AutocompleteSection
-								sectionTitle="Molduras"
-								label="Moldura/Marco"
-								prices={pricing.moldPrices}
-								addValue={addFromPricingSelector}
-								pricingType={PricingType.MOLD}
-								added={addedMold}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.MOLD)
-							)}
-
-							<div class="flex flex-col gap-2">
-								<Label for="floatingDistance">Distancia flotante (cm):</Label>
-								<Input
-									type="number"
-									step="0.01"
-									min="0.00"
-									name="floatingDistance"
-									bind:value={$form.floatingDistance}
-									success={addedFloatingDistance}
-									onchange={() => handleDimensionsChangeEvent()}
-								/>
-							</div>
-
-							<PricingSelectorSection
-								sectionTitle="Cristal"
-								label="Tipo de cristal"
-								prices={pricing.glassPrices}
-								addValue={addFromPricingSelector}
-								added={addedGlass}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.GLASS)
-							)}
-
-							<PricingSelectorSection
-								sectionTitle="Trasera"
-								label="Tipo de trasera"
-								prices={pricing.backPrices}
-								addValue={addFromPricingSelector}
-								added={addedBack}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.BACK)
-							)}
-
-							<PricingSelectorSection
-								sectionTitle="Montajes"
-								label="Tipo de montaje"
-								prices={pricing.labourPrices}
-								extraPrices={fabricPrices}
-								locationIdForExtraPrices="CINTA_CANTO_LIENZO_BLANCA"
-								addValue={addFromPricingSelector}
-								added={addedLabour}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) =>
-									[PricingType.LABOUR, PricingType.FABRIC].includes(p.pre.type)
-								)
-							)}
-
-							<PricingSelectorWithQuantitySection
-								added={addedHanger}
-								sectionTitle="Colgadores"
-								label="Colgador"
-								prices={pricing.hangerPrices}
-								addItem={addHangerElementsFromSelector}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.HANGER)
-							)}
-
-							<PricingSelectorWithQuantitySection
-								added={addedOther}
-								sectionTitle="Suministros"
-								label="Elemento"
-								prices={pricing.otherPrices}
-								addItem={addOtherElementsFromSelector}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.OTHER)
-							)}
-
-							<PricingSelectorSection
-								sectionTitle="Transporte"
-								label="Tipo de transporte"
-								prices={pricing.transportPrices}
-								addValue={addFromPricingSelector}
-								added={addedTransport}
-							/>
-
-							{@render cartItemList(
-								partsToCalulatePreview.filter((p) => p.pre.type === PricingType.TRANSPORT)
-							)}
-
-							<Spacer title="Elementos extra" />
-
-							{#if isExternal}
-								<div class="col-span-2">
-									<Banner
-										icon={IconType.ALERT}
-										text="A los precios de los elementos extra no se les aplica el margen. Introduzca el precio con el margen ya aplicado."
-										color="amber"
-										title="Aviso"
-									></Banner>
-								</div>
-							{/if}
-
-							<div class="flex flex-col gap-2 lg:col-span-2">
-								<Label for="otherElementName">Nombre del elemento:</Label>
-								<Input type="text" name="otherElementName" bind:value={otherName} />
-							</div>
-
-							<div class="flex flex-col gap-2">
-								<Label for="otherElementPrice">Precio del elemento:</Label>
-								<Input
-									type="number"
-									step="0.01"
-									min="0"
-									name="otherElementPrice"
-									bind:value={otherPrice}
-								/>
-							</div>
-
-							<div class="flex flex-col gap-2">
-								<Label for="otherQuantityElements">Cantidad</Label>
-								<NativeSelect.Root name="otherQuantityElements" bind:value={otherQuantity}>
-									{#each GenericTools.getIterableStringList(10, 1) as i (i)}
-										<option value={i}>{i}</option>
-									{/each}
-								</NativeSelect.Root>
-							</div>
-
-							<div class="lg:col-span-2">
-								<Button
-									text="Añadir a la lista"
-									onClick={() => addOtherElement()}
-									icon={IconType.PLUS}
-									iconSize={IconSize.BIG}
-								></Button>
-							</div>
-
-							{@render cartItemExtraList(extraParts)}
-
-							<Spacer title="Descripción de la obra" />
-
-							<div class="flex flex-col gap-2 lg:col-span-2">
-								<Label for="description">Descripción:</Label>
-								<Textarea
-									success={addedDescription}
-									name="description"
-									bind:value={$form.description}
-								></Textarea>
-							</div>
-
-							{#if $form.description.length === 0}
-								<ChipSet
-									values={defaultDescriptions}
-									bind:filledValues={$form.predefinedDescriptions}
-								/>
-							{/if}
-
-							<div class="flex flex-col gap-2 lg:col-span-2">
-								<Label for="observations">Observaciones:</Label>
-								<Textarea
-									success={addedObservations}
-									name="observations"
-									bind:value={$form.observations}
-								></Textarea>
-							</div>
-
-							<ChipSet
-								values={defaultObservations}
-								bind:filledValues={$form.predefinedObservations}
-							/>
-
-							<Spacer title="Otros datos" />
-
-							<div class="flex flex-col gap-2 lg:col-span-2">
-								<Label for="quantity">Cantidad:</Label>
-								<div
-									class="shadow-xs flex flex-row justify-between gap-3 rounded-md border p-2 lg:col-span-2"
-								>
-									<input
-										class="text-md w-full px-2"
-										type="number"
-										step="1"
-										min="1"
-										bind:value={$form.quantity}
-									/>
-
-									<div class="flex flex-row gap-2">
-										<Button
-											icon={IconType.PLUS}
-											buttonType={ButtonType.SMALL}
-											text=""
-											action={ButtonAction.CLICK}
-											onClick={() => {
-												$form.quantity += 1;
-											}}
-										></Button>
-										<Button
-											icon={IconType.MINUS}
-											textType={ButtonText.GRAY}
-											buttonType={ButtonType.SMALL}
-											style={ButtonStyle.ORDER_GENERIC}
-											action={ButtonAction.CLICK}
-											text=""
-											disabled={$form.quantity <= 1}
-											onClick={() => {
-												$form.quantity -= 1;
-											}}
-										></Button>
-									</div>
-								</div>
-							</div>
-
-							{#if !$form.instantDelivery}
-								<div class="flex flex-col gap-2">
-									<Label for="deliveryDate">Fecha de entrega (Sólo pedidos):</Label>
-									<Input
-										name="deliveryDate"
-										type="date"
-										bind:value={$proxyDate}
-										error={$errors.deliveryDate ? true : false}
-									/>
-								</div>
-							{/if}
-
-							<div
-								class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
-								class:lg:col-span-2={$form.instantDelivery}
-							>
-								<Label for="instantDelivery">Al momento</Label>
-								<Switch name="instantDelivery" bind:checked={$form.instantDelivery} />
-							</div>
-
-							<div class="flex flex-col gap-2">
-								<Label for="discount">Descuento:</Label>
-								<NativeSelect.Root
-									name="discount"
-									bind:value={$form.discount}
-									success={addedDiscount}
-								>
-									<option></option>
-									{#each Object.entries(discountMap) as [key, value] (key)}
-										<option value={String(value)}>{key}</option>
-									{/each}
-								</NativeSelect.Root>
-							</div>
-
-							<div
-								class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
-							>
-								<Label for="hasArrow"><Icon type={IconType.DOWN} /></Label>
-								<Switch name="hasArrow" bind:checked={$form.hasArrow} />
-							</div>
 						</div>
-					{/await}
-				</Box>
+					</Box>
 
-				<Box title="Elementos añadidos" collapsible>
-					<div class="flex flex-col gap-2">
-						{@render cartItemList(orderedItems)}
-						{@render cartItemExtraList(extraParts)}
-						{#if isDiscountNotAllowedPresent}
-							<span class="text-xs text-gray-500">* Elementos con descuento no permitido</span>
+					<div class="flex flex-col gap-2 lg:col-span-2">
+						<OrderPriceDetails
+							quantity={$form.quantity}
+							discount={parseInt($form.discount)}
+							unitPriceWithoutDiscount={totalPerUnitWithoutDiscount}
+							unitPriceWithDiscount={totalPerUnit}
+							{totalWithoutDiscount}
+							totalWithDiscount={total}
+							alertItemsWitouthDiscount={isDiscountNotAllowedPresent}
+						></OrderPriceDetails>
+						{#if missingReasons.length > 0}
+							<Box title="Rellene todos los campos" icon={IconType.LIST}>
+								<div class="px-4">
+									<ul class="list-disc">
+										{#each missingReasons as reason (reason)}
+											<li>{reason}</li>
+										{/each}
+									</ul>
+								</div>
+							</Box>
+						{:else}
+							{@render children?.()}
 						{/if}
 					</div>
-				</Box>
-
-				<div class="flex flex-col gap-2 lg:col-span-2">
-					<OrderPriceDetails
-						quantity={$form.quantity}
-						discount={parseInt($form.discount)}
-						unitPriceWithoutDiscount={totalPerUnitWithoutDiscount}
-						unitPriceWithDiscount={totalPerUnit}
-						{totalWithoutDiscount}
-						totalWithDiscount={total}
-						alertItemsWitouthDiscount={isDiscountNotAllowedPresent}
-					></OrderPriceDetails>
-					{#if missingReasons.length > 0}
-						<Box title="Rellene todos los campos" icon={IconType.LIST}>
-							<div class="px-4">
-								<ul class="list-disc">
-									{#each missingReasons as reason (reason)}
-										<li>{reason}</li>
-									{/each}
-								</ul>
-							</div>
-						</Box>
-					{:else}
-						{@render children?.()}
-					{/if}
-				</div>
-			{/if}
-		</div>
-	</form>
+				{/if}
+			</div>
+		</form>
+	{/if}
 </div>

@@ -5,11 +5,34 @@
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
+	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
 
 	let tapCount = 0;
 	let tapTimer: ReturnType<typeof setTimeout> | null = null;
 	const requiredTaps = 7;
 	const tapTimeout = 1500;
+
+	const changeLogs = [
+		{
+			version: 20250704,
+			title: 'Julio 2025',
+			items: [
+				'Mejoras de seguridad',
+				'Actualización del sistema',
+				'Nueva fórmula: m2 * precio * iva * 12 + 2',
+				'Cambio de usuario al crear un pedido desde un presupuesto'
+			]
+		},
+		{
+			version: 20250615,
+			title: 'Junio 2025',
+			items: [
+				'Mejoras de seguridad',
+				'Mejoras de rendimiento al crear pedidos',
+				'Actualización del sistema'
+			]
+		}
+	].sort((a, b) => b.version - a.version);
 
 	function handleHeadingTap() {
 		tapCount++;
@@ -84,6 +107,19 @@
 				style={ButtonStyle.NEUTRAL}
 				icon={IconType.LOCATION}
 			></Button>
+		</div>
+	</Box>
+
+	<Box title="Cambios">
+		<div class="w-full space-y-2">
+			{#each changeLogs as changeLog, index (changeLog.title)}
+				<ChangelogItem
+					open={index === 0}
+					title={changeLog.title}
+					items={changeLog.items}
+					version={changeLog.version}
+				/>
+			{/each}
 		</div>
 	</Box>
 </div>

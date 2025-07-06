@@ -11,6 +11,7 @@
 	import { getStatusUIInfo } from '@/ui/ui.helper';
 	import Chart from '@/components/business-related/dashboard/Chart.svelte';
 	import DateRangePicker from '@/components/business-related/dashboard/DateRangePicker.svelte';
+	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 
 	const today = DateTime.now().startOf('day');
 	const daysAgo = DateTime.now().startOf('month');
@@ -33,21 +34,13 @@
 
 	async function getDashboard(start: ReportDate, end: ReportDate): Promise<void> {
 		loading = true;
-		const response = await fetch('/api/orders/data', {
-			method: 'POST',
-			body: JSON.stringify({ endDate: end, startDate: start }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		const body: DashboardReport = await response.json();
-		for (const topOrder of body.topOrders) {
+		const report = await OrderApiGateway.getOrderData(start, end);
+		for (const topOrder of report.topOrders) {
 			topOrder.order.createdAt = new Date(topOrder.order.createdAt);
 		}
 
 		loading = false;
-		dashboardReport = body;
+		dashboardReport = report;
 	}
 
 	$effect(() => {
