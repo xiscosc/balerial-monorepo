@@ -14,13 +14,14 @@
 
 	const changeLogs = [
 		{
-			version: 20250704,
+			version: 20250710,
 			title: 'Julio 2025',
 			items: [
 				'Mejoras de seguridad',
 				'Actualización del sistema',
 				'Nueva fórmula: m2 * precio * iva * 12 + 2',
-				'Cambio de usuario al crear un pedido desde un presupuesto'
+				'Cambio de usuario al crear un pedido desde un presupuesto',
+				'Cambios en la hoja de impresión'
 			]
 		},
 		{

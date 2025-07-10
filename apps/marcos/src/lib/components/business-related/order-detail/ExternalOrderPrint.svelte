@@ -258,7 +258,7 @@
 					<table class="inner-table">
 						<tbody>
 							<tr>
-								<th> Recogida </th>
+								<th> Recogida estimada </th>
 								<th> Referencia </th>
 							</tr>
 							<tr class="last-row">

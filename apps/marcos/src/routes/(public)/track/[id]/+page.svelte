@@ -80,7 +80,7 @@
 					/>
 					<OrderInfoStep
 						iconType={IconType.TRUCK}
-						title="Fecha de recogida"
+						title="Fecha de recogida estimada"
 						value={data.fullOrder.order.item.instantDelivery
 							? 'Al momento'
 							: DateTime.fromJSDate(data.fullOrder.order.item.deliveryDate).toFormat('dd/MM/yyyy')}

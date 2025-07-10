@@ -314,7 +314,7 @@
 						<tbody>
 							<tr>
 								{#if !isQuote}
-									<th> Recogida </th>
+									<th> Recogida estimada </th>
 								{/if}
 								<th> Cliente </th>
 								<th> Teléfono </th>
