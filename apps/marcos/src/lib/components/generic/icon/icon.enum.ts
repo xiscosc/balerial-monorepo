@@ -66,5 +66,6 @@ export enum IconType {
 	COLLAPSE = 'collapse',
 	WORKER = 'worker',
 	DOCUMENT = 'document',
-	DAY = 'day'
+	DAY = 'day',
+	CHANGELOG = 'changelog'
 }
