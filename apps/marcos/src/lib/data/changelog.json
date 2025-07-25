@@ -22,6 +22,10 @@
 	{
 		"version": 20250801,
 		"title": "Agosto 2025",
-		"items": ["Mejoras de seguridad", "Actualización del sistema"]
+		"items": [
+			"Mejoras de seguridad",
+			"Actualización del sistema",
+			"Mejoras en la usabilidad y visibilidad"
+		]
 	}
 ]

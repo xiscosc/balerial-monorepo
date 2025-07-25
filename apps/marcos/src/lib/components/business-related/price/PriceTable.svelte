@@ -66,7 +66,11 @@
 						: formulasMap[price.formula]}</Table.Cell
 				>
 				<Table.Cell class="text-right">
-					<button type="button" onclick={() => goto(`/config/prices/${price.internalId}`)}>
+					<button
+						type="button"
+						onclick={() => goto(`/config/prices/${price.internalId}`)}
+						class="hover:cursor-pointer"
+					>
 						<Icon type={IconType.EDIT}></Icon>
 					</button>
 				</Table.Cell>
