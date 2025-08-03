@@ -25,7 +25,8 @@
 		"items": [
 			"Mejoras de seguridad",
 			"Actualización del sistema",
-			"Mejoras en la usabilidad y visibilidad"
+			"Mejoras en la usabilidad y visibilidad",
+			"Forzado idioma español para evitar problemas de traducción"
 		]
 	}
 ]
