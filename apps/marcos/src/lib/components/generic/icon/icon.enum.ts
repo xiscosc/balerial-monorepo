@@ -56,6 +56,7 @@ export enum IconType {
 	RIGHT = 'right',
 	LOGO = 'logo',
 	LOADING = 'loading',
+	LOADING_BALL = 'loading-ball',
 	DASHBOARD = 'dashboard',
 	CHART_LINES = 'chart-lines',
 	CHART_BARS = 'chart-bars',
@@ -66,5 +67,6 @@ export enum IconType {
 	COLLAPSE = 'collapse',
 	WORKER = 'worker',
 	DOCUMENT = 'document',
-	DAY = 'day'
+	DAY = 'day',
+	CHANGELOG = 'changelog'
 }

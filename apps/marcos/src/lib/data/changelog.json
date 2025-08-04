@@ -1,0 +1,32 @@
+[
+	{
+		"version": 20250615,
+		"title": "Junio 2025",
+		"items": [
+			"Mejoras de seguridad",
+			"Mejoras de rendimiento al crear pedidos",
+			"Actualización del sistema"
+		]
+	},
+	{
+		"version": 20250710,
+		"title": "Julio 2025",
+		"items": [
+			"Mejoras de seguridad",
+			"Actualización del sistema",
+			"Nueva fórmula: m2 * precio * iva * 12 + 2",
+			"Cambio de usuario al crear un pedido desde un presupuesto",
+			"Cambios en la hoja de impresión"
+		]
+	},
+	{
+		"version": 20250804,
+		"title": "Agosto 2025",
+		"items": [
+			"Mejoras de seguridad",
+			"Actualización del sistema",
+			"Mejoras en la usabilidad y visibilidad",
+			"Forzado idioma español para evitar problemas de traducción"
+		]
+	}
+]

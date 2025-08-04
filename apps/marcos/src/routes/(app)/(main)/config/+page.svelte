@@ -6,34 +6,13 @@
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
+	import changeLogs from '@/data/changelog.json';
 
 	let tapCount = 0;
 	let tapTimer: ReturnType<typeof setTimeout> | null = null;
 	const requiredTaps = 7;
 	const tapTimeout = 1500;
-
-	const changeLogs = [
-		{
-			version: 20250710,
-			title: 'Julio 2025',
-			items: [
-				'Mejoras de seguridad',
-				'Actualización del sistema',
-				'Nueva fórmula: m2 * precio * iva * 12 + 2',
-				'Cambio de usuario al crear un pedido desde un presupuesto',
-				'Cambios en la hoja de impresión'
-			]
-		},
-		{
-			version: 20250615,
-			title: 'Junio 2025',
-			items: [
-				'Mejoras de seguridad',
-				'Mejoras de rendimiento al crear pedidos',
-				'Actualización del sistema'
-			]
-		}
-	].sort((a, b) => b.version - a.version);
+	const orderedLogs = changeLogs.slice(-2).reverse();
 
 	function handleHeadingTap() {
 		tapCount++;
@@ -113,7 +92,7 @@
 
 	<Box title="Cambios">
 		<div class="w-full space-y-2">
-			{#each changeLogs as changeLog, index (changeLog.title)}
+			{#each orderedLogs as changeLog, index (changeLog.title)}
 				<ChangelogItem
 					open={index === 0}
 					title={changeLog.title}
@@ -121,6 +100,15 @@
 					version={changeLog.version}
 				/>
 			{/each}
+			<div class="flex justify-center pt-2">
+				<Button
+					link="/config/changelog"
+					text="Ver todos los cambios"
+					icon={IconType.CHANGELOG}
+					style={ButtonStyle.NEUTRAL}
+					textType={ButtonText.WHITE}
+				/>
+			</div>
 		</div>
 	</Box>
 </div>
