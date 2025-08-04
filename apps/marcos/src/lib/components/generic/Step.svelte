@@ -45,10 +45,10 @@
 	}
 </script>
 
-<div class="flex w-full flex-col gap-2 rounded-md border border-gray-300 bg-stone-50 px-2 py-1">
+<div class="flex w-full flex-col gap-2 rounded-md border border-gray-100 bg-gray-50 px-2 py-1">
 	<div class="flex w-full flex-row justify-between">
 		<div class="flex flex-row items-center justify-start gap-2">
-			<div class="relative rounded-full border border-gray-700 bg-white p-2 text-gray-900">
+			<div class="relative rounded-full border border-gray-100 bg-white p-2 text-gray-900">
 				<div class="relative">
 					<Icon type={icon} />
 				</div>
