@@ -30,7 +30,7 @@
 	<OrderInfoStep
 		iconType={IconType.COINS}
 		title="Total"
-		value={`${totalWithDiscount.toFixed(2)}€`}
+		value={`${totalWithDiscount.toFixed(2)} €`}
 	/>
 {/snippet}
 
@@ -48,7 +48,7 @@
 				<OrderInfoStep
 					iconType={IconType.DISCOUNT}
 					title="Descuento aplicado"
-					value={`${discount}%`}
+					value={`${discount} %`}
 				/>
 				{#if alertItemsWitouthDiscount}
 					<OrderInfoStep
@@ -62,13 +62,13 @@
 				<OrderInfoStep
 					iconType={IconType.TICKET}
 					title={`Precio por unidad ${discount > 0 ? 'sin descuento' : ''}`}
-					value={`${unitPriceWithoutDiscount.toFixed(2)}€`}
+					value={`${unitPriceWithoutDiscount.toFixed(2)} €`}
 				/>
 				{#if discount > 0}
 					<OrderInfoStep
 						iconType={IconType.TICKET_DISCOUNT}
 						title="Precio por unidad con descuento"
-						value={`${unitPriceWithDiscount.toFixed(2)}€`}
+						value={`${unitPriceWithDiscount.toFixed(2)} €`}
 					/>
 				{/if}
 			{/if}
@@ -77,7 +77,7 @@
 				<OrderInfoStep
 					iconType={IconType.ORDER_QUOTE}
 					title="Total sin descuento"
-					value={`${totalWithoutDiscount.toFixed(2)}€`}
+					value={`${totalWithoutDiscount.toFixed(2)} €`}
 				/>
 			{/if}
 		</div>

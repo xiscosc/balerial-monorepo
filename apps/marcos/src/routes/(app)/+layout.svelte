@@ -19,9 +19,9 @@
 	initPosthog(data.envName, data.user);
 
 	const headerColors = {
-		prod: 'bg-white/90 border-gray-50',
-		pre: 'bg-red-500/80 border-red-500/80',
-		dev: 'bg-indigo-500/50 border-indigo-500/50'
+		prod: 'bg-[#e9eae3]/70 border-gray-300',
+		pre: 'bg-red-500/80 border-red-500',
+		dev: 'bg-indigo-500/50 border-indigo-500'
 	};
 
 	const headerEmojis = {
@@ -36,7 +36,7 @@
 <svelte:head>
 	<title>Marcs i Moldures Son Sardina</title>
 </svelte:head>
-<div class="flex min-h-screen flex-col bg-[#F7F5F2]">
+<div class="flex min-h-screen flex-col bg-[#eeefe9]">
 	<header
 		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses}`}
 	>
