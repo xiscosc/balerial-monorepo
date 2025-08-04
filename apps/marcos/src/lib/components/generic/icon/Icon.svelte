@@ -53,9 +53,7 @@
 		ChevronsUpDown,
 		UserPen,
 		FileText,
-		CalendarCheck,
-		CloudCog,
-		LoaderPinwheel
+		CalendarCheck
 	} from 'lucide-svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { siWhatsapp } from 'simple-icons';
@@ -129,9 +127,7 @@
 		[IconType.COLLAPSE]: ChevronsUpDown,
 		[IconType.WORKER]: UserPen,
 		[IconType.DOCUMENT]: FileText,
-		[IconType.DAY]: CalendarCheck,
-		[IconType.CHANGELOG]: CloudCog,
-		[IconType.LOADING_BALL]: LoaderPinwheel
+		[IconType.DAY]: CalendarCheck
 	};
 
 	// Reactive declarations using Svelte 5 runes

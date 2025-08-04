@@ -37,7 +37,7 @@
 {/snippet}
 
 <div
-	class="mx-auto flex w-full flex-col overflow-hidden rounded-md border border-gray-300 md:max-w-md"
+	class="mx-auto flex w-full flex-col overflow-hidden rounded-md border border-gray-50 md:max-w-md"
 >
 	<div
 		class={`rounded-t-md p-2 text-white ${

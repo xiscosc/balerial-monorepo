@@ -44,7 +44,7 @@
 	<CustomerDetails customer={order.customer}></CustomerDetails>
 {/snippet}
 
-<div class="overflow-hidden rounded-md border border-gray-300">
+<div class="overflow-hidden rounded-md border border-gray-50">
 	<div
 		class={`flex items-center justify-between px-3 py-2 text-white ${
 			getStatusUIInfoWithPaymentInfo(order.status, totals.payed).staticColor

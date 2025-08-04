@@ -2,10 +2,6 @@
 	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
-	import changeLogs from '@/data/changelog.json';
-	import type { Changelog } from '@/type/changelog.type';
-
-	const lastChange: Changelog = changeLogs.slice(-1)[0];
 </script>
 
 <div
@@ -59,7 +55,5 @@
 </div>
 
 <div class="flex flex-row items-center justify-center pt-3">
-	<span class="text-xs text-gray-500">
-		Tienda principal <span class="font-semibold">({lastChange.version})</span>
-	</span>
+	<span class="text-xs text-gray-500"> Tienda principal </span>
 </div>
