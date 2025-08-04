@@ -17,7 +17,6 @@ import {
 import { Customer, Order, OrderAuditTrailType, OrderStatus } from '../types';
 import { CustomerService } from './customer.service';
 import { BalerialCloudFileService } from '@balerial/s3/service';
-import { streamToBuffer } from '@balerial/s3/util';
 export class ReportService {
 	private balerialFileCloudService: BalerialCloudFileService;
 
@@ -302,8 +301,8 @@ export class ReportService {
 			return undefined;
 		}
 
-		const buffer = await streamToBuffer(result.file);
-		return JSON.parse(buffer.toString('utf-8'));
+		const decoder = new TextDecoder('utf-8');
+		return JSON.parse(decoder.decode(result.file));
 	}
 
 	private async getDailyReportsBetweenDates(

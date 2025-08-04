@@ -12,7 +12,6 @@ import { getClientConfiguration } from '../configuration/configuration.util';
 import { FileType, File } from '../types/file.type';
 import { getLogger } from '../logger/logger';
 import { BalerialCloudFileService } from '@balerial/s3/service';
-import { Readable } from 'stream';
 
 interface IFileMetadata extends Record<string, string> {
 	store_id: string;
@@ -200,7 +199,9 @@ export class FileService {
 	}: {
 		bucketName: string;
 		key: string;
-	}): Promise<{ content: Readable; orderId: string; fileId: string } | undefined> {
+	}): Promise<
+		{ content: Uint8Array<ArrayBufferLike>; orderId: string; fileId: string } | undefined
+	> {
 		if (bucketName !== this.config.filesBucket) {
 			throw Error('Incorrect bucket');
 		}

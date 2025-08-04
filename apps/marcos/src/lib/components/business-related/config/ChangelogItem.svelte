@@ -17,7 +17,7 @@
 <div class="mb-3">
 	<Collapsible.Root
 		bind:open
-		class="group overflow-hidden rounded-md border border-gray-200 bg-white transition-all duration-200 hover:border-gray-300"
+		class="group overflow-hidden rounded-md border border-gray-300 bg-white transition-all duration-200 hover:border-gray-300"
 	>
 		<Collapsible.Trigger
 			class="flex w-full items-center justify-between px-6 py-4 text-left font-medium text-gray-900 transition-all duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white"
@@ -25,13 +25,13 @@
 			<div class="flex items-center gap-3">
 				<span class="text-md font-semibold tracking-tight">{title}</span>
 				<span
-					class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 font-mono text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-200"
+					class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 font-mono text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300"
 				>
 					v{version}
 				</span>
 			</div>
 			<div
-				class="flex items-center justify-center rounded-full bg-gray-100 p-2 transition-all duration-200 group-hover:scale-105 group-hover:bg-gray-200"
+				class="flex items-center justify-center rounded-full border border-gray-700 bg-gray-100 p-2 transition-all duration-200 group-hover:scale-105 group-hover:bg-gray-200"
 			>
 				<Icon type={open ? IconType.DOWN : IconType.RIGHT} />
 			</div>

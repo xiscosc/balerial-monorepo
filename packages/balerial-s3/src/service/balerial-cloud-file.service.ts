@@ -13,6 +13,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { type AwsCredentialIdentity } from '@smithy/types';
 import type { Readable } from 'stream';
+import { sdkStreamMixin } from '@smithy/util-stream';
 
 interface S3ObjectHeaders {
 	contentType?: string;
@@ -112,7 +113,9 @@ export class BalerialCloudFileService {
 		await this.s3Client.send(deleteCommand);
 	}
 
-	public async getFile(key: string): Promise<{ file: Readable; contentType?: string } | undefined> {
+	public async getFile(
+		key: string
+	): Promise<{ file: Uint8Array<ArrayBufferLike>; contentType?: string } | undefined> {
 		const command = new GetObjectCommand({
 			Bucket: this.bucket,
 			Key: key
@@ -121,7 +124,7 @@ export class BalerialCloudFileService {
 		try {
 			const response = await this.s3Client.send(command);
 			return {
-				file: response.Body as Readable,
+				file: await sdkStreamMixin(response.Body as Readable).transformToByteArray(),
 				contentType: response.ContentType
 			};
 		} catch (error: unknown) {
