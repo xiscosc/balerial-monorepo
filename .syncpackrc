@@ -1,11 +1,18 @@
 {
-  "versionGroups": [
-    {
-      "dependencies": [
-        "@marcsimolduressonsardina/*",
-        "@repo/*"
-      ],
-      "isIgnored": true
-    }
-  ]
+	"semverRange": "exact",
+	"source": [
+		"package.json",
+		"apps/*/package.json",
+		"packages/*/package.json"
+	],
+	"versionGroups": [
+		{
+			"dependencies": [
+				"**"
+			],
+			"dependencyTypes": [
+				"!local"
+			]
+		}
+	]
 }
