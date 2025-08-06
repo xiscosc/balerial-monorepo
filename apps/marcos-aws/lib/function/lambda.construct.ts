@@ -36,7 +36,7 @@ export function createLambdas(
 		retention: RetentionDays.ONE_MONTH,
 	});
 
-	const reportsMainStoreLambda = new NodejsFunction(scope, `${envName}-generate-reports`, {
+	const reportsMainStoreLambda = new NodejsFunction(scope, `${envName}-generate-reports-log-group`, {
 		entry: `${LAMBDA_DIR}generate-reports.lambda.ts`,
 		functionName: `${envName}-generate-reports`,
 		handler: 'handler',
