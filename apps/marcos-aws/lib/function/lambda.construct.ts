@@ -3,7 +3,7 @@ import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Architecture, Code, LayerVersion, Runtime } from 'aws-cdk-lib/aws-lambda';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { RetentionDays } from 'aws-cdk-lib/aws-logs';
+import { LogGroup, RetentionDays } from 'aws-cdk-lib/aws-logs';
 import { Duration } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
@@ -31,13 +31,18 @@ export function createLambdas(
 
 	// REPORTS LAMBDA
 
+	const reportsLogGroup = new LogGroup(scope, `${envName}-reports-log-group`, {
+		logGroupName: `/aws/lambda/${envName}-generate-reports`,
+		retention: RetentionDays.ONE_MONTH,
+	});
+
 	const reportsMainStoreLambda = new NodejsFunction(scope, `${envName}-generate-reports`, {
 		entry: `${LAMBDA_DIR}generate-reports.lambda.ts`,
 		functionName: `${envName}-generate-reports`,
 		handler: 'handler',
 		memorySize: 512,
 		timeout: Duration.seconds(10),
-		logRetention: RetentionDays.ONE_MONTH,
+		logGroup: reportsLogGroup,
 		runtime: Runtime.NODEJS_22_X,
 		architecture: Architecture.ARM_64,
 		bundling: {
@@ -68,7 +73,12 @@ export function createLambdas(
 	});
 	generateReportsRule.addTarget(new LambdaFunction(reportsMainStoreLambda));
 
-	// IMAGE OPTMIZATION
+	// IMAGE OPTIMIZATION
+
+	const imageOptimizationLogGroup = new LogGroup(scope, `${envName}-image-optimization-log-group`, {
+		logGroupName: `/aws/lambda/${envName}-image-optimization`,
+		retention: RetentionDays.ONE_MONTH,
+	});
 
 	const imageOptimizationLambda = new NodejsFunction(scope, `${envName}-optimize-images`, {
 		entry: `${LAMBDA_DIR}optimize-images.lambda.ts`,
@@ -76,7 +86,7 @@ export function createLambdas(
 		handler: 'handler',
 		memorySize: 512,
 		timeout: Duration.seconds(10),
-		logRetention: RetentionDays.ONE_MONTH,
+		logGroup: imageOptimizationLogGroup,
 		runtime: Runtime.NODEJS_22_X,
 		architecture: Architecture.ARM_64,
 		bundling: {
