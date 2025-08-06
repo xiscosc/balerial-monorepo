@@ -28,7 +28,11 @@
 
 	let isSameDay = $derived(twoDatesAreTheSame(startDate, endDate));
 
-	function twoDatesAreTheSame(date1: ReportDate, date2: ReportDate): boolean {
+	function twoDatesAreTheSame(date1?: ReportDate, date2?: ReportDate): boolean {
+		if (!date1 || !date2) {
+			return false;
+		}
+
 		return date1.day === date2.day && date1.month === date2.month && date1.year === date2.year;
 	}
 
