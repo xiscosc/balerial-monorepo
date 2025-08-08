@@ -31,12 +31,12 @@ export function createLambdas(
 
 	// REPORTS LAMBDA
 
-	const reportsLogGroup = new LogGroup(scope, `${envName}-reports-log-group`, {
-		logGroupName: `/aws/lambda/${envName}-generate-reports`,
-		retention: RetentionDays.ONE_MONTH,
+	const reportsLogGroup = new LogGroup(scope, `${envName}-generate-reports-log-group`, {
+		logGroupName: `/aws/lambda/${envName}-generate-reports-execution-logs`,
+		retention: RetentionDays.ONE_MONTH
 	});
 
-	const reportsMainStoreLambda = new NodejsFunction(scope, `${envName}-generate-reports-log-group`, {
+	const reportsMainStoreLambda = new NodejsFunction(scope, `${envName}-generate-reports`, {
 		entry: `${LAMBDA_DIR}generate-reports.lambda.ts`,
 		functionName: `${envName}-generate-reports`,
 		handler: 'handler',
@@ -75,9 +75,9 @@ export function createLambdas(
 
 	// IMAGE OPTIMIZATION
 
-	const imageOptimizationLogGroup = new LogGroup(scope, `${envName}-image-optimization-log-group`, {
-		logGroupName: `/aws/lambda/${envName}-image-optimization`,
-		retention: RetentionDays.ONE_MONTH,
+	const imageOptimizationLogGroup = new LogGroup(scope, `${envName}-optimize-images-log-group`, {
+		logGroupName: `/aws/lambda/${envName}-optimize-images-execution-logs`,
+		retention: RetentionDays.ONE_MONTH
 	});
 
 	const imageOptimizationLambda = new NodejsFunction(scope, `${envName}-optimize-images`, {
