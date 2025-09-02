@@ -28,5 +28,10 @@
 			"Mejoras en la usabilidad y visibilidad",
 			"Forzado idioma español para evitar problemas de traducción"
 		]
+	},
+	{
+		"version": 20250902,
+		"title": "Septiembre 2025",
+		"items": ["Mejoras de seguridad", "Actualización del sistema"]
 	}
 ]

@@ -91,7 +91,7 @@ export class OrderFormItemsState {
 		partsToAdd: PreCalculatedItemPart[],
 		errorCallback: (id: string, errorMessage?: string) => void
 	) {
-		const partKeyMap = new Map<string, PreCalculatedItemPart>();
+		const partKeyMap = new SvelteMap<string, PreCalculatedItemPart>();
 
 		partsToAdd.forEach((part) => {
 			const key = this.generateKeyFromPart(part);
