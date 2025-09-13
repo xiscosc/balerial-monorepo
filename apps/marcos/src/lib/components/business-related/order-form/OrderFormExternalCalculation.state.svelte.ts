@@ -9,8 +9,10 @@ export class OrderFormExternalCalculationState {
 	private lastCalculationDate?: DateTime;
 	private hideTimeout?: ReturnType<typeof setTimeout>;
 	private visibilityChangeListener: () => void;
+	private isCalculating: boolean;
 
 	constructor(isExternal: boolean) {
+		this.isCalculating = $state(false);
 		this.showPrices = $state(!isExternal);
 		this.lastCalculationDate = $state(undefined);
 		this.shouldRecalculate = $derived(
@@ -60,10 +62,16 @@ export class OrderFormExternalCalculationState {
 		return this.showPrices;
 	}
 
+	public getIsCalculating(): boolean {
+		return this.isCalculating;
+	}
+
 	public async calculatePrices(total: number) {
 		if (!this.shouldRecalculate) return;
+		this.isCalculating = true;
 		await AnalyticsGateway.trackExternalOrderCalculation(true, total);
 		this.showPrices = true;
+		this.isCalculating = false;
 		this.lastCalculationDate = DateTime.now();
 
 		if (this.hideTimeout) {

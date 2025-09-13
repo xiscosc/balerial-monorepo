@@ -1144,6 +1144,8 @@
 							</Box>
 						{:else if !isExternal || externalCalculationState.getShowPrices()}
 							{@render children?.()}
+						{:else if externalCalculationState.getIsCalculating()}
+							<ProgressBar text="Calculando precios..." />
 						{:else}
 							<Button
 								text="Calcular precios"

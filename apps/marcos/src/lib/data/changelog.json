@@ -30,8 +30,12 @@
 		]
 	},
 	{
-		"version": 20250902,
+		"version": 20250912,
 		"title": "Septiembre 2025",
-		"items": ["Mejoras de seguridad", "Actualización del sistema"]
+		"items": [
+			"Mejoras de seguridad",
+			"Actualización del sistema",
+			"Solucionado problema que ocultaba el precio en el detalle de pedido"
+		]
 	}
 ]
