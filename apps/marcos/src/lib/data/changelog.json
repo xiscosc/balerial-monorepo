@@ -30,12 +30,14 @@
 		]
 	},
 	{
-		"version": 20250912,
+		"version": 20250917,
 		"title": "Septiembre 2025",
 		"items": [
-			"Mejoras de seguridad",
 			"Actualización del sistema",
-			"Solucionado problema que ocultaba el precio en el detalle de pedido"
+			"Solucionado problema que ocultaba el precio en el detalle de pedido",
+			"Cambio en el campo PP por Medidas PP o Fondo (cm)",
+			"Nuevo estado de facturación en pedidos",
+			"Actualización de seguridad en el procesamiento de excel"
 		]
 	}
 ]

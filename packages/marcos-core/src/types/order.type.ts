@@ -68,6 +68,7 @@ export type Order = {
 	amountPayed: number;
 	item: Item;
 	status: OrderStatus;
+	invoiced: boolean;
 	hasArrow: boolean;
 	user: StaticUser;
 	customer: Customer;

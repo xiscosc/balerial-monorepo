@@ -325,6 +325,11 @@ export class OrderService {
 		]);
 	}
 
+	async setOrderInvoiced(order: Order, invoiced: boolean) {
+		order.invoiced = invoiced;
+		await this.repository.setOrderInvoiced(OrderService.toDto(order));
+	}
+
 	async setOrderStatus(order: Order, status: OrderStatus, location?: string) {
 		const oldStatus = order.status;
 		const oldLocation = order.location;
@@ -508,6 +513,7 @@ export class OrderService {
 			amountPayed: originalAmountPayed ?? 0,
 			status: originalOrderStatus ?? (dto.isQuote ? OrderStatus.QUOTE : OrderStatus.PENDING),
 			hasArrow: dto.hasArrow,
+			invoiced: false,
 			notified: originalNotified ?? false,
 			location: originalLocation ?? '',
 			item: {
@@ -611,7 +617,8 @@ export class OrderService {
 			hasArrow: order.hasArrow,
 			location: order.location,
 			notified: order.notified,
-			publicId: order.publicId
+			publicId: order.publicId,
+			invoiced: order.invoiced
 		};
 	}
 
@@ -629,7 +636,8 @@ export class OrderService {
 			hasArrow: dto.hasArrow ?? false,
 			location: dto.location ?? '',
 			notified: dto.notified ?? false,
-			publicId: dto.publicId
+			publicId: dto.publicId,
+			invoiced: dto.invoiced ?? false
 		};
 	}
 

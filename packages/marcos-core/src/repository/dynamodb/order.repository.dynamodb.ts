@@ -134,6 +134,14 @@ export class OrderRepositoryDynamoDb {
 		);
 	}
 
+	public async setOrderInvoiced(order: OrderDto) {
+		this.checkOrderStore(order);
+		await this.repository.updateFields(
+			order.uuid,
+			new Map([['invoiced', order.invoiced ?? false]])
+		);
+	}
+
 	public async setOrderStatus(order: OrderDto) {
 		this.checkOrderStore(order);
 		await this.repository.updateFields(

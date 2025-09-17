@@ -31,7 +31,9 @@ export enum OrderActionNames {
 	DELETE = 'deleteOrder',
 	DENOTE = 'denoteOrder',
 	SAVE_LOCATION = 'saveLocation',
-	CHANGE_PAYMENT = 'changePayment'
+	CHANGE_PAYMENT = 'changePayment',
+	SET_INVOICED = 'setInvoiced',
+	SET_NOT_INVOICED = 'setNotInvoiced'
 }
 
 export const weekDayMap: Record<string, string> = {
