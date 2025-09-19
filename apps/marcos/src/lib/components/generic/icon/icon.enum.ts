@@ -70,5 +70,9 @@ export enum IconType {
 	DAY = 'day',
 	CHANGELOG = 'changelog',
 	INVOICED = 'invoiced',
-	NOT_INVOICED = 'not-invoiced'
+	NOT_INVOICED = 'not-invoiced',
+	SECURITY = 'security',
+	MESSAGE = 'message',
+	NEW_BOX = 'new-box',
+	TOOL = 'tool'
 }

@@ -2,16 +2,24 @@
 	import * as Collapsible from '@/components/ui/collapsible';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
+	import { ChangelogItemType, type ChangelogItem } from '@/type/changelog.type';
 
 	interface Props {
 		title: string;
-		items: string[];
+		items: ChangelogItem[];
 		version: string | number;
 		open?: boolean;
 	}
 
 	let { title, items, version, open: initialOpen = false }: Props = $props();
 	let open = $state(initialOpen);
+
+	const iconMap: Record<ChangelogItemType, IconType> = {
+		[ChangelogItemType.NEW]: IconType.NEW_BOX,
+		[ChangelogItemType.SECURITY]: IconType.SECURITY,
+		[ChangelogItemType.MINOR_CHANGE]: IconType.MESSAGE,
+		[ChangelogItemType.TECHNICAL]: IconType.TOOL
+	};
 </script>
 
 <div class="mb-3">
@@ -44,9 +52,12 @@
 							<div
 								class="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-r from-gray-500 to-gray-600 transition-all duration-200 group-hover/item:scale-110"
 							></div>
-							<span class="text-sm font-medium leading-relaxed tracking-wide text-gray-800"
-								>{item}</span
+							<span
+								class="flex flex-row gap-2 text-sm font-medium leading-relaxed tracking-wide text-gray-800"
 							>
+								<Icon type={iconMap[item.type]}></Icon>
+								{item.text}
+							</span>
 						</li>
 					{/each}
 				</ul>

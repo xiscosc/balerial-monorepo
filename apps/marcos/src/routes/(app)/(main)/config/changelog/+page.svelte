@@ -4,8 +4,10 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
 	import changeLogs from '@/data/changelog.json';
+	import Icon from '@/components/generic/icon/Icon.svelte';
+	import type { Changelog } from '@/type/changelog.type';
 
-	const orderedLogs = [...changeLogs].reverse();
+	const orderedLogs: Changelog[] = [...(changeLogs as unknown as Changelog[])].reverse();
 </script>
 
 <div class="flex flex-col gap-4">
@@ -22,4 +24,25 @@
 			{/each}
 		</div>
 	</Box>
+	<div class="rounded-lg border p-2 text-xs">
+		<ul class="flex flex-wrap items-center gap-x-4 gap-y-2">
+			<li><span class="font-bold">Leyenda:</span></li>
+			<li class="flex items-center gap-1">
+				<Icon type={IconType.NEW_BOX}></Icon>
+				<span>Nuevas características</span>
+			</li>
+			<li class="flex items-center gap-1">
+				<Icon type={IconType.SECURITY}></Icon>
+				<span>Mejoras de seguridad</span>
+			</li>
+			<li class="flex items-center gap-1">
+				<Icon type={IconType.MESSAGE}></Icon>
+				<span>Cambios menores</span>
+			</li>
+			<li class="flex items-center gap-1">
+				<Icon type={IconType.TOOL}></Icon>
+				<span>Cambios técnicos</span>
+			</li>
+		</ul>
+	</div>
 </div>
