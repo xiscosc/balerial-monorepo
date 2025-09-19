@@ -3,11 +3,11 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
-	import changeLogs from '@/data/changelog.json';
+	import { Changelogs } from '@/data/changelog';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import type { Changelog } from '@/type/changelog.type';
 
-	const orderedLogs: Changelog[] = [...(changeLogs as unknown as Changelog[])].reverse();
+	const orderedLogs: Changelog[] = [...Changelogs].reverse();
 </script>
 
 <div class="flex flex-col gap-4">

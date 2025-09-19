@@ -2,10 +2,10 @@
 	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
-	import changeLogs from '@/data/changelog.json';
+	import { Changelogs } from '@/data/changelog';
 	import type { Changelog } from '@/type/changelog.type';
 
-	const lastChange: Changelog = changeLogs.slice(-1)[0];
+	const lastChange: Changelog = Changelogs.slice(-1)[0];
 </script>
 
 <div
