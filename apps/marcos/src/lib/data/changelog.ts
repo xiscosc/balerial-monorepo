@@ -38,7 +38,7 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20250919,
+		version: 20250921,
 		title: 'Septiembre 2025',
 		items: [
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
@@ -51,6 +51,7 @@ export const Changelogs: Changelog[] = [
 				type: ChangelogItemType.MINOR_CHANGE
 			},
 			{ text: 'Nuevo estado de facturación en pedidos', type: ChangelogItemType.NEW },
+			{ text: 'Nuevo botón de imprimir en listados', type: ChangelogItemType.NEW },
 			{
 				text: 'Actualización de seguridad en el procesamiento de excel',
 				type: ChangelogItemType.SECURITY

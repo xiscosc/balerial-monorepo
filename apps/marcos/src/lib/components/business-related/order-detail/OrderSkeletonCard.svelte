@@ -43,7 +43,8 @@
 	</div>
 
 	<!-- Footer Section -->
-	<div class="flex items-center justify-end bg-white p-3">
+	<div class="flex flex-row items-center justify-end gap-2 bg-white p-3">
+		<Skeleton class="h-8 w-20 rounded-md " />
 		<Skeleton class="h-8 w-20 rounded-md " />
 	</div>
 </div>
