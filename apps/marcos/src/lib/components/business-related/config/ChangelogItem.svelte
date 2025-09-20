@@ -50,14 +50,16 @@
 					{#each items as item (item)}
 						<li class="group/item flex items-start gap-4">
 							<div
-								class="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-r from-gray-500 to-gray-600 transition-all duration-200 group-hover/item:scale-110"
+								class="mt-1.5 h-2 w-2 flex-shrink-0 rounded-full bg-gradient-to-r from-gray-500 to-gray-600 transition-all duration-200 group-hover/item:scale-110"
 							></div>
-							<span
-								class="flex flex-row gap-2 text-sm font-medium leading-relaxed tracking-wide text-gray-800"
-							>
-								<Icon type={iconMap[item.type]}></Icon>
-								{item.text}
-							</span>
+							<div class="flex items-start gap-2">
+								<div class="flex-shrink-0">
+									<Icon type={iconMap[item.type]} />
+								</div>
+								<span class="text-sm font-medium leading-relaxed tracking-wide text-gray-800">
+									{item.text}
+								</span>
+							</div>
 						</li>
 					{/each}
 				</ul>
