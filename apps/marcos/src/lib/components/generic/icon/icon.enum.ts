@@ -74,5 +74,6 @@ export enum IconType {
 	SECURITY = 'security',
 	MESSAGE = 'message',
 	NEW_BOX = 'new-box',
-	TOOL = 'tool'
+	TOOL = 'tool',
+	ERROR = 'error'
 }
