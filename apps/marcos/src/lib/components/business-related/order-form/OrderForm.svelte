@@ -48,6 +48,7 @@
 		OrderFormItemsState,
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
+	import { ExternalOrderPriceTrackerState } from '@/components/business-related/order-form/ExternalOrderPriceTracker.state.svelte';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -581,6 +582,16 @@
 
 		$form.predefinedObservations = predefinedObservations;
 		loadingInitialParts = false;
+	});
+
+	const externalOrderPriceTrackerState = new ExternalOrderPriceTrackerState(isExternal);
+
+	$effect(() => {
+		externalOrderPriceTrackerState.setTotal(total);
+	});
+
+	$effect(() => {
+		externalOrderPriceTrackerState.setMissingReasonsCount(missingReasons.length);
 	});
 </script>
 
