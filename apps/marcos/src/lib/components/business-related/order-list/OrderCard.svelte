@@ -133,13 +133,15 @@
 			{/if}
 		</div>
 		<div class="flex flex-row justify-end gap-2 text-xs">
-			<Button
-				icon={IconType.PRINTER}
-				text="Imprimir"
-				action={ButtonAction.LINK}
-				link={`/orders/${order.id}/print`}
-				style={ButtonStyle.NEUTRAL}
-			></Button>
+			{#if !CoreOrderUtilities.isOrderTemp(order)}
+				<Button
+					icon={IconType.PRINTER}
+					text="Imprimir"
+					action={ButtonAction.LINK}
+					link={`/orders/${order.id}/print`}
+					style={ButtonStyle.NEUTRAL}
+				></Button>
+			{/if}
 			<Button
 				icon={CoreOrderUtilities.isOrderTemp(order) ? IconType.LINK : IconType.EYE}
 				text={CoreOrderUtilities.isOrderTemp(order) ? `Vincular` : `Ver`}
