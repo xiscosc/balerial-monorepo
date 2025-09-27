@@ -16,7 +16,7 @@
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import ChipSet from '@/components/business-related/order-form/ChipSet.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
-	import { onDestroy, onMount, type Snippet } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import type { OrderCreationFormData } from '@/server/shared/order/order-creation.utilities';
 	import Box from '@/components/generic/Box.svelte';
 	import Button from '@/components/generic/button/Button.svelte';
@@ -48,7 +48,6 @@
 		OrderFormItemsState,
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
-	import { OrderFormExternalCalculationState } from '@/components/business-related/order-form/OrderFormExternalCalculation.state.svelte';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -60,12 +59,7 @@
 
 	let { data, title, isNew = true, children = undefined, isExternal = false }: Props = $props();
 	const orderFormItemsState = new OrderFormItemsState();
-	const externalCalculationState = new OrderFormExternalCalculationState(isExternal);
 	let profiledPrices = $derived(getGlobalProfiler().measure(data.pricing));
-
-	onDestroy(() => {
-		externalCalculationState.destroy();
-	});
 
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json'
@@ -121,10 +115,6 @@
 	let otherName: string | undefined = $state();
 	let otherPrice: number | undefined = $state();
 	let otherQuantity: string = $state('1');
-
-	async function handleExternalCalculation() {
-		await externalCalculationState.calculatePrices(total);
-	}
 
 	async function handleDimensionsChangeEvent() {
 		orderFormItemsState.setOrderDimensions(getOrderDimensions());
@@ -602,7 +592,6 @@
 				partToDelete={part}
 				deleteExtraPart={deletePrecalculatedPreview}
 				showNoDiscountAllowed={discountActive}
-				showPrice={externalCalculationState.getShowPrices()}
 			/>
 		{/each}
 	</div>
@@ -696,7 +685,7 @@
 									added={addedPP}
 								>
 									<div class="flex flex-1 flex-col gap-2">
-										<Label for="pp">Medidas PP o Fondo (cm):</Label>
+										<Label for="pp">Medida PP (cm):</Label>
 										<Input
 											type="number"
 											step="0.01"
@@ -1120,18 +1109,15 @@
 					</Box>
 
 					<div class="flex flex-col gap-2 lg:col-span-2">
-						{#if !isExternal || externalCalculationState.getShowPrices()}
-							<OrderPriceDetails
-								quantity={$form.quantity}
-								discount={parseInt($form.discount)}
-								unitPriceWithoutDiscount={totalPerUnitWithoutDiscount}
-								unitPriceWithDiscount={totalPerUnit}
-								{totalWithoutDiscount}
-								totalWithDiscount={total}
-								alertItemsWitouthDiscount={isDiscountNotAllowedPresent}
-							></OrderPriceDetails>
-						{/if}
-
+						<OrderPriceDetails
+							quantity={$form.quantity}
+							discount={parseInt($form.discount)}
+							unitPriceWithoutDiscount={totalPerUnitWithoutDiscount}
+							unitPriceWithDiscount={totalPerUnit}
+							{totalWithoutDiscount}
+							totalWithDiscount={total}
+							alertItemsWitouthDiscount={isDiscountNotAllowedPresent}
+						></OrderPriceDetails>
 						{#if missingReasons.length > 0}
 							<Box title="Rellene todos los campos" icon={IconType.LIST}>
 								<div class="px-4">
@@ -1142,18 +1128,8 @@
 									</ul>
 								</div>
 							</Box>
-						{:else if !isExternal || externalCalculationState.getShowPrices()}
-							{@render children?.()}
-						{:else if externalCalculationState.getIsCalculating()}
-							<ProgressBar text="Calculando precios..." />
 						{:else}
-							<Button
-								text="Calcular precios"
-								action={ButtonAction.CLICK}
-								onClick={handleExternalCalculation}
-								icon={IconType.COINS}
-								style={ButtonStyle.ORDER_PENDING}
-							></Button>
+							{@render children?.()}
 						{/if}
 					</div>
 				{/if}
