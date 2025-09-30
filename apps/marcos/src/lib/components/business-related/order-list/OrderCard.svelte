@@ -5,7 +5,7 @@
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
 	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
@@ -119,7 +119,6 @@
 					<div class="flex items-center p-1">
 						<Icon type={IconType.SENT} />
 					</div>
-					<span class="text-xs font-bold">Cliente avisado</span>
 				</div>
 			{/if}
 
@@ -130,11 +129,19 @@
 					<div class="flex items-center p-1">
 						<Icon type={IconType.USER_PLUS} />
 					</div>
-					<span class="text-xs font-bold">Sin cliente</span>
 				</div>
 			{/if}
 		</div>
-		<div class="flex justify-end text-xs">
+		<div class="flex flex-row justify-end gap-2 text-xs">
+			{#if !CoreOrderUtilities.isOrderTemp(order)}
+				<Button
+					icon={IconType.PRINTER}
+					text="Imprimir"
+					action={ButtonAction.LINK}
+					link={`/orders/${order.id}/print`}
+					style={ButtonStyle.NEUTRAL}
+				></Button>
+			{/if}
 			<Button
 				icon={CoreOrderUtilities.isOrderTemp(order) ? IconType.LINK : IconType.EYE}
 				text={CoreOrderUtilities.isOrderTemp(order) ? `Vincular` : `Ver`}

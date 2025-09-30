@@ -9,6 +9,7 @@
 		deleteExtraPart?: (partToDelete: T) => void;
 		hideDeleteButton?: boolean;
 		showNoDiscountAllowed?: boolean;
+		showPrice?: boolean;
 	}
 
 	let {
@@ -16,7 +17,8 @@
 		partToDelete = undefined,
 		deleteExtraPart = undefined,
 		hideDeleteButton = false,
-		showNoDiscountAllowed = false
+		showNoDiscountAllowed = false,
+		showPrice = true
 	}: Props<T> = $props();
 
 	let noDiscountAllowed = $derived(!part.discountAllowed && showNoDiscountAllowed);
@@ -25,7 +27,7 @@
 <Step
 	icon={IconType.CART}
 	title="{part.description}{noDiscountAllowed ? '*' : ''} {part.floating ? '(Flot)' : ''}"
-	subtitle="{(part.price * part.quantity).toFixed(2)} €"
+	subtitle={showPrice ? (part.price * part.quantity).toFixed(2) + ' €' : 'Pendiente de calcular'}
 	quantity={part.quantity}
 	deleteFunction={() => partToDelete !== undefined && deleteExtraPart?.(partToDelete)}
 	showDelete={!hideDeleteButton}

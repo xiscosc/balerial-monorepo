@@ -15,4 +15,5 @@ export type OrderDto = {
 	location?: string;
 	notified?: boolean;
 	publicId: string;
+	invoiced?: boolean;
 };

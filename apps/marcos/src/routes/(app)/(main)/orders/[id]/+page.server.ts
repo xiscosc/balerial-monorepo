@@ -67,6 +67,33 @@ async function setOrderStatus(
 	return order;
 }
 
+async function setInvoiced(
+	invoiced: boolean,
+	params: RouteParams,
+	locals: App.Locals
+): Promise<Order> {
+	const { id } = params;
+
+	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+
+	const order = await orderService.getOrderById(id);
+	if (!order) {
+		throw fail(500, { missing: true });
+	}
+
+	await orderService.setOrderInvoiced(order, invoiced);
+	await trackServerEvent(
+		locals.user!,
+		{
+			event: 'order_invoiced_changed',
+			properties: { invoiced },
+			orderId: order.id
+		},
+		locals.posthog
+	);
+	return order;
+}
+
 async function loadData(
 	user: AppUser,
 	orderId: string
@@ -193,6 +220,12 @@ export const actions = {
 		return {
 			form
 		};
+	},
+	[OrderActionNames.SET_INVOICED]: async ({ locals, params }) => {
+		await setInvoiced(true, params, locals);
+	},
+	[OrderActionNames.SET_NOT_INVOICED]: async ({ locals, params }) => {
+		await setInvoiced(false, params, locals);
 	},
 	[OrderActionNames.CHANGE_PAYMENT]: async ({ request, locals, params }) => {
 		const formData = await request.formData();

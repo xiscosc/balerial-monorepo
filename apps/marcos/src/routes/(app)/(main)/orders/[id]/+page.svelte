@@ -209,20 +209,18 @@
 					<OrderElements fullOrder={info.fullOrder}></OrderElements>
 				</div>
 
-				{#if info.fullOrder.calculatedItem.quantity > 1 || info.fullOrder.calculatedItem.discount > 0}
-					<div class="lg:mt-3 lg:break-inside-avoid">
-						<OrderPriceDetails
-							quantity={info.fullOrder.calculatedItem.quantity}
-							discount={info.fullOrder.calculatedItem.discount}
-							unitPriceWithoutDiscount={info.fullOrder.totals.unitPriceWithoutDiscount}
-							unitPriceWithDiscount={info.fullOrder.totals.unitPrice}
-							totalWithoutDiscount={info.fullOrder.totals.totalWithoutDiscount}
-							totalWithDiscount={info.fullOrder.totals.total}
-							alertItemsWitouthDiscount={info.fullOrder.totals.discountNotAllowedPresent}
-							collapsed={false}
-						></OrderPriceDetails>
-					</div>
-				{/if}
+				<div class="lg:mt-3 lg:break-inside-avoid">
+					<OrderPriceDetails
+						quantity={info.fullOrder.calculatedItem.quantity}
+						discount={info.fullOrder.calculatedItem.discount}
+						unitPriceWithoutDiscount={info.fullOrder.totals.unitPriceWithoutDiscount}
+						unitPriceWithDiscount={info.fullOrder.totals.unitPrice}
+						totalWithoutDiscount={info.fullOrder.totals.totalWithoutDiscount}
+						totalWithDiscount={info.fullOrder.totals.total}
+						alertItemsWitouthDiscount={info.fullOrder.totals.discountNotAllowedPresent}
+						collapsed={false}
+					></OrderPriceDetails>
+				</div>
 
 				{@render notificationSection(info.notificationEntries, true)}
 				{@render deleteOrderSection(true, data.isPriceManager, info.fullOrder.order)}

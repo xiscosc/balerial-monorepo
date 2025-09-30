@@ -6,13 +6,13 @@
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
-	import changeLogs from '@/data/changelog.json';
+	import { Changelogs } from '@/data/changelog';
 
 	let tapCount = 0;
 	let tapTimer: ReturnType<typeof setTimeout> | null = null;
 	const requiredTaps = 7;
 	const tapTimeout = 1500;
-	const orderedLogs = changeLogs.slice(-2).reverse();
+	const orderedLogs = Changelogs.slice(-2).reverse();
 
 	function handleHeadingTap() {
 		tapCount++;

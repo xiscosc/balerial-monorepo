@@ -5,6 +5,8 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
+	import BottomSheet from '@/components/generic/BottomSheet.svelte';
+	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 
 	interface Props {
 		label: string;
@@ -18,7 +20,7 @@
 	}
 
 	let {
-		label = $bindable(),
+		label,
 		message,
 		customer,
 		disabled = false,
@@ -28,24 +30,25 @@
 		handleAfterNotify = () => {}
 	}: Props = $props();
 
+	let loading = $state(true);
+	let actionRendered = $state(false);
+	let notified = $state(false);
+
 	async function handleNotify() {
+		notified = true;
 		if (orders.length === 0) {
 			return;
 		}
 
-		const tempLabel = label;
-		label = 'Cargando...';
 		const promises = orders.map((order) => OrderApiGateway.notifyOrder(order.id));
 		await Promise.all(promises);
-		label = `${tempLabel}`;
 
-		const newWindowUrl = getWhatsappLink(customer, message);
-		window.open(newWindowUrl, '_blank');
 		orders.forEach((order) => {
 			order.notified = true;
 		});
 
 		handleAfterNotify();
+		loading = false;
 	}
 
 	function trackWhatsAppClicked() {
@@ -57,11 +60,52 @@
 		const encodedText = text == null ? '' : `?text=${encodeURI(text)}`;
 		return link + encodedText;
 	}
+
+	function triggerNotify() {
+		actionRendered = true;
+	}
+
+	$effect(() => {
+		if (actionRendered && !notified) {
+			handleNotify();
+		}
+	});
 </script>
 
 {#if notifyOrder && !disabled}
-	<Button icon={IconType.WHATSAPP} text={label} style={ButtonStyle.WHATSAPP} onClick={handleNotify}
-	></Button>
+	<BottomSheet
+		title="WhatsApp"
+		description=""
+		iconType={IconType.WHATSAPP}
+		triggerStyle={ButtonStyle.WHATSAPP}
+	>
+		{#snippet trigger()}
+			<Button icon={IconType.WHATSAPP} text={label} action={ButtonAction.TRIGGER}></Button>
+		{/snippet}
+
+		{#snippet action()}
+			<div class="flex" {@attach triggerNotify}>
+				{#if loading}
+					<ProgressBar text="Marcando pedido como notificado"></ProgressBar>
+				{/if}
+			</div>
+			{#if !loading}
+				<div class="flex">
+					<Button
+						icon={IconType.WHATSAPP}
+						action={ButtonAction.LINK}
+						trackFunction={trackWhatsAppClicked}
+						newWindow={true}
+						text="Enviar mensaje a cliente"
+						style={ButtonStyle.WHATSAPP}
+						{disabled}
+						{tooltipText}
+						link={getWhatsappLink(customer, message)}
+					></Button>
+				</div>
+			{/if}
+		{/snippet}
+	</BottomSheet>
 {:else}
 	<Button
 		icon={IconType.WHATSAPP}

@@ -33,6 +33,7 @@
 	import Step from '@/components/generic/Step.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 
 	interface Props {
 		data: SuperValidated<Infer<LisPriceSchemaEdit | LisPriceSchemaNew>>;
@@ -126,14 +127,14 @@
 	}
 
 	function addArea(area: MaxArea) {
-		const map = new Map<string, MaxArea>();
+		const map = new SvelteMap<string, MaxArea>();
 		[...areas, area].forEach((a) => map.set(`${a.d1}x${a.d2}`, a));
 		areas = [...map.values()].sort(sortAreas);
 		$formData.areas = areas;
 	}
 
 	function addAreaM2(area: MaxAreaM2) {
-		const map = new Map<string, MaxAreaM2>();
+		const map = new SvelteMap<string, MaxAreaM2>();
 		[...areasM2, area].forEach((a) => map.set(`${a.a}`, a));
 		areasM2 = [...map.values()].sort((x, y) => x.a - y.a);
 		$formData.areasM2 = areasM2;

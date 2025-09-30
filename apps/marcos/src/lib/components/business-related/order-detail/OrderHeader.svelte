@@ -17,6 +17,7 @@
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import CustomerDetails from '@/components/business-related/customer/CustomerDetails.svelte';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
+	import InvoiceOrderBottomSheet from '@/components/business-related/order-detail/edit/InvoiceOrderBottomSheet.svelte';
 	interface Props {
 		fullOrder: FullOrder;
 		locationForm: SuperValidated<Infer<LocationOrderSchema>>;
@@ -74,6 +75,7 @@
 		{/if}
 
 		{#if order.status !== OrderStatus.QUOTE}
+			<InvoiceOrderBottomSheet {fullOrder}></InvoiceOrderBottomSheet>
 			<PaymentOrderBottomSheet {fullOrder}></PaymentOrderBottomSheet>
 
 			<StatusOrderBottomSheet {fullOrder} {locations} data={statusForm}></StatusOrderBottomSheet>

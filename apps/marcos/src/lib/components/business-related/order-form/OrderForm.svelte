@@ -48,6 +48,7 @@
 		OrderFormItemsState,
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
+	import { ExternalOrderPriceTrackerState } from '@/components/business-related/order-form/ExternalOrderPriceTracker.state.svelte';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -582,6 +583,16 @@
 		$form.predefinedObservations = predefinedObservations;
 		loadingInitialParts = false;
 	});
+
+	const externalOrderPriceTrackerState = new ExternalOrderPriceTrackerState(isExternal);
+
+	$effect(() => {
+		externalOrderPriceTrackerState.setTotal(total);
+	});
+
+	$effect(() => {
+		externalOrderPriceTrackerState.setMissingReasonsCount(missingReasons.length);
+	});
 </script>
 
 {#snippet cartItemList(parts: OrderItem[])}
@@ -685,7 +696,7 @@
 									added={addedPP}
 								>
 									<div class="flex flex-1 flex-col gap-2">
-										<Label for="pp">Medida PP (cm):</Label>
+										<Label for="pp">Medidas PP o Fondo (cm):</Label>
 										<Input
 											type="number"
 											step="0.01"
@@ -710,7 +721,7 @@
 									</div>
 
 									{#if asymetricPP}
-										<Spacer title="Medidas PP (cm)" />
+										<Spacer title="Medidas PP o Fondo (cm)" />
 
 										<div class="flex flex-col gap-2">
 											<Label for="upPP">Arriba:</Label>

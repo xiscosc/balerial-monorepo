@@ -1,3 +1,4 @@
+import { BaseApiGateway } from '@/gateway/base-api.gateway';
 import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 import type {
 	FileType,
@@ -8,7 +9,7 @@ import type {
 	DashboardReport
 } from '@marcsimolduressonsardina/core/type';
 
-export class OrderApiGateway {
+export class OrderApiGateway extends BaseApiGateway {
 	public static async notifyOrder(orderId: string): Promise<void> {
 		await fetch(`/api/orders/${orderId}/notify`, {
 			method: 'GET',
@@ -19,34 +20,28 @@ export class OrderApiGateway {
 	}
 
 	public static async searchOrders(query: string, status: OrderStatus): Promise<FullOrder[]> {
-		const response = await fetch(`/api/orders/search`, {
-			method: 'POST',
-			body: JSON.stringify({ query, status }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
+		const response = await this.requestWithErrorHandling<{ results: FullOrder[] }>(
+			'POST',
+			'/api/orders/search',
+			{ query, status }
+		);
 
-		const body: { results: FullOrder[] } = await response.json();
-		return OrderRepresentationUtilities.hydrateFullOrderDates(body.results);
+		return OrderRepresentationUtilities.hydrateFullOrderDates(response.results);
 	}
 
 	public static async getOrderList(
 		status: OrderStatus,
 		lastKey: Record<string, string | number> | undefined
 	): Promise<{ orders: FullOrder[]; nextKey?: Record<string, string | number> }> {
-		const listResponse = await fetch('/api/orders/list', {
-			method: 'POST',
-			body: JSON.stringify({ lastKey, status }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
+		const listResponse = await this.requestWithErrorHandling<{
+			orders: FullOrder[];
+			nextKey?: Record<string, string | number>;
+		}>('POST', '/api/orders/list', { lastKey, status });
 
-		const body: { orders: FullOrder[]; nextKey?: Record<string, string | number> } =
-			await listResponse.json();
-		body.orders = OrderRepresentationUtilities.hydrateFullOrderDates(body.orders);
-		return body;
+		return {
+			orders: OrderRepresentationUtilities.hydrateFullOrderDates(listResponse.orders),
+			nextKey: listResponse.nextKey
+		};
 	}
 
 	public static async deleteOrderFile(orderId: string, fileId: string): Promise<void> {

@@ -1,32 +1,24 @@
+import { BaseApiGateway } from '@/gateway/base-api.gateway';
 import type { Customer } from '@marcsimolduressonsardina/core/type';
 
-export class CustomerApiGateway {
+export class CustomerApiGateway extends BaseApiGateway {
 	public static async searchCustomers(query: string): Promise<Customer[]> {
-		const response = await fetch('/api/customers/search', {
-			method: 'POST',
-			body: JSON.stringify({ query }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
+		const response = await this.requestWithErrorHandling<{ customers: Customer[] }>(
+			'POST',
+			'/api/customers/search',
+			{ query }
+		);
 
-		const body: { customers: Customer[] } = await response.json();
-		return body.customers;
+		return response.customers;
 	}
 
 	public static async getCustomerList(
 		lastKey: Record<string, string | number> | undefined
 	): Promise<{ customers: Customer[]; lastKey?: Record<string, string | number> }> {
-		const response = await fetch('/api/customers/list', {
-			method: 'POST',
-			body: JSON.stringify({ lastKey }),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		const body: { customers: Customer[]; lastKey?: Record<string, string | number> } =
-			await response.json();
+		const body = await this.requestWithErrorHandling<{
+			customers: Customer[];
+			lastKey?: Record<string, string | number>;
+		}>('POST', '/api/customers/list', { lastKey });
 		return body;
 	}
 }
