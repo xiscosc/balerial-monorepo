@@ -38,12 +38,12 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20250921,
+		version: 20250930,
 		title: 'Septiembre 2025',
 		items: [
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
 			{
-				text: 'Solucionado problema que ocultaba el precio en el detalle de pedido',
+				text: 'Solucionado problema al notificar pedidos finalizados por WhatsApp desde iPhone',
 				type: ChangelogItemType.TECHNICAL
 			},
 			{
