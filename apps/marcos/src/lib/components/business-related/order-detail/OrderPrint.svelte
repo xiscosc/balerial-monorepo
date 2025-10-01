@@ -91,11 +91,13 @@
 									</div></td
 								>
 								<td>
-									<img
-										class="logo"
-										src="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
-										alt="logo"
-									/>
+									<div class="logo-container">
+										<img
+											class="logo"
+											src="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
+											alt="logo"
+										/>
+									</div>
 									<div class="customer-text">
 										<p class="customer-bottom">
 											Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920
@@ -471,5 +473,11 @@
 
 	.status-info {
 		font-weight: bold;
+	}
+
+	.logo-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 </style>
