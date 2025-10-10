@@ -12,7 +12,7 @@
 	identifyUser(data.user, data.envName);
 </script>
 
-<div class="flex flex-col gap-2">
+<div class="flex flex-col gap-2 print:block print:gap-0">
 	<div class="lg:w-2xl flex flex-row gap-2 lg:mx-auto lg:justify-center print:hidden">
 		<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}></Button>
 
@@ -24,3 +24,18 @@
 	</div>
 	<OrderPrint fullOrder={data.fullOrder} print></OrderPrint>
 </div>
+
+<style>
+	@media print {
+		:global(body),
+		:global(html) {
+			height: auto !important;
+			overflow: visible !important;
+		}
+
+		div {
+			page-break-after: avoid;
+			page-break-inside: avoid;
+		}
+	}
+</style>

@@ -54,9 +54,9 @@
 </script>
 
 {#if fullOrder}
-	<div class="w-full px-1 py-3">
-		<div class="flex justify-center">
-			<div class="w-fit">
+	<div class="w-full px-1 py-3 print:p-0">
+		<div class="flex justify-center print:block">
+			<div class="w-fit print:w-full">
 				<ExternalOrderPrint {fullOrder} print></ExternalOrderPrint>
 			</div>
 		</div>
@@ -66,3 +66,18 @@
 {:else}
 	<div>Cargando...</div>
 {/if}
+
+<style>
+	@media print {
+		:global(body),
+		:global(html) {
+			height: auto !important;
+			overflow: visible !important;
+		}
+
+		div {
+			page-break-after: avoid;
+			page-break-inside: avoid;
+		}
+	}
+</style>
