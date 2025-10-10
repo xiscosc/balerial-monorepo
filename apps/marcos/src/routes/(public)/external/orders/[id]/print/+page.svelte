@@ -71,15 +71,8 @@
 	@media print {
 		:global(body),
 		:global(html) {
-			height: 210mm !important;
-			max-height: 210mm !important;
-			overflow: hidden !important;
 			margin: 0 !important;
 			padding: 0 !important;
-		}
-
-		div {
-			max-height: none;
 		}
 	}
 </style>

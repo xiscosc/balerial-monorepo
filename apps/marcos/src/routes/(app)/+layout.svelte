@@ -94,9 +94,8 @@
 	@media print {
 		:global(body),
 		:global(html) {
-			overflow: hidden !important;
-			height: 210mm !important;
-			max-height: 210mm !important;
+			margin: 0 !important;
+			padding: 0 !important;
 		}
 	}
 </style>
