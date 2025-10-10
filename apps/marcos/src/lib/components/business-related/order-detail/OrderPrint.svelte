@@ -442,5 +442,15 @@
 			size: A5 portrait;
 			margin: 0 !important;
 		}
+
+		main {
+			page-break-after: avoid;
+			page-break-inside: avoid;
+			overflow: hidden;
+		}
+
+		* {
+			page-break-inside: avoid;
+		}
 	}
 </style>
