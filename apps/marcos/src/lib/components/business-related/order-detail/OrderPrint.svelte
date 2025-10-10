@@ -444,13 +444,17 @@
 		}
 
 		main {
-			page-break-after: avoid;
-			page-break-inside: avoid;
+			max-height: 210mm;
+			height: auto;
 			overflow: hidden;
+			display: block;
 		}
 
-		* {
-			page-break-inside: avoid;
+		:global(html),
+		:global(body) {
+			height: 210mm !important;
+			max-height: 210mm !important;
+			overflow: hidden !important;
 		}
 	}
 </style>

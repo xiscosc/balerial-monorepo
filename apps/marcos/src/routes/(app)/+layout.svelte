@@ -36,7 +36,7 @@
 <svelte:head>
 	<title>Marcs i Moldures Son Sardina</title>
 </svelte:head>
-<div class="flex min-h-screen flex-col bg-[#eeefe9] print:bg-white">
+<div class="flex min-h-screen flex-col bg-[#eeefe9] print:block print:min-h-0 print:bg-white">
 	<header
 		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses} print:hidden`}
 	>
@@ -75,8 +75,10 @@
 	</header>
 
 	<!-- Scrollable Content Block filling remaining space -->
-	<main class="flex-1 overflow-y-auto p-2 print:p-0">
-		<div class="mx-auto w-full px-1 pb-3 md:px-2 md:pb-0 md:pt-2 lg:max-w-[1650px] lg:px-4">
+	<main class="flex-1 overflow-y-auto p-2 print:block print:overflow-visible print:p-0">
+		<div
+			class="mx-auto w-full px-1 pb-3 md:px-2 md:pb-0 md:pt-2 lg:max-w-[1650px] lg:px-4 print:mx-0 print:max-w-none print:p-0"
+		>
 			{#if navigating.from != null}
 				<Box>
 					<ProgressBar></ProgressBar>
@@ -87,3 +89,14 @@
 		</div>
 	</main>
 </div>
+
+<style>
+	@media print {
+		:global(body),
+		:global(html) {
+			overflow: hidden !important;
+			height: 210mm !important;
+			max-height: 210mm !important;
+		}
+	}
+</style>

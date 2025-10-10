@@ -29,13 +29,15 @@
 	@media print {
 		:global(body),
 		:global(html) {
-			height: auto !important;
-			overflow: visible !important;
+			height: 210mm !important;
+			max-height: 210mm !important;
+			overflow: hidden !important;
+			margin: 0 !important;
+			padding: 0 !important;
 		}
 
 		div {
-			page-break-after: avoid;
-			page-break-inside: avoid;
+			max-height: none;
 		}
 	}
 </style>
