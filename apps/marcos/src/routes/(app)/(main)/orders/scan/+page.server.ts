@@ -11,7 +11,7 @@ export const actions = {
 	async default({ request, locals }) {
 		const data = await request.formData();
 		const scannedText = data.get('scannedText')?.toString();
-		const qrInfo = QrUtilities.parseQrString(scannedText);
+		const qrInfo = QrUtilities.parseQrOrderString(scannedText);
 		if (qrInfo != null) {
 			trackServerEvent(
 				locals.user!,

@@ -64,6 +64,7 @@
 		Wrench,
 		CloudAlert
 	} from 'lucide-svelte';
+	import CogLoader from '@/components/generic/icon/CogLoader.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { siWhatsapp } from 'simple-icons';
 	import type { ComponentType } from 'svelte';
@@ -150,6 +151,7 @@
 
 	// Reactive declarations using Svelte 5 runes
 	const isWhatsApp = $derived(type === IconType.WHATSAPP);
+	const isCog = $derived(type === IconType.COG);
 	const isLogo = $derived(type === IconType.LOGO);
 	const IconComponent = $derived(iconMap[type]);
 
@@ -184,6 +186,8 @@
 	</svg>
 {:else if isLogo}
 	<img src="/mmss_favicon_black.ico" alt="Icon" class={getLogoSizeClass(size)} />
+{:else if isCog}
+	<CogLoader />
 {:else if IconComponent}
 	{#key type}
 		<IconComponent {size} />

@@ -8,7 +8,7 @@
 	import OrderHeader from '@/components/business-related/order-detail/OrderHeader.svelte';
 	import Button from '@/components/generic/button/Button.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import DeleteOrderBottomSheet from '@/components/business-related/order-detail/edit/DeleteOrderBottomSheet.svelte';
@@ -168,7 +168,6 @@
 							tooltipText="Faltan fotos"
 							icon={IconType.PRINTER}
 							text="Imprimir"
-							action={ButtonAction.LINK}
 							link={`/orders/${info.fullOrder.order.id}/print`}
 						></Button>
 						<Button

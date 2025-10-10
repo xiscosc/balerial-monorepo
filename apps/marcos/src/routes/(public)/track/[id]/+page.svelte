@@ -55,7 +55,7 @@
 			<div class="flex rounded-xl border p-3">
 				<Qr
 					size={125}
-					qrData={QrUtilities.generateQrString({
+					qrData={QrUtilities.generateQrStringForOrder({
 						orderId: data.fullOrder.order.id,
 						origin: QrOrigin.CUSTOMER_V2
 					})}

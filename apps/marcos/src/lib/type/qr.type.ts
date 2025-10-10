@@ -5,7 +5,7 @@ export enum QrOrigin {
 	CUSTOMER_V2 = 'customerV2'
 }
 
-export type QrInfo = {
+export type QrOrderInfo = {
 	orderId: string;
 	origin: QrOrigin;
 };

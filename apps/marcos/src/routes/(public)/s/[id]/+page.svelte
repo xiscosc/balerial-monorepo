@@ -23,4 +23,10 @@
 	<meta property="og:type" content="website" />
 </svelte:head>
 
-<OrderPrint fullOrder={data.fullOrder} print={false} internal={false}></OrderPrint>
+<div class="w-full px-1 py-3">
+	<div class="flex justify-center">
+		<div class="w-fit">
+			<OrderPrint fullOrder={data.fullOrder} print={false} internal={false}></OrderPrint>
+		</div>
+	</div>
+</div>

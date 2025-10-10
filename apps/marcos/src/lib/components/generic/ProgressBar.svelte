@@ -11,7 +11,7 @@
 </script>
 
 <div class="text-gray-600! flex w-full flex-col items-center justify-center gap-2">
-	<div class="animate-bounce">
+	<div class="animate-spin">
 		<Icon size={IconSize.XXL} type={icon} />
 	</div>
 	<span class="text-lg">

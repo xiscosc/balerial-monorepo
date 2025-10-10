@@ -7,6 +7,7 @@
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 
 	interface Props {
 		label: string;
@@ -41,7 +42,7 @@
 		}
 
 		const promises = orders.map((order) => OrderApiGateway.notifyOrder(order.id));
-		await Promise.all(promises);
+		await getGlobalProfiler().measure(Promise.all(promises));
 
 		orders.forEach((order) => {
 			order.notified = true;

@@ -54,7 +54,13 @@
 </script>
 
 {#if fullOrder}
-	<ExternalOrderPrint {fullOrder} print></ExternalOrderPrint>
+	<div class="w-full px-1 py-3">
+		<div class="flex justify-center">
+			<div class="w-fit">
+				<ExternalOrderPrint {fullOrder} print></ExternalOrderPrint>
+			</div>
+		</div>
+	</div>
 {:else if notFound}
 	<div>No se encontró el pedido</div>
 {:else}

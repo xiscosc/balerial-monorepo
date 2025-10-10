@@ -5,7 +5,7 @@
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
 	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonStyle } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
@@ -137,7 +137,6 @@
 				<Button
 					icon={IconType.PRINTER}
 					text="Imprimir"
-					action={ButtonAction.LINK}
 					link={`/orders/${order.id}/print`}
 					style={ButtonStyle.NEUTRAL}
 				></Button>
