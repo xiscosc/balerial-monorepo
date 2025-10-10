@@ -69,6 +69,7 @@
 </script>
 
 <main
+	id="order-print"
 	class="mx-auto max-w-full font-['Google_Sans_Code',_monospace] print:w-full print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 >
 	<!-- Header: QR + Logo -->
@@ -91,11 +92,7 @@
 			<div
 				class="flex flex-shrink-0 flex-grow-[2] flex-col items-center justify-center p-0.5 text-[10px]"
 			>
-				<img
-					class="h-[55px]"
-					src="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
-					alt="logo"
-				/>
+				<img class="h-[55px]" src="/mmlogo.png" alt="logo" />
 				<div class="font-sans text-[10px]">
 					<p class="m-0 text-center">Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920</p>
 					<p class="m-0 text-center">www.marcsimoldures.com - mmss@marcsimoldures.com</p>

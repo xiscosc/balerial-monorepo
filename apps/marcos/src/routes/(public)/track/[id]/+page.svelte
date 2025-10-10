@@ -42,11 +42,7 @@
 			class="flex w-full flex-col items-center justify-center gap-4 rounded-xl border bg-white pb-4 pt-2 md:w-2/3 lg:w-1/3"
 		>
 			<div class="flex w-full flex-col items-center">
-				<img
-					class="w-1/2"
-					src="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
-					alt="logo"
-				/>
+				<img class="w-1/2" src="/mmlogo.png" alt="logo" />
 				<span class="px-2 text-center text-[0.625rem]">
 					Horario de lunes a viernes de 09:00 a 18:00, sábados de 09:30 a 13:15
 				</span>

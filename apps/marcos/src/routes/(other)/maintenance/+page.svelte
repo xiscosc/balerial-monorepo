@@ -8,11 +8,7 @@
 		<Box title="Fuera de servicio" icon={IconType.CLOCK}>
 			<div class="flex flex-col gap-2">
 				<div class="flex w-full justify-center">
-					<img
-						class="w-1/2"
-						src="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
-						alt="logo"
-					/>
+					<img class="w-1/2" src="/mmlogo.png" alt="logo" />
 				</div>
 				<span>
 					La aplicación se encuentra en mantenimiento en estos momentos, disculpe las molestias. Se
