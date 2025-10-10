@@ -445,8 +445,6 @@
 
 		main {
 			display: block;
-			page-break-after: avoid;
-			page-break-inside: avoid;
 		}
 	}
 </style>
