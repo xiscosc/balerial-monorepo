@@ -7,9 +7,10 @@
 
 	interface Props {
 		status: 'error' | 'not-found';
+		errorInfo?: string;
 	}
 
-	let { status }: Props = $props();
+	let { status, errorInfo }: Props = $props();
 </script>
 
 <div class="w-full px-3 md:w-1/2 md:px-0 lg:w-1/3">
@@ -30,6 +31,13 @@
 						Página no encontrada
 					{/if}
 				</span>
+				{#if errorInfo}
+					<div
+						class="rounded bg-gray-100 p-3 font-['Google_Sans_Code',_monospace] text-xs text-gray-700"
+					>
+						{errorInfo}
+					</div>
+				{/if}
 				<Button icon={IconType.HOME} text="Volver al inicio" action={ButtonAction.LINK} link="/"
 				></Button>
 			</div>

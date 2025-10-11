@@ -7,5 +7,5 @@
 </script>
 
 <div class="flex min-h-screen w-full items-center justify-center">
-	<ErrorBox status={status === 404 ? 'not-found' : 'error'} />
+	<ErrorBox status={status === 404 ? 'not-found' : 'error'} errorInfo={page.error?.message} />
 </div>

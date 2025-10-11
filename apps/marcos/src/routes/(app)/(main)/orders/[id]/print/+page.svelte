@@ -12,25 +12,17 @@
 	identifyUser(data.user, data.envName);
 </script>
 
-<div class="flex flex-col gap-2 print:block print:gap-0">
-	<div class="lg:w-2xl flex flex-row gap-2 lg:mx-auto lg:justify-center print:hidden">
-		<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}></Button>
+{#snippet actionButtons()}
+	<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}></Button>
+	<Button
+		text="Ir al pedido"
+		icon={IconType.ORDER_DEFAULT}
+		link={`/orders/${data.fullOrder.order.id}`}
+	></Button>
+{/snippet}
 
-		<Button
-			text="Ir al pedido"
-			icon={IconType.ORDER_DEFAULT}
-			link={`/orders/${data.fullOrder.order.id}`}
-		></Button>
+<div class="flex w-full items-center justify-center print:block">
+	<div class="w-fit print:w-auto">
+		<OrderPrint fullOrder={data.fullOrder} print buttons={actionButtons}></OrderPrint>
 	</div>
-	<OrderPrint fullOrder={data.fullOrder} print></OrderPrint>
 </div>
-
-<style>
-	@media print {
-		:global(body),
-		:global(html) {
-			margin: 0 !important;
-			padding: 0 !important;
-		}
-	}
-</style>

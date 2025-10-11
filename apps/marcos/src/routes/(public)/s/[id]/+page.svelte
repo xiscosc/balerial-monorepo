@@ -23,9 +23,9 @@
 	<meta property="og:type" content="website" />
 </svelte:head>
 
-<div class="w-full px-1 py-3">
-	<div class="flex justify-center">
-		<div class="w-fit">
+<div class="w-full px-1 py-3 print:p-0">
+	<div class="flex justify-center print:block">
+		<div class="w-fit print:w-auto">
 			<OrderPrint fullOrder={data.fullOrder} print={false} internal={false}></OrderPrint>
 		</div>
 	</div>
