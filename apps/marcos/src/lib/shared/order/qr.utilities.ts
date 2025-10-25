@@ -3,12 +3,62 @@ import {
 	qrOriginMapCodesLegacyReverse,
 	qrOriginMapCodesUrnReverse
 } from '@/shared/mappings/qr.mapping';
-import { QrOrigin, type QrOrderInfo } from '@/type/qr.type';
+import {
+	QrOrigin,
+	type QrOrderInfo,
+	type QrOrderSetInfo,
+	type QrData,
+	QrType
+} from '@/type/qr.type';
 import { validate as uuidValidate } from 'uuid';
 
 export class QrUtilities {
 	public static generateQrStringForOrder(info: QrOrderInfo): string {
 		return `urn:order:${info.orderId}:${qrOriginMapCodesUrn[info.origin]}`;
+	}
+
+	public static generateQrStringForOrderSet(info: QrOrderSetInfo): string {
+		return `urn:order-set:${info.orderSetId}`;
+	}
+
+	public static parseQr(qrString: string | undefined): QrData | undefined {
+		const orderInfo = this.parseQrOrderString(qrString);
+		if (orderInfo != null) {
+			return {
+				type: QrType.ORDER,
+				info: orderInfo
+			};
+		}
+
+		const orderSetInfo = this.parseQrOrderSetString(qrString);
+		if (orderSetInfo != null) {
+			return {
+				type: QrType.ORDER_SET,
+				info: orderSetInfo
+			};
+		}
+
+		return undefined;
+	}
+
+	public static parseQrOrderSetString(qrString: string | undefined): QrOrderSetInfo | undefined {
+		if (qrString == null) {
+			return undefined;
+		}
+
+		if (qrString.startsWith('urn:order-set:')) {
+			const parts = qrString.split(':');
+			if (parts.length === 3 && parts[0] === 'urn' && parts[1] === 'order-set') {
+				const orderSetId = parts[2];
+				if (uuidValidate(orderSetId)) {
+					return {
+						orderSetId
+					};
+				}
+			}
+		}
+
+		return undefined;
 	}
 
 	public static parseQrOrderString(qrString: string | undefined): QrOrderInfo | undefined {

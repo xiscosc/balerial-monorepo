@@ -4,7 +4,6 @@ import {
 	ICoreConfiguration,
 	ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
-import { DynamoFilterElement, DynamoFilterExpression } from '@balerial/dynamo/type';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { OrderSetSecondaryIndexNames, orderSetTableBuilder } from './table/table.builders.dynamodb';
 
@@ -15,19 +14,10 @@ export class OrderSetRepositoryDynamoDb {
 		if (config.orderSetTable == null) {
 			throw Error('Table name orderSetTable can not be empty');
 		}
-		const defaultFilters: DynamoFilterElement[] = [
-			{
-				attribute: 'storeId',
-				expression: DynamoFilterExpression.EQUAL,
-				value: config.storeId
-			}
-		];
+
 		this.repository = new BalerialDynamoRepository(
 			getClientConfiguration(config),
-			orderSetTableBuilder
-				.setTableName(config.orderSetTable)
-				.setDefaultFilters(defaultFilters)
-				.build()
+			orderSetTableBuilder.setTableName(config.orderSetTable).build()
 		);
 	}
 

@@ -7,9 +7,14 @@
 	import OrderSkeletonCard from '@/components/business-related/order-detail/OrderSkeletonCard.svelte';
 	import { GenericTools } from '@/shared/generic/generic.tools';
 	import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { OrderListState } from '@/components/business-related/order-list/OrderListState.svelte';
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import * as Dialog from '@/components/ui/dialog/index.js';
+	import { OrderSetApiGateway } from '@/gateway/order-set-api.gateway';
+	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -86,6 +91,14 @@
 	onDestroy(() => {
 		ActionBarState.destroy();
 	});
+
+	async function test() {
+		dialogOpen = true;
+		const { id } = await OrderSetApiGateway.createOrderSet(orderListState.getSelectedOrdersIds());
+		await goto(resolve('/(app)/(main)/order-sets/[id]', { id }));
+	}
+
+	let dialogOpen = $state(false);
 </script>
 
 {#snippet actionBarLeft()}
@@ -107,7 +120,7 @@
 
 {#snippet actionButtons()}
 	<div class="flex w-full flex-row gap-2 text-xs">
-		<Button iconSize={IconSize.SMALL} text="" icon={IconType.PRINTER}></Button>
+		<Button iconSize={IconSize.SMALL} onClick={test} text="" icon={IconType.PRINTER}></Button>
 		<Button iconSize={IconSize.SMALL} style={ButtonStyle.WHATSAPP} text="" icon={IconType.WHATSAPP}
 		></Button>
 		<Button
@@ -140,6 +153,19 @@
 		{/each}
 	</div>
 {/snippet}
+
+<Dialog.Root bind:open={dialogOpen}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Generando listado</Dialog.Title>
+			<Dialog.Description>
+				<span class="text-xs">
+					<ProgressBar text=""></ProgressBar>
+				</span>
+			</Dialog.Description>
+		</Dialog.Header>
+	</Dialog.Content>
+</Dialog.Root>
 
 {#if promiseOrders == null}
 	{@render loadingSkeleton()}

@@ -16,6 +16,10 @@ export class OrderListState {
 		return this.selectedOrders.size;
 	}
 
+	public getSelectedOrdersIds(): string[] {
+		return Array.from(this.selectedOrders.keys());
+	}
+
 	public selectOrder(orderId: string): void {
 		const fullOrder = this.allOrders.get(orderId);
 		if (!fullOrder) {

@@ -115,8 +115,8 @@ importers:
         specifier: 3.9.0
         version: 3.9.0
       '@lucide/svelte':
-        specifier: ^0.548.0
-        version: 0.548.0(svelte@5.41.1)
+        specifier: ^0.544.0
+        version: 0.544.0(svelte@5.41.1)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -1077,8 +1077,8 @@ packages:
   '@kurkle/color@0.3.4':
     resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
-  '@lucide/svelte@0.548.0':
-    resolution: {integrity: sha512-Iwh5GXK8+tE1lBjYoBPfOhBiWv6/K/XinZ/Bjx/2Qys86ufZ/CbjHKacYyZeGnyWQSsjcr7P3xavkmCMhv/1RA==}
+  '@lucide/svelte@0.544.0':
+    resolution: {integrity: sha512-9f9O6uxng2pLB01sxNySHduJN3HTl5p0HDu4H26VR51vhZfiMzyOMe9Mhof3XAk4l813eTtl+/DYRvGyoRR+yw==}
     peerDependencies:
       svelte: ^5
 
@@ -4737,7 +4737,7 @@ snapshots:
 
   '@kurkle/color@0.3.4': {}
 
-  '@lucide/svelte@0.548.0(svelte@5.41.1)':
+  '@lucide/svelte@0.544.0(svelte@5.41.1)':
     dependencies:
       svelte: 5.41.1
 

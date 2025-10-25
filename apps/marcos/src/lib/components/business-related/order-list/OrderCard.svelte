@@ -11,6 +11,7 @@
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import { fade } from 'svelte/transition';
 
 	interface Props {
 		fullOrder: FullOrder;
@@ -100,6 +101,8 @@
 					onclick={handlePublicIdClick}
 					class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
 					id="order-public-id"
+					in:fade={{ duration: 200 }}
+					out:fade={{ duration: 150 }}
 				>
 					<span
 						class="rounded-lg bg-white px-2 py-1 font-['Google_Sans_Code',_monospace] text-gray-800"
@@ -108,12 +111,14 @@
 					</span>
 				</div>
 			{:else}
-				<Checkbox
-					checked={isSelected}
-					onCheckedChange={(checked: boolean) => {
-						internalSelected = checked;
-					}}
-				/>
+				<div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
+					<Checkbox
+						checked={isSelected}
+						onCheckedChange={(checked: boolean) => {
+							internalSelected = checked;
+						}}
+					/>
+				</div>
 			{/if}
 		</div>
 	</div>
