@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
+	import { watch } from 'runed';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
@@ -9,22 +10,28 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 
 	interface Props {
 		fullOrder: FullOrder;
 		showCustomer?: boolean;
 		isSelectMode?: boolean;
-		handleSelectModeActivation?: () => void;
+		isSelected?: boolean;
+		handleSelectModeActivation: () => void;
+		handleSelectOrder: (orderId: string, selected: boolean) => void;
 	}
 
 	let {
 		fullOrder,
 		showCustomer = true,
 		isSelectMode = false,
-		handleSelectModeActivation = () => {}
+		isSelected = false,
+		handleSelectModeActivation,
+		handleSelectOrder
 	}: Props = $props();
 	const order = fullOrder.order;
 	const calculatedItem = fullOrder.calculatedItem;
+	let internalSelected = $state(false);
 	let measures = $derived(`${order.item.height}x${order.item.width} cm`);
 	let mold = $derived(
 		OrderRepresentationUtilities.getFirstMoldDescriptionFromOrder(order, calculatedItem)
@@ -32,7 +39,34 @@
 
 	function handlePublicIdClick() {
 		handleSelectModeActivation();
+		internalSelected = true;
 	}
+	watch(
+		() => internalSelected,
+		() => {
+			if (isSelectMode) {
+				handleSelectOrder(order.id, internalSelected);
+			}
+		}
+	);
+
+	watch(
+		() => isSelected,
+		() => {
+			if (isSelectMode) {
+				internalSelected = isSelected;
+			}
+		}
+	);
+
+	watch(
+		() => isSelectMode,
+		() => {
+			if (!isSelectMode) {
+				internalSelected = false;
+			}
+		}
+	);
 </script>
 
 {#snippet infoPiece(icon: IconType, title: string, value: string, redText: boolean = false)}
@@ -73,6 +107,13 @@
 						{order.publicId}
 					</span>
 				</div>
+			{:else}
+				<Checkbox
+					checked={isSelected}
+					onCheckedChange={(checked: boolean) => {
+						internalSelected = checked;
+					}}
+				/>
 			{/if}
 		</div>
 	</div>

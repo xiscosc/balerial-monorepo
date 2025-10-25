@@ -66,6 +66,8 @@
 	const classes = $derived(
 		`${buttonType} ${disabled ? ButtonStyle.DISABLED : style} ${textType} ${buttonType === ButtonType.SMALL ? 'flex items-center' : ''}`
 	);
+
+	const externalLink = $derived(link ?? '#');
 </script>
 
 {#if action === ButtonAction.TRIGGER}
@@ -100,7 +102,7 @@
 	<a
 		class={classes}
 		class:w-full={buttonType !== ButtonType.SMALL}
-		href={resolve(link ?? '#')}
+		href={externalLink}
 		onclick={() => track()}
 		target={newWindow ? '_blank' : '_self'}
 	>
