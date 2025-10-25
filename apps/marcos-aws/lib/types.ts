@@ -23,7 +23,7 @@ export type StoreTables = {
 	listPricingTable: TableInfo;
 	fileTable: TableInfo;
 	configTable: TableInfo;
-	// orderSetTable: TableInfo;
+	orderSetTable: TableInfo;
 };
 
 export type AnalyticsTables = {

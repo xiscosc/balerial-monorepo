@@ -13,6 +13,7 @@ import {
 	MOLD_PRICES_BUCKET,
 	ORDER_AUDIT_TRAIL_TABLE,
 	ORDER_TABLE,
+	ORDER_SET_TABLE,
 	REPORTS_BUCKET,
 	TRACK_AWS_ACCESS_KEY_ID,
 	TRACK_AWS_SECRET_ACCESS_KEY
@@ -40,6 +41,7 @@ export class AuthService {
 			filesBucket: FILES_BUCKET,
 			moldPricesBucket: MOLD_PRICES_BUCKET,
 			fileTable: FILE_TABLE,
+			orderSetTable: ORDER_SET_TABLE,
 			listPricingTable: LIST_PRICING_TABLE,
 			orderAuditTrailTable: ORDER_AUDIT_TRAIL_TABLE,
 			reportsBucket: REPORTS_BUCKET,
