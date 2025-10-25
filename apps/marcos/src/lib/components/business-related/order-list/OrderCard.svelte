@@ -30,7 +30,7 @@
 		handleSelectModeActivation,
 		handleSelectOrder
 	}: Props = $props();
-	const order = fullOrder.order;
+	let order = $derived(fullOrder.order);
 	const calculatedItem = fullOrder.calculatedItem;
 	let internalSelected = $state(false);
 	let measures = $derived(`${order.item.height}x${order.item.width} cm`);
@@ -177,7 +177,7 @@
 	<!-- Footer Section -->
 	<div class="flex items-center justify-between bg-white p-3">
 		<div>
-			{#if order.status === OrderStatus.FINISHED && order.notified}
+			{#if fullOrder.order.status === OrderStatus.FINISHED && fullOrder.order.notified}
 				<div
 					class="flex items-center gap-2 rounded-md border border-emerald-500 bg-emerald-100 px-2 py-0.5 text-emerald-800"
 				>

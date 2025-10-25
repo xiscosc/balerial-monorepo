@@ -15,6 +15,8 @@
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { OrderApiGateway } from '@/gateway/order-api.gateway';
+	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -39,6 +41,10 @@
 	const orderListState = new OrderListState();
 	let loading = $state(false);
 	let paginationLoading = $state(false);
+
+	let orderSetDialogOpen = $state(false);
+	let whatsappDialogOpen = $state(false);
+	let whatsappLoading = $state(true);
 
 	function handleSelectModeDeactivate() {
 		orderListState.setSelectMode(false);
@@ -72,6 +78,7 @@
 		}
 		loading = true;
 		promiseOrders.then((orders) => {
+			orderListState.clearState();
 			orderListState.addOrders(orders);
 			loading = false;
 		});
@@ -92,13 +99,29 @@
 		ActionBarState.destroy();
 	});
 
-	async function test() {
-		dialogOpen = true;
+	async function generateOrderSet() {
+		orderSetDialogOpen = true;
 		const { id } = await OrderSetApiGateway.createOrderSet(orderListState.getSelectedOrdersIds());
-		await goto(resolve('/(app)/(main)/order-sets/[id]', { id }));
+		await goto(resolve('/(app)/(main)/order-sets/[id]/print', { id }));
 	}
 
-	let dialogOpen = $state(false);
+	async function notifyWhatsapp() {
+		whatsappLoading = true;
+		whatsappDialogOpen = true;
+		if (orderListState.getSelectedOrdersIds().length === 0) {
+			whatsappLoading = false;
+			whatsappDialogOpen = false;
+			return;
+		}
+
+		const promises = orderListState
+			.getSelectedOrdersIds()
+			.map((id) => OrderApiGateway.notifyOrder(id));
+		await getGlobalProfiler().measure(Promise.all(promises));
+
+		orderListState.setSelectedOrdersAsNotified();
+		whatsappLoading = false;
+	}
 </script>
 
 {#snippet actionBarLeft()}
@@ -119,31 +142,41 @@
 {/snippet}
 
 {#snippet actionButtons()}
-	<div class="flex w-full flex-row gap-2 text-xs">
-		<Button iconSize={IconSize.SMALL} onClick={test} text="" icon={IconType.PRINTER}></Button>
-		<Button iconSize={IconSize.SMALL} style={ButtonStyle.WHATSAPP} text="" icon={IconType.WHATSAPP}
-		></Button>
-		<Button
-			iconSize={IconSize.SMALL}
-			style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
-			textType={ButtonText.NO_COLOR}
-			text=""
-			icon={IconType.COINS}
-		></Button>
-		<Button
-			iconSize={IconSize.SMALL}
-			style={ButtonStyle.ORDER_PENDING}
-			text=""
-			icon={IconType.TRUCK}
-		></Button>
-		<Button
-			iconSize={IconSize.SMALL}
-			style={ButtonStyle.ORDER_GENERIC_VARIANT}
-			text=""
-			textType={ButtonText.NO_COLOR}
-			icon={IconType.INVOICED}
-		></Button>
-	</div>
+	{#if orderListState.getSelectedOrdersCount() > 0}
+		<div class="flex w-full flex-row gap-2 text-xs">
+			<Button iconSize={IconSize.SMALL} onClick={generateOrderSet} text="" icon={IconType.PRINTER}
+			></Button>
+			<Button
+				iconSize={IconSize.SMALL}
+				disabled={!orderListState.getAllOrdersAreFinished()}
+				onClick={notifyWhatsapp}
+				style={ButtonStyle.WHATSAPP}
+				text=""
+				icon={IconType.WHATSAPP}
+			></Button>
+			<Button
+				iconSize={IconSize.SMALL}
+				style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+				textType={ButtonText.NO_COLOR}
+				text=""
+				icon={IconType.COINS}
+			></Button>
+			<Button
+				iconSize={IconSize.SMALL}
+				style={ButtonStyle.ORDER_PENDING}
+				disabled={!orderListState.getAllOrdersAreFinished()}
+				text=""
+				icon={IconType.TRUCK}
+			></Button>
+			<Button
+				iconSize={IconSize.SMALL}
+				style={ButtonStyle.ORDER_GENERIC_VARIANT}
+				text=""
+				textType={ButtonText.NO_COLOR}
+				icon={IconType.INVOICED}
+			></Button>
+		</div>
+	{/if}
 {/snippet}
 
 {#snippet loadingSkeleton()}
@@ -154,13 +187,30 @@
 	</div>
 {/snippet}
 
-<Dialog.Root bind:open={dialogOpen}>
+<Dialog.Root bind:open={orderSetDialogOpen}>
 	<Dialog.Content>
 		<Dialog.Header>
 			<Dialog.Title>Generando listado</Dialog.Title>
 			<Dialog.Description>
 				<span class="text-xs">
 					<ProgressBar text=""></ProgressBar>
+				</span>
+			</Dialog.Description>
+		</Dialog.Header>
+	</Dialog.Content>
+</Dialog.Root>
+
+<Dialog.Root bind:open={whatsappDialogOpen}>
+	<Dialog.Content>
+		<Dialog.Header>
+			<Dialog.Title>Notificando clientes</Dialog.Title>
+			<Dialog.Description>
+				<span class="text-xs">
+					{#if whatsappLoading}
+						<ProgressBar text=""></ProgressBar>
+					{:else}
+						test1
+					{/if}
 				</span>
 			</Dialog.Description>
 		</Dialog.Header>

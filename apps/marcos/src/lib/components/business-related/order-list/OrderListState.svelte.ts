@@ -1,15 +1,19 @@
-import type { FullOrder } from '@marcsimolduressonsardina/core/type';
+import { type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { SvelteMap } from 'svelte/reactivity';
 
 export class OrderListState {
 	private selectedOrders: Map<string, FullOrder>;
 	private allOrders: Map<string, FullOrder>;
 	private selectMode: boolean;
+	private allOrdersFinished: boolean;
 
 	constructor() {
 		this.selectedOrders = new SvelteMap();
 		this.allOrders = new SvelteMap();
 		this.selectMode = $state(false);
+		this.allOrdersFinished = $derived(
+			!this.selectedOrders.values().some((fo) => fo.order.status !== OrderStatus.FINISHED)
+		);
 	}
 
 	public getSelectedOrdersCount(): number {
@@ -18,6 +22,19 @@ export class OrderListState {
 
 	public getSelectedOrdersIds(): string[] {
 		return Array.from(this.selectedOrders.keys());
+	}
+
+	public setSelectedOrdersAsNotified(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				order: {
+					...fullOrder.order,
+					notified: true
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
 	}
 
 	public selectOrder(orderId: string): void {
@@ -68,6 +85,23 @@ export class OrderListState {
 		this.selectMode = value;
 		if (!value) {
 			this.clearSelectedOrders();
+		}
+	}
+
+	public getAllOrdersAreFinished(): boolean {
+		return this.allOrdersFinished;
+	}
+
+	public clearState(): void {
+		this.selectedOrders.clear();
+		this.allOrders.clear();
+		this.selectMode = false;
+	}
+
+	private updateOrderInMaps(updatedOrder: FullOrder): void {
+		this.allOrders.set(updatedOrder.order.id, updatedOrder);
+		if (this.selectedOrders.has(updatedOrder.order.id)) {
+			this.selectedOrders.set(updatedOrder.order.id, updatedOrder);
 		}
 	}
 }
