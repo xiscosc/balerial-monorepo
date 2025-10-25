@@ -8,7 +8,8 @@ import {
 	orderTableBuilder,
 	listPricingTableBuilder,
 	calculatedItemTableBuilder,
-	orderAuditTrailTableBuilder
+	orderAuditTrailTableBuilder,
+	orderSetTableBuilder
 } from '@marcsimolduressonsardina/core/db';
 
 import { IPrimaryDynamoDbIndex, ISecondaryDynamoDbIndex } from '@balerial/dynamo/type';
@@ -22,7 +23,8 @@ export function createDynamoTables(scope: Construct, envName: string): DynamoTab
 			calculatedItemOrderTable: createCalculatedItemOrderTable(scope, envName),
 			listPricingTable: createListPricingTable(scope, envName),
 			fileTable: createFileTable(scope, envName),
-			configTable: createConfigTable(scope, envName)
+			configTable: createConfigTable(scope, envName),
+			orderSetTable: createOrderSetTable(scope, envName)
 		},
 		analyticsTables: {
 			orderAuditTrailTable: createOrderAuditTrailTable(scope, envName)
@@ -62,6 +64,22 @@ function createConfigTable(scope: Construct, envName: string): TableInfo {
 function createFileTable(scope: Construct, envName: string): TableInfo {
 	const balerialTable = fileTableBuilder.setTableName(`${envName}-file`).build();
 	const table = createTable(scope, envName, `${envName}-file`, balerialTable.getPrimaryIndex());
+	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
+	return {
+		table,
+		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
+		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
+	};
+}
+
+function createOrderSetTable(scope: Construct, envName: string): TableInfo {
+	const balerialTable = orderSetTableBuilder.setTableName(`${envName}-order-set`).build();
+	const table = createTable(
+		scope,
+		envName,
+		`${envName}-order-set`,
+		balerialTable.getPrimaryIndex()
+	);
 	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
 	return {
 		table,

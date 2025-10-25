@@ -22,6 +22,14 @@ export enum OrderSecondaryIndexNames {
 	PublicId = 'publicId'
 }
 
+export enum OrderSetSecondaryIndexNames {
+	Hash = 'hash'
+}
+
+export const orderSetTableBuilder = new BalerialDynamoTableBuilder()
+	.setPrimaryIndex('storeId', DynamoDbIndexKeyType.string, 'id', DynamoDbIndexKeyType.string)
+	.addSecondaryIndex(OrderSetSecondaryIndexNames.Hash, 'hash', DynamoDbIndexKeyType.string);
+
 export const calculatedItemTableBuilder = new BalerialDynamoTableBuilder()
 	.setPrimaryIndex('orderUuid', DynamoDbIndexKeyType.string)
 	.setPublicPrimaryIndex();
