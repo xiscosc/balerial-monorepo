@@ -57,8 +57,10 @@
 				{order.status === OrderStatus.QUOTE ? 'Presupuesto' : 'Pedido'}
 			</span>
 		</span>
-		<div class="overflow-hidden text-ellipsis whitespace-nowrap text-[0.6rem]">
-			<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
+		<div class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap">
+			<span
+				class="rounded-lg bg-white px-2 py-1 font-['Google_Sans_Code',_monospace] text-gray-800"
+			>
 				{order.publicId}
 			</span>
 		</div>

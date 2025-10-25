@@ -13,15 +13,26 @@
 	interface Props {
 		fullOrder: FullOrder;
 		showCustomer?: boolean;
+		isSelectMode?: boolean;
+		handleSelectModeActivation?: () => void;
 	}
 
-	let { fullOrder, showCustomer = true }: Props = $props();
+	let {
+		fullOrder,
+		showCustomer = true,
+		isSelectMode = false,
+		handleSelectModeActivation = () => {}
+	}: Props = $props();
 	const order = fullOrder.order;
 	const calculatedItem = fullOrder.calculatedItem;
 	let measures = $derived(`${order.item.height}x${order.item.width} cm`);
 	let mold = $derived(
 		OrderRepresentationUtilities.getFirstMoldDescriptionFromOrder(order, calculatedItem)
 	);
+
+	function handlePublicIdClick() {
+		handleSelectModeActivation();
+	}
 </script>
 
 {#snippet infoPiece(icon: IconType, title: string, value: string, redText: boolean = false)}
@@ -50,11 +61,19 @@
 				<span class="font-semibold">{orderStatusMap[order.status]}</span>
 			</div>
 
-			<div class="overflow-hidden text-ellipsis whitespace-nowrap text-[0.6rem]">
-				<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
-					{order.publicId}
-				</span>
-			</div>
+			{#if !isSelectMode}
+				<div
+					onclick={handlePublicIdClick}
+					class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
+					id="order-public-id"
+				>
+					<span
+						class="rounded-lg bg-white px-2 py-1 font-['Google_Sans_Code',_monospace] text-gray-800"
+					>
+						{order.publicId}
+					</span>
+				</div>
+			{/if}
 		</div>
 	</div>
 

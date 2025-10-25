@@ -4,8 +4,14 @@
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { Changelogs } from '@/data/changelog';
 	import type { Changelog } from '@/type/changelog.type';
+	import { onMount } from 'svelte';
+	import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 
 	const lastChange: Changelog = Changelogs.slice(-1)[0];
+
+	onMount(() => {
+		ActionBarState.hide();
+	});
 </script>
 
 <div

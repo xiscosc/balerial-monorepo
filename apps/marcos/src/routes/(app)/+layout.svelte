@@ -9,6 +9,7 @@
 	import Box from '@/components/generic/Box.svelte';
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -89,6 +90,8 @@
 			{/if}
 		</div>
 	</main>
+
+	<ActionBar />
 </div>
 
 <style>

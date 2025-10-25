@@ -6,6 +6,7 @@
 	import Button from '@/components/generic/button/Button.svelte';
 	import OrderSkeletonCard from '@/components/business-related/order-detail/OrderSkeletonCard.svelte';
 	import { GenericTools } from '@/shared/generic/generic.tools';
+	import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -29,7 +30,13 @@
 
 	let allOrders: FullOrder[] = $state([]);
 	let loading = $state(false);
+	let isSelectMode = $state(false);
 	let paginationLoading = $state(false);
+
+	function handleSelectModeActivation() {
+		isSelectMode = true;
+		ActionBarState.show();
+	}
 
 	$effect(() => {
 		if (promiseOrders == null) {
@@ -74,7 +81,7 @@
 {:else}
 	<div class="flex w-full flex-col gap-3 md:grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 		{#each allOrders as fullOrder (fullOrder.order.id)}
-			<OrderCard {fullOrder} {showCustomer} />
+			<OrderCard {fullOrder} {showCustomer} {isSelectMode} {handleSelectModeActivation} />
 		{/each}
 		{#if paginationLoading}
 			{#each GenericTools.getIterableNumberList(Math.min(5, loadingCount)) as i (i)}

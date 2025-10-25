@@ -41,8 +41,8 @@
 
 <div class="flex flex-col gap-4">
 	<div
-		on:click={handleHeadingTap}
-		on:keydown={handleKeyDown}
+		onclick={handleHeadingTap}
+		onkeydown={handleKeyDown}
 		role="button"
 		tabindex="0"
 		class="cursor-defaul"
