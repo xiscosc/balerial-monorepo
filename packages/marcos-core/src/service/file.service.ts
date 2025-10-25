@@ -21,7 +21,7 @@ interface IFileMetadata extends Record<string, string> {
 	type: FileType;
 }
 
-export type OptmizationAndThumbnailTypeInfo = {
+export type OptimizationAndThumbnailTypeInfo = {
 	optimizedContentType: string;
 	thumbnailContentType: string;
 	optimizedExtension: string;
@@ -75,14 +75,13 @@ export class FileService {
 			file_id: id,
 			type
 		};
-		const uploadUrl = await this.balerialFileCloudService.getPresignedUploadUrl(
+		file.uploadUrl = await this.balerialFileCloudService.getPresignedUploadUrl(
 			storageKey,
 			mimeType,
 			300,
 			metadata,
 			file.type !== FileType.PHOTO
 		);
-		file.uploadUrl = uploadUrl;
 		await Promise.all([
 			this.repository.createFile(fileDto),
 			this.orderAuditTrailServiceOrder.logOrderFileCreated(orderId, `${fileName} || ${id}`)
@@ -114,7 +113,7 @@ export class FileService {
 		id: string,
 		optimizedImage: Buffer,
 		thumbnailImage: Buffer,
-		optimizationAndThumbnailTypeInfo?: OptmizationAndThumbnailTypeInfo
+		optimizationAndThumbnailTypeInfo?: OptimizationAndThumbnailTypeInfo
 	) {
 		const fileDto = await this.repository.getFile(orderId, id);
 		if (fileDto == null) return;

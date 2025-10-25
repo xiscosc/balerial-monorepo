@@ -23,8 +23,8 @@ export function createDynamoTables(scope: Construct, envName: string): DynamoTab
 			calculatedItemOrderTable: createCalculatedItemOrderTable(scope, envName),
 			listPricingTable: createListPricingTable(scope, envName),
 			fileTable: createFileTable(scope, envName),
-			configTable: createConfigTable(scope, envName),
-			orderSetTable: createOrderSetTable(scope, envName)
+			configTable: createConfigTable(scope, envName)
+			// orderSetTable: createOrderSetTable(scope, envName)
 		},
 		analyticsTables: {
 			orderAuditTrailTable: createOrderAuditTrailTable(scope, envName)
