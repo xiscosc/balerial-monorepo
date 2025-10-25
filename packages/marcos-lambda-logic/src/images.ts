@@ -1,5 +1,5 @@
 import { ICoreConfigurationForAWSLambda } from '@marcsimolduressonsardina/core/config';
-import { getLoggerForLambda } from '@marcsimolduressonsardina/core/logger';
+import { getLogger } from '@marcsimolduressonsardina/core/logger';
 import {
 	FileService,
 	OptmizationAndThumbnailTypeInfo
@@ -44,7 +44,7 @@ export async function lambdaOptimizeImages({
 		user
 	};
 
-	const logger = getLoggerForLambda();
+	const logger = getLogger('lambdaOptimizeImages', configuration.runInAWSLambda);
 	const postHogClient = postHogKey ? createPostHogClient(postHogKey) : undefined;
 	const fileService = new FileService(configuration);
 	const promises = s3Records.map((record) =>

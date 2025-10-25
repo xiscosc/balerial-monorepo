@@ -45,6 +45,12 @@ export class OrderRepositoryDynamoDb {
 		return dtos[0] ?? null;
 	}
 
+	public async getOrdersByIds(orderIds: string[]): Promise<OrderDto[]> {
+		const ids = orderIds.map((id) => ({ partitionKey: id }));
+		const dtos = await this.repository.batchGet(ids);
+		return dtos.filter((dto) => dto.storeId === this.config.storeId);
+	}
+
 	public async getOrderByShortId(shortId: string): Promise<OrderDto | null> {
 		const dtos = await this.repository.getByIndex({
 			indexName: OrderSecondaryIndexNames.ShortId,

@@ -38,22 +38,13 @@ export class CustomerService {
 		}
 	}
 
-	public async getAllCustomersMap(filterIds: string[]): Promise<Map<string, Customer>> {
-		const map = new Map<string, Customer>();
-		const filterSet = new Set<string>(filterIds ?? []);
-
-		const dtos = (
-			await Promise.all([...filterSet].map((id) => this.repository.getCustomerById(id)))
-		).filter((customer) => customer != null);
-
-		dtos.forEach((dto) => {
-			if (filterIds == null || filterSet.has(dto.uuid)) {
-				const customer = CustomerService.fromDto(dto);
-				map.set(customer.id, customer);
-			}
-		});
-
-		return map;
+	public async getCustomersByIds(customerIds: string[]): Promise<Record<string, Customer>> {
+		const dtos = await this.repository.getCustomersByIds([...new Set(customerIds)]);
+		const result: Record<string, Customer> = {};
+		for (const id of Object.keys(dtos)) {
+			result[id] = CustomerService.fromDto(dtos[id]);
+		}
+		return result;
 	}
 
 	public async getAllCustomersPaginated(

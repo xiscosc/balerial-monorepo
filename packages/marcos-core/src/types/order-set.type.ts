@@ -1,10 +1,10 @@
 import { FullOrder } from './order.type';
+import { StaticUser } from './user.type';
 
 export type OrderSet = {
 	id: string;
 	hash: string;
-	storeId: string;
 	createdAt: Date;
-	createdBy: string;
+	createdBy: StaticUser;
 	orders: Record<string, FullOrder>;
 };

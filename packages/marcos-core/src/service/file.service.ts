@@ -2,6 +2,7 @@ import mime from 'mime-types';
 import { v4 as uuidv4 } from 'uuid';
 import { FileRepositoryDynamoDb } from '../repository/dynamodb/file.repository.dynamodb';
 
+import { Logger } from 'pino';
 import type { FileDto } from '../repository/dto/file.dto';
 import { OrderAuditTrailService } from './order-audit-trail.service';
 import {
@@ -38,6 +39,7 @@ export class FileService {
 	private repository: FileRepositoryDynamoDb;
 	private orderAuditTrailServiceOrder: OrderAuditTrailService;
 	private balerialFileCloudService: BalerialCloudFileService;
+	private readonly logger: Logger;
 
 	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
 		this.repository = new FileRepositoryDynamoDb(config);
@@ -50,6 +52,8 @@ export class FileService {
 		if (this.config.filesBucket == null) {
 			throw Error('files bucket is needed');
 		}
+
+		this.logger = getLogger('FileService', this.config.runInAWSLambda);
 	}
 
 	public async createFile(orderId: string, fileName: string): Promise<File> {
@@ -165,28 +169,27 @@ export class FileService {
 	}
 
 	public async optimizePhotoStorage(): Promise<void> {
-		const logger = getLogger();
-		logger.info('Optimizing photo storage');
+		this.logger.info('Optimizing photo storage');
 		const fileDtos = await this.repository.getOptimizedPhotoFileOriginalKeys();
 		const originalKeys = fileDtos.map((dto) => dto.key!);
-		logger.info(`Found ${originalKeys.length} files to optimize`);
+		this.logger.info(`Found ${originalKeys.length} files to optimize`);
 
 		const batches = [];
 		for (let i = 0; i < originalKeys.length; i += 50) {
 			batches.push(originalKeys.slice(i, i + 50));
 		}
 
-		logger.info(`Processing ${batches.length} batches`);
+		this.logger.info(`Processing ${batches.length} batches`);
 		for (let i = 0; i < batches.length; i++) {
 			const batch = batches[i];
-			logger.info(`Processing batch ${i + 1} of ${batches.length}`);
+			this.logger.info(`Processing batch ${i + 1} of ${batches.length}`);
 			const promises = batch.map((key) =>
 				this.balerialFileCloudService.tagFile(key, [FileService.expiryTag])
 			);
 			const results = await Promise.allSettled(promises);
 			results.forEach((result) => {
 				if (result.status === 'rejected') {
-					getLogger().error({ err: result.reason }, 'tagFile promise failed');
+					this.logger.error({ err: result.reason }, 'tagFile promise failed');
 				}
 			});
 			await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -256,7 +259,7 @@ export class FileService {
 		const results = await Promise.allSettled(promises);
 		results.forEach((result) => {
 			if (result.status === 'rejected') {
-				getLogger().error({ err: result.reason }, 'deleteFile promise failed');
+				this.logger.error({ err: result.reason }, 'deleteFile promise failed');
 			}
 		});
 	}

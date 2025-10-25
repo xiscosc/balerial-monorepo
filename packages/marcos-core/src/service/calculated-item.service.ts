@@ -33,6 +33,17 @@ export class CalculatedItemService {
 		return dto ? CalculatedItemService.fromDto(dto) : null;
 	}
 
+	public async getCalculatedItems(orderIds: string[]): Promise<Record<string, CalculatedItem>> {
+		const dtos = await this.calculatedItemRepository.getCalculatedItemsByIds([
+			...new Set(orderIds)
+		]);
+		const result: Record<string, CalculatedItem> = {};
+		for (const orderId of Object.keys(dtos)) {
+			result[orderId] = CalculatedItemService.fromDto(dtos[orderId]);
+		}
+		return result;
+	}
+
 	public async createCalculatedItem(
 		order: Order | ExternalOrder,
 		discount: number,

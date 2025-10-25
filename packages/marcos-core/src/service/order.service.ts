@@ -87,6 +87,30 @@ export class OrderService {
 		return null;
 	}
 
+	async getOrdersByIds(orderIds: string[]): Promise<Order[]> {
+		const orderDtos = await this.repository.getOrdersByIds([...new Set(orderIds)]);
+		const customerIds = orderDtos.map((dto) => dto.customerUuid);
+		const customers = await this.customerService.getCustomersByIds(customerIds);
+		customers[tempCustomerUuid] = OrderService.getTempCustomer(this.config.storeId);
+		const orders = orderDtos.map((o) =>
+			OrderService.fromDto(
+				o,
+				customers[o.customerUuid] ?? OrderService.getTempCustomer(this.config.storeId)
+			)
+		);
+		return orders;
+	}
+
+	async getFullOrdersByIds(orderIds: string[]): Promise<Record<string, FullOrder>> {
+		const orders = await this.getOrdersByIds(orderIds);
+		const fullOrders = await this.getFullOrders(orders);
+		const result: Record<string, FullOrder> = {};
+		for (const fullOrder of fullOrders) {
+			result[fullOrder.order.id] = fullOrder;
+		}
+		return result;
+	}
+
 	async getFullOrderById(orderId: string): Promise<FullOrder | null> {
 		const order = await this.getOrderById(orderId);
 		if (order != null) {
@@ -109,12 +133,12 @@ export class OrderService {
 	async getStandaloneOrdersByStatus(status: OrderStatus): Promise<Order[]> {
 		const orderDtos = await this.repository.getOrdersByStatus(status);
 		const customerIds = orderDtos.map((dto) => dto.customerUuid);
-		const customerMap = await this.customerService.getAllCustomersMap(customerIds);
-		customerMap.set(tempCustomerUuid, OrderService.getTempCustomer(this.config.storeId));
+		const customers = await this.customerService.getCustomersByIds(customerIds);
+		customers[tempCustomerUuid] = OrderService.getTempCustomer(this.config.storeId);
 		const orders = orderDtos.map((o) =>
 			OrderService.fromDto(
 				o,
-				customerMap.get(o.customerUuid) ?? OrderService.getTempCustomer(this.config.storeId)
+				customers[o.customerUuid] ?? OrderService.getTempCustomer(this.config.storeId)
 			)
 		);
 
@@ -127,12 +151,12 @@ export class OrderService {
 	): Promise<PaginatedOrders> {
 		const paginatedDtoResult = await this.repository.getOrdersByStatusPaginated(status, nextKey);
 		const customerIds = paginatedDtoResult.elements.map((dto) => dto.customerUuid);
-		const customerMap = await this.customerService.getAllCustomersMap(customerIds);
-		customerMap.set(tempCustomerUuid, OrderService.getTempCustomer(this.config.storeId));
+		const customers = await this.customerService.getCustomersByIds(customerIds);
+		customers[tempCustomerUuid] = OrderService.getTempCustomer(this.config.storeId);
 		const orders = paginatedDtoResult.elements.map((o) =>
 			OrderService.fromDto(
 				o,
-				customerMap.get(o.customerUuid) ?? OrderService.getTempCustomer(this.config.storeId)
+				customers[o.customerUuid] ?? OrderService.getTempCustomer(this.config.storeId)
 			)
 		);
 		const fullOrders = await this.getFullOrders(orders);
@@ -145,12 +169,12 @@ export class OrderService {
 			SearchUtilities.normalizeString(query)
 		);
 		const customerIds = orderDtos.map((dto) => dto.customerUuid);
-		const customerMap = await this.customerService.getAllCustomersMap(customerIds);
-		customerMap.set(tempCustomerUuid, OrderService.getTempCustomer(this.config.storeId));
+		const customers = await this.customerService.getCustomersByIds(customerIds);
+		customers[tempCustomerUuid] = OrderService.getTempCustomer(this.config.storeId);
 		const orders = orderDtos.map((o) =>
 			OrderService.fromDto(
 				o,
-				customerMap.get(o.customerUuid) ?? OrderService.getTempCustomer(this.config.storeId)
+				customers[o.customerUuid] ?? OrderService.getTempCustomer(this.config.storeId)
 			)
 		);
 		return this.getFullOrders(orders);
@@ -401,20 +425,13 @@ export class OrderService {
 	}
 
 	private async getFullOrders(orders: Order[]): Promise<FullOrder[]> {
-		const orderMap = new Map(orders.map((order) => [order.id, order]));
-		const calculatedItemsPromises = orders.map((order) =>
-			this.calculatedItemService.getCalculatedItem(order.id)
+		const calculatedItems = await this.calculatedItemService.getCalculatedItems(
+			orders.map((o) => o.id)
 		);
-		const calculatedItems = (await Promise.all(calculatedItemsPromises)).filter(
-			(calculatedItem) => calculatedItem != null
-		);
-		return calculatedItems.map((calculatedItem) => ({
-			calculatedItem: OrderService.addTypesToCalculatedItem(
-				orderMap.get(calculatedItem.orderId)!,
-				calculatedItem
-			),
-			order: orderMap.get(calculatedItem.orderId)!,
-			totals: OrderService.getTotalsForOrder(orderMap.get(calculatedItem.orderId)!, calculatedItem)
+		return orders.map((order) => ({
+			calculatedItem: OrderService.addTypesToCalculatedItem(order, calculatedItems[order.id]!),
+			order,
+			totals: OrderService.getTotalsForOrder(order, calculatedItems[order.id]!)
 		}));
 	}
 
