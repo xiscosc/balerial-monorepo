@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaNew } from '@/shared/form-schema/pricing.form-schema';
 import { AuthService } from '$lib/server/service/auth.service.js';
@@ -16,13 +16,13 @@ import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
 import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export const load = async () => {
-	const form = await superValidate(zod(listPriceSchemaNew));
+	const form = await superValidate(zod4(listPriceSchemaNew));
 	return { form };
 };
 
 export const actions = {
 	async createOrEdit({ request, locals }) {
-		const form = await superValidate(request, zod(listPriceSchemaNew));
+		const form = await superValidate(request, zod4(listPriceSchemaNew));
 		if (!form.valid) {
 			return fail(400, { form });
 		}

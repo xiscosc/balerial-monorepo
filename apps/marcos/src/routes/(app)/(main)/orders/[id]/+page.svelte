@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import OrderInfo from '@/components/business-related/order-detail/OrderInfo.svelte';
@@ -48,7 +49,7 @@
 			data.info.then((info) => {
 				const order = info.fullOrder?.order;
 				if (order != null && OrderUtilities.isOrderTemp(order)) {
-					goto(`/orders/${order.id}/link`);
+					goto(resolve('/(app)/(main)/orders/[id]/link', { id: order.id }));
 				}
 
 				if (order == null) {

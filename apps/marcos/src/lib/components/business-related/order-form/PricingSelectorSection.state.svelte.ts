@@ -1,4 +1,5 @@
 import type { ListPriceWithMold, PricingType } from '@marcsimolduressonsardina/core/type';
+import { SvelteMap } from 'svelte/reactivity';
 
 interface PricingSelectorSectionState {
 	isAdded: () => boolean;
@@ -119,7 +120,7 @@ export class PricingSelectorSectionStateClass implements PricingSelectorSectionS
 		prices: ListPriceWithMold[],
 		extraPrices: ListPriceWithMold[]
 	): Map<string, ListPriceWithMold> {
-		const map = new Map<string, ListPriceWithMold>();
+		const map = new SvelteMap<string, ListPriceWithMold>();
 		prices.forEach((p) => map.set(this.getId(p), p));
 		extraPrices.forEach((p) => map.set(this.getId(p), p));
 		return map;

@@ -4,9 +4,9 @@
 </script>
 
 <div class="py-6">
-	<div class="flex w-full flex-col items-center justify-center">
-		<div class="animate-bounce">
-			<Icon size={IconSize.XXXL} type={IconType.LOADING} />
+	<div class="flex w-full flex-col items-center justify-center gap-2">
+		<div class="animate-spin">
+			<Icon size={IconSize.XXXL} type={IconType.LOADING_BALL} />
 		</div>
 		<span class="text-md text-gray-600">Aplicando cambios...</span>
 	</div>

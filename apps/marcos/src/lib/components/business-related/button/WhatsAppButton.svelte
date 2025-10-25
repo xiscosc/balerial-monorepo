@@ -45,7 +45,7 @@
 		await getGlobalProfiler().measure(Promise.all(promises));
 
 		orders.forEach((order) => {
-			order.notified = true;
+			order.notified = true ;
 		});
 
 		handleAfterNotify();

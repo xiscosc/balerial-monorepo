@@ -3,6 +3,7 @@
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import { pricingTypesMap } from '@/shared/mappings/pricing.mapping';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonStyle, ButtonType } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
@@ -54,7 +55,7 @@
 				text=""
 				buttonType={ButtonType.SMALL}
 				style={ButtonStyle.NEUTRAL}
-				onClick={() => goto('/config/prices/new')}
+				onClick={() => goto(resolve('/(app)/(main)/config/prices/new'))}
 			></Button>
 		</div>
 	</SimpleHeading>

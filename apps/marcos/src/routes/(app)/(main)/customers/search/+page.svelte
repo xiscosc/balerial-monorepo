@@ -4,6 +4,7 @@
 	import Box from '@/components/generic/Box.svelte';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		ButtonAction,
 		ButtonStyle,
@@ -21,7 +22,7 @@
 
 	function triggerSearch() {
 		SearchCustomerState.setSearchValue(searchQuery);
-		goto(`/customers/search-list`);
+		goto(resolve(`/(app)/(main)/customers/search-list`));
 	}
 </script>
 

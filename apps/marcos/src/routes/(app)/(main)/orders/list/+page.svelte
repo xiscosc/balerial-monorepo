@@ -27,6 +27,7 @@
 					class="flex w-full flex-col place-content-center items-center justify-center gap-3 md:grid md:grid-cols-2"
 				>
 					<Button
+						disabled={listState.getIsLoading()}
 						text={listState.getStatus() === OrderStatus.FINISHED
 							? 'Viendo pedidos finalizados'
 							: 'Ver pedidos finalizados'}
@@ -46,6 +47,7 @@
 					></Button>
 
 					<Button
+						disabled={listState.getIsLoading()}
 						text={listState.getStatus() === OrderStatus.PENDING
 							? 'Viendo pedidos pendientes'
 							: 'Ver pedidos pendientes'}

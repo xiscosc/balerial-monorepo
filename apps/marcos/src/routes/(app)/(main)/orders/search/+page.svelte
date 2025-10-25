@@ -2,7 +2,7 @@
 	import * as Form from '@/components/ui/form/index.js';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonAction } from '@/components/generic/button/button.enum.js';
@@ -12,7 +12,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 
 	let { data } = $props();
-	const form = superForm(data.form, { validators: zodClient(orderPublicIdSchema) });
+	const form = superForm(data.form, { validators: zod4Client(orderPublicIdSchema) });
 	const { form: formData, enhance, submitting } = form;
 </script>
 

@@ -2,7 +2,7 @@
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import * as Form from '@/components/ui/form/index.js';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
@@ -26,7 +26,7 @@
 
 	let { data, icon, title = 'Crear Cliente', buttonText = 'Crear', link = false }: Props = $props();
 	const form = superForm(data.form, {
-		validators: zodClient(link ? linkCustomerSchema : customerSchema)
+		validators: zod4Client(link ? linkCustomerSchema : customerSchema)
 	});
 	const { form: formData, enhance, submitting } = form;
 </script>

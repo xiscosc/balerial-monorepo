@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Box from '@/components/generic/Box.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
+	import { asset } from '$app/paths';
 </script>
 
 <div class="flex min-h-screen w-full items-center justify-center">
@@ -8,7 +9,7 @@
 		<Box title="Fuera de servicio" icon={IconType.CLOCK}>
 			<div class="flex flex-col gap-2">
 				<div class="flex w-full justify-center">
-					<img class="w-1/2" src="/mmlogo.png" alt="logo" />
+					<img class="w-1/2" src={asset('/mmlogo.png')} alt="logo" />
 				</div>
 				<span>
 					La aplicación se encuentra en mantenimiento en estos momentos, disculpe las molestias. Se

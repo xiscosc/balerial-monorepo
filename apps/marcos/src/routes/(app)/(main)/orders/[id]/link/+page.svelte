@@ -6,6 +6,7 @@
 	import OrderElements from '@/components/business-related/order-detail/OrderElements.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { Input } from '@/components/ui/input';
@@ -90,10 +91,16 @@
 				{:else if !firstTimeSearch}
 					<ScrollArea class="h-72 rounded-md border lg:col-span-2">
 						<div class="p-4">
-							<h4 class="mb-4 text-sm font-medium leading-none">Clientes encontrados</h4>
+							<h4 class="mb-4 text-sm leading-none font-medium">Clientes encontrados</h4>
 							{#each customers as customer (customer.id)}
 								<button
-									onclick={() => goto(`/orders/${data.fullOrder.order.id}/link/${customer.id}`)}
+									onclick={() =>
+										goto(
+											resolve(`/(app)/(main)/orders/[id]/link/[customerId]`, {
+												id: data.fullOrder.order.id,
+												customerId: customer.id
+											})
+										)}
 									class="flexr-row flex w-full items-center gap-2 rounded-md p-2 hover:bg-gray-50"
 									type="button"
 								>

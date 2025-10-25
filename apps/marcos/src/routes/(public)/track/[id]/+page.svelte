@@ -12,6 +12,7 @@
 	import { QrOrigin } from '@/type/qr.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { QrUtilities } from '@/shared/order/qr.utilities';
+	import { asset, resolve } from '$app/paths';
 
 	interface Props {
 		data: PageData;
@@ -39,10 +40,10 @@
 >
 	<div class="flex w-full flex-col items-center gap-2">
 		<div
-			class="flex w-full flex-col items-center justify-center gap-4 rounded-xl border bg-white pb-4 pt-2 md:w-2/3 lg:w-1/3"
+			class="flex w-full flex-col items-center justify-center gap-4 rounded-xl border bg-white pt-2 pb-4 md:w-2/3 lg:w-1/3"
 		>
 			<div class="flex w-full flex-col items-center">
-				<img class="w-1/2" src="/mmlogo.png" alt="logo" />
+				<img class="w-1/2" src={asset('/mmlogo.png')} alt="logo" />
 				<span class="px-2 text-center text-[0.625rem]">
 					Horario de lunes a viernes de 09:00 a 18:00, sábados de 09:30 a 13:15
 				</span>
@@ -61,7 +62,7 @@
 				{data.fullOrder.order.publicId}
 			</span>
 			<span
-				class={`rounded-2xl border px-3 py-1 text-xs font-semibold uppercase text-white ${getStatusUIInfo(data.fullOrder.order.status).staticColor}`}
+				class={`rounded-2xl border px-3 py-1 text-xs font-semibold text-white uppercase ${getStatusUIInfo(data.fullOrder.order.status).staticColor}`}
 			>
 				{orderStatusMap[data.fullOrder.order.status]}
 			</span>
@@ -109,7 +110,11 @@
 				</span>
 			</div>
 		</div>
-		<a href={`/s/${data.fullOrder.order.shortId}`} target="_blank" class="text-xs">
+		<a
+			href={resolve('/(public)/s/[id]', { id: data.fullOrder.order.shortId })}
+			target="_blank"
+			class="text-xs"
+		>
 			<span class="flex items-center gap-1 hover:underline">
 				<Icon type={IconType.PRINTER} size={IconSize.SMALL}></Icon> Versión para imprimir
 			</span>

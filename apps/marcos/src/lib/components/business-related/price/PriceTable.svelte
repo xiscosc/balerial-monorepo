@@ -10,6 +10,7 @@
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { fitFormulas } from '@marcsimolduressonsardina/core/util';
 	import { formulasMap } from '@/shared/mappings/pricing.mapping';
 
@@ -68,7 +69,8 @@
 				<Table.Cell class="text-right">
 					<button
 						type="button"
-						onclick={() => goto(`/config/prices/${price.internalId}`)}
+						onclick={() =>
+							goto(resolve(`/(app)/(main)/config/prices/[id]`, { id: price.internalId }))}
 						class="hover:cursor-pointer"
 					>
 						<Icon type={IconType.EDIT}></Icon>

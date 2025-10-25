@@ -10,7 +10,7 @@
 		type PromoteOrderSchema
 	} from '@/shared/form-schema/order.form-schema';
 	import { dateProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { OrderActionNames } from '@/shared/mappings/order.mapping';
 	interface Props {
@@ -19,7 +19,7 @@
 
 	let { data }: Props = $props();
 	const form = superForm(data, {
-		validators: zodClient(promoteOrderSchema),
+		validators: zod4Client(promoteOrderSchema),
 		id: 'promote-order-form'
 	});
 

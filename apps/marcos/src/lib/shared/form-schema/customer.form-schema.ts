@@ -2,11 +2,11 @@ import { z } from 'zod';
 
 const phoneRegex = z
 	.string()
-	.regex(/^\+\d{1,3}\d{9,15}$/, { message: 'El formato del teléfono no es correcto' })
+	.regex(/^\+\d{1,3}\d{9,15}$/, { error: 'El formato del teléfono no es correcto' })
 	.default('+34');
 
 export const customerSchema = z.object({
-	name: z.string().min(3, { message: 'El nombre debe tener al menos 3 caracteres' }).default(''),
+	name: z.string().min(3, { error: 'El nombre debe tener al menos 3 caracteres' }).default(''),
 	phone: phoneRegex
 });
 

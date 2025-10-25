@@ -8,7 +8,7 @@
 		type LocationOrderSchema
 	} from '@/shared/form-schema/order.form-schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import type { Order } from '@marcsimolduressonsardina/core/type';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
@@ -22,7 +22,7 @@
 	}
 
 	let { data, locations, order }: Props = $props();
-	const form = superForm(data, { validators: zodClient(locationOrderSchema) });
+	const form = superForm(data, { validators: zod4Client(locationOrderSchema) });
 
 	const { form: formData, enhance, submitting } = form;
 </script>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
+	import { asset } from '$app/paths';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { DateTime } from 'luxon';
 	import { otherForPrintPricingTypes } from '@/shared/mappings/pricing.mapping';
@@ -85,7 +86,7 @@
 		id="order-print"
 	>
 		<!-- Header: QR + Logo -->
-		<div class="border-l border-r border-t border-black">
+		<div class="border-t border-r border-l border-black">
 			<div class="flex flex-row">
 				<div
 					class="flex flex-grow flex-col items-center justify-center border-r border-black px-1 py-0.5"
@@ -106,7 +107,7 @@
 				<div
 					class="flex flex-shrink-0 flex-grow-[2] flex-col items-center justify-center p-0.5 text-[10px]"
 				>
-					<img class="h-[55px]" src="/mmlogo.png" alt="logo" />
+					<img class="h-[55px]" src={asset('/mmlogo.png')} alt="logo" />
 					<div class="font-sans text-[10px]">
 						<p class="m-0 text-center">
 							Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920
@@ -120,7 +121,7 @@
 		</div>
 
 		<!-- Dependiente, Fecha, Hora -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div class="flex flex-row border-t border-black text-[10px]">
 				<!-- Column 1: Dependiente -->
 				<div class="flex-auto border-r border-black text-center">
@@ -153,7 +154,7 @@
 		</div>
 
 		<!-- Moldura, Cristal, Trasera, PP -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div class="flex flex-row border-t border-black text-[10px]">
 				<!-- Column 1: Moldura -->
 				<div class="flex-auto border-r border-black text-center">
@@ -218,7 +219,7 @@
 			</div>
 		</div>
 		<!-- Medidas trabajo section -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div class="flex flex-row border-t border-black text-[10px]">
 				<!-- Column 1: Medidas trabajo -->
 				<div class="flex-auto border-r border-black text-center">
@@ -275,9 +276,9 @@
 
 		{#if others.length > 0}
 			<!-- Otros section -->
-			<div class="border-l border-r border-black">
+			<div class="border-r border-l border-black">
 				<div
-					class="border-b border-t border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
+					class="border-t border-b border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
 				>
 					Otros
 				</div>
@@ -300,9 +301,9 @@
 
 		{#if order.item.observations.trim().length > 0 || order.item.predefinedObservations.length > 0}
 			<!-- Observaciones section -->
-			<div class="border-l border-r border-black">
+			<div class="border-r border-l border-black">
 				<div
-					class="border-b border-t border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
+					class="border-t border-b border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
 				>
 					Observaciones
 				</div>
@@ -327,7 +328,7 @@
 		{/if}
 
 		<!-- Pricing section -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div class="flex flex-row border-t border-black text-[10px]">
 				<div class="flex flex-auto flex-col">
 					<div class="flex flex-row">
@@ -422,7 +423,7 @@
 		</div>
 
 		<!-- Cliente/Teléfono section -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div class="flex flex-row border-t border-black text-[10px]">
 				<!-- Column 1: Recogida estimada (conditional) -->
 				{#if !isQuote}
@@ -462,7 +463,7 @@
 		</div>
 		{#if statusInfo.length > 0}
 			<!-- Status info section -->
-			<div class="border-b border-l border-r border-black">
+			<div class="border-r border-b border-l border-black">
 				<div class="border-t border-black p-1 text-center text-[10px] font-bold">
 					{statusInfo.join(' | ')}
 				</div>

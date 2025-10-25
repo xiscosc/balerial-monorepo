@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { Toaster, toast } from 'svelte-sonner';
 	import { enhance as sEnhance } from '$app/forms';
 	import * as Form from '@/components/ui/form/index.js';
@@ -42,7 +42,7 @@
 
 	let { data, isNew }: Props = $props();
 	const form = superForm(data, {
-		validators: zodClient(isNew ? listPriceSchemaNew : listPriceSchemaEdit),
+		validators: zod4Client(isNew ? listPriceSchemaNew : listPriceSchemaEdit),
 		dataType: 'json'
 	});
 

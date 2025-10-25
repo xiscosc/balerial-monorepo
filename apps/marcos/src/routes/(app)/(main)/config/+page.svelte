@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import Button from '@/components/generic/button/Button.svelte';
@@ -23,7 +24,7 @@
 
 		if (tapCount >= requiredTaps) {
 			tapCount = 0;
-			goto('/config/debug');
+			goto(resolve('/config/debug'));
 		} else {
 			tapTimer = setTimeout(() => {
 				tapCount = 0;

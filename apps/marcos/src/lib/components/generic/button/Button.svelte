@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import {
 		ButtonAction,
 		ButtonStyle,
@@ -58,7 +59,7 @@
 		}
 
 		if (link) {
-			goto(link);
+			goto(resolve(link));
 		}
 	}
 
@@ -99,7 +100,7 @@
 	<a
 		class={classes}
 		class:w-full={buttonType !== ButtonType.SMALL}
-		href={link ?? '#'}
+		href={resolve(link ?? '#')}
 		onclick={() => track()}
 		target={newWindow ? '_blank' : '_self'}
 	>

@@ -12,6 +12,7 @@
 	import Chart from '@/components/business-related/dashboard/Chart.svelte';
 	import DateRangePicker from '@/components/business-related/dashboard/DateRangePicker.svelte';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
+	import { resolve } from '$app/paths';
 
 	const today = DateTime.now().startOf('day');
 	const daysAgo = DateTime.now().startOf('month');
@@ -121,7 +122,7 @@
 							<Table.Cell>
 								<a
 									class="rounded-lg bg-gray-100 px-2 py-1 font-mono text-gray-800"
-									href={`/orders/${topOrder.order.id}`}
+									href={resolve(`/(app)/(main)/orders/[id]`, { id: topOrder.order.id })}
 								>
 									{topOrder.order.publicId}
 								</a>
@@ -135,7 +136,10 @@
 								</div>
 							</Table.Cell>
 							<Table.Cell>
-								<a href={`/customers/${topOrder.order.customer.id}`} class="flex flex-row gap-1">
+								<a
+									href={resolve(`/(app)/(main)/customers/[id]`, { id: topOrder.order.customer.id })}
+									class="flex flex-row gap-1"
+								>
 									<Icon type={IconType.USER} />
 									{topOrder.order.customer.name}
 								</a>
@@ -162,7 +166,10 @@
 					{#each dashboardReport.topCustomers as topCustomer (topCustomer.customer.id)}
 						<Table.Row>
 							<Table.Cell>
-								<a href={`/customers/${topCustomer.customer.id}`} class="flex flex-row gap-1">
+								<a
+									href={resolve(`/(app)/(main)/customers/[id]`, { id: topCustomer.customer.id })}
+									class="flex flex-row gap-1"
+								>
 									<Icon type={IconType.USER} />
 									{topCustomer.customer.name}
 								</a>

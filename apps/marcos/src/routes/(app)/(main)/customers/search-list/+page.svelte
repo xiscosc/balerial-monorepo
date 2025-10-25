@@ -11,13 +11,14 @@
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	const searchValue = SearchCustomerState.getSearchValue();
 	let measuredCustomers: Promise<Customer[]>;
 
 	onMount(() => {
 		if (searchValue == null || searchValue.length === 0) {
-			goto('/customers/search');
+			goto(resolve('/(app)/(main)/customers/search'));
 		}
 
 		measuredCustomers = getGlobalProfiler().measure(

@@ -1,6 +1,6 @@
 import { superValidate, setError } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { AuthService } from '$lib/server/service/auth.service';
@@ -16,7 +16,7 @@ export const load = (async ({ params, locals }) => {
 		redirect(302, '/');
 	}
 
-	const form = await superValidate(zod(customerSchema));
+	const form = await superValidate(zod4(customerSchema));
 	form.data.phone = customer.phone;
 	form.data.name = customer.name;
 	return { form };
@@ -25,7 +25,7 @@ export const load = (async ({ params, locals }) => {
 export const actions = {
 	async default({ request, locals, params }) {
 		const { id } = params;
-		const form = await superValidate(request, zod(customerSchema));
+		const form = await superValidate(request, zod4(customerSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });

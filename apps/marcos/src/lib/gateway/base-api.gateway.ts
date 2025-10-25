@@ -1,4 +1,5 @@
 import { goto } from '$app/navigation';
+import { resolve } from '$app/paths';
 import { error } from '@sveltejs/kit';
 
 export class BaseApiGateway {
@@ -23,14 +24,14 @@ export class BaseApiGateway {
 			response = await fetch(path, options);
 		} catch (e) {
 			console.error('Network Error:', e);
-			await goto('/error?status=500');
+			await goto(resolve('/error'));
 			throw error(503, 'Server error');
 		}
 
 		if (!response.ok) {
 			const message = await response.text();
 			console.error(`API Error: ${response.status} ${response.statusText}`, message);
-			await goto('/error?status=' + response.status);
+			await goto(resolve(`/(app)/error`));
 			throw error(response.status, message || 'API Request Failed');
 		}
 

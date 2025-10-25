@@ -63,16 +63,16 @@ export const orderSchema = baseOderSchema
 			ctx.addIssue({
 				code: 'custom', // Add the required 'code' property
 				path: ['deliveryDate'], // The path of the property causing the error
-				message: 'If not instantDelivery, delivery date must be set and after yesterday'
+				error: 'If not instantDelivery, delivery date must be set and after yesterday'
 			});
 		}
 	});
 
 export const promoteOrderSchema = z.object({
 	deliveryDate: z
-		.date({ message: 'La fecha es obligatoria' })
+		.date({ error: 'La fecha es obligatoria' })
 		.min(DateTime.now().minus({ days: 1 }).toJSDate(), {
-			message: 'La fecha no es correcta, debe ser igual o posterior a hoy'
+			error: 'La fecha no es correcta, debe ser igual o posterior a hoy'
 		})
 });
 
@@ -83,7 +83,7 @@ export const quoteSchema = baseOderSchema.extend({
 });
 
 export const locationOrderSchema = z.object({
-	location: z.string().min(1, { message: 'La ubicación no puede estar vacía' })
+	location: z.string().min(1, { error: 'La ubicación no puede estar vacía' })
 });
 
 export const statusOrderSchema = z
@@ -95,7 +95,7 @@ export const statusOrderSchema = z
 		location: z.string().optional()
 	})
 	.refine((data) => data.location != null || data.status !== OrderStatus.FINISHED.toString(), {
-		message: 'La ubicación es obligatoria para pedidos finalizados',
+		error: 'La ubicación es obligatoria para pedidos finalizados',
 		path: ['location']
 	});
 
@@ -105,14 +105,14 @@ export type StatusOrderSchema = typeof statusOrderSchema;
 
 export const orderPublicIdSchema = z.object({
 	id: z
-		.string({ message: 'El id es obligatorio' })
-		.min(13, { message: 'El id debe tener al menos 13 caracteres' })
+		.string({ error: 'El id es obligatorio' })
+		.min(13, { error: 'El id debe tener al menos 13 caracteres' })
 		.refine(
 			(value) => {
 				const slashCount = (value.match(/\//g) || []).length;
 				return slashCount === 2;
 			},
-			{ message: 'El id debe contener exactamente 2 barras (/)' }
+			{ error: 'El id debe contener exactamente 2 barras (/)' }
 		)
 });
 
