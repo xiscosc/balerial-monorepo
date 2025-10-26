@@ -1,4 +1,5 @@
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { BatchOperation } from '@/type/api.type';
 
 export const customerMoldIds = ['2_MARCO DEL CLIENTE', '1_SIN MARCO'];
 
@@ -11,6 +12,13 @@ export const discountMap: Record<string, number> = {
 	'30': 30,
 	'50': 50,
 	'100': 100
+};
+
+export const orderBatchOperationMap: Record<BatchOperation, string> = {
+	[BatchOperation.SET_PAID]: 'Marcando pedidos como pagados',
+	[BatchOperation.SET_INVOICED]: 'Marcando pedidos como facturados',
+	[BatchOperation.SET_PICKED_UP]: 'Marcando pedidos como recogidos',
+	[BatchOperation.NOTIFY_ORDERS]: 'Notificando pedidos'
 };
 
 export const orderStatusMap: Record<OrderStatus, string> = {

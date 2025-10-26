@@ -12,7 +12,6 @@
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import * as Dialog from '@/components/ui/dialog/index.js';
 	import { OrderSetApiGateway } from '@/gateway/order-set-api.gateway';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
@@ -20,6 +19,8 @@
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { BatchOperation } from '@/type/api.type';
+	import Icon from '@/components/generic/icon/Icon.svelte';
+	import { orderBatchOperationMap } from '@/shared/mappings/order.mapping';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -48,10 +49,10 @@
 	let paginationLoading = $state(false);
 
 	let orderSetDialogOpen = $state(false);
-	let orderSetDialogTitle = $state('');
 	let orderSetDialogLoadingText = $state('');
-	let whatsappDialogOpen = $state(false);
-	let whatsappLoading = $state(true);
+	let orderSetDialogLoading = $state(false);
+	let orderSetDialogWhatsappButton = $state(false);
+
 	let whatsAppText = $derived(
 		OrderRepresentationUtilities.getWhatsappFinishedText(
 			orderListState
@@ -118,65 +119,27 @@
 		ActionBarState.destroy();
 	});
 
-	async function setOrdersAsPayed() {
-		orderSetDialogTitle = 'Marcando pedidos como pagados...';
+	async function runBulkOperation(operation: BatchOperation) {
+		orderSetDialogLoadingText = orderBatchOperationMap[operation];
+		orderSetDialogWhatsappButton = false;
+		orderSetDialogLoading = true;
 		orderSetDialogOpen = true;
-		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
-			BatchOperation.SET_PAID
-		]);
+		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [operation]);
 		await getGlobalProfiler().measure(promise);
-
-		orderListState.setSelectedOrdersAsPayed();
-		orderSetDialogOpen = false;
-	}
-
-	async function setOrdersAsPickedUp() {
-		orderSetDialogTitle = 'Marcando pedidos como recogidos...';
-		orderSetDialogOpen = true;
-		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
-			BatchOperation.SET_PICKED_UP
-		]);
-		await getGlobalProfiler().measure(promise);
-
-		orderListState.setSelectedOrdersAsPickedUp();
-		orderSetDialogOpen = false;
-	}
-
-	async function setOrdersAsInvoiced() {
-		orderSetDialogTitle = 'Marcando pedidos como facturados...';
-		orderSetDialogOpen = true;
-		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
-			BatchOperation.SET_INVOICED
-		]);
-		await getGlobalProfiler().measure(promise);
-
-		orderSetDialogOpen = false;
+		orderListState.runBulkOperation(operation);
+		orderSetDialogLoading = false;
+		if (operation === BatchOperation.NOTIFY_ORDERS) {
+			orderSetDialogWhatsappButton = true;
+		}
 	}
 
 	async function generateOrderSet() {
-		orderSetDialogTitle = 'Generando listado...';
+		orderSetDialogLoadingText = 'Generando listado...';
+		orderSetDialogLoading = true;
 		orderSetDialogOpen = true;
 		const promise = OrderSetApiGateway.createOrderSet(orderListState.getSelectedOrdersIds());
 		const { id } = await getGlobalProfiler().measure(promise);
 		await goto(resolve('/(app)/(main)/order-sets/[id]/print', { id }));
-	}
-
-	async function notifyWhatsapp() {
-		whatsappLoading = true;
-		whatsappDialogOpen = true;
-		if (orderListState.getSelectedOrdersIds().length === 0) {
-			whatsappLoading = false;
-			whatsappDialogOpen = false;
-			return;
-		}
-
-		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
-			BatchOperation.NOTIFY_ORDERS
-		]);
-		await getGlobalProfiler().measure(promise);
-
-		orderListState.setSelectedOrdersAsNotified();
-		whatsappLoading = false;
 	}
 </script>
 
@@ -205,7 +168,9 @@
 			<Button
 				iconSize={IconSize.SMALL}
 				disabled={!orderListState.getAllOrdersAreFinished()}
-				onClick={notifyWhatsapp}
+				onClick={() => {
+					runBulkOperation(BatchOperation.NOTIFY_ORDERS);
+				}}
 				tooltipText="Hay pedidos no finalizados seleccionados"
 				style={ButtonStyle.WHATSAPP}
 				text=""
@@ -213,7 +178,9 @@
 			></Button>
 			<Button
 				iconSize={IconSize.SMALL}
-				onClick={setOrdersAsPayed}
+				onClick={() => {
+					runBulkOperation(BatchOperation.SET_PAID);
+				}}
 				style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
 				textType={ButtonText.NO_COLOR}
 				text=""
@@ -222,7 +189,9 @@
 			<Button
 				iconSize={IconSize.SMALL}
 				style={ButtonStyle.ORDER_PENDING}
-				onClick={setOrdersAsPickedUp}
+				onClick={() => {
+					runBulkOperation(BatchOperation.SET_PICKED_UP);
+				}}
 				disabled={!orderListState.getAllOrdersAreFinished()}
 				text=""
 				icon={IconType.TRUCK}
@@ -230,7 +199,9 @@
 			<Button
 				iconSize={IconSize.SMALL}
 				style={ButtonStyle.ORDER_GENERIC_VARIANT}
-				onClick={setOrdersAsInvoiced}
+				onClick={() => {
+					runBulkOperation(BatchOperation.SET_INVOICED);
+				}}
 				text=""
 				textType={ButtonText.NO_COLOR}
 				icon={IconType.INVOICED}
@@ -250,25 +221,20 @@
 <Dialog.Root bind:open={orderSetDialogOpen}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>{orderSetDialogTitle}</Dialog.Title>
+			<Dialog.Title>Operaciones en curso</Dialog.Title>
 			<Dialog.Description>
-				<span class="pt-4 text-xs">
-					<ProgressBar text={orderSetDialogLoadingText}></ProgressBar>
-				</span>
-			</Dialog.Description>
-		</Dialog.Header>
-	</Dialog.Content>
-</Dialog.Root>
-
-<Dialog.Root bind:open={whatsappDialogOpen}>
-	<Dialog.Content>
-		<Dialog.Header>
-			<Dialog.Title>Notificando clientes</Dialog.Title>
-			<Dialog.Description>
-				<span class="pt-4 text-xs">
-					{#if whatsappLoading}
-						<ProgressBar text=""></ProgressBar>
-					{:else}
+				<div class="flex flex-col gap-2">
+					<div
+						class="text-md flex flex-row gap-2"
+						class:text-green-700={!orderSetDialogLoading}
+						class:text-gray-900={orderSetDialogLoading}
+					>
+						<div class:animate-spin={orderSetDialogLoading}>
+							<Icon type={orderSetDialogLoading ? IconType.LOADING_BALL : IconType.DONE}></Icon>
+						</div>
+						<span>{orderSetDialogLoadingText}</span>
+					</div>
+					{#if orderSetDialogWhatsappButton}
 						<div class="flex">
 							<WhatsAppButton
 								label="Enviar mensaje todos finalizados"
@@ -277,7 +243,7 @@
 							></WhatsAppButton>
 						</div>
 					{/if}
-				</span>
+				</div>
 			</Dialog.Description>
 		</Dialog.Header>
 	</Dialog.Content>

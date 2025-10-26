@@ -1,5 +1,6 @@
 import { type Customer, type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { SvelteMap } from 'svelte/reactivity';
+import { BatchOperation } from '@/type/api.type';
 
 export class OrderListState {
 	private selectedOrders: Map<string, FullOrder>;
@@ -33,45 +34,6 @@ export class OrderListState {
 		return firstSelectedOrder!.order.customer;
 	}
 
-	public setSelectedOrdersAsNotified(): void {
-		this.selectedOrders.forEach((fullOrder) => {
-			const updatedFullOrder = {
-				...fullOrder,
-				order: {
-					...fullOrder.order,
-					notified: true
-				}
-			};
-			this.updateOrderInMaps(updatedFullOrder);
-		});
-	}
-
-	public setSelectedOrdersAsPickedUp(): void {
-		this.selectedOrders.forEach((fullOrder) => {
-			const updatedFullOrder = {
-				...fullOrder,
-				order: {
-					...fullOrder.order,
-					status: OrderStatus.PICKED_UP
-				}
-			};
-			this.updateOrderInMaps(updatedFullOrder);
-		});
-	}
-
-	public setSelectedOrdersAsPayed(): void {
-		this.selectedOrders.forEach((fullOrder) => {
-			const updatedFullOrder = {
-				...fullOrder,
-				totals: {
-					...fullOrder.totals,
-					payed: true
-				}
-			};
-			this.updateOrderInMaps(updatedFullOrder);
-		});
-	}
-
 	public selectOrder(orderId: string): void {
 		const fullOrder = this.allOrders.get(orderId);
 		if (!fullOrder) {
@@ -82,6 +44,22 @@ export class OrderListState {
 
 	public isOrderSelected(orderId: string): boolean {
 		return this.selectedOrders.has(orderId);
+	}
+
+	public runBulkOperation(operation: BatchOperation) {
+		switch (operation) {
+			case BatchOperation.NOTIFY_ORDERS:
+				this.setSelectedOrdersAsNotified();
+				break;
+			case BatchOperation.SET_PICKED_UP:
+				this.setSelectedOrdersAsPickedUp();
+				break;
+			case BatchOperation.SET_PAID:
+				this.setSelectedOrdersAsPayed();
+				break;
+			default:
+				return;
+		}
 	}
 
 	public selectAllOrders(): void {
@@ -131,6 +109,45 @@ export class OrderListState {
 		this.selectedOrders.clear();
 		this.allOrders.clear();
 		this.selectMode = false;
+	}
+
+	private setSelectedOrdersAsNotified(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				order: {
+					...fullOrder.order,
+					notified: true
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
+	}
+
+	private setSelectedOrdersAsPickedUp(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				order: {
+					...fullOrder.order,
+					status: OrderStatus.PICKED_UP
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
+	}
+
+	private setSelectedOrdersAsPayed(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				totals: {
+					...fullOrder.totals,
+					payed: true
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
 	}
 
 	private updateOrderInMaps(updatedOrder: FullOrder): void {

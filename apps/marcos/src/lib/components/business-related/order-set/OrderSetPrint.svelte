@@ -34,8 +34,11 @@
 	});
 </script>
 
-<main class="flex flex-col gap-2">
-	<div class="flex flex-col gap-4 p-4" id="order-set-print">
+<main class="flex flex-col gap-2 print:block">
+	<div
+		class="flex flex-col gap-4 p-4 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
+		id="order-set-print"
+	>
 		<div class="flex flex-row justify-between gap-2">
 			<div class="flex min-w-1/3 flex-col gap-2">
 				<div class="flex h-[109px] items-center justify-center">
