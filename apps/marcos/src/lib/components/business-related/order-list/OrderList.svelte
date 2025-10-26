@@ -225,6 +225,7 @@
 				onClick={setOrdersAsPickedUp}
 				disabled={!orderListState.getAllOrdersAreFinished()}
 				text=""
+                tooltipText="Hay pedidos no finalizados seleccionados"
 				icon={IconType.TRUCK}
 			></Button>
 			<Button
