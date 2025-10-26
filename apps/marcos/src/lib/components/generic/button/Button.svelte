@@ -74,14 +74,19 @@
 	<InnerButton iconType={icon} {iconSize} {text} center={buttonType !== ButtonType.HOME}
 	></InnerButton>
 {:else if disabled}
-	<div class="group relative" class:w-full={buttonType !== ButtonType.SMALL}>
+	<div
+		class="group relative"
+		class:w-full={buttonType !== ButtonType.SMALL}
+		tabindex="0"
+		role="button"
+	>
 		<button type="button" disabled class={classes} class:w-full={buttonType !== ButtonType.SMALL}>
 			<InnerButton iconType={icon} {iconSize} {text} center={buttonType !== ButtonType.HOME}
 			></InnerButton>
 		</button>
 		{#if tooltipText != null}
 			<div
-				class="absolute left-1/2 z-10 mt-2 hidden -translate-x-1/2 transform rounded-lg bg-gray-800 px-4 py-2 text-base text-white group-hover:flex"
+				class="absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 transform rounded-lg bg-gray-800 px-4 py-2 text-base text-white group-focus-within:flex group-hover:flex group-focus:flex"
 			>
 				<TriangleAlert class="mr-2" />
 				<span>{tooltipText}</span>

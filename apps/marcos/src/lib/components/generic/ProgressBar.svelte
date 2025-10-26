@@ -14,7 +14,7 @@
 	<div class="animate-spin">
 		<Icon size={IconSize.XXL} type={icon} />
 	</div>
-	<span class="text-lg">
+	<span class="text-md">
 		{#if text != null}
 			{text}
 		{:else}

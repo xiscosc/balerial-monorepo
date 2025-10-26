@@ -2,14 +2,11 @@
 	import type { PageData } from './$types';
 
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import OrderList from '@/components/business-related/order-list/OrderList.svelte';
-	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import type { FullOrder } from '@marcsimolduressonsardina/core/type';
 	import Button from '@/components/generic/button/Button.svelte';
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
 	import OrderSetPrint from '@/components/business-related/order-set/OrderSetPrint.svelte';
+	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Box from '@/components/generic/Box.svelte';
 
 	interface Props {
 		data: PageData;
@@ -20,11 +17,19 @@
 </script>
 
 {#await measuredOrderSet}
-	cargando
+	<Box>
+		<ProgressBar text="Generando listado..."></ProgressBar>
+	</Box>
 {:then orderSet}
 	{#if orderSet}
 		<OrderSetPrint {orderSet}></OrderSetPrint>
 	{:else}
-		error
+		<div class="flex flex-col gap-2">
+			<Box icon={IconType.NOT_FOUND} title="Error">
+				<p class="text-center text-lg md:text-left">No se ha encontrado el listado</p>
+			</Box>
+			<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}
+			></Button>
+		</div>
 	{/if}
 {/await}

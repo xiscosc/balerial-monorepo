@@ -1,4 +1,4 @@
-import { type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { type Customer, type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { SvelteMap } from 'svelte/reactivity';
 
 export class OrderListState {
@@ -24,6 +24,15 @@ export class OrderListState {
 		return Array.from(this.selectedOrders.keys());
 	}
 
+	public getSelectedOrders(): FullOrder[] {
+		return Array.from(this.selectedOrders.values());
+	}
+
+	public getCustomerFromFirstSelectedOrder(): Customer {
+		const firstSelectedOrder = this.selectedOrders.values().next().value;
+		return firstSelectedOrder!.order.customer;
+	}
+
 	public setSelectedOrdersAsNotified(): void {
 		this.selectedOrders.forEach((fullOrder) => {
 			const updatedFullOrder = {
@@ -31,6 +40,32 @@ export class OrderListState {
 				order: {
 					...fullOrder.order,
 					notified: true
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
+	}
+
+	public setSelectedOrdersAsPickedUp(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				order: {
+					...fullOrder.order,
+					status: OrderStatus.PICKED_UP
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
+	}
+
+	public setSelectedOrdersAsPayed(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				totals: {
+					...fullOrder.totals,
+					payed: true
 				}
 			};
 			this.updateOrderInMaps(updatedFullOrder);

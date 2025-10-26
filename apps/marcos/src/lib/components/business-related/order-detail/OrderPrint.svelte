@@ -492,7 +492,7 @@
 		</div>
 	</div>
 	<div class="flex flex-col gap-2 font-sans lg:flex-row print:hidden">
-		<Button text="Descargar" icon={IconType.DOCUMENT} onClick={generatePdf}></Button>
+		<!--		<Button text="Descargar" icon={IconType.DOCUMENT} onClick={generatePdf}></Button>-->
 		{@render buttons?.()}
 	</div>
 </main>

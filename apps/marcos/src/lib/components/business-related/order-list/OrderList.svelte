@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
 	import OrderCard from '@/components/business-related/order-list/OrderCard.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
@@ -17,6 +17,9 @@
 	import { resolve } from '$app/paths';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
+	import { BatchOperation } from '@/type/api.type';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -26,6 +29,7 @@
 		emptyMessage?: 'NOT_FOUND' | 'EMPTY';
 		showCustomer?: boolean;
 		loadingCount?: number;
+		selectionModePossible?: boolean;
 	}
 
 	let {
@@ -35,7 +39,8 @@
 		paginationFunction = () => {},
 		showCustomer = true,
 		loadingCount = 15,
-		emptyMessage = 'NOT_FOUND'
+		emptyMessage = 'NOT_FOUND',
+		selectionModePossible = true
 	}: Props = $props();
 
 	const orderListState = new OrderListState();
@@ -43,14 +48,28 @@
 	let paginationLoading = $state(false);
 
 	let orderSetDialogOpen = $state(false);
+	let orderSetDialogTitle = $state('');
+	let orderSetDialogLoadingText = $state('');
 	let whatsappDialogOpen = $state(false);
 	let whatsappLoading = $state(true);
+	let whatsAppText = $derived(
+		OrderRepresentationUtilities.getWhatsappFinishedText(
+			orderListState
+				.getSelectedOrders()
+				.map((fullOrder) => fullOrder.order)
+				.filter((order) => order.status === OrderStatus.FINISHED)
+		)
+	);
 
 	function handleSelectModeDeactivate() {
 		orderListState.setSelectMode(false);
 	}
 
 	function handleSelectModeActivation() {
+		if (!selectionModePossible) {
+			return;
+		}
+
 		orderListState.setSelectMode(true);
 		ActionBarState.setCloseHandler(handleSelectModeDeactivate);
 		ActionBarState.setStartSectionSnippet(actionBarLeft);
@@ -99,9 +118,46 @@
 		ActionBarState.destroy();
 	});
 
-	async function generateOrderSet() {
+	async function setOrdersAsPayed() {
+		orderSetDialogTitle = 'Marcando pedidos como pagados...';
 		orderSetDialogOpen = true;
-		const { id } = await OrderSetApiGateway.createOrderSet(orderListState.getSelectedOrdersIds());
+		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
+			BatchOperation.SET_PAID
+		]);
+		await getGlobalProfiler().measure(promise);
+
+		orderListState.setSelectedOrdersAsPayed();
+		orderSetDialogOpen = false;
+	}
+
+	async function setOrdersAsPickedUp() {
+		orderSetDialogTitle = 'Marcando pedidos como recogidos...';
+		orderSetDialogOpen = true;
+		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
+			BatchOperation.SET_PICKED_UP
+		]);
+		await getGlobalProfiler().measure(promise);
+
+		orderListState.setSelectedOrdersAsPickedUp();
+		orderSetDialogOpen = false;
+	}
+
+	async function setOrdersAsInvoiced() {
+		orderSetDialogTitle = 'Marcando pedidos como facturados...';
+		orderSetDialogOpen = true;
+		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
+			BatchOperation.SET_INVOICED
+		]);
+		await getGlobalProfiler().measure(promise);
+
+		orderSetDialogOpen = false;
+	}
+
+	async function generateOrderSet() {
+		orderSetDialogTitle = 'Generando listado...';
+		orderSetDialogOpen = true;
+		const promise = OrderSetApiGateway.createOrderSet(orderListState.getSelectedOrdersIds());
+		const { id } = await getGlobalProfiler().measure(promise);
 		await goto(resolve('/(app)/(main)/order-sets/[id]/print', { id }));
 	}
 
@@ -114,10 +170,10 @@
 			return;
 		}
 
-		const promises = orderListState
-			.getSelectedOrdersIds()
-			.map((id) => OrderApiGateway.notifyOrder(id));
-		await getGlobalProfiler().measure(Promise.all(promises));
+		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [
+			BatchOperation.NOTIFY_ORDERS
+		]);
+		await getGlobalProfiler().measure(promise);
 
 		orderListState.setSelectedOrdersAsNotified();
 		whatsappLoading = false;
@@ -150,12 +206,14 @@
 				iconSize={IconSize.SMALL}
 				disabled={!orderListState.getAllOrdersAreFinished()}
 				onClick={notifyWhatsapp}
+				tooltipText="Hay pedidos no finalizados seleccionados"
 				style={ButtonStyle.WHATSAPP}
 				text=""
 				icon={IconType.WHATSAPP}
 			></Button>
 			<Button
 				iconSize={IconSize.SMALL}
+				onClick={setOrdersAsPayed}
 				style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
 				textType={ButtonText.NO_COLOR}
 				text=""
@@ -164,6 +222,7 @@
 			<Button
 				iconSize={IconSize.SMALL}
 				style={ButtonStyle.ORDER_PENDING}
+				onClick={setOrdersAsPickedUp}
 				disabled={!orderListState.getAllOrdersAreFinished()}
 				text=""
 				icon={IconType.TRUCK}
@@ -171,6 +230,7 @@
 			<Button
 				iconSize={IconSize.SMALL}
 				style={ButtonStyle.ORDER_GENERIC_VARIANT}
+				onClick={setOrdersAsInvoiced}
 				text=""
 				textType={ButtonText.NO_COLOR}
 				icon={IconType.INVOICED}
@@ -190,10 +250,10 @@
 <Dialog.Root bind:open={orderSetDialogOpen}>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>Generando listado</Dialog.Title>
+			<Dialog.Title>{orderSetDialogTitle}</Dialog.Title>
 			<Dialog.Description>
-				<span class="text-xs">
-					<ProgressBar text=""></ProgressBar>
+				<span class="pt-4 text-xs">
+					<ProgressBar text={orderSetDialogLoadingText}></ProgressBar>
 				</span>
 			</Dialog.Description>
 		</Dialog.Header>
@@ -205,11 +265,17 @@
 		<Dialog.Header>
 			<Dialog.Title>Notificando clientes</Dialog.Title>
 			<Dialog.Description>
-				<span class="text-xs">
+				<span class="pt-4 text-xs">
 					{#if whatsappLoading}
 						<ProgressBar text=""></ProgressBar>
 					{:else}
-						test1
+						<div class="flex">
+							<WhatsAppButton
+								label="Enviar mensaje todos finalizados"
+								message={whatsAppText}
+								customer={orderListState.getCustomerFromFirstSelectedOrder()}
+							></WhatsAppButton>
+						</div>
 					{/if}
 				</span>
 			</Dialog.Description>

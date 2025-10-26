@@ -39,7 +39,7 @@
 	{:else}
 		<div class="flex flex-col gap-2">
 			<Box icon={IconType.NOT_FOUND} title="Error">
-				<p class="text-center text-lg">No se ha encontrado el pedido</p>
+				<p class="text-center text-lg md:text-left">No se ha encontrado el pedido</p>
 			</Box>
 			<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}
 			></Button>

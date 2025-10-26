@@ -14,7 +14,7 @@
 <!-- Action Bar -->
 {#if ActionBarState.isVisible()}
 	<div
-		class="fixed right-0 bottom-0 left-0 z-20 flex items-center justify-center px-2 py-3 print:hidden"
+		class="fixed right-0 bottom-0 left-0 z-20 flex items-center justify-center px-2 py-5 print:hidden"
 		in:slide={{ duration: 300, easing: cubicOut }}
 		out:slide={{ duration: 250, easing: cubicOut }}
 	>
