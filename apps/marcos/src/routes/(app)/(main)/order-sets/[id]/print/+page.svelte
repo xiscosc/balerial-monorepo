@@ -9,21 +9,22 @@
 	import Button from '@/components/generic/button/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import OrderSetPrint from '@/components/business-related/order-set/OrderSetPrint.svelte';
 
 	interface Props {
 		data: PageData;
 	}
 
 	let { data }: Props = $props();
-	const ordersPromise: Promise<FullOrder[]> = new Promise((resolve) => {
-		const orders: FullOrder[] = [];
-		if (data.orderSet == null) {
-			resolve(orders);
-		} else {
-			resolve(Object.values(data.orderSet.orders));
-		}
-	});
-	let measuredOrders = $derived(getGlobalProfiler().measure(ordersPromise));
+	let measuredOrderSet = $derived(getGlobalProfiler().measure(data.orderSet));
 </script>
 
-<div class="flex flex-col gap-4"></div>
+{#await measuredOrderSet}
+	cargando
+{:then orderSet}
+	{#if orderSet}
+		<OrderSetPrint {orderSet}></OrderSetPrint>
+	{:else}
+		error
+	{/if}
+{/await}
