@@ -112,13 +112,13 @@
 						{fullOrder.order.item.quantity}
 					</span>
 					<span class="w-[20%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
-						{fullOrder.totals.unitPriceWithoutDiscount} €
+						{fullOrder.totals.unitPriceWithoutDiscount.toFixed(2)} €
 					</span>
 					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.calculatedItem.discount} %
 					</span>
 					<span class="w-[20%] px-2 py-1 text-center">
-						{fullOrder.totals.total} €
+						{fullOrder.totals.total.toFixed(2)} €
 					</span>
 				</div>
 			{/each}
