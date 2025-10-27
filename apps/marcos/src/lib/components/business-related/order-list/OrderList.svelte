@@ -51,6 +51,21 @@
 	let orderSetDialogLoading = $state(false);
 	let orderSetDialogWhatsappButton = $state(false);
 
+	let whatsAppButtonDisabled = $derived(
+		!orderListState.getSelectedOrdersAreFinished() ||
+			!orderListState.getSelectedOrdersAreFromSameCustomer()
+	);
+
+	let whatsAppButtonTooltipText = $derived.by(() => {
+		if (!orderListState.getSelectedOrdersAreFinished()) {
+			return 'Hay pedidos no finalizados seleccionados';
+		}
+		if (!orderListState.getSelectedOrdersAreFromSameCustomer()) {
+			return 'Hay pedidos de diferentes clientes seleccionados';
+		}
+		return '';
+	});
+
 	let whatsAppText = $derived(
 		OrderRepresentationUtilities.getWhatsappFinishedText(
 			orderListState
@@ -167,11 +182,11 @@
 			></Button>
 			<Button
 				iconSize={IconSize.SMALL}
-				disabled={!orderListState.getSelectedOrdersAreFinished()}
+				disabled={whatsAppButtonDisabled}
 				onClick={() => {
 					runBulkOperation(BatchOperation.NOTIFY_ORDERS);
 				}}
-				tooltipText="Hay pedidos no finalizados seleccionados"
+				tooltipText={whatsAppButtonTooltipText}
 				style={ButtonStyle.WHATSAPP}
 				text=""
 				icon={IconType.WHATSAPP}

@@ -5,6 +5,7 @@ import { orderStatusMap } from '@/shared/mappings/order.mapping';
 import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import type { FullOrder } from '@marcsimolduressonsardina/core/type';
+import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 
 interface ListState {
 	getSearchValue: () => string;
@@ -111,6 +112,7 @@ export class ListStateClass implements ListState {
 	}
 
 	public setStatus(value: OrderStatus) {
+		ActionBarState.destroy();
 		this.status = value;
 
 		if (this.searchValueDebounced.current.length >= 3) {
@@ -133,6 +135,7 @@ export class ListStateClass implements ListState {
 	}
 
 	public inputSearchValue(value: string) {
+		ActionBarState.destroy();
 		this.searchValue = value;
 		this.lastKey = undefined;
 	}
