@@ -30,7 +30,6 @@
 		emptyMessage?: 'NOT_FOUND' | 'EMPTY';
 		showCustomer?: boolean;
 		loadingCount?: number;
-		selectionModePossible?: boolean;
 	}
 
 	let {
@@ -40,8 +39,7 @@
 		paginationFunction = () => {},
 		showCustomer = true,
 		loadingCount = 15,
-		emptyMessage = 'NOT_FOUND',
-		selectionModePossible = true
+		emptyMessage = 'NOT_FOUND'
 	}: Props = $props();
 
 	const orderListState = new OrderListState();
@@ -67,10 +65,6 @@
 	}
 
 	function handleSelectModeActivation() {
-		if (!selectionModePossible) {
-			return;
-		}
-
 		orderListState.setSelectMode(true);
 		ActionBarState.setCloseHandler(handleSelectModeDeactivate);
 		ActionBarState.setStartSectionSnippet(actionBarLeft);
@@ -163,11 +157,17 @@
 {#snippet actionButtons()}
 	{#if orderListState.getSelectedOrdersCount() > 0}
 		<div class="flex w-full flex-row gap-2 text-xs">
-			<Button iconSize={IconSize.SMALL} onClick={generateOrderSet} text="" icon={IconType.PRINTER}
+			<Button
+				iconSize={IconSize.SMALL}
+				onClick={generateOrderSet}
+				disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
+				text=""
+				icon={IconType.PRINTER}
+				tooltipText="Hay pedidos de diferentes clientes seleccionados"
 			></Button>
 			<Button
 				iconSize={IconSize.SMALL}
-				disabled={!orderListState.getAllOrdersAreFinished()}
+				disabled={!orderListState.getSelectedOrdersAreFinished()}
 				onClick={() => {
 					runBulkOperation(BatchOperation.NOTIFY_ORDERS);
 				}}
@@ -192,7 +192,7 @@
 				onClick={() => {
 					runBulkOperation(BatchOperation.SET_PICKED_UP);
 				}}
-				disabled={!orderListState.getAllOrdersAreFinished()}
+				disabled={!orderListState.getSelectedOrdersAreFinished()}
 				text=""
 				tooltipText="Hay pedidos no finalizados seleccionados"
 				icon={IconType.TRUCK}

@@ -57,5 +57,20 @@ export const Changelogs: Changelog[] = [
 				type: ChangelogItemType.SECURITY
 			}
 		]
+	},
+	{
+		version: 20251027,
+		title: 'Octubre 2025',
+		items: [
+			{ text: 'Acciones en lote: Recogido, pagado y facturado', type: ChangelogItemType.NEW },
+			{ text: 'Creación de listado de pedidos', type: ChangelogItemType.NEW },
+			{ text: 'Nuevo sistema de impresión', type: ChangelogItemType.TECHNICAL },
+			{ text: 'Base e IVA en impresión de pedidos', type: ChangelogItemType.MINOR_CHANGE },
+			{
+				text: 'Actualización de seguridad',
+				type: ChangelogItemType.SECURITY
+			},
+			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY }
+		]
 	}
 ];

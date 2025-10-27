@@ -88,7 +88,6 @@
 			emptyMessage={listState.getIsSearchMode() ? 'NOT_FOUND' : 'EMPTY'}
 			paginationAvailable={listState.getPaginationAvailable()}
 			paginationFunction={() => listState.triggerPagination()}
-			selectionModePossible={false}
 		/>
 	{/if}
 </div>

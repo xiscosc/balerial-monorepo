@@ -33,17 +33,22 @@ export class OrderSetService {
 
 	public async createOrderSet(orderIds: string[]): Promise<OrderSet> {
 		const hash = OrderSetService.getHash(orderIds);
-		const orders = await this.orderService.getFullOrdersByIds(orderIds);
+		const fullOrders = await this.orderService.getFullOrdersByIds(orderIds);
+		const customerIds = new Set(Object.values(fullOrders).map((fo) => fo.order.customer.id));
+		if (customerIds.size > 1) {
+			throw new Error('All orders in an OrderSet must belong to the same customer.');
+		}
+
 		const existingDto = await this.repository.getOrderSetByHash(hash);
 		if (existingDto) {
-			return OrderSetService.fromDto(existingDto, orders, this.config.storeId);
+			return OrderSetService.fromDto(existingDto, fullOrders, this.config.storeId);
 		}
 
 		const orderSet: OrderSet = {
 			id: uuid(),
 			hash,
 			createdAt: new Date(),
-			orders,
+			orders: fullOrders,
 			createdBy: this.config.user
 		};
 

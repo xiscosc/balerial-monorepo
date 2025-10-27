@@ -1,19 +1,23 @@
 import { type Customer, type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
-import { SvelteMap } from 'svelte/reactivity';
+import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 import { BatchOperation } from '@/type/api.type';
 
 export class OrderListState {
 	private selectedOrders: Map<string, FullOrder>;
 	private allOrders: Map<string, FullOrder>;
 	private selectMode: boolean;
-	private allOrdersFinished: boolean;
+	private selectedOrdersFinished: boolean;
+	private selectedOrdersAreFromSameCustomer: boolean;
 
 	constructor() {
 		this.selectedOrders = new SvelteMap();
 		this.allOrders = new SvelteMap();
 		this.selectMode = $state(false);
-		this.allOrdersFinished = $derived(
+		this.selectedOrdersFinished = $derived(
 			!this.selectedOrders.values().some((fo) => fo.order.status !== OrderStatus.FINISHED)
+		);
+		this.selectedOrdersAreFromSameCustomer = $derived(
+			new SvelteSet(this.selectedOrders.values().map((fo) => fo.order.customer.id)).size === 1
 		);
 	}
 
@@ -101,8 +105,12 @@ export class OrderListState {
 		}
 	}
 
-	public getAllOrdersAreFinished(): boolean {
-		return this.allOrdersFinished;
+	public getSelectedOrdersAreFinished(): boolean {
+		return this.selectedOrdersFinished;
+	}
+
+	public getSelectedOrdersAreFromSameCustomer(): boolean {
+		return this.selectedOrdersAreFromSameCustomer;
 	}
 
 	public clearState(): void {
