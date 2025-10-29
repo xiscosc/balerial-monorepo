@@ -42,17 +42,17 @@
 </script>
 
 <main
-	class="mx-auto max-w-full font-['Google_Sans_Code',_monospace] print:w-full print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
+	class="mx-auto max-w-full font-mono print:w-full print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 >
 	<!-- Header: Title -->
-	<div class="border-l border-r border-t border-black">
+	<div class="border-t border-r border-l border-black">
 		<div class="p-0.5 text-center text-[10px]">
 			<span class="text-md font-bold">PEDIDO EXTERNO {order.publicId}</span>
 		</div>
 	</div>
 
 	<!-- Dependiente, Fecha, Hora -->
-	<div class="border-l border-r border-black">
+	<div class="border-r border-l border-black">
 		<div class="flex flex-row border-t border-black text-[10px]">
 			<!-- Column 1: Dependiente -->
 			<div class="flex-auto border-r border-black text-center">
@@ -85,7 +85,7 @@
 	</div>
 
 	<!-- Moldura, Cristal, Trasera, PP -->
-	<div class="border-l border-r border-black">
+	<div class="border-r border-l border-black">
 		<div class="flex flex-row border-t border-black text-[10px]">
 			<!-- Column 1: Moldura -->
 			<div class="flex-auto border-r border-black text-center">
@@ -151,7 +151,7 @@
 	</div>
 
 	<!-- Medidas trabajo section -->
-	<div class="border-l border-r border-black">
+	<div class="border-r border-l border-black">
 		<div class="flex flex-row border-t border-black text-[10px]">
 			<!-- Column 1: Medidas trabajo -->
 			<div class="flex-auto border-r border-black text-center">
@@ -208,9 +208,9 @@
 
 	{#if others.length > 0}
 		<!-- Otros section -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div
-				class="border-b border-t border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
+				class="border-t border-b border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
 			>
 				Otros
 			</div>
@@ -233,9 +233,9 @@
 
 	{#if order.item.observations.trim().length > 0 || order.item.predefinedObservations.length > 0}
 		<!-- Observaciones section -->
-		<div class="border-l border-r border-black">
+		<div class="border-r border-l border-black">
 			<div
-				class="border-b border-t border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
+				class="border-t border-b border-black bg-[#ececec] px-0.5 py-0.5 text-center text-[10px] font-bold text-[#393939]"
 			>
 				Observaciones
 			</div>
@@ -260,7 +260,7 @@
 	{/if}
 
 	<!-- Pricing section -->
-	<div class="border-l border-r border-black">
+	<div class="border-r border-l border-black">
 		<div class="flex flex-row border-t border-black text-[10px]">
 			<!-- Column 1: Precio ud -->
 			<div class="flex-auto border-r border-black text-center">
@@ -304,7 +304,7 @@
 	</div>
 
 	<!-- Recogida/Referencia section -->
-	<div class="border-l border-r border-black">
+	<div class="border-r border-l border-black">
 		<div class="flex flex-row border-t border-black text-[10px]">
 			<!-- Column 1: Recogida estimada -->
 			<div class="flex-auto border-r border-black text-center">
@@ -331,7 +331,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="border-b border-l border-r border-black"></div>
+	<div class="border-r border-b border-l border-black"></div>
 </main>
 
 <style>

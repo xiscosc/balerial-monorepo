@@ -110,6 +110,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-geist: Geist, sans-serif;
+  --font-google-mono: 'Google Sans Code', monospace;
+  --font-mono: var(--font-google-mono);
   --font-sans: var(--font-geist);
 }
 

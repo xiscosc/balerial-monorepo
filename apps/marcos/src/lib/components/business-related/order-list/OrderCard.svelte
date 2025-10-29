@@ -7,7 +7,7 @@
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
 	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonStyle } from '@/components/generic/button/button.enum';
-	import { IconType } from '@/components/generic/icon/icon.enum';
+	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
@@ -104,9 +104,7 @@
 					in:fade={{ duration: 200 }}
 					out:fade={{ duration: 150 }}
 				>
-					<span
-						class="rounded-lg bg-white px-2 py-1 font-['Google_Sans_Code',_monospace] text-gray-800"
-					>
+					<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
 						{order.publicId}
 					</span>
 				</div>
@@ -176,28 +174,38 @@
 
 	<!-- Footer Section -->
 	<div class="flex items-center justify-between bg-white p-3">
-		<div>
+		<div class="flex flex-row gap-1">
 			{#if fullOrder.order.status === OrderStatus.FINISHED && fullOrder.order.notified}
 				<div
-					class="flex items-center gap-2 rounded-md border border-emerald-500 bg-emerald-100 px-2 py-0.5 text-emerald-800"
+					class="flex items-center rounded-md border border-emerald-500 bg-emerald-100 px-0.5 py-0.5 text-emerald-800"
 				>
 					<div class="flex items-center p-1">
-						<Icon type={IconType.SENT} />
+						<Icon type={IconType.SENT} size={IconSize.SMALL} />
+					</div>
+				</div>
+			{/if}
+
+			{#if fullOrder.order.invoiced}
+				<div
+					class="flex items-center rounded-md border border-amber-500 bg-amber-100 px-0.5 py-0.5 text-amber-800"
+				>
+					<div class="flex items-center p-1">
+						<Icon type={IconType.INVOICED} size={IconSize.SMALL} />
 					</div>
 				</div>
 			{/if}
 
 			{#if CoreOrderUtilities.isOrderTemp(order)}
 				<div
-					class="flex items-center gap-2 rounded-md border border-red-400 bg-red-50 px-2 py-0.5 text-red-700"
+					class="flex items-center gap-2 rounded-md border border-red-400 bg-red-50 px-0.5 py-0.5 text-red-700"
 				>
 					<div class="flex items-center p-1">
-						<Icon type={IconType.USER_PLUS} />
+						<Icon type={IconType.USER_PLUS} size={IconSize.SMALL} />
 					</div>
 				</div>
 			{/if}
 		</div>
-		<div class="flex flex-row justify-end gap-2 text-xs">
+		<div class="flex flex-row justify-end gap-1 text-xs">
 			{#if !CoreOrderUtilities.isOrderTemp(order)}
 				<Button
 					icon={IconType.PRINTER}

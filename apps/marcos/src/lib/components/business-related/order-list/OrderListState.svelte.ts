@@ -7,6 +7,7 @@ export class OrderListState {
 	private allOrders: Map<string, FullOrder>;
 	private selectMode: boolean;
 	private selectedOrdersFinished: boolean;
+	private selectedQuotes: boolean;
 	private selectedOrdersAreFromSameCustomer: boolean;
 
 	constructor() {
@@ -15,6 +16,9 @@ export class OrderListState {
 		this.selectMode = $state(false);
 		this.selectedOrdersFinished = $derived(
 			!this.selectedOrders.values().some((fo) => fo.order.status !== OrderStatus.FINISHED)
+		);
+		this.selectedQuotes = $derived(
+			this.selectedOrders.values().some((fo) => fo.order.status === OrderStatus.QUOTE)
 		);
 		this.selectedOrdersAreFromSameCustomer = $derived(
 			new SvelteSet(this.selectedOrders.values().map((fo) => fo.order.customer.id)).size === 1
@@ -60,6 +64,9 @@ export class OrderListState {
 				break;
 			case BatchOperation.SET_PAID:
 				this.setSelectedOrdersAsPayed();
+				break;
+			case BatchOperation.SET_INVOICED:
+				this.setSelectedOrdersAsInvoiced();
 				break;
 			default:
 				return;
@@ -109,6 +116,10 @@ export class OrderListState {
 		return this.selectedOrdersFinished;
 	}
 
+	public getSelectedQuotesExist(): boolean {
+		return this.selectedQuotes;
+	}
+
 	public getSelectedOrdersAreFromSameCustomer(): boolean {
 		return this.selectedOrdersAreFromSameCustomer;
 	}
@@ -139,6 +150,19 @@ export class OrderListState {
 				order: {
 					...fullOrder.order,
 					status: OrderStatus.PICKED_UP
+				}
+			};
+			this.updateOrderInMaps(updatedFullOrder);
+		});
+	}
+
+	private setSelectedOrdersAsInvoiced(): void {
+		this.selectedOrders.forEach((fullOrder) => {
+			const updatedFullOrder = {
+				...fullOrder,
+				order: {
+					...fullOrder.order,
+					invoiced: true
 				}
 			};
 			this.updateOrderInMaps(updatedFullOrder);

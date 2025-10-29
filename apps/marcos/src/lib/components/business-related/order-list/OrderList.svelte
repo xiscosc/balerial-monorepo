@@ -56,16 +56,6 @@
 			!orderListState.getSelectedOrdersAreFromSameCustomer()
 	);
 
-	let whatsAppButtonTooltipText = $derived.by(() => {
-		if (!orderListState.getSelectedOrdersAreFinished()) {
-			return 'Hay pedidos no finalizados seleccionados';
-		}
-		if (!orderListState.getSelectedOrdersAreFromSameCustomer()) {
-			return 'Hay pedidos de diferentes clientes seleccionados';
-		}
-		return '';
-	});
-
 	let whatsAppText = $derived(
 		OrderRepresentationUtilities.getWhatsappFinishedText(
 			orderListState
@@ -180,48 +170,50 @@
 				icon={IconType.PRINTER}
 				tooltipText="Hay pedidos de diferentes clientes seleccionados"
 			></Button>
-			<Button
-				iconSize={IconSize.SMALL}
-				disabled={whatsAppButtonDisabled}
-				onClick={() => {
-					runBulkOperation(BatchOperation.NOTIFY_ORDERS);
-				}}
-				tooltipText={whatsAppButtonTooltipText}
-				style={ButtonStyle.WHATSAPP}
-				text=""
-				icon={IconType.WHATSAPP}
-			></Button>
-			<Button
-				iconSize={IconSize.SMALL}
-				onClick={() => {
-					runBulkOperation(BatchOperation.SET_PAID);
-				}}
-				style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
-				textType={ButtonText.NO_COLOR}
-				text=""
-				icon={IconType.COINS}
-			></Button>
-			<Button
-				iconSize={IconSize.SMALL}
-				style={ButtonStyle.ORDER_PENDING}
-				onClick={() => {
-					runBulkOperation(BatchOperation.SET_PICKED_UP);
-				}}
-				disabled={!orderListState.getSelectedOrdersAreFinished()}
-				text=""
-				tooltipText="Hay pedidos no finalizados seleccionados"
-				icon={IconType.TRUCK}
-			></Button>
-			<Button
-				iconSize={IconSize.SMALL}
-				style={ButtonStyle.ORDER_GENERIC_VARIANT}
-				onClick={() => {
-					runBulkOperation(BatchOperation.SET_INVOICED);
-				}}
-				text=""
-				textType={ButtonText.NO_COLOR}
-				icon={IconType.INVOICED}
-			></Button>
+			{#if !orderListState.getSelectedQuotesExist()}
+				{#if !whatsAppButtonDisabled}
+					<Button
+						iconSize={IconSize.SMALL}
+						onClick={() => {
+							runBulkOperation(BatchOperation.NOTIFY_ORDERS);
+						}}
+						style={ButtonStyle.WHATSAPP}
+						text=""
+						icon={IconType.WHATSAPP}
+					></Button>
+				{/if}
+				<Button
+					iconSize={IconSize.SMALL}
+					onClick={() => {
+						runBulkOperation(BatchOperation.SET_PAID);
+					}}
+					style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+					textType={ButtonText.NO_COLOR}
+					text=""
+					icon={IconType.COINS}
+				></Button>
+				{#if orderListState.getSelectedOrdersAreFinished()}
+					<Button
+						iconSize={IconSize.SMALL}
+						style={ButtonStyle.ORDER_PENDING}
+						onClick={() => {
+							runBulkOperation(BatchOperation.SET_PICKED_UP);
+						}}
+						text=""
+						icon={IconType.TRUCK}
+					></Button>
+				{/if}
+				<Button
+					iconSize={IconSize.SMALL}
+					style={ButtonStyle.ORDER_GENERIC_VARIANT}
+					onClick={() => {
+						runBulkOperation(BatchOperation.SET_INVOICED);
+					}}
+					text=""
+					textType={ButtonText.NO_COLOR}
+					icon={IconType.INVOICED}
+				></Button>
+			{/if}
 		</div>
 	{/if}
 {/snippet}

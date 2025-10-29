@@ -61,11 +61,19 @@
 			<span class="font-mono text-xs">
 				{data.fullOrder.order.publicId}
 			</span>
-			<span
-				class={`rounded-2xl border px-3 py-1 text-xs font-semibold text-white uppercase ${getStatusUIInfo(data.fullOrder.order.status).staticColor}`}
-			>
-				{orderStatusMap[data.fullOrder.order.status]}
-			</span>
+			<div class="flex flex-row gap-2">
+				<span
+					class={`rounded-2xl border-black px-3 py-1 text-xs font-semibold text-white uppercase ${getStatusUIInfo(data.fullOrder.order.status).staticColor}`}
+				>
+					{orderStatusMap[data.fullOrder.order.status]}
+				</span>
+				<span
+					class="rounded-2xl border-indigo-900 bg-indigo-700 px-3 py-1 text-xs font-semibold text-white uppercase"
+				>
+					{data.fullOrder.totals.total.toFixed(2) + ' €'}
+				</span>
+			</div>
+
 			<div class="flex flex-col gap-3 px-5">
 				<div class="flex flex-col gap-2">
 					<OrderInfoStep

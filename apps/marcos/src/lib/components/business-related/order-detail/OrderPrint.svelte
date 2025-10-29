@@ -14,9 +14,6 @@
 	import { weekDayMap } from '@/shared/mappings/order.mapping';
 	import { QrOrigin } from '@/type/qr.type';
 	import { QrUtilities } from '@/shared/order/qr.utilities';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { PdfGenerationUtil } from '@/frontend/pdf/pdf-generation.util';
 
 	let {
 		fullOrder,
@@ -64,13 +61,6 @@
 		statusInfo.push('PRESUPUESTO');
 	}
 
-	async function generatePdf() {
-		const element = document.getElementById('order-print');
-		if (!element) return;
-		const printableName = `resguardo-${order.publicId.replaceAll('/', '-')}`;
-		await PdfGenerationUtil.generatePdf(element, printableName, 'A5', 'portrait');
-	}
-
 	onMount(() => {
 		if (print) {
 			setTimeout(() => {
@@ -82,7 +72,7 @@
 
 <main class="flex flex-col gap-2 print:block print:gap-0">
 	<div
-		class="mx-auto flex max-w-full flex-col gap-0 font-['Google_Sans_Code',_monospace] print:block print:w-full print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
+		class="mx-auto flex max-w-full flex-col gap-0 font-mono print:block print:w-full print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 		id="order-print"
 	>
 		<!-- Header: QR + Logo -->
@@ -105,16 +95,20 @@
 					</div>
 				</div>
 				<div
-					class="flex flex-shrink-0 flex-grow-[2] flex-col items-center justify-center p-0.5 text-[10px]"
+					class="flex min-w-0 flex-grow-[2] flex-col items-center justify-center p-0.5 text-[10px]"
 				>
 					<img class="h-[55px]" src={asset('/mmlogo.png')} alt="logo" />
-					<div class="font-sans text-[10px]">
-						<p class="m-0 text-center">
+					<div class="max-w-full font-sans text-[10px] break-words whitespace-normal">
+						<p class="m-0 text-center break-words whitespace-normal">
 							Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920
 						</p>
-						<p class="m-0 text-center">www.marcsimoldures.com - mmss@marcsimoldures.com</p>
-						<p class="m-0 text-center">Horario de lunes a viernes de 09:00 a 18:00,</p>
-						<p class="m-0 text-center">sábados de 09:30 a 13:15</p>
+						<p class="m-0 text-center break-words whitespace-normal">
+							www.marcsimoldures.com - mmss@marcsimoldures.com
+						</p>
+						<p class="m-0 text-center break-words whitespace-normal">
+							Horario de lunes a viernes de 09:00 a 18:00,
+						</p>
+						<p class="m-0 text-center break-words whitespace-normal">sábados de 09:30 a 13:15</p>
 					</div>
 				</div>
 			</div>
@@ -492,7 +486,6 @@
 		</div>
 	</div>
 	<div class="flex flex-col gap-2 font-sans lg:flex-row print:hidden">
-		<!--		<Button text="Descargar" icon={IconType.DOCUMENT} onClick={generatePdf}></Button>-->
 		{@render buttons?.()}
 	</div>
 </main>

@@ -6,7 +6,6 @@
 	import { DateTime } from 'luxon';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Button from '@/components/generic/button/Button.svelte';
-	import { PdfGenerationUtil } from '@/frontend/pdf/pdf-generation.util';
 	import { onMount } from 'svelte';
 
 	let { orderSet }: { orderSet: OrderSet } = $props();
@@ -19,13 +18,6 @@
 
 	let base = $derived(total / 1.21);
 	let tax = $derived(total - base);
-
-	async function generatePdf() {
-		const element = document.getElementById('order-set-print');
-		if (!element) return;
-		const printableName = `listado-${orderSet.id}`;
-		await PdfGenerationUtil.generatePdf(element, printableName, 'A5', 'portrait');
-	}
 
 	onMount(() => {
 		setTimeout(() => {
@@ -56,7 +48,7 @@
 						<span class="w-1/2 border-r-1 border-r-gray-800 px-2 py-1 text-center">FECHA</span>
 						<span class="w-1/2 px-2 py-1 text-center">VENDEDOR</span>
 					</div>
-					<div class="flex flex-row font-['Google_Sans_Code',_monospace]">
+					<div class="flex flex-row font-mono">
 						<span class="w-1/2 border-r-1 border-r-gray-800 px-2 py-1 text-center">
 							{DateTime.fromJSDate(orderSet.createdAt).toFormat('dd/MM/yyyy')}
 						</span>
@@ -83,7 +75,7 @@
 					>
 						DATOS DEL CLIENTE
 					</div>
-					<div class="flex flex-col gap-0.5 px-2 py-1.5 font-['Google_Sans_Code',_monospace]">
+					<div class="flex flex-col gap-0.5 px-2 py-1.5 font-mono">
 						<span>{customer.name}</span>
 						<span>{customer.phone}</span>
 					</div>
@@ -102,9 +94,7 @@
 				<span class="w-[20%] px-2 py-1 text-center">IMPORTE</span>
 			</div>
 			{#each Object.values(orderSet.orders) as fullOrder (fullOrder.order.id)}
-				<div
-					class="flex flex-row border-b-1 border-b-gray-800 font-['Google_Sans_Code',_monospace] last:border-b-0"
-				>
+				<div class="flex flex-row border-b-1 border-b-gray-800 font-mono last:border-b-0">
 					<span class="w-[42%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.order.publicId}
 					</span>
@@ -130,7 +120,7 @@
 				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">21% IVA</span>
 				<span class="w-[100px] px-2 py-1 text-center">TOTAL</span>
 			</div>
-			<div class="flex flex-row font-['Google_Sans_Code',_monospace]">
+			<div class="flex flex-row font-mono">
 				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
 					{base.toFixed(2)} €
 				</span>
@@ -149,7 +139,6 @@
 		</div>
 	</div>
 	<div class="flex flex-col gap-2 md:flex-row print:hidden">
-		<!--		<Button text="Descargar" icon={IconType.DOCUMENT} onClick={generatePdf}></Button>-->
 		<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}></Button>
 		<Button text="Ir al cliente" icon={IconType.USER} link={`/customers/${customer.id}`}></Button>
 	</div>

@@ -32,9 +32,7 @@
 					{/if}
 				</span>
 				{#if errorInfo}
-					<div
-						class="rounded bg-gray-100 p-3 font-['Google_Sans_Code',_monospace] text-xs text-gray-700"
-					>
+					<div class="rounded bg-gray-100 p-3 font-mono text-xs text-gray-700">
 						{errorInfo}
 					</div>
 				{/if}
