@@ -52,6 +52,7 @@ export class OrderListBulkOperationState {
 
 	public async generateOrderSet() {
 		this.actionText = 'Generando listado...';
+		this.accepted = true;
 		this.loading = true;
 		this.active = true;
 		const promise = OrderSetApiGateway.createOrderSet(this.orderListState.getSelectedOrdersIds());
