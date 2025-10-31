@@ -9,18 +9,13 @@
 	import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 	import { onDestroy } from 'svelte';
 	import { OrderListState } from '@/components/business-related/order-list/OrderListState.svelte';
+	import { OrderListBulkOperationState } from '@/components/business-related/order-list/OrderListBulkOperationState.svelte';
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import * as Dialog from '@/components/ui/dialog/index.js';
-	import { OrderSetApiGateway } from '@/gateway/order-set-api.gateway';
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import { OrderApiGateway } from '@/gateway/order-api.gateway';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { BatchOperation } from '@/type/api.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-	import { orderBatchOperationMap } from '@/shared/mappings/order.mapping';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -43,13 +38,10 @@
 	}: Props = $props();
 
 	const orderListState = new OrderListState();
+	const orderListBulkOperationState = new OrderListBulkOperationState(orderListState);
+
 	let loading = $state(false);
 	let paginationLoading = $state(false);
-
-	let orderSetDialogOpen = $state(false);
-	let orderSetDialogLoadingText = $state('');
-	let orderSetDialogLoading = $state(false);
-	let orderSetDialogWhatsappButton = $state(false);
 
 	let whatsAppButtonDisabled = $derived(
 		!orderListState.getSelectedOrdersAreFinished() ||
@@ -117,29 +109,6 @@
 	onDestroy(() => {
 		ActionBarState.destroy();
 	});
-
-	async function runBulkOperation(operation: BatchOperation) {
-		orderSetDialogLoadingText = orderBatchOperationMap[operation];
-		orderSetDialogWhatsappButton = false;
-		orderSetDialogLoading = true;
-		orderSetDialogOpen = true;
-		const promise = OrderApiGateway.patchOrders(orderListState.getSelectedOrdersIds(), [operation]);
-		await getGlobalProfiler().measure(promise);
-		orderListState.runBulkOperation(operation);
-		orderSetDialogLoading = false;
-		if (operation === BatchOperation.NOTIFY_ORDERS) {
-			orderSetDialogWhatsappButton = true;
-		}
-	}
-
-	async function generateOrderSet() {
-		orderSetDialogLoadingText = 'Generando listado...';
-		orderSetDialogLoading = true;
-		orderSetDialogOpen = true;
-		const promise = OrderSetApiGateway.createOrderSet(orderListState.getSelectedOrdersIds());
-		const { id } = await getGlobalProfiler().measure(promise);
-		await goto(resolve('/(app)/(main)/order-sets/[id]/print', { id }));
-	}
 </script>
 
 {#snippet actionBarLeft()}
@@ -164,7 +133,7 @@
 		<div class="flex w-full flex-row gap-2 text-xs">
 			<Button
 				iconSize={IconSize.SMALL}
-				onClick={generateOrderSet}
+				onClick={orderListBulkOperationState.generateOrderSet}
 				disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
 				text=""
 				icon={IconType.PRINTER}
@@ -175,7 +144,7 @@
 					<Button
 						iconSize={IconSize.SMALL}
 						onClick={() => {
-							runBulkOperation(BatchOperation.NOTIFY_ORDERS);
+							orderListBulkOperationState.prepareBulkOperation(BatchOperation.NOTIFY_ORDERS);
 						}}
 						style={ButtonStyle.WHATSAPP}
 						text=""
@@ -185,7 +154,7 @@
 				<Button
 					iconSize={IconSize.SMALL}
 					onClick={() => {
-						runBulkOperation(BatchOperation.SET_PAID);
+						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PAID);
 					}}
 					style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
 					textType={ButtonText.NO_COLOR}
@@ -197,7 +166,7 @@
 						iconSize={IconSize.SMALL}
 						style={ButtonStyle.ORDER_PENDING}
 						onClick={() => {
-							runBulkOperation(BatchOperation.SET_PICKED_UP);
+							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PICKED_UP);
 						}}
 						text=""
 						icon={IconType.TRUCK}
@@ -207,7 +176,7 @@
 					iconSize={IconSize.SMALL}
 					style={ButtonStyle.ORDER_GENERIC_VARIANT}
 					onClick={() => {
-						runBulkOperation(BatchOperation.SET_INVOICED);
+						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_INVOICED);
 					}}
 					text=""
 					textType={ButtonText.NO_COLOR}
@@ -226,32 +195,53 @@
 	</div>
 {/snippet}
 
-<Dialog.Root bind:open={orderSetDialogOpen}>
+<Dialog.Root
+	bind:open={
+		orderListBulkOperationState.isBulkOrderActive, orderListBulkOperationState.setBulkOrderInactive
+	}
+>
 	<Dialog.Content>
 		<Dialog.Header>
-			<Dialog.Title>Operaciones en curso</Dialog.Title>
+			<Dialog.Title>Operaciones en lote</Dialog.Title>
 			<Dialog.Description>
-				<div class="flex flex-col gap-2">
-					<div
-						class="text-md flex flex-row gap-2"
-						class:text-green-700={!orderSetDialogLoading}
-						class:text-gray-900={orderSetDialogLoading}
-					>
-						<div class:animate-spin={orderSetDialogLoading}>
-							<Icon type={orderSetDialogLoading ? IconType.LOADING_BALL : IconType.DONE}></Icon>
-						</div>
-						<span>{orderSetDialogLoadingText}</span>
+				{#if !orderListBulkOperationState.isBulkOperationAccepted()}
+					<div class="flex flex-col gap-2">
+						<p class="text-md">
+							¿Estás seguro de que deseas continuar? Esta operación no se puede deshacer
+						</p>
+						<Button
+							text={orderListBulkOperationState.getBulkOperationAcceptText()}
+							icon={IconType.DONE}
+							onClick={orderListBulkOperationState.acceptBulkOperation}
+						></Button>
 					</div>
-					{#if orderSetDialogWhatsappButton}
-						<div class="flex">
-							<WhatsAppButton
-								label="Enviar mensaje todos finalizados"
-								message={whatsAppText}
-								customer={orderListState.getCustomerFromFirstSelectedOrder()}
-							></WhatsAppButton>
+				{:else}
+					<div class="flex flex-col gap-2">
+						<div
+							class="text-md flex flex-row gap-2"
+							class:text-green-700={!orderListBulkOperationState.isBulkOperationLoading()}
+							class:text-gray-900={orderListBulkOperationState.isBulkOperationLoading()}
+						>
+							<div class:animate-spin={orderListBulkOperationState.isBulkOperationLoading()}>
+								<Icon
+									type={orderListBulkOperationState.isBulkOperationLoading()
+										? IconType.LOADING_BALL
+										: IconType.DONE}
+								></Icon>
+							</div>
+							<span>{orderListBulkOperationState.getBulkOperationActionText()}</span>
 						</div>
-					{/if}
-				</div>
+						{#if orderListBulkOperationState.isWhatsappButtonVisible()}
+							<div class="flex">
+								<WhatsAppButton
+									label="Enviar mensaje todos finalizados"
+									message={whatsAppText}
+									customer={orderListState.getCustomerFromFirstSelectedOrder()}
+								></WhatsAppButton>
+							</div>
+						{/if}
+					</div>
+				{/if}
 			</Dialog.Description>
 		</Dialog.Header>
 	</Dialog.Content>
