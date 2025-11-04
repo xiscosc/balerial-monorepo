@@ -129,6 +129,8 @@
 			{/each}
 		</div>
 
+		<div class="min-h-8 flex-grow print:block"></div>
+
 		<div class="ml-auto flex w-fit flex-col border-1 border-gray-800 text-[10px] print:mt-auto">
 			<div class="flex flex-row border-b-1 border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
 				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
