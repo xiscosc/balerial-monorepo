@@ -32,10 +32,3 @@ export enum ButtonType {
 	SMALL = 'rounded-md px-2 py-1 text-center focus:outline-hidden',
 	HOME = 'w-full rounded-md px-6 py-4 text-left text-lg font-semibold '
 }
-
-export enum ButtonAction {
-	CLICK = 'click',
-	LINK = 'link',
-	SUBMIT = 'submit',
-	TRIGGER = 'trigger'
-}

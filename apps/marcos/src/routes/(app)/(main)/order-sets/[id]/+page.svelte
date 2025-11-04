@@ -6,9 +6,9 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import type { FullOrder } from '@marcsimolduressonsardina/core/type';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	interface Props {
 		data: PageData;
@@ -34,7 +34,7 @@
 	<SimpleHeading icon={IconType.LIST}>Listado de pedidos</SimpleHeading>
 	{#if data.orderSet != null && Object.values(data.orderSet.orders).length > 0}
 		<div class="flex w-full flex-col place-content-center items-center justify-center gap-2">
-			<Button text="Imprimir" icon={IconType.PRINTER} onClick={handlePrint}></Button>
+			<MarcosButton icon={IconType.PRINTER} onclick={handlePrint}>Imprimir</MarcosButton>
 		</div>
 	{/if}
 	<OrderList promiseOrders={measuredOrders} />

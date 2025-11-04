@@ -3,19 +3,20 @@
 	import OrderCard from '@/components/business-related/order-list/OrderCard.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
-	import Button from '@/components/generic/button/Button.svelte';
 	import OrderSkeletonCard from '@/components/business-related/order-detail/OrderSkeletonCard.svelte';
 	import { GenericTools } from '@/shared/generic/generic.tools';
 	import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 	import { onDestroy } from 'svelte';
 	import { OrderListState } from '@/components/business-related/order-list/OrderListState.svelte';
 	import { OrderListBulkOperationState } from '@/components/business-related/order-list/OrderListBulkOperationState.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
 	import * as Dialog from '@/components/ui/dialog/index.js';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { BatchOperation } from '@/type/api.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
 
 	interface Props {
 		promiseOrders?: Promise<FullOrder[]>;
@@ -118,70 +119,75 @@
 {/snippet}
 
 {#snippet actionCenter()}
-	<span class="text-xs">
-		<Button
-			onClick={handleSelectAll}
-			iconSize={IconSize.SMALL}
-			text="Seleccionar todos"
-			icon={IconType.ORDER_DEFAULT}
-		></Button>
-	</span>
+	<MarcosButton
+		onclick={handleSelectAll}
+		iconSize={IconSize.SMALL}
+		size={ButtonType.SMALL}
+		icon={IconType.ORDER_DEFAULT}
+	>
+		Seleccionar todos
+	</MarcosButton>
 {/snippet}
 
 {#snippet actionButtons()}
 	{#if orderListState.getSelectedOrdersCount() > 0}
 		<div class="flex w-full flex-row gap-2 text-xs">
-			<Button
-				iconSize={IconSize.SMALL}
-				onClick={orderListBulkOperationState.generateOrderSet}
-				disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
-				text=""
-				icon={IconType.PRINTER}
-				tooltipText="Hay pedidos de diferentes clientes seleccionados"
-			></Button>
+			<TooltipButtonWrapper
+				buttonSize={ButtonType.SMALL}
+				text="Hay pedidos de diferentes clientes seleccionados"
+				enabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}>
+				<MarcosButton
+					disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
+					onclick={handleSelectAll}
+					iconSize={IconSize.SMALL}
+					size={ButtonType.SMALL}
+					icon={IconType.PRINTER}
+				></MarcosButton>
+			</TooltipButtonWrapper>
+
 			{#if !orderListState.getSelectedQuotesExist()}
 				{#if !whatsAppButtonDisabled}
-					<Button
+					<MarcosButton
+						size={ButtonType.SMALL}
 						iconSize={IconSize.SMALL}
-						onClick={() => {
+						onclick={() => {
 							orderListBulkOperationState.prepareBulkOperation(BatchOperation.NOTIFY_ORDERS);
 						}}
-						style={ButtonStyle.WHATSAPP}
-						text=""
+						variant={ButtonStyle.WHATSAPP}
 						icon={IconType.WHATSAPP}
-					></Button>
+					></MarcosButton>
 				{/if}
-				<Button
+				<MarcosButton
+					size={ButtonType.SMALL}
 					iconSize={IconSize.SMALL}
-					onClick={() => {
+					onclick={() => {
 						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PAID);
 					}}
-					style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
-					textType={ButtonText.NO_COLOR}
-					text=""
+					variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+					textVariant={ButtonText.NO_COLOR}
 					icon={IconType.COINS}
-				></Button>
+				></MarcosButton>
 				{#if orderListState.getSelectedOrdersAreFinished()}
-					<Button
+					<MarcosButton
+						size={ButtonType.SMALL}
 						iconSize={IconSize.SMALL}
-						style={ButtonStyle.ORDER_PENDING}
-						onClick={() => {
+						variant={ButtonStyle.ORDER_PENDING}
+						onclick={() => {
 							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PICKED_UP);
 						}}
-						text=""
 						icon={IconType.TRUCK}
-					></Button>
+					></MarcosButton>
 				{/if}
-				<Button
+				<MarcosButton
+					size={ButtonType.SMALL}
 					iconSize={IconSize.SMALL}
-					style={ButtonStyle.ORDER_GENERIC_VARIANT}
-					onClick={() => {
+					variant={ButtonStyle.ORDER_GENERIC_VARIANT}
+					onclick={() => {
 						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_INVOICED);
 					}}
-					text=""
-					textType={ButtonText.NO_COLOR}
+					textVariant={ButtonText.NO_COLOR}
 					icon={IconType.INVOICED}
-				></Button>
+				></MarcosButton>
 			{/if}
 		</div>
 	{/if}
@@ -209,11 +215,12 @@
 						<p class="text-md">
 							¿Estás seguro de que deseas continuar? Esta operación no se puede deshacer
 						</p>
-						<Button
-							text={orderListBulkOperationState.getBulkOperationAcceptText()}
+						<MarcosButton
 							icon={IconType.DONE}
-							onClick={orderListBulkOperationState.acceptBulkOperation}
-						></Button>
+							onclick={orderListBulkOperationState.acceptBulkOperation}
+						>
+							{orderListBulkOperationState.getBulkOperationAcceptText()}
+						</MarcosButton>
 					</div>
 				{:else}
 					<div class="flex flex-col gap-2">
@@ -273,8 +280,9 @@
 			{/each}
 		{:else if paginationAvailable}
 			<div class="flex h-full md:col-span-2 lg:col-span-3 xl:col-span-5">
-				<Button text="Cargar más" icon={IconType.ORDER_DEFAULT} onClick={paginationFunction}
-				></Button>
+				<MarcosButton icon={IconType.ORDER_DEFAULT} onclick={paginationFunction}>
+					Cargar más
+				</MarcosButton>
 			</div>
 		{/if}
 	</div>

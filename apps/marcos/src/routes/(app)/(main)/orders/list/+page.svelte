@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import Input from '@/components/ui/input/input.svelte';

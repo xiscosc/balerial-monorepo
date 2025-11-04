@@ -3,10 +3,10 @@
 
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import Button from '@/components/generic/button/Button.svelte';
 	import OrderSetPrint from '@/components/business-related/order-set/OrderSetPrint.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import Box from '@/components/generic/Box.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	interface Props {
 		data: PageData;
@@ -28,8 +28,9 @@
 			<Box icon={IconType.NOT_FOUND} title="Error">
 				<p class="text-center text-lg md:text-left">No se ha encontrado el listado</p>
 			</Box>
-			<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}
-			></Button>
+			<MarcosButton icon={IconType.LEFT} onclick={() => window.history.back()}>
+				Volver atrás
+			</MarcosButton>
 		</div>
 	{/if}
 {/await}

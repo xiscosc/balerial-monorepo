@@ -17,7 +17,6 @@
 		type MaxArea,
 		type MaxAreaM2
 	} from '@marcsimolduressonsardina/core/type';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
@@ -34,6 +33,8 @@
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import { SvelteMap } from 'svelte/reactivity';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import Button from '@/components/generic/button/Button.svelte';
 
 	interface Props {
 		data: SuperValidated<Infer<LisPriceSchemaEdit | LisPriceSchemaNew>>;
@@ -258,7 +259,9 @@
 											<Input type="number" step="0.01" name="piecePrice" bind:value={priceValue} />
 										</div>
 										<div class="flex-1">
-											<Button text="Añadir" icon={IconType.PLUS} onClick={handleAddArea}></Button>
+											<MarcosButton icon={IconType.PLUS} onclick={handleAddArea}>
+												Añadir
+											</MarcosButton>
 										</div>
 									</div>
 
@@ -300,7 +303,9 @@
 									</div>
 
 									<div class="lg:col-span-2">
-										<Button text="Añadir" icon={IconType.PLUS} onClick={handleAddAreaM2} />
+										<MarcosButton icon={IconType.PLUS} onclick={handleAddAreaM2}>
+											Añadir
+										</MarcosButton>
 									</div>
 									{#if areasM2.length > 0}
 										<Spacer title="Trozos añadidos" />
@@ -386,13 +391,14 @@
 							</Form.Field>
 
 							<div class="lg:col-span-2">
-								<Button
-									text="Guardar"
+								<MarcosButton
 									icon={IconType.EDIT}
-									style={ButtonStyle.ORDER_GENERIC}
-									action={ButtonAction.SUBMIT}
-									textType={ButtonText.GRAY}
-								></Button>
+									textVariant={ButtonText.GRAY}
+									type="submit"
+									variant={ButtonStyle.ORDER_GENERIC}
+								>
+									Guardar
+								</MarcosButton>
 							</div>
 						</div>
 					</div>

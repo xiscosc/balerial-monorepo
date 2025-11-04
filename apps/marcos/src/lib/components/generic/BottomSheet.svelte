@@ -4,19 +4,13 @@
 	import * as Dialog from '@/components/ui/dialog/index.js';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
 
 	interface Props {
 		title?: string;
 		iconType?: IconType;
-		disabled?: boolean;
 		description?: string;
-		trigger: Snippet;
+		trigger: Snippet<[{ props: Record<string, unknown> }]>;
 		action: Snippet;
-		triggerStyle?: ButtonStyle;
-		triggerTextType?: ButtonText;
-		triggerbuttonType?: ButtonType;
-		customTriggerStyle?: boolean;
 	}
 
 	let {
@@ -24,22 +18,17 @@
 		description = undefined,
 		trigger,
 		action,
-		disabled = false,
-		iconType = undefined,
-		triggerStyle = ButtonStyle.NEUTRAL,
-		triggerTextType = ButtonText.WHITE,
-		triggerbuttonType = ButtonType.DEFAULT,
-		customTriggerStyle = false
+		iconType = undefined
 	}: Props = $props();
-
-	const classes = $derived(
-		`${triggerbuttonType} ${disabled ? ButtonStyle.DISABLED : triggerStyle} ${triggerTextType} ${triggerbuttonType === ButtonType.SMALL ? 'flex items-center' : ''} ${triggerbuttonType !== ButtonType.SMALL ? 'w-full' : ''}`
-	);
 </script>
 
 <Sheet.Root>
-	<Sheet.Trigger class={`${customTriggerStyle ? '' : classes} lg:hidden`} {disabled} type="button">
-		{@render trigger()}
+	<Sheet.Trigger>
+		{#snippet child({ props })}
+			<span class="lg:hidden">
+				{@render trigger({ props })}
+			</span>
+		{/snippet}
 	</Sheet.Trigger>
 	<Sheet.Content
 		side="bottom"
@@ -71,12 +60,12 @@
 </Sheet.Root>
 
 <Dialog.Root>
-	<Dialog.Trigger
-		class={`${customTriggerStyle ? '' : classes} hidden lg:block`}
-		{disabled}
-		type="button"
-	>
-		{@render trigger()}
+	<Dialog.Trigger>
+		{#snippet child({ props })}
+			<span class="hidden lg:block">
+				{@render trigger({ props })}
+			</span>
+		{/snippet}
 	</Dialog.Trigger>
 	<Dialog.Content
 		onOpenAutoFocus={(e) => {
