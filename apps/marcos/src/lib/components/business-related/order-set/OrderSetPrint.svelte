@@ -28,7 +28,7 @@
 
 <main class="flex flex-col gap-2 print:block">
 	<div
-		class="flex flex-col gap-4 p-4 print:min-h-screen print:pb-8 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
+		class="flex flex-col gap-4 p-4 print:break-inside-avoid print:pb-8 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 		id="order-set-print"
 	>
 		<div class="mb-4 flex flex-row justify-between gap-2">
