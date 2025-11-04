@@ -17,7 +17,7 @@
 		type MaxArea,
 		type MaxAreaM2
 	} from '@marcsimolduressonsardina/core/type';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
@@ -34,7 +34,6 @@
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 
 	interface Props {
 		data: SuperValidated<Infer<LisPriceSchemaEdit | LisPriceSchemaNew>>;
@@ -410,11 +409,11 @@
 					title="Eliminar precio"
 					description="Esta acción no se puede desacer"
 					iconType={IconType.TRASH}
-					triggerStyle={ButtonStyle.DELETE}
 				>
-					{#snippet trigger()}
-						<Button icon={IconType.TRASH} text="Eliminar precio" action={ButtonAction.TRIGGER}
-						></Button>
+					{#snippet trigger({ props }: { props: Record<string, unknown> })}
+						<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonStyle.DELETE}>
+							Eliminar precio
+						</MarcosButton>
 					{/snippet}
 
 					{#snippet action()}
@@ -432,12 +431,9 @@
 							{#if formLoading}
 								<BottomSheetLoading />
 							{:else}
-								<Button
-									icon={IconType.TRASH}
-									text="Confirmar"
-									style={ButtonStyle.DELETE}
-									action={ButtonAction.SUBMIT}
-								></Button>
+								<MarcosButton icon={IconType.TRASH} variant={ButtonStyle.DELETE} type="submit">
+									Confirmar
+								</MarcosButton>
 							{/if}
 						</form>
 					{/snippet}

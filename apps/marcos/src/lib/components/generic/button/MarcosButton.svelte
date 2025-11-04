@@ -1,20 +1,12 @@
 <script lang="ts">
 	import { type HTMLButtonAttributes } from 'svelte/elements';
-	import type { Snippet } from 'svelte';
 	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
-	import { IconSize, type IconType } from '@/components/generic/icon/icon.enum';
+	import { IconSize } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { cn } from '@/utils';
+	import type { IMarcosButtonProps } from '@/components/generic/button/MarcosButtonProps.interface';
 
-	interface Properties extends HTMLButtonAttributes {
-		children?: Snippet;
-		variant?: ButtonStyle;
-		textVariant?: ButtonText;
-		size?: ButtonType;
-		icon?: IconType;
-		iconSize?: IconSize;
-		class?: string | undefined | null;
-	}
+	interface Properties extends IMarcosButtonProps, HTMLButtonAttributes {}
 
 	let {
 		children = undefined,

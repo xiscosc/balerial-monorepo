@@ -1,12 +1,12 @@
 <script lang="ts">
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import { onMount } from 'svelte';
 	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	let customers: Customer[] = $state([]);
 	let loading = $state(false);
@@ -29,22 +29,19 @@
 	<SimpleHeading icon={IconType.LIST}>Listado de clientes</SimpleHeading>
 	<div class="flex w-full flex-col gap-1 lg:grid lg:grid-cols-4">
 		{#each customers as customer (customer.id)}
-			<Button
-				textType={ButtonText.GRAY}
-				link={`/customers/${customer.id}`}
-				text={customer.name}
+			<MarcosButton
 				icon={IconType.USER}
-				style={ButtonStyle.ORDER_GENERIC}
-			></Button>
+				variant={ButtonStyle.ORDER_GENERIC}
+				textVariant={ButtonText.GRAY}
+			>
+				{customer.name}
+			</MarcosButton>
 		{/each}
 
 		{#if lastKey}
-			<Button
-				text="Cargar más"
-				icon={IconType.PLUS}
-				style={ButtonStyle.NEUTRAL}
-				onClick={loadCustomers}
-			></Button>
+			<MarcosButton icon={IconType.PLUS} variant={ButtonStyle.NEUTRAL} onclick={loadCustomers}>
+				Cargar más
+			</MarcosButton>
 		{/if}
 	</div>
 

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
@@ -22,15 +22,26 @@
 	title="Gestionar factura pedido"
 	description="Cambiar el estado de facturación del pedido"
 	iconType={IconType.INVOICED}
-	triggerTextType={ButtonText.NO_COLOR}
-	triggerStyle={order.invoiced ? ButtonStyle.ORDER_PICKED_UP_VARIANT : ButtonStyle.DELETE_VARIANT}
 >
-	{#snippet trigger()}
+	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		{#if order.invoiced}
-			<Button text="Facturado" icon={IconType.INVOICED} action={ButtonAction.TRIGGER}></Button>
+			<MarcosButton
+				{...props}
+				icon={IconType.INVOICED}
+				textVariant={ButtonText.NO_COLOR}
+				variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+			>
+				Facturado
+			</MarcosButton>
 		{:else}
-			<Button text="No Facturado" icon={IconType.NOT_INVOICED} action={ButtonAction.TRIGGER}
-			></Button>
+			<MarcosButton
+				{...props}
+				icon={IconType.NOT_INVOICED}
+				textVariant={ButtonText.NO_COLOR}
+				variant={ButtonStyle.DELETE_VARIANT}
+			>
+				No Facturado
+			</MarcosButton>
 		{/if}
 	{/snippet}
 
@@ -51,13 +62,14 @@
 						};
 					}}
 				>
-					<Button
-						text="Marcar como no facturado"
+					<MarcosButton
 						icon={IconType.NOT_INVOICED}
-						textType={ButtonText.NO_COLOR}
-						style={ButtonStyle.DELETE_VARIANT}
-						action={ButtonAction.SUBMIT}
-					></Button>
+						textVariant={ButtonText.NO_COLOR}
+						variant={ButtonStyle.DELETE_VARIANT}
+						type="submit"
+					>
+						Marcar como no facturado
+					</MarcosButton>
 				</form>
 			{:else}
 				<form
@@ -72,13 +84,14 @@
 						};
 					}}
 				>
-					<Button
-						text="Marcar como facturado"
+					<MarcosButton
 						icon={IconType.INVOICED}
-						textType={ButtonText.NO_COLOR}
-						style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
-						action={ButtonAction.SUBMIT}
-					></Button>
+						textVariant={ButtonText.NO_COLOR}
+						variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+						type="submit"
+					>
+						Marcar como facturado
+					</MarcosButton>
 				</form>
 			{/if}
 		</div>

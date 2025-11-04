@@ -4,10 +4,10 @@
 		type LocationOrderSchema,
 		type StatusOrderSchema
 	} from '@/shared/form-schema/order.form-schema';
-	import Button from '@/components/generic/button/Button.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
@@ -37,14 +37,6 @@
 	</div>
 {/snippet}
 
-{#snippet customerTrigger()}
-	<Button text={order.customer.name} icon={IconType.USER} action={ButtonAction.TRIGGER}></Button>
-{/snippet}
-
-{#snippet customerAction()}
-	<CustomerDetails customer={order.customer}></CustomerDetails>
-{/snippet}
-
 <div class="overflow-hidden rounded-md border border-gray-300">
 	<div
 		class={`flex items-center justify-between px-3 py-2 text-white ${
@@ -66,12 +58,22 @@
 
 	<div class="space-y-1 bg-white px-2 py-4">
 		{#if !CoreOrderUtilities.isOrderTemp(order)}
-			<BottomSheet
-				trigger={customerTrigger}
-				action={customerAction}
-				triggerStyle={ButtonStyle.CUSTOMER_VARIANT}
-				triggerTextType={ButtonText.NO_COLOR}
-			></BottomSheet>
+			<BottomSheet>
+				{#snippet trigger({ props }: { props: Record<string, unknown> })}
+					<MarcosButton
+						{...props}
+						icon={IconType.USER}
+						variant={ButtonStyle.CUSTOMER_VARIANT}
+						textVariant={ButtonText.NO_COLOR}
+					>
+						{order.customer.name}
+					</MarcosButton>
+				{/snippet}
+
+				{#snippet action()}
+					<CustomerDetails customer={order.customer}></CustomerDetails>
+				{/snippet}
+			</BottomSheet>
 		{/if}
 
 		{#if order.status !== OrderStatus.QUOTE}

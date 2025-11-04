@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { PaymentStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import Divider from '@/components/generic/Divider.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
@@ -25,18 +25,35 @@
 	title="Gestionar pago"
 	description="Seleccione el nuevo estado del pago para el pedido"
 	iconType={IconType.COINS}
-	triggerTextType={ButtonText.NO_COLOR}
-	triggerStyle={totals.payed ? ButtonStyle.ORDER_PICKED_UP_VARIANT : ButtonStyle.DELETE_VARIANT}
 >
-	{#snippet trigger()}
+	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		{#if totals.payed}
-			<Button text="Pagado" icon={IconType.DONE} action={ButtonAction.TRIGGER}></Button>
+			<MarcosButton
+				{...props}
+				icon={IconType.DONE}
+				textVariant={ButtonText.NO_COLOR}
+				variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+			>
+				Pagado
+			</MarcosButton>
 		{:else if order.amountPayed === 0}
-			<Button text="Pendiente de pago" icon={IconType.NOT_DONE} action={ButtonAction.TRIGGER}
-			></Button>
+			<MarcosButton
+				{...props}
+				icon={IconType.NOT_DONE}
+				textVariant={ButtonText.NO_COLOR}
+				variant={ButtonStyle.DELETE_VARIANT}
+			>
+				Pendiente de pago
+			</MarcosButton>
 		{:else}
-			<Button text="Parcialmente pagado" icon={IconType.NOT_DONE} action={ButtonAction.TRIGGER}
-			></Button>
+			<MarcosButton
+				{...props}
+				icon={IconType.NOT_DONE}
+				textVariant={ButtonText.NO_COLOR}
+				variant={ButtonStyle.DELETE_VARIANT}
+			>
+				Parcialmente pagado
+			</MarcosButton>
 		{/if}
 	{/snippet}
 
@@ -80,13 +97,14 @@
 							}}
 						>
 							<input type="hidden" name="paymentStatus" value={PaymentStatus.FULLY_PAID} />
-							<Button
-								text="Pagado"
+							<MarcosButton
 								icon={IconType.DONE}
-								textType={ButtonText.NO_COLOR}
-								style={ButtonStyle.ORDER_PICKED_UP_VARIANT}
-								action={ButtonAction.SUBMIT}
-							></Button>
+								textVariant={ButtonText.NO_COLOR}
+								variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+								type="submit"
+							>
+								Pagado
+							</MarcosButton>
 						</form>
 					{/if}
 
@@ -103,13 +121,14 @@
 							}}
 						>
 							<input type="hidden" name="paymentStatus" value={PaymentStatus.UNPAID} />
-							<Button
-								text="No pagado"
+							<MarcosButton
 								icon={IconType.NOT_DONE}
-								textType={ButtonText.NO_COLOR}
-								style={ButtonStyle.DELETE_VARIANT}
-								action={ButtonAction.SUBMIT}
-							></Button>
+								textVariant={ButtonText.NO_COLOR}
+								variant={ButtonStyle.DELETE_VARIANT}
+								type="submit"
+							>
+								No pagado
+							</MarcosButton>
 						</form>
 					{/if}
 
@@ -130,13 +149,14 @@
 						<input type="hidden" name="paymentStatus" value={PaymentStatus.PARTIALLY_PAID} />
 						<Input type="number" name="amount" required placeholder="Cantidad EUR" step="0.01" />
 
-						<Button
-							text="Pago a cuenta"
+						<MarcosButton
 							icon={IconType.COINS}
-							textType={ButtonText.NO_COLOR}
-							style={ButtonStyle.ORDER_FINISHED_VARIANT}
-							action={ButtonAction.SUBMIT}
-						></Button>
+							textVariant={ButtonText.NO_COLOR}
+							variant={ButtonStyle.ORDER_FINISHED_VARIANT}
+							type="submit"
+						>
+							Pago a cuenta
+						</MarcosButton>
 					</form>
 				{/if}
 			{/if}
