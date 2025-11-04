@@ -29,47 +29,30 @@
 
 <main class="flex flex-col gap-2 print:block">
 	<div
-		class="flex flex-col gap-4 p-4 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
+		class="flex flex-col gap-4 p-4 print:break-inside-avoid print:pb-8 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 		id="order-set-print"
 	>
-		<div class="flex flex-row justify-between gap-2">
-			<div class="flex min-w-1/3 flex-col gap-2">
-				<div class="flex h-[109px] items-center justify-center">
-					<Qr
-						size={109}
-						qrData={QrUtilities.generateQrStringForOrderSet({
-							orderSetId: orderSet.id
-						})}
-					></Qr>
-				</div>
-				<div class="flex flex-col border-1 border-gray-800 text-[10px]">
-					<div
-						class="flex flex-row border-b-1 border-b-gray-800 bg-zinc-400 font-bold text-gray-800"
-					>
-						<span class="w-1/2 border-r-1 border-r-gray-800 px-2 py-1 text-center">FECHA</span>
-						<span class="w-1/2 px-2 py-1 text-center">VENDEDOR</span>
-					</div>
-					<div class="flex flex-row font-mono">
-						<span class="w-1/2 border-r-1 border-r-gray-800 px-2 py-1 text-center">
-							{DateTime.fromJSDate(orderSet.createdAt).toFormat('dd/MM/yyyy')}
-						</span>
-						<span class="w-1/2 px-2 py-1 text-center">{orderSet.createdBy.name.split(' ')[0]}</span>
-					</div>
+		<div class="mb-4 flex flex-row justify-between gap-2">
+			<div class="flex h-[109px] w-2/5 flex-col items-center justify-center p-0.5 text-[9px]">
+				<img class="h-[75px]" src={asset('/mmlogo.png')} alt="logo" />
+				<div class="font-sans">
+					<p class="m-0 text-center">Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920</p>
+					<p class="m-0 text-center">www.marcsimoldures.com - mmss@marcsimoldures.com</p>
+					<p class="m-0 text-center">Horario de lunes a viernes de 09:00 a 18:00,</p>
+					<p class="m-0 text-center">sábados de 09:30 a 13:15</p>
 				</div>
 			</div>
 
-			<div class="flex flex-col gap-2">
-				<div class="flex h-[109px] flex-col items-center justify-center p-0.5 text-[9px]">
-					<img class="h-[53px]" src={asset('/mmlogo.png')} alt="logo" />
-					<div class="font-sans">
-						<p class="m-0 text-center">
-							Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920
-						</p>
-						<p class="m-0 text-center">www.marcsimoldures.com - mmss@marcsimoldures.com</p>
-						<p class="m-0 text-center">Horario de lunes a viernes de 09:00 a 18:00,</p>
-						<p class="m-0 text-center">sábados de 09:30 a 13:15</p>
-					</div>
-				</div>
+			<div class="flex h-[109px] w-1/5 items-center justify-center">
+				<Qr
+					size={109}
+					qrData={QrUtilities.generateQrStringForOrderSet({
+						orderSetId: orderSet.id
+					})}
+				></Qr>
+			</div>
+
+			<div class="flex w-2/5 flex-col gap-2">
 				<div class="flex flex-col border-1 border-gray-800 text-[10px]">
 					<div
 						class="border-b-1 border-b-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
@@ -81,62 +64,95 @@
 						<span>{customer.phone}</span>
 					</div>
 				</div>
+				<div class="flex flex-col border-1 border-gray-800 text-[10px]">
+					<div class="flex flex-row">
+						<span class="w-1/2 border-r-1 border-r-gray-800 px-2 py-1 text-center font-bold">
+							RESUMEN
+						</span>
+						<span
+							class="w-1/2 border-r-1 border-r-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
+						>
+							FECHA
+						</span>
+						<span class="w-1/2 bg-none px-2 py-1 text-center">
+							{DateTime.fromJSDate(orderSet.createdAt).toFormat('dd/MM/yyyy')}
+						</span>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<span class="text-xl">Listado de pedidos</span>
-
 		<div class="flex flex-col border-1 border-gray-800 text-[10px]">
 			<div class="flex flex-row border-b-1 border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
-				<span class="w-[42%] border-r-1 border-r-gray-800 px-2 py-1 text-center">REF</span>
-				<span class="w-[8%] border-r-1 border-r-gray-800 px-2 py-1 text-center">CANT</span>
-				<span class="w-[20%] border-r-1 border-r-gray-800 px-2 py-1 text-center">PRECIO</span>
-				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">% DTO</span>
-				<span class="w-[20%] px-2 py-1 text-center">IMPORTE</span>
+				<span class="w-[30%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Descripción</span>
+				<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Unid.</span>
+				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Precio</span>
+				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">IVA</span>
+				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">PVP</span>
+				<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">%Dto.</span>
+				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">P.C.Dto</span>
+				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Tot.SinIVA</span>
+				<span class="w-[10%] px-2 py-1 text-center">Total</span>
 			</div>
 			{#each Object.values(orderSet.orders) as fullOrder (fullOrder.order.id)}
 				<div class="flex flex-row border-b-1 border-b-gray-800 font-mono last:border-b-0">
-					<span class="w-[42%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[30%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.order.publicId}
 					</span>
-					<span class="w-[8%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.order.item.quantity}
 					</span>
-					<span class="w-[20%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
-						{fullOrder.totals.unitPriceWithoutDiscount.toFixed(2)} €
+					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+						{(fullOrder.totals.unitPriceWithoutDiscount / 1.21).toFixed(2)}
 					</span>
 					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
-						{fullOrder.calculatedItem.discount} %
+						{(
+							fullOrder.totals.unitPriceWithoutDiscount -
+							fullOrder.totals.unitPriceWithoutDiscount / 1.21
+						).toFixed(2)}
 					</span>
-					<span class="w-[20%] px-2 py-1 text-center">
-						{fullOrder.totals.total.toFixed(2)} €
+					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+						{fullOrder.totals.unitPriceWithoutDiscount.toFixed(2)}
+					</span>
+					<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+						{fullOrder.calculatedItem.discount}
+					</span>
+					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+						{fullOrder.totals.unitPrice.toFixed(2)}
+					</span>
+					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+						{(fullOrder.totals.total / 1.21).toFixed(2)}
+					</span>
+					<span class="w-[10%] px-2 py-1 text-center">
+						{fullOrder.totals.total.toFixed(2)}
 					</span>
 				</div>
 			{/each}
 		</div>
 
-		<div class="ml-auto flex w-fit flex-col border-1 border-gray-800 text-[10px]">
+		<div class="min-h-8 flex-grow print:block"></div>
+
+		<div class="ml-auto flex w-fit flex-col border-1 border-gray-800 text-[10px] print:mt-auto">
 			<div class="flex flex-row border-b-1 border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">BASE</span>
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">21% IVA</span>
+				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					Base Imponible
+				</span>
+				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">IVA</span>
+				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">RE</span>
 				<span class="w-[100px] px-2 py-1 text-center">TOTAL</span>
 			</div>
 			<div class="flex flex-row font-mono">
 				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
-					{base.toFixed(2)} €
+					{base.toFixed(2)}
 				</span>
 				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
-					{tax.toFixed(2)} €
+					{tax.toFixed(2)}
 				</span>
-				<span class="w-[100px] px-2 py-1 text-center">
-					{total.toFixed(2)} €
+				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center"> 00 </span>
+				<span class="w-[100px] px-2 py-1 text-center font-bold">
+					{total.toFixed(2)}
 				</span>
 			</div>
-		</div>
-		<div class="text-[10px]">
-			<p class="m-0 text-center">
-				<strong>IBAN ES13 2100 6805 9102 0013 3197 / SWIFT CAIXESBBXXX</strong>
-			</p>
 		</div>
 	</div>
 	<div class="flex flex-col gap-2 md:flex-row print:hidden">
