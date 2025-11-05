@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import type { ListPrice } from '@marcsimolduressonsardina/core/type';
-	import Button from '@/components/generic/button/Button.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Label from '@/components/ui/label/label.svelte';
 	import * as NativeSelect from '@/components/ui/native-select/index.js';
@@ -62,15 +62,16 @@
 		</div>
 	</div>
 	<div class="lg:col-span-2">
-		<Button
-			text="Añadir a la lista"
-			onClick={() => {
+		<MarcosButton
+			onclick={() => {
 				if (selectorState.add(selectedId, selectedQuantity)) {
 					selectedQuantity = '1';
 				}
 			}}
 			icon={IconType.PLUS}
 			iconSize={IconSize.BIG}
-		></Button>
+		>
+			Añadir a la lista
+		</MarcosButton>
 	</div>
 </div>

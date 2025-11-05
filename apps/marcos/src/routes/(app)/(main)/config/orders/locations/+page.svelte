@@ -2,8 +2,8 @@
 	import Box from '@/components/generic/Box.svelte';
 	import LocationItem from '@/components/business-related/config/LocationItem.svelte';
 	import type { PageData } from './$types';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonStyle } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import Input from '@/components/ui/input/input.svelte';
@@ -36,35 +36,33 @@
 			<!-- Existing locations list -->
 			{#each locations as location, index (location)}
 				<LocationItem text={location}>
-					<Button
-						text="Eliminar"
-						style={ButtonStyle.DELETE}
-						onClick={() => removeLocation(index)}
+					<MarcosButton
+						variant={ButtonStyle.DELETE}
+						onclick={() => removeLocation(index)}
 						icon={IconType.TRASH}
-					></Button>
+					>
+						Eliminar
+					</MarcosButton>
 				</LocationItem>
 			{/each}
 			<div class="flex flex-row gap-2">
 				<Input type="text" placeholder="Añadir nueva ubicación" bind:value={newLocation} />
-				<Button
-					text="Añadir"
-					style={ButtonStyle.NEUTRAL}
-					action={ButtonAction.CLICK}
-					onClick={addLocation}
+				<MarcosButton
+					variant={ButtonStyle.NEUTRAL}
+					onclick={addLocation}
 					icon={IconType.PLUS}
 					iconSize={IconSize.BIG}
-				></Button>
+				>
+					Añadir
+				</MarcosButton>
 			</div>
 
 			<!-- Form to submit locations -->
 			<form method="post" action="?/saveLocations">
 				<input type="hidden" name="locations" value={JSON.stringify(locations)} />
-				<Button
-					text="Guardar cambios"
-					style={ButtonStyle.NEUTRAL}
-					action={ButtonAction.SUBMIT}
-					icon={IconType.EDIT}
-				></Button>
+				<MarcosButton variant={ButtonStyle.NEUTRAL} type="submit" icon={IconType.EDIT}>
+					Guardar cambios
+				</MarcosButton>
 			</form>
 		</div>
 	</Box>

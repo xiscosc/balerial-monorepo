@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
-	import Button from '@/components/generic/button/Button.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
 	import { OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
@@ -8,6 +9,8 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import type { ISameDayOrderCounters } from '@marcsimolduressonsardina/core/service';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	export let order: Order;
 	export let counters: ISameDayOrderCounters;
@@ -60,13 +63,15 @@
 			disabled={!hasFiles}
 		></WhatsAppButton>
 	{:else}
-		<Button
-			icon={IconType.WHATSAPP}
-			text="Enviar mensaje finalizado"
-			tooltipText="Faltan fotos"
-			link={`/orders/${order.id}/whatsapp`}
-			style={ButtonStyle.WHATSAPP}
-			disabled={!hasFiles}
-		></Button>
+		<TooltipButtonWrapper text="Faltan fotos" enabled={!hasFiles}>
+			<MarcosButton
+				icon={IconType.WHATSAPP}
+				onclick={() => goto(resolve(`/orders/${order.id}/whatsapp`))}
+				variant={ButtonStyle.WHATSAPP}
+				disabled={!hasFiles}
+			>
+				Enviar mensaje finalizado
+			</MarcosButton>
+		</TooltipButtonWrapper>
 	{/if}
 {/if}

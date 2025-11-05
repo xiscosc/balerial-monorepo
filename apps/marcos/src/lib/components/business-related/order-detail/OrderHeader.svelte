@@ -56,7 +56,7 @@
 		</div>
 	</div>
 
-	<div class="space-y-1 bg-white px-2 py-4">
+	<div class="flex flex-col gap-1 bg-white px-2 py-4">
 		{#if !CoreOrderUtilities.isOrderTemp(order)}
 			<BottomSheet>
 				{#snippet trigger({ props }: { props: Record<string, unknown> })}

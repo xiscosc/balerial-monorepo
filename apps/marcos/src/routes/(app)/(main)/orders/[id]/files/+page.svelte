@@ -7,8 +7,8 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonType } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonType } from '@/components/generic/button/button.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { Input } from '@/components/ui/input';
@@ -176,12 +176,13 @@
 		<SimpleHeading icon={IconType.CAMERA}>Archivos y fotos</SimpleHeading>
 
 		{#if !(loading || uploading) && data.order}
-			<Button
-				text="Volver al pedido"
+			<MarcosButton
 				icon={IconType.ORDER_PICKED_UP}
-				onClick={() => goto(resolve(`/(app)/(main)/orders/[id]`, { id: data.order.id }))}
-				buttonType={ButtonType.SMALL}
-			></Button>
+				onclick={() => goto(resolve(`/(app)/(main)/orders/[id]`, { id: data.order.id }))}
+				size={ButtonType.SMALL}
+			>
+				Volver al pedido
+			</MarcosButton>
 		{/if}
 	</div>
 
@@ -216,13 +217,15 @@
 				{#if files.length === 0}
 					<Box title="Sin Obra">
 						<div class="flex flex-col gap-2 md:flex-row">
-							<Button
-								action={ButtonAction.CLICK}
-								onClick={() => createNoArtFile()}
-								text="Añadir archivo Sin Obra"
+							<MarcosButton
+								onclick={() => {
+									createNoArtFile();
+									trackEvent('No art file created', { orderId: data.order?.id });
+								}}
 								icon={IconType.ADD}
-								trackFunction={() => trackEvent('No art file created', { orderId: data.order?.id })}
-							></Button>
+							>
+								Añadir archivo Sin Obra
+							</MarcosButton>
 						</div>
 					</Box>
 				{/if}

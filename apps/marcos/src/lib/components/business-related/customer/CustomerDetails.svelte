@@ -3,7 +3,7 @@
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
@@ -43,7 +43,6 @@
 				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
 				variant={ButtonStyle.SOFT_DELETE}
-				size={ButtonType.SMALL}
 				textVariant={ButtonText.GRAY}
 			></MarcosButton>
 		</div>
@@ -53,7 +52,6 @@
 				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
 				variant={ButtonStyle.SOFT_DELETE}
-				size={ButtonType.SMALL}
 				textVariant={ButtonText.GRAY}
 			>
 				Editar
@@ -108,12 +106,7 @@
 				iconType={IconType.TRASH}
 			>
 				{#snippet trigger({ props }: { props: Record<string, unknown> })}
-					<MarcosButton
-						{...props}
-						disabled={totalOrders > 0}
-						icon={IconType.TRASH}
-						variant={ButtonStyle.DELETE}
-					>
+					<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonStyle.DELETE}>
 						Eliminar cliente
 					</MarcosButton>
 				{/snippet}

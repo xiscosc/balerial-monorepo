@@ -7,6 +7,8 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let customers: Customer[] = $state([]);
 	let loading = $state(false);
@@ -33,6 +35,7 @@
 				icon={IconType.USER}
 				variant={ButtonStyle.ORDER_GENERIC}
 				textVariant={ButtonText.GRAY}
+				onclick={() => goto(resolve(`/(app)/(main)/customers/[id]`, { id: customer.id }))}
 			>
 				{customer.name}
 			</MarcosButton>

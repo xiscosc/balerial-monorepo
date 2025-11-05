@@ -2,7 +2,8 @@
 	import type { PageData } from './$types';
 	import Box from '@/components/generic/Box.svelte';
 	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import Input from '@/components/ui/input/input.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
@@ -25,45 +26,45 @@
 				<div
 					class="flex w-full flex-col place-content-center items-center justify-center gap-3 md:grid md:grid-cols-2"
 				>
-					<Button
+					<MarcosButton
 						disabled={listState.getIsLoading()}
-						text={listState.getStatus() === OrderStatus.FINISHED
-							? 'Viendo pedidos finalizados'
-							: 'Ver pedidos finalizados'}
-						action={ButtonAction.CLICK}
-						onClick={() => {
+						onclick={() => {
 							if (listState.getStatus() !== OrderStatus.FINISHED) {
 								listState.setStatus(OrderStatus.FINISHED);
 							}
 						}}
-						style={listState.getStatus() === OrderStatus.FINISHED
+						variant={listState.getStatus() === OrderStatus.FINISHED
 							? ButtonStyle.ORDER_FINISHED_VARIANT
 							: ButtonStyle.ORDER_FINISHED}
-						textType={listState.getStatus() === OrderStatus.FINISHED
+						textVariant={listState.getStatus() === OrderStatus.FINISHED
 							? ButtonText.NO_COLOR
 							: ButtonText.WHITE}
 						icon={getStatusUIInfo(OrderStatus.FINISHED).statusIcon}
-					></Button>
+					>
+						{listState.getStatus() === OrderStatus.FINISHED
+							? 'Viendo pedidos finalizados'
+							: 'Ver pedidos finalizados'}
+					</MarcosButton>
 
-					<Button
+					<MarcosButton
 						disabled={listState.getIsLoading()}
-						text={listState.getStatus() === OrderStatus.PENDING
-							? 'Viendo pedidos pendientes'
-							: 'Ver pedidos pendientes'}
-						action={ButtonAction.CLICK}
-						onClick={() => {
+						onclick={() => {
 							if (listState.getStatus() !== OrderStatus.PENDING) {
 								listState.setStatus(OrderStatus.PENDING);
 							}
 						}}
-						style={listState.getStatus() === OrderStatus.PENDING
+						variant={listState.getStatus() === OrderStatus.PENDING
 							? ButtonStyle.ORDER_PENDING_VARIANT
 							: ButtonStyle.ORDER_PENDING}
-						textType={listState.getStatus() === OrderStatus.PENDING
+						textVariant={listState.getStatus() === OrderStatus.PENDING
 							? ButtonText.NO_COLOR
 							: ButtonText.WHITE}
 						icon={getStatusUIInfo(OrderStatus.PENDING).statusIcon}
-					></Button>
+					>
+						{listState.getStatus() === OrderStatus.PENDING
+							? 'Viendo pedidos pendientes'
+							: 'Ver pedidos pendientes'}
+					</MarcosButton>
 				</div>
 			{/if}
 

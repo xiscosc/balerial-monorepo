@@ -22,13 +22,23 @@
 <button
 	type="button"
 	{...others}
-	class={cn(others.disabled ? ButtonStyle.DISABLED : variant, size, textVariant, others.class)}
+	class={cn(
+		others.disabled ? ButtonStyle.DISABLED : variant,
+		size,
+		textVariant,
+		size === ButtonType.SMALL ? 'flex items-center' : '',
+		others.class
+	)}
 	class:w-full={size !== ButtonType.SMALL}
 >
-	<span class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
+	<div class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
 		{#if icon}
 			<Icon type={icon} size={iconSize} />
 		{/if}
-		{@render children?.()}
-	</span>
+		{#if children}
+			<span>
+				{@render children()}
+			</span>
+		{/if}
+	</div>
 </button>

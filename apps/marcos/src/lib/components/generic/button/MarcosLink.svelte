@@ -6,7 +6,9 @@
 	import { cn } from '@/utils';
 	import type { IMarcosButtonProps } from '@/components/generic/button/MarcosButtonProps.interface';
 
-	interface Properties extends IMarcosButtonProps, HTMLAnchorAttributes {}
+	interface Properties extends IMarcosButtonProps, HTMLAnchorAttributes {
+		disabled?: boolean;
+	}
 
 	let {
 		children = undefined,
@@ -15,19 +17,29 @@
 		textVariant = ButtonText.WHITE,
 		iconSize = IconSize.DEFAULT,
 		icon = undefined,
+		disabled = false,
 		...others
 	}: Properties = $props();
 </script>
 
 <a
 	{...others}
-	class={cn(variant, size, textVariant, others.class)}
+	class={cn(
+		disabled ? ButtonStyle.DISABLED : variant,
+		size,
+		textVariant,
+		size === ButtonType.SMALL ? 'flex items-center' : '',
+		others.class
+	)}
+	aria-disabled={disabled}
 	class:w-full={size !== ButtonType.SMALL}
 >
-	<span class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
+	<div class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
 		{#if icon}
 			<Icon type={icon} size={iconSize} />
 		{/if}
-		{@render children?.()}
-	</span>
+		<span>
+			{@render children?.()}
+		</span>
+	</div>
 </a>
