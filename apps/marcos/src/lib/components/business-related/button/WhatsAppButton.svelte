@@ -9,6 +9,7 @@
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
 	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
+	import { BatchOperation } from '@/type/api.type';
 
 	interface Props {
 		label: string;
@@ -42,8 +43,10 @@
 			return;
 		}
 
-		const promises = orders.map((order) => OrderApiGateway.notifyOrder(order.id));
-		await getGlobalProfiler().measure(Promise.all(promises));
+		const orderIds = orders.map((order) => order.id);
+		await getGlobalProfiler().measure(
+			OrderApiGateway.patchOrders(orderIds, [BatchOperation.NOTIFY_ORDERS])
+		);
 
 		orders.forEach((order) => {
 			order.notified = true;
