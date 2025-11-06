@@ -133,12 +133,12 @@
 	{#if orderListState.getSelectedOrdersCount() > 0}
 		<div class="flex w-full flex-row gap-2 text-xs">
 			<TooltipButtonWrapper
-				buttonSize={ButtonType.SMALL}
 				text="Hay pedidos de diferentes clientes seleccionados"
-				enabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}>
+				enabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
+			>
 				<MarcosButton
 					disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
-					onclick={handleSelectAll}
+					onclick={orderListBulkOperationState.generateOrderSet}
 					iconSize={IconSize.SMALL}
 					size={ButtonType.SMALL}
 					icon={IconType.PRINTER}

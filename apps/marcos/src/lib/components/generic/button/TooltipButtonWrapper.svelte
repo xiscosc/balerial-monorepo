@@ -1,11 +1,9 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { ButtonType } from '@/components/generic/button/button.enum';
 	import TriangleAlert from 'lucide-svelte/icons/triangle-alert';
 
 	interface Properties {
 		children?: Snippet;
-		buttonSize?: ButtonType;
 		enabled?: boolean;
 		text: string;
 	}

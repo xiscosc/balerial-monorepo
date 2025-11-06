@@ -99,7 +99,7 @@
 			</div>
 
 			{#if !isSelectMode}
-				<div
+				<button
 					onclick={handlePublicIdClick}
 					class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
 					id="order-public-id"
@@ -109,7 +109,7 @@
 					<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
 						{order.publicId}
 					</span>
-				</div>
+				</button>
 			{:else}
 				<div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
 					<Checkbox
