@@ -5,7 +5,7 @@
 	import * as Table from '@/components/ui/table/index.js';
 	import type { DashboardReport, ReportDate } from '@marcsimolduressonsardina/core/type';
 	import { DateTime } from 'luxon';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
@@ -71,7 +71,7 @@
 
 	{#if loading}
 		<Box>
-			<ProgressBar text="Cargando información" />
+			<Loading text="Cargando información" />
 		</Box>
 	{:else if dashboardReport}
 		<div class="flex flex-col gap-2 md:flex-row">

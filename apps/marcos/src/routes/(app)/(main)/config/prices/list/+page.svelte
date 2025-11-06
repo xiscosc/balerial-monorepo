@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { pricingTypesMap } from '@/shared/mappings/pricing.mapping';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -60,7 +60,7 @@
 	</SimpleHeading>
 	{#await measuredPricing}
 		<Box>
-			<ProgressBar text="Cargando precios" />
+			<Loading text="Cargando precios" />
 		</Box>
 	{:then pricing}
 		<Box>

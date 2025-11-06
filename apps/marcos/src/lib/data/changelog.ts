@@ -72,5 +72,13 @@ export const Changelogs: Changelog[] = [
 			},
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY }
 		]
+	},
+	{
+		version: 20251107,
+		title: 'Noviembre 2025',
+		items: [
+			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY }
+		]
 	}
 ];

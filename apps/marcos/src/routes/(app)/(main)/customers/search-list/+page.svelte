@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
@@ -33,7 +33,7 @@
 	</SimpleHeading>
 	{#if measuredCustomers}
 		{#await measuredCustomers}
-			<Box><ProgressBar text="Buscando clientes" /></Box>
+			<Box><Loading text="Buscando clientes" /></Box>
 		{:then customers}
 			<div class="flex w-full flex-col gap-1 lg:grid lg:grid-cols-4">
 				{#each customers as customer (customer.id)}

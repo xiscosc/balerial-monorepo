@@ -5,7 +5,7 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import Box from '@/components/generic/Box.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -20,7 +20,7 @@
 
 {#await fullOrderPromise}
 	<Box>
-		<ProgressBar text="Generando resguardo..."></ProgressBar>
+		<Loading text="Generando resguardo..."></Loading>
 	</Box>
 {:then fullOrder}
 	{#if fullOrder}

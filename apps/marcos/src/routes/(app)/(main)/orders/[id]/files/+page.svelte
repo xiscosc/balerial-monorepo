@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { Toaster, toast } from 'svelte-sonner';
 	import { FileType, type File as MMSSFile } from '@marcsimolduressonsardina/core/type';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import UploadedFile from '@/components/business-related/file/UploadedFile.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -190,7 +190,7 @@
 
 	{#if loading}
 		<Box>
-			<ProgressBar text={loadingText} />
+			<Loading text={loadingText} />
 		</Box>
 	{/if}
 	{#if uploading}
@@ -213,7 +213,7 @@
 
 			{#if loadingFiles}
 				<Box>
-					<ProgressBar text="Cargando archivos" />
+					<Loading text="Cargando archivos" />
 				</Box>
 			{:else}
 				{#if files.length === 0}

@@ -2,7 +2,7 @@
 	import type { File as MMSSFile } from '@marcsimolduressonsardina/core/type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
@@ -91,7 +91,7 @@
 			{#if isLoading}
 				<!-- Spinner or loading indicator -->
 				<div class="absolute inset-0 flex items-center justify-center">
-					<ProgressBar text="Cargando imagen" />
+					<Loading text="Cargando imagen" />
 				</div>
 			{/if}
 			<img

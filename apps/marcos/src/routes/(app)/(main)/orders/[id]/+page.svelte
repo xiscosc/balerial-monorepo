@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import OrderInfo from '@/components/business-related/order-detail/OrderInfo.svelte';
 	import OrderElements from '@/components/business-related/order-detail/OrderElements.svelte';
 	import OrderHeader from '@/components/business-related/order-detail/OrderHeader.svelte';
@@ -202,7 +202,7 @@
 				{/if}
 
 				{#if formLoading}
-					<span class=""> <ProgressBar text="Aplicando cambios..." /> </span>
+					<span class=""> <Loading text="Aplicando cambios..." /> </span>
 				{/if}
 
 				<div class="lg:mt-3 lg:break-inside-avoid">

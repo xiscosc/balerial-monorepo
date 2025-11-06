@@ -3,7 +3,7 @@
 	import Box from '@/components/generic/Box.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import type { PageProps } from './$types';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
@@ -31,7 +31,7 @@
 				<Icon type={IconType.ALERT} size={IconSize.XXXL} />
 				<p class="text-center text-xl font-semibold">El formato del resguardo es incorrecto</p>
 			{:else if loading}
-				<ProgressBar text="Buscando pedido..." />
+				<Loading text="Buscando pedido..." />
 			{:else}
 				<OrderScanner bind:scannedText />
 			{/if}

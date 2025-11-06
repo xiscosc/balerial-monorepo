@@ -4,7 +4,7 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
@@ -86,7 +86,7 @@
 		{#snippet action()}
 			<div class="flex" {@attach triggerNotify}>
 				{#if loading}
-					<ProgressBar text="Marcando pedido como notificado"></ProgressBar>
+					<Loading text="Marcando pedido como notificado"></Loading>
 				{/if}
 			</div>
 			{#if !loading}

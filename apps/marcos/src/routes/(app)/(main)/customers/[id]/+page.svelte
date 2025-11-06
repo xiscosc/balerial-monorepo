@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import type { PageData } from './$types';
 	import { resolve } from '$app/paths';
@@ -18,7 +18,7 @@
 	<SimpleHeading icon={IconType.LIST}>Detalles del cliente</SimpleHeading>
 	<Box>
 		{#await data.customer}
-			<ProgressBar />
+			<Loading />
 		{:then customer}
 			{#if customer == null}
 				<p class="text-center text-3xl">Cliente no encontrado</p>

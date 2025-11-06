@@ -11,6 +11,10 @@
 
 	let { data, children }: Props = $props();
 
+	if (browser) {
+		import('@m3e/loading-indicator');
+	}
+
 	onMount(() => {
 		initPosthog(data.envName);
 	});

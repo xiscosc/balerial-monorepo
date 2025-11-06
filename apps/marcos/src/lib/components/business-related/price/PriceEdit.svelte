@@ -30,7 +30,7 @@
 	import { fitFormulas } from '@marcsimolduressonsardina/core/util';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import Step from '@/components/generic/Step.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
@@ -158,7 +158,7 @@
 		<div class="flex flex-col gap-2">
 			<form use:enhance method="post" action="?/createOrEdit">
 				{#if $submitting}
-					<ProgressBar text="Guardando precio" />
+					<Loading text="Guardando precio" />
 				{:else}
 					<div class="flex flex-col gap-2">
 						<div class="flex w-full flex-col place-content-center gap-2 lg:grid lg:grid-cols-2">

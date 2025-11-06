@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import Box from '@/components/generic/Box.svelte';
 	import { goto } from '$app/navigation';
@@ -27,7 +27,7 @@
 	<div class="flex flex-col gap-2">
 		<Box title="Buscar cliente por teléfono">
 			{#if $submitting}
-				<ProgressBar />
+				<Loading />
 			{:else}
 				<form use:enhance class="flex flex-col gap-2" method="post">
 					<div>

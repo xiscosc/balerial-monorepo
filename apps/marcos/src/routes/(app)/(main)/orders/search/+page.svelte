@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form/index.js';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
@@ -20,7 +20,7 @@
 	<Box>
 		<form use:enhance method="post">
 			{#if $submitting}
-				<ProgressBar text="Buscando pedido..." />
+				<Loading text="Buscando pedido..." />
 			{:else}
 				<Form.Field {form} name="id">
 					<Form.Control>

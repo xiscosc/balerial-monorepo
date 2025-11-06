@@ -3,17 +3,22 @@
 	import { navigating } from '$app/state';
 	import { resolve } from '$app/paths';
 	import '../../app.css';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
+	import { browser } from '$app/environment';
 
 	interface Props {
 		data: LayoutData;
 		children?: Snippet;
+	}
+
+	if (browser) {
+		import('@m3e/loading-indicator');
 	}
 
 	let { data, children }: Props = $props();
@@ -83,7 +88,7 @@
 		>
 			{#if navigating.from != null}
 				<Box>
-					<ProgressBar></ProgressBar>
+					<Loading></Loading>
 				</Box>
 			{:else}
 				{@render children?.()}

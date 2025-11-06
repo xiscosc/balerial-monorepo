@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import * as Form from '@/components/ui/form/index.js';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
@@ -35,7 +35,7 @@
 	<div>
 		<form method="POST" use:enhance class="flex flex-col gap-2">
 			{#if $submitting}
-				<ProgressBar text="Guardando cambios" />
+				<Loading text="Guardando cambios" />
 			{:else}
 				<Form.Field {form} name="name">
 					<Form.Control>

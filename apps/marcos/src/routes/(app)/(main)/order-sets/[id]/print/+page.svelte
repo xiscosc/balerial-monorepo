@@ -4,7 +4,7 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import OrderSetPrint from '@/components/business-related/order-set/OrderSetPrint.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
@@ -18,7 +18,7 @@
 
 {#await measuredOrderSet}
 	<Box>
-		<ProgressBar text="Generando listado..."></ProgressBar>
+		<Loading text="Generando listado..."></Loading>
 	</Box>
 {:then orderSet}
 	{#if orderSet}

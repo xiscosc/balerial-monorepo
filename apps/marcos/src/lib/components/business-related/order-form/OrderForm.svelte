@@ -15,7 +15,7 @@
 	import AutocompleteSection from '@/components/business-related/order-form/AutocompleteSection.svelte';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import ChipSet from '@/components/business-related/order-form/ChipSet.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { onMount, type Snippet } from 'svelte';
 	import type { OrderCreationFormData } from '@/server/shared/order/order-creation.utilities';
 	import Box from '@/components/generic/Box.svelte';
@@ -622,14 +622,14 @@
 
 	{#if loadingInitialParts}
 		<Box>
-			<ProgressBar text="Iniciando edición del pedido..." />
+			<Loading text="Iniciando edición del pedido..." />
 		</Box>
 	{:else}
 		<form use:enhance method="post">
 			<div class="flex flex-col gap-2">
 				{#if $submitting}
 					<Box>
-						<ProgressBar text="Guardando" />
+						<Loading text="Guardando" />
 					</Box>
 				{:else}
 					{#if isExternal}
@@ -655,7 +655,7 @@
 					{/if}
 					<Box>
 						{#await profiledPrices}
-							<ProgressBar text="Cargando precios" />
+							<Loading text="Cargando precios" />
 						{:then pricing}
 							<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
 								<Spacer title="Datos de la obra" line={false} />

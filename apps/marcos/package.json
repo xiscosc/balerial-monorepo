@@ -36,6 +36,7 @@
 	"type": "module",
 	"dependencies": {
 		"@auth/sveltekit": "1.11.0",
+		"@m3e/loading-indicator": "1.0.0-rc.4",
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"@sveltejs/adapter-auto": "7.0.0",
 		"@sveltejs/adapter-vercel": "6.0.0",

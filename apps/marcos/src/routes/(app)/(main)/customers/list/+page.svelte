@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import { onMount } from 'svelte';
 	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
@@ -49,6 +49,6 @@
 	</div>
 
 	{#if loading}
-		<ProgressBar text="Cargando clientes"></ProgressBar>
+		<Loading text="Cargando clientes"></Loading>
 	{/if}
 </div>

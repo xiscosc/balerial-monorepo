@@ -5,7 +5,7 @@
 	import OrderForm from '@/components/business-related/order-form/OrderForm.svelte';
 	import NewExternalOrderSubmitButtons from '@/components/business-related/order-form/submit-buttons/NewExternalOrderSubmitButtons.svelte';
 	import Box from '@/components/generic/Box.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 
 	let { data, form }: PageProps = $props();
 	let loading = $state(false);
@@ -36,7 +36,7 @@
 
 {#if loading}
 	<Box>
-		<ProgressBar text="Creando nota..." />
+		<Loading text="Creando nota..." />
 	</Box>
 {:else}
 	<OrderForm data={data.orderCreationFormData} title="Crear nota" isExternal>

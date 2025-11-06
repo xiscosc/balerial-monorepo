@@ -13,7 +13,7 @@
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
@@ -87,7 +87,7 @@
 				</div>
 
 				{#if loading}
-					<ProgressBar text="Buscando clientes" />
+					<Loading text="Buscando clientes" />
 				{:else if !firstTimeSearch}
 					<ScrollArea class="h-72 rounded-md border lg:col-span-2">
 						<div class="p-4">
