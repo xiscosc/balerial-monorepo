@@ -5,13 +5,15 @@
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import { fade } from 'svelte/transition';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	interface Props {
 		fullOrder: FullOrder;
@@ -97,9 +99,9 @@
 			</div>
 
 			{#if !isSelectMode}
-				<div
+				<button
 					onclick={handlePublicIdClick}
-					class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
+					class="cursor-pointer overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
 					id="order-public-id"
 					in:fade={{ duration: 200 }}
 					out:fade={{ duration: 150 }}
@@ -107,7 +109,7 @@
 					<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
 						{order.publicId}
 					</span>
-				</div>
+				</button>
 			{:else}
 				<div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
 					<Checkbox
@@ -207,19 +209,21 @@
 		</div>
 		<div class="flex flex-row justify-end gap-1 text-xs">
 			{#if !CoreOrderUtilities.isOrderTemp(order)}
-				<Button
+				<MarcosButton
+					variant={ButtonVariant.NEUTRAL}
 					icon={IconType.PRINTER}
-					text="Imprimir"
-					link={`/orders/${order.id}/print`}
-					style={ButtonStyle.NEUTRAL}
-				></Button>
+					onclick={() => goto(resolve(`/orders/${order.id}/print`))}
+				>
+					Imprimir
+				</MarcosButton>
 			{/if}
-			<Button
+			<MarcosButton
+				variant={ButtonVariant.CUSTOMER}
 				icon={CoreOrderUtilities.isOrderTemp(order) ? IconType.LINK : IconType.EYE}
-				text={CoreOrderUtilities.isOrderTemp(order) ? `Vincular` : `Ver`}
-				link={`/orders/${order.id}`}
-				style={ButtonStyle.CUSTOMER}
-			></Button>
+				onclick={() => goto(resolve(`/orders/${order.id}`))}
+			>
+				{CoreOrderUtilities.isOrderTemp(order) ? `Vincular` : `Ver`}
+			</MarcosButton>
 		</div>
 	</div>
 </div>

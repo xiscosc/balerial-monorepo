@@ -4,8 +4,8 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Input from '@/components/ui/input/input.svelte';
 	import {
@@ -55,12 +55,9 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Button
-					icon={IconType.EDIT}
-					text={buttonText}
-					style={ButtonStyle.NEUTRAL}
-					action={ButtonAction.SUBMIT}
-				></Button>
+				<MarcosButton icon={IconType.EDIT} variant={ButtonVariant.NEUTRAL} type="submit">
+					{buttonText}
+				</MarcosButton>
 			{/if}
 		</form>
 	</div>

@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { Toaster, toast } from 'svelte-sonner';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { Input } from '@/components/ui/input';
 	import Progress from '@/components/ui/progress/progress.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { PriceApiGateway } from '@/gateway/price-api.gateway';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	let files: FileList | undefined = $state();
 	let loadingText = $state('');
@@ -138,7 +138,7 @@
 					</div>
 				{:else}
 					<Input id="moldFile" type="file" bind:files />
-					<Button text="Cargar archivo excel" icon={IconType.EXCEL} onClick={loadFile}></Button>
+					<MarcosButton icon={IconType.EXCEL} onclick={loadFile}>Cargar archivo excel</MarcosButton>
 				{/if}
 			</div>
 		</div>

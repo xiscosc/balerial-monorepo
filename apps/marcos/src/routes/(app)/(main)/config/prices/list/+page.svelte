@@ -4,8 +4,8 @@
 	import { pricingTypesMap } from '@/shared/mappings/pricing.mapping';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonStyle, ButtonType } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonVariant, ButtonSize } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import Box from '@/components/generic/Box.svelte';
@@ -50,13 +50,12 @@
 	<SimpleHeading icon={IconType.LIST}>
 		<div class="flex flex-row items-center gap-2">
 			<span>Listado de precios </span>
-			<Button
+			<MarcosButton
 				icon={IconType.PLUS}
-				text=""
-				buttonType={ButtonType.SMALL}
-				style={ButtonStyle.NEUTRAL}
-				onClick={() => goto(resolve('/(app)/(main)/config/prices/new'))}
-			></Button>
+				size={ButtonSize.SMALL}
+				variant={ButtonVariant.NEUTRAL}
+				onclick={() => goto(resolve('/(app)/(main)/config/prices/new'))}
+			></MarcosButton>
 		</div>
 	</SimpleHeading>
 	{#await measuredPricing}

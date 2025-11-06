@@ -2,18 +2,15 @@
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
-	import {
-		ButtonAction,
-		ButtonStyle,
-		ButtonText,
-		ButtonType
-	} from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { resolve } from '$app/paths';
 
 	interface Props {
 		customer: Customer;
@@ -42,61 +39,62 @@
 		</div>
 
 		<div class="flex" class:md:hidden={allowCol}>
-			<Button
-				text=""
-				link="/customers/{customer.id}/edit"
+			<MarcosButton
+				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
-				style={ButtonStyle.SOFT_DELETE}
-				buttonType={ButtonType.SMALL}
-				textType={ButtonText.GRAY}
-			/>
+				variant={ButtonVariant.SOFT_DELETE}
+				textVariant={ButtonTextVariant.GRAY}
+			></MarcosButton>
 		</div>
 
 		<div class="hidden" class:md:flex={allowCol}>
-			<Button
-				text="Editar"
-				link="/customers/{customer.id}/edit"
+			<MarcosButton
+				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
-				style={ButtonStyle.SOFT_DELETE}
-				buttonType={ButtonType.SMALL}
-				textType={ButtonText.GRAY}
-			/>
+				variant={ButtonVariant.SOFT_DELETE}
+				textVariant={ButtonTextVariant.GRAY}
+			>
+				Editar
+			</MarcosButton>
 		</div>
 	</div>
 
 	<div class="flex flex-col gap-2" class:lg:flex-row={allowCol}>
-		<Button
+		<MarcosButton
 			icon={IconType.FORM}
-			link="/customers/{customer.id}/orders/new"
-			text="Crear nota"
-			style={ButtonStyle.FORM}
-		></Button>
+			onclick={() => goto(resolve(`/customers/${customer.id}/orders/new`))}
+			variant={ButtonVariant.FORM}
+		>
+			Crear nota
+		</MarcosButton>
 
-		<Button
-			textType={ButtonText.GRAY}
+		<MarcosButton
+			textVariant={ButtonTextVariant.GRAY}
 			icon={IconType.ORDER_DEFAULT}
-			link="/customers/{customer.id}/orders"
-			text="Ver pedidos"
-			style={ButtonStyle.ORDER_GENERIC}
-		></Button>
+			onclick={() => goto(resolve(`/customers/${customer.id}/orders`))}
+			variant={ButtonVariant.ORDER_GENERIC}
+		>
+			Ver pedidos
+		</MarcosButton>
 
-		<Button
+		<MarcosButton
 			icon={IconType.ORDER_QUOTE}
-			link="/customers/{customer.id}/orders?quotes=true"
-			text="Ver presupuestos"
-			style={ButtonStyle.ORDER_QUOTE}
-		></Button>
+			onclick={() => goto(resolve(`/customers/${customer.id}/orders?quotes=true`))}
+			variant={ButtonVariant.ORDER_QUOTE}
+		>
+			Ver presupuestos
+		</MarcosButton>
 
 		<div class="flex md:hidden">
-			<Button
+			<MarcosButton
 				icon={IconType.PHONE}
-				link={`tel:${customer.phone}`}
-				text="Llamar"
-				action={ButtonAction.LINK}
-				trackFunction={() => {
+				onclick={() => {
 					trackEvent('Customer called', { customerId: customer.id });
+					window.location.href = `tel:${customer.phone}`;
 				}}
-			></Button>
+			>
+				Llamar
+			</MarcosButton>
 		</div>
 
 		<WhatsAppButton label="Enviar Whatsapp" message="" {customer}></WhatsAppButton>
@@ -106,16 +104,11 @@
 				title="Eliminar cliente"
 				description="Esta acción no se puede deshacer"
 				iconType={IconType.TRASH}
-				triggerStyle={ButtonStyle.DELETE}
 			>
-				{#snippet trigger()}
-					<Button
-						disabled={totalOrders > 0}
-						tooltipText="El cliente tiene pedidos o presupuestos"
-						icon={IconType.TRASH}
-						text="Eliminar cliente"
-						action={ButtonAction.TRIGGER}
-					></Button>
+				{#snippet trigger({ props }: { props: Record<string, unknown> })}
+					<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonVariant.DELETE}>
+						Eliminar cliente
+					</MarcosButton>
 				{/snippet}
 
 				{#snippet action()}
@@ -137,12 +130,9 @@
 							{#if formLoading}
 								<BottomSheetLoading />
 							{:else}
-								<Button
-									icon={IconType.TRASH}
-									text="Confirmar"
-									style={ButtonStyle.DELETE}
-									action={ButtonAction.SUBMIT}
-								></Button>
+								<MarcosButton icon={IconType.TRASH} variant={ButtonVariant.DELETE} type="submit">
+									Confirmar
+								</MarcosButton>
 							{/if}
 						</form>
 					{/if}

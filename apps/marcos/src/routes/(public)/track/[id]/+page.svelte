@@ -6,13 +6,12 @@
 	import { DateTime } from 'luxon';
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction } from '@/components/generic/button/button.enum';
 	import OrderInfoStep from '@/components/business-related/order-detail/OrderInfoStep.svelte';
 	import { QrOrigin } from '@/type/qr.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { QrUtilities } from '@/shared/order/qr.utilities';
 	import { asset, resolve } from '$app/paths';
+	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
 
 	interface Props {
 		data: PageData;
@@ -103,13 +102,7 @@
 					/>
 				</div>
 
-				<Button
-					icon={IconType.PHONE}
-					text="Llamar"
-					action={ButtonAction.LINK}
-					link="tel:+34971666920"
-				></Button>
-
+				<MarcosLink icon={IconType.PHONE} href="tel:+34971666920">Llamar</MarcosLink>
 				<span class="text-center text-[0.625rem]">
 					Una vez pasados <span class="font-semibold">
 						15 días desde la fecha estipulada de entrega

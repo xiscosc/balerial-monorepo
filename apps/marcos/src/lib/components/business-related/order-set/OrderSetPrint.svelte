@@ -2,11 +2,12 @@
 	import type { OrderSet } from '@marcsimolduressonsardina/core/type';
 	import { QrUtilities } from '@/shared/order/qr.utilities';
 	import Qr from '@/components/generic/Qr.svelte';
-	import { asset } from '$app/paths';
+	import { asset, resolve } from '$app/paths';
 	import { DateTime } from 'luxon';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { onMount } from 'svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
 
 	let { orderSet }: { orderSet: OrderSet } = $props();
 
@@ -155,7 +156,11 @@
 		</div>
 	</div>
 	<div class="flex flex-col gap-2 md:flex-row print:hidden">
-		<Button text="Volver atrás" icon={IconType.LEFT} onClick={() => window.history.back()}></Button>
-		<Button text="Ir al cliente" icon={IconType.USER} link={`/customers/${customer.id}`}></Button>
+		<MarcosButton icon={IconType.LEFT} onclick={() => window.history.back()}>
+			Volver atrás
+		</MarcosButton>
+		<MarcosButton icon={IconType.USER} onclick={() => goto(resolve(`/customers/${customer.id}`))}>
+			Ir al cliente
+		</MarcosButton>
 	</div>
 </main>

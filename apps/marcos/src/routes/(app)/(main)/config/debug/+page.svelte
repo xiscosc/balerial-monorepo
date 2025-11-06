@@ -9,8 +9,8 @@
 	import { DateTime } from 'luxon';
 	import { type ProfilerConfig } from '@/shared/profiler/profiler';
 	import { toast, Toaster } from 'svelte-sonner';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { ProfilerState } from '@/state/profiler/profiler.state';
 
 	let profilerEnabled = $state(false);
@@ -58,7 +58,7 @@
 	<Box title="Profiler" icon={isDebugEnabled ? IconType.DONE : IconType.CLOSE}>
 		<div class="flex flex-col gap-2">
 			<div
-				class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+				class="flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 shadow-xs"
 			>
 				<Label for="profilerEnabled">Enabled</Label>
 				<Switch name="profilerEnabled" bind:checked={profilerEnabled} />
@@ -66,7 +66,7 @@
 
 			{#if profilerEnabled}
 				<div
-					class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+					class="flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 shadow-xs"
 				>
 					<Label for="profilerLoging">Loging</Label>
 					<Switch name="profilerLoging" bind:checked={profilerLoging} />
@@ -101,39 +101,41 @@
 			{/if}
 
 			<div
-				class="shadow-xs hiden h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 lg:flex"
+				class="hiden h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 shadow-xs lg:flex"
 			>
 				<span class="text-md break-words"> {encodedConfig}</span>
 			</div>
 
 			<div class="flex">
-				<Button
-					text="Update debug config"
+				<MarcosButton
 					icon={IconType.ORDER_PENDING}
-					style={ButtonStyle.FORM}
-					onClick={() => {
+					variant={ButtonVariant.FORM}
+					onclick={() => {
 						if (browser) {
 							profilerState.updateDebugConfig(debugConfig);
 							toast.success('Profiler updated for 2h');
 							isDebugEnabled = ProfilerState.isDebugEnabled();
 						}
 					}}
-				></Button>
+				>
+					Update debug config
+				</MarcosButton>
 			</div>
 
 			<div class="flex">
-				<Button
-					text="Delete debug config"
+				<MarcosButton
 					icon={IconType.TRASH}
-					style={ButtonStyle.DELETE}
-					onClick={() => {
+					variant={ButtonVariant.DELETE}
+					onclick={() => {
 						if (browser) {
 							profilerState.clearDebugConfig();
 							updateConfigState();
 							toast.success('Restored config to default');
 						}
 					}}
-				></Button>
+				>
+					Delete debug config
+				</MarcosButton>
 			</div>
 		</div>
 	</Box>

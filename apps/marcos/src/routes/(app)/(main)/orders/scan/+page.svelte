@@ -1,13 +1,14 @@
 <script lang="ts">
 	import OrderScanner from '@/components/business-related/order/OrderScanner.svelte';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import type { PageProps } from './$types';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-	import { ButtonAction } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	let { form }: PageProps = $props();
 
 	let scannedText = $state(undefined);
@@ -38,14 +39,16 @@
 	</Box>
 
 	{#if form?.incorrect}
-		<Button
-			text="Volver a intentar"
-			icon={IconType.ORDER_PENDING}
-			action={ButtonAction.CLICK}
-			onClick={() => window.location.reload()}
-		></Button>
+		<MarcosButton icon={IconType.ORDER_PENDING} onclick={() => window.location.reload()}>
+			Volver a intentar
+		</MarcosButton>
 	{/if}
-	<Button text="Introducir No. Pedido" icon={IconType.SEARCH} link="/orders/search"></Button>
+	<MarcosButton
+		icon={IconType.SEARCH}
+		onclick={() => {
+			goto(resolve('/orders/search'));
+		}}>Introducir No. Pedido</MarcosButton
+	>
 
 	<form method="POST" bind:this={formScan}>
 		<input type="hidden" bind:value={scannedText} name="scannedText" />

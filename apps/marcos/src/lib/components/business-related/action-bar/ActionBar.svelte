@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { slide, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonSize } from '@/components/generic/button/button.enum';
 
 	function close() {
 		ActionBarState.hide();
@@ -40,8 +41,12 @@
 					</div>
 
 					<div class="flex items-center gap-2">
-						<Button iconSize={IconSize.SMALL} icon={IconType.CLOSE} text="" onClick={close}
-						></Button>
+						<MarcosButton
+							size={ButtonSize.SMALL}
+							iconSize={IconSize.SMALL}
+							icon={IconType.CLOSE}
+							onclick={close}
+						></MarcosButton>
 					</div>
 				</div>
 			</div>

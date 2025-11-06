@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
 	import { OrderActionNames } from '@/shared/mappings/order.mapping';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	let sheetLoading = $state(false);
 
 	interface Props {
@@ -28,14 +28,11 @@
 	title={order.status !== OrderStatus.QUOTE ? 'Eliminar pedido' : 'Eliminar presupuesto'}
 	description="Esta acción no se puede deshacer"
 	iconType={IconType.TRASH}
-	triggerStyle={ButtonStyle.DELETE}
 >
-	{#snippet trigger()}
-		<Button
-			icon={IconType.TRASH}
-			text={order.status !== OrderStatus.QUOTE ? 'Eliminar pedido' : 'Eliminar presupuesto'}
-			action={ButtonAction.TRIGGER}
-		></Button>
+	{#snippet trigger({ props }: { props: Record<string, unknown> })}
+		<MarcosButton {...props} variant={ButtonVariant.DELETE} icon={IconType.TRASH}>
+			{order.status !== OrderStatus.QUOTE ? 'Eliminar pedido' : 'Eliminar presupuesto'}
+		</MarcosButton>
 	{/snippet}
 
 	{#snippet action()}
@@ -48,12 +45,9 @@
 			{#if sheetLoading}
 				<BottomSheetLoading />
 			{:else}
-				<Button
-					icon={IconType.TRASH}
-					text="Confirmar"
-					style={ButtonStyle.DELETE}
-					action={ButtonAction.SUBMIT}
-				></Button>
+				<MarcosButton icon={IconType.TRASH} variant={ButtonVariant.DELETE} type="submit">
+					Confirmar
+				</MarcosButton>
 			{/if}
 		</form>
 	{/snippet}
