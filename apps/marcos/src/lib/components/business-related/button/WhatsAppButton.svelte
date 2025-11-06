@@ -43,9 +43,11 @@
 			return;
 		}
 
-		const orderIds = orders.map((order) => order.id);
 		await getGlobalProfiler().measure(
-			OrderApiGateway.patchOrders(orderIds, [BatchOperation.NOTIFY_ORDERS])
+			OrderApiGateway.patchOrders(
+				orders.map((order) => order.id),
+				[BatchOperation.NOTIFY_ORDERS]
+			)
 		);
 
 		orders.forEach((order) => {
