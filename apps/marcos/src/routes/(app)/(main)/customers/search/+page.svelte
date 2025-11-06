@@ -4,7 +4,7 @@
 	import Box from '@/components/generic/Box.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum.js';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum.js';
 	import { IconType } from '@/components/generic/icon/icon.enum.js';
 	import Input from '@/components/ui/input/input.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
@@ -35,7 +35,7 @@
 						<Input bind:value={$form.phone} id="phone" type="tel" name="phone" />
 					</div>
 
-					<MarcosButton icon={IconType.SEARCH} type="submit" variant={ButtonStyle.CUSTOMER}>
+					<MarcosButton icon={IconType.SEARCH} type="submit" variant={ButtonVariant.CUSTOMER}>
 						Buscar
 					</MarcosButton>
 				</form>
@@ -53,7 +53,7 @@
 					icon={IconType.SEARCH}
 					disabled={searchQuery.length < 3}
 					onclick={triggerSearch}
-					variant={ButtonStyle.CUSTOMER}
+					variant={ButtonVariant.CUSTOMER}
 				>
 					Buscar
 				</MarcosButton>
@@ -65,9 +65,9 @@
 				{#if data.canSeeList}
 					<MarcosButton
 						icon={IconType.USER}
-						textVariant={ButtonText.GRAY}
+						textVariant={ButtonTextVariant.GRAY}
 						onclick={() => goto(resolve('/(app)/(main)/customers/list'))}
-						variant={ButtonStyle.ORDER_GENERIC}
+						variant={ButtonVariant.ORDER_GENERIC}
 					>
 						Ver listado
 					</MarcosButton>
@@ -76,7 +76,7 @@
 				<MarcosButton
 					onclick={() => goto(resolve('/(app)/(main)/customers/new'))}
 					icon={IconType.USER_PLUS}
-					variant={ButtonStyle.NEUTRAL}
+					variant={ButtonVariant.NEUTRAL}
 				>
 					Crear cliente
 				</MarcosButton>

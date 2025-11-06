@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Customer, Order } from '@marcsimolduressonsardina/core/type';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
@@ -73,7 +73,7 @@
 {#if notifyOrder && !disabled}
 	<BottomSheet title="WhatsApp" description="" iconType={IconType.WHATSAPP}>
 		{#snippet trigger({ props }: { props: Record<string, unknown> })}
-			<MarcosButton {...props} icon={IconType.WHATSAPP} variant={ButtonStyle.WHATSAPP}>
+			<MarcosButton {...props} icon={IconType.WHATSAPP} variant={ButtonVariant.WHATSAPP}>
 				{label}
 			</MarcosButton>
 		{/snippet}
@@ -91,7 +91,7 @@
 							href={getWhatsappLink(customer, message)}
 							target="_blank"
 							icon={IconType.WHATSAPP}
-							variant={ButtonStyle.WHATSAPP}
+							variant={ButtonVariant.WHATSAPP}
 							{disabled}
 						>
 							{label}
@@ -107,7 +107,7 @@
 			href={getWhatsappLink(customer, message)}
 			target="_blank"
 			icon={IconType.WHATSAPP}
-			variant={ButtonStyle.WHATSAPP}
+			variant={ButtonVariant.WHATSAPP}
 			{disabled}
 		>
 			{label}

@@ -5,7 +5,7 @@
 	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Input from '@/components/ui/input/input.svelte';
 	import {
@@ -55,7 +55,7 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<MarcosButton icon={IconType.EDIT} variant={ButtonStyle.NEUTRAL} type="submit">
+				<MarcosButton icon={IconType.EDIT} variant={ButtonVariant.NEUTRAL} type="submit">
 					{buttonText}
 				</MarcosButton>
 			{/if}

@@ -7,7 +7,7 @@
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
@@ -63,8 +63,8 @@
 					<MarcosButton
 						{...props}
 						icon={IconType.USER}
-						variant={ButtonStyle.CUSTOMER_VARIANT}
-						textVariant={ButtonText.NO_COLOR}
+						variant={ButtonVariant.CUSTOMER_VARIANT}
+						textVariant={ButtonTextVariant.NO_COLOR}
 					>
 						{order.customer.name}
 					</MarcosButton>

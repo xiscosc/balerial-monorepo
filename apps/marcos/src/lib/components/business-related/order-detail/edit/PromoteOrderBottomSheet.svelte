@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form/index.js';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { Input } from '@/components/ui/input';
@@ -37,8 +37,8 @@ pedido conservará todos los elementos, precios y fotos del presupuesto."
 		<MarcosButton
 			{...props}
 			icon={IconType.ORDER_DEFAULT}
-			textVariant={ButtonText.GRAY}
-			variant={ButtonStyle.ORDER_GENERIC}
+			textVariant={ButtonTextVariant.GRAY}
+			variant={ButtonVariant.ORDER_GENERIC}
 		>
 			Convertir en pedido
 		</MarcosButton>

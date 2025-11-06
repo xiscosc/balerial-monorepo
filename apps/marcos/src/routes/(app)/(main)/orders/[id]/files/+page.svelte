@@ -8,7 +8,7 @@
 	import { resolve } from '$app/paths';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonSize } from '@/components/generic/button/button.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { Input } from '@/components/ui/input';
@@ -180,7 +180,7 @@
 				<MarcosButton
 					icon={IconType.ORDER_PICKED_UP}
 					onclick={() => goto(resolve(`/(app)/(main)/orders/[id]`, { id: data.order.id }))}
-					size={ButtonType.SMALL}
+					size={ButtonSize.SMALL}
 				>
 					Volver al pedido
 				</MarcosButton>

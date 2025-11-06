@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
@@ -38,10 +38,10 @@
 			<div class="flex w-full flex-col gap-1 lg:grid lg:grid-cols-4">
 				{#each customers as customer (customer.id)}
 					<MarcosButton
-						textVariant={ButtonText.GRAY}
+						textVariant={ButtonTextVariant.GRAY}
 						onclick={() => goto(resolve(`/customers/${customer.id}`))}
 						icon={IconType.USER}
-						variant={ButtonStyle.ORDER_GENERIC}
+						variant={ButtonVariant.ORDER_GENERIC}
 					>
 						{customer.name}
 					</MarcosButton>

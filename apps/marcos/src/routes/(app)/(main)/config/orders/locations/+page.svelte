@@ -3,7 +3,7 @@
 	import LocationItem from '@/components/business-related/config/LocationItem.svelte';
 	import type { PageData } from './$types';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import Input from '@/components/ui/input/input.svelte';
@@ -37,7 +37,7 @@
 			{#each locations as location, index (location)}
 				<LocationItem text={location}>
 					<MarcosButton
-						variant={ButtonStyle.DELETE}
+						variant={ButtonVariant.DELETE}
 						onclick={() => removeLocation(index)}
 						icon={IconType.TRASH}
 					>
@@ -48,7 +48,7 @@
 			<div class="flex flex-row gap-2">
 				<Input type="text" placeholder="Añadir nueva ubicación" bind:value={newLocation} />
 				<MarcosButton
-					variant={ButtonStyle.NEUTRAL}
+					variant={ButtonVariant.NEUTRAL}
 					onclick={addLocation}
 					icon={IconType.PLUS}
 					iconSize={IconSize.BIG}
@@ -60,7 +60,7 @@
 			<!-- Form to submit locations -->
 			<form method="post" action="?/saveLocations">
 				<input type="hidden" name="locations" value={JSON.stringify(locations)} />
-				<MarcosButton variant={ButtonStyle.NEUTRAL} type="submit" icon={IconType.EDIT}>
+				<MarcosButton variant={ButtonVariant.NEUTRAL} type="submit" icon={IconType.EDIT}>
 					Guardar cambios
 				</MarcosButton>
 			</form>

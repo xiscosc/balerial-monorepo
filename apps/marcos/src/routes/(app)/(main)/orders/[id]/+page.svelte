@@ -8,7 +8,7 @@
 	import OrderElements from '@/components/business-related/order-detail/OrderElements.svelte';
 	import OrderHeader from '@/components/business-related/order-detail/OrderHeader.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import DeleteOrderBottomSheet from '@/components/business-related/order-detail/edit/DeleteOrderBottomSheet.svelte';
@@ -143,8 +143,8 @@
 						{:else}
 							<MarcosButton
 								icon={IconType.ORDER_DEFAULT}
-								textVariant={ButtonText.GRAY}
-								variant={ButtonStyle.ORDER_GENERIC}
+								textVariant={ButtonTextVariant.GRAY}
+								variant={ButtonVariant.ORDER_GENERIC}
 								onclick={() =>
 									goto(resolve(`/customers/${info.fullOrder.order.customer.id}/orders`))}
 							>
@@ -152,8 +152,8 @@
 							</MarcosButton>
 							<MarcosButton
 								icon={IconType.DAY}
-								textVariant={ButtonText.GRAY}
-								variant={ButtonStyle.ORDER_GENERIC}
+								textVariant={ButtonTextVariant.GRAY}
+								variant={ButtonVariant.ORDER_GENERIC}
 								onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/day`))}
 							>
 								Pedidos del día

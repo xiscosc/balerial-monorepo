@@ -5,7 +5,7 @@
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
 	import { OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import type { ISameDayOrderCounters } from '@marcsimolduressonsardina/core/service';
@@ -67,7 +67,7 @@
 			<MarcosButton
 				icon={IconType.WHATSAPP}
 				onclick={() => goto(resolve(`/orders/${order.id}/whatsapp`))}
-				variant={ButtonStyle.WHATSAPP}
+				variant={ButtonVariant.WHATSAPP}
 				disabled={!hasFiles}
 			>
 				Enviar mensaje finalizado

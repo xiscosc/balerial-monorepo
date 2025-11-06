@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import Box from '@/components/generic/Box.svelte';
 	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import Input from '@/components/ui/input/input.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
@@ -34,11 +34,11 @@
 							}
 						}}
 						variant={listState.getStatus() === OrderStatus.FINISHED
-							? ButtonStyle.ORDER_FINISHED_VARIANT
-							: ButtonStyle.ORDER_FINISHED}
+							? ButtonVariant.ORDER_FINISHED_VARIANT
+							: ButtonVariant.ORDER_FINISHED}
 						textVariant={listState.getStatus() === OrderStatus.FINISHED
-							? ButtonText.NO_COLOR
-							: ButtonText.WHITE}
+							? ButtonTextVariant.NO_COLOR
+							: ButtonTextVariant.WHITE}
 						icon={getStatusUIInfo(OrderStatus.FINISHED).statusIcon}
 					>
 						{listState.getStatus() === OrderStatus.FINISHED
@@ -54,11 +54,11 @@
 							}
 						}}
 						variant={listState.getStatus() === OrderStatus.PENDING
-							? ButtonStyle.ORDER_PENDING_VARIANT
-							: ButtonStyle.ORDER_PENDING}
+							? ButtonVariant.ORDER_PENDING_VARIANT
+							: ButtonVariant.ORDER_PENDING}
 						textVariant={listState.getStatus() === OrderStatus.PENDING
-							? ButtonText.NO_COLOR
-							: ButtonText.WHITE}
+							? ButtonTextVariant.NO_COLOR
+							: ButtonTextVariant.WHITE}
 						icon={getStatusUIInfo(OrderStatus.PENDING).statusIcon}
 					>
 						{listState.getStatus() === OrderStatus.PENDING

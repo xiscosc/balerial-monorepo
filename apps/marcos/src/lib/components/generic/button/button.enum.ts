@@ -1,4 +1,4 @@
-export enum ButtonStyle {
+export enum ButtonVariant {
 	WHATSAPP = 'bg-green-800 hover:bg-green-900  border',
 	DISABLED = 'bg-gray-400 hover:bg-gray-500 focus:bg-gray-600 border border-gray-900',
 	ORDER_FINISHED = 'bg-amber-600 hover:bg-amber-700 focus:bg-amber-500 border border-amber-900',
@@ -18,16 +18,16 @@ export enum ButtonStyle {
 	CUSTOMER_VARIANT = 'bg-blue-100 text-blue-700 hover:bg-blue-200 focus:bg-blue-200 border border-blue-700',
 	NEUTRAL = 'bg-gray-800 hover:bg-gray-900 focus:bg-gray-700 border border-gray-900',
 	NEUTRAL_VARIANT = 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:bg-gray-12000 border border-gray-700',
-	FORM = 'bg-emerald-600 hover:bg-emmrald-800 focus:bg-emerald-500 border border-emerald-900'
+	FORM = 'bg-emerald-600 hover:bg-emerald-800 focus:bg-emerald-500 border border-emerald-900'
 }
 
-export enum ButtonText {
+export enum ButtonTextVariant {
 	WHITE = 'text-white',
 	GRAY = 'text-gray-800',
 	NO_COLOR = 'font-semibold'
 }
 
-export enum ButtonType {
+export enum ButtonSize {
 	DEFAULT = 'rounded-md px-4 py-2 text-center ',
 	SMALL = 'rounded-md px-2 py-1 text-center focus:outline-hidden',
 	HOME = 'w-full rounded-md px-6 py-4 text-left text-lg font-semibold '

@@ -3,7 +3,7 @@
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
@@ -42,8 +42,8 @@
 			<MarcosButton
 				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
-				variant={ButtonStyle.SOFT_DELETE}
-				textVariant={ButtonText.GRAY}
+				variant={ButtonVariant.SOFT_DELETE}
+				textVariant={ButtonTextVariant.GRAY}
 			></MarcosButton>
 		</div>
 
@@ -51,8 +51,8 @@
 			<MarcosButton
 				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
-				variant={ButtonStyle.SOFT_DELETE}
-				textVariant={ButtonText.GRAY}
+				variant={ButtonVariant.SOFT_DELETE}
+				textVariant={ButtonTextVariant.GRAY}
 			>
 				Editar
 			</MarcosButton>
@@ -63,16 +63,16 @@
 		<MarcosButton
 			icon={IconType.FORM}
 			onclick={() => goto(resolve(`/customers/${customer.id}/orders/new`))}
-			variant={ButtonStyle.FORM}
+			variant={ButtonVariant.FORM}
 		>
 			Crear nota
 		</MarcosButton>
 
 		<MarcosButton
-			textVariant={ButtonText.GRAY}
+			textVariant={ButtonTextVariant.GRAY}
 			icon={IconType.ORDER_DEFAULT}
 			onclick={() => goto(resolve(`/customers/${customer.id}/orders`))}
-			variant={ButtonStyle.ORDER_GENERIC}
+			variant={ButtonVariant.ORDER_GENERIC}
 		>
 			Ver pedidos
 		</MarcosButton>
@@ -80,7 +80,7 @@
 		<MarcosButton
 			icon={IconType.ORDER_QUOTE}
 			onclick={() => goto(resolve(`/customers/${customer.id}/orders?quotes=true`))}
-			variant={ButtonStyle.ORDER_QUOTE}
+			variant={ButtonVariant.ORDER_QUOTE}
 		>
 			Ver presupuestos
 		</MarcosButton>
@@ -106,7 +106,7 @@
 				iconType={IconType.TRASH}
 			>
 				{#snippet trigger({ props }: { props: Record<string, unknown> })}
-					<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonStyle.DELETE}>
+					<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonVariant.DELETE}>
 						Eliminar cliente
 					</MarcosButton>
 				{/snippet}
@@ -130,7 +130,7 @@
 							{#if formLoading}
 								<BottomSheetLoading />
 							{:else}
-								<MarcosButton icon={IconType.TRASH} variant={ButtonStyle.DELETE} type="submit">
+								<MarcosButton icon={IconType.TRASH} variant={ButtonVariant.DELETE} type="submit">
 									Confirmar
 								</MarcosButton>
 							{/if}

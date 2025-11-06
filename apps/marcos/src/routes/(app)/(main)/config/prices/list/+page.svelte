@@ -5,7 +5,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle, ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonSize } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import Box from '@/components/generic/Box.svelte';
@@ -52,8 +52,8 @@
 			<span>Listado de precios </span>
 			<MarcosButton
 				icon={IconType.PLUS}
-				size={ButtonType.SMALL}
-				variant={ButtonStyle.NEUTRAL}
+				size={ButtonSize.SMALL}
+				variant={ButtonVariant.NEUTRAL}
 				onclick={() => goto(resolve('/(app)/(main)/config/prices/new'))}
 			></MarcosButton>
 		</div>

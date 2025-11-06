@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { ButtonStyle, ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonSize } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { goto } from '$app/navigation';
@@ -16,10 +16,10 @@
 		onclick={() => {
 			goto(resolve('/external/orders/new'));
 		}}
-		size={ButtonType.HOME}
+		size={ButtonSize.HOME}
 		iconSize={IconSize.BIG}
 		icon={IconType.FORM}
-		variant={ButtonStyle.FORM}
+		variant={ButtonVariant.FORM}
 	>
 		Crear nota
 	</MarcosButton>

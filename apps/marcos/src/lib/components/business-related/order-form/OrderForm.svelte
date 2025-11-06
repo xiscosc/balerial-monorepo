@@ -19,7 +19,11 @@
 	import { onMount, type Snippet } from 'svelte';
 	import type { OrderCreationFormData } from '@/server/shared/order/order-creation.utilities';
 	import Box from '@/components/generic/Box.svelte';
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
+	import {
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
+	} from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
@@ -1038,16 +1042,16 @@
 										<div class="flex flex-row gap-2">
 											<MarcosButton
 												icon={IconType.PLUS}
-												size={ButtonType.SMALL}
+												size={ButtonSize.SMALL}
 												onclick={() => {
 													$form.quantity += 1;
 												}}
 											></MarcosButton>
 											<MarcosButton
 												icon={IconType.MINUS}
-												textVariant={ButtonText.GRAY}
-												size={ButtonType.SMALL}
-												variant={ButtonStyle.ORDER_GENERIC}
+												textVariant={ButtonTextVariant.GRAY}
+												size={ButtonSize.SMALL}
+												variant={ButtonVariant.ORDER_GENERIC}
 												disabled={$form.quantity <= 1}
 												onclick={() => {
 													$form.quantity -= 1;

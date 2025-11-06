@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { PaymentStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import Divider from '@/components/generic/Divider.svelte';
@@ -31,8 +31,8 @@
 			<MarcosButton
 				{...props}
 				icon={IconType.DONE}
-				textVariant={ButtonText.NO_COLOR}
-				variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+				textVariant={ButtonTextVariant.NO_COLOR}
+				variant={ButtonVariant.ORDER_PICKED_UP_VARIANT}
 			>
 				Pagado
 			</MarcosButton>
@@ -40,8 +40,8 @@
 			<MarcosButton
 				{...props}
 				icon={IconType.NOT_DONE}
-				textVariant={ButtonText.NO_COLOR}
-				variant={ButtonStyle.DELETE_VARIANT}
+				textVariant={ButtonTextVariant.NO_COLOR}
+				variant={ButtonVariant.DELETE_VARIANT}
 			>
 				Pendiente de pago
 			</MarcosButton>
@@ -49,8 +49,8 @@
 			<MarcosButton
 				{...props}
 				icon={IconType.NOT_DONE}
-				textVariant={ButtonText.NO_COLOR}
-				variant={ButtonStyle.DELETE_VARIANT}
+				textVariant={ButtonTextVariant.NO_COLOR}
+				variant={ButtonVariant.DELETE_VARIANT}
 			>
 				Parcialmente pagado
 			</MarcosButton>
@@ -99,8 +99,8 @@
 							<input type="hidden" name="paymentStatus" value={PaymentStatus.FULLY_PAID} />
 							<MarcosButton
 								icon={IconType.DONE}
-								textVariant={ButtonText.NO_COLOR}
-								variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
+								textVariant={ButtonTextVariant.NO_COLOR}
+								variant={ButtonVariant.ORDER_PICKED_UP_VARIANT}
 								type="submit"
 							>
 								Pagado
@@ -123,8 +123,8 @@
 							<input type="hidden" name="paymentStatus" value={PaymentStatus.UNPAID} />
 							<MarcosButton
 								icon={IconType.NOT_DONE}
-								textVariant={ButtonText.NO_COLOR}
-								variant={ButtonStyle.DELETE_VARIANT}
+								textVariant={ButtonTextVariant.NO_COLOR}
+								variant={ButtonVariant.DELETE_VARIANT}
 								type="submit"
 							>
 								No pagado
@@ -151,8 +151,8 @@
 
 						<MarcosButton
 							icon={IconType.COINS}
-							textVariant={ButtonText.NO_COLOR}
-							variant={ButtonStyle.ORDER_FINISHED_VARIANT}
+							textVariant={ButtonTextVariant.NO_COLOR}
+							variant={ButtonVariant.ORDER_FINISHED_VARIANT}
 							type="submit"
 						>
 							Pago a cuenta

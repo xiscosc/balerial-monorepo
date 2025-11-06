@@ -9,7 +9,11 @@
 	import { onDestroy } from 'svelte';
 	import { OrderListState } from '@/components/business-related/order-list/OrderListState.svelte';
 	import { OrderListBulkOperationState } from '@/components/business-related/order-list/OrderListBulkOperationState.svelte';
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
+	import {
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
+	} from '@/components/generic/button/button.enum';
 	import * as Dialog from '@/components/ui/dialog/index.js';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
@@ -122,7 +126,7 @@
 	<MarcosButton
 		onclick={handleSelectAll}
 		iconSize={IconSize.SMALL}
-		size={ButtonType.SMALL}
+		size={ButtonSize.SMALL}
 		icon={IconType.ORDER_DEFAULT}
 	>
 		Seleccionar todos
@@ -140,7 +144,7 @@
 					disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
 					onclick={orderListBulkOperationState.generateOrderSet}
 					iconSize={IconSize.SMALL}
-					size={ButtonType.SMALL}
+					size={ButtonSize.SMALL}
 					icon={IconType.PRINTER}
 				></MarcosButton>
 			</TooltipButtonWrapper>
@@ -148,30 +152,30 @@
 			{#if !orderListState.getSelectedQuotesExist()}
 				{#if !whatsAppButtonDisabled}
 					<MarcosButton
-						size={ButtonType.SMALL}
+						size={ButtonSize.SMALL}
 						iconSize={IconSize.SMALL}
 						onclick={() => {
 							orderListBulkOperationState.prepareBulkOperation(BatchOperation.NOTIFY_ORDERS);
 						}}
-						variant={ButtonStyle.WHATSAPP}
+						variant={ButtonVariant.WHATSAPP}
 						icon={IconType.WHATSAPP}
 					></MarcosButton>
 				{/if}
 				<MarcosButton
-					size={ButtonType.SMALL}
+					size={ButtonSize.SMALL}
 					iconSize={IconSize.SMALL}
 					onclick={() => {
 						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PAID);
 					}}
-					variant={ButtonStyle.ORDER_PICKED_UP_VARIANT}
-					textVariant={ButtonText.NO_COLOR}
+					variant={ButtonVariant.ORDER_PICKED_UP_VARIANT}
+					textVariant={ButtonTextVariant.NO_COLOR}
 					icon={IconType.COINS}
 				></MarcosButton>
 				{#if orderListState.getSelectedOrdersAreFinished()}
 					<MarcosButton
-						size={ButtonType.SMALL}
+						size={ButtonSize.SMALL}
 						iconSize={IconSize.SMALL}
-						variant={ButtonStyle.ORDER_PENDING}
+						variant={ButtonVariant.ORDER_PENDING}
 						onclick={() => {
 							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PICKED_UP);
 						}}
@@ -179,13 +183,13 @@
 					></MarcosButton>
 				{/if}
 				<MarcosButton
-					size={ButtonType.SMALL}
+					size={ButtonSize.SMALL}
 					iconSize={IconSize.SMALL}
-					variant={ButtonStyle.ORDER_GENERIC_VARIANT}
+					variant={ButtonVariant.ORDER_GENERIC_VARIANT}
 					onclick={() => {
 						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_INVOICED);
 					}}
-					textVariant={ButtonText.NO_COLOR}
+					textVariant={ButtonTextVariant.NO_COLOR}
 					icon={IconType.INVOICED}
 				></MarcosButton>
 			{/if}

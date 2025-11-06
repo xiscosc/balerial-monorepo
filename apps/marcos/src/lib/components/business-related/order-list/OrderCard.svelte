@@ -5,7 +5,7 @@
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
@@ -210,7 +210,7 @@
 		<div class="flex flex-row justify-end gap-1 text-xs">
 			{#if !CoreOrderUtilities.isOrderTemp(order)}
 				<MarcosButton
-					variant={ButtonStyle.NEUTRAL}
+					variant={ButtonVariant.NEUTRAL}
 					icon={IconType.PRINTER}
 					onclick={() => goto(resolve(`/orders/${order.id}/print`))}
 				>
@@ -218,7 +218,7 @@
 				</MarcosButton>
 			{/if}
 			<MarcosButton
-				variant={ButtonStyle.CUSTOMER}
+				variant={ButtonVariant.CUSTOMER}
 				icon={CoreOrderUtilities.isOrderTemp(order) ? IconType.LINK : IconType.EYE}
 				onclick={() => goto(resolve(`/orders/${order.id}`))}
 			>

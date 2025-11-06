@@ -1,6 +1,10 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
+	import {
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
+	} from '@/components/generic/button/button.enum';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
@@ -66,9 +70,9 @@
 				{#if !deleteConfirmation}
 					<MarcosButton
 						icon={IconType.TRASH}
-						variant={ButtonStyle.SOFT_DELETE}
-						textVariant={ButtonText.GRAY}
-						size={ButtonType.DEFAULT}
+						variant={ButtonVariant.SOFT_DELETE}
+						textVariant={ButtonTextVariant.GRAY}
+						size={ButtonSize.DEFAULT}
 						onclick={() => deleteFunction()}
 					></MarcosButton>
 				{:else}
@@ -80,9 +84,9 @@
 						{#snippet trigger({ props }: { props: Record<string, unknown> })}
 							<MarcosButton
 								icon={IconType.TRASH}
-								variant={ButtonStyle.SOFT_DELETE}
-								textVariant={ButtonText.GRAY}
-								size={ButtonType.DEFAULT}
+								variant={ButtonVariant.SOFT_DELETE}
+								textVariant={ButtonTextVariant.GRAY}
+								size={ButtonSize.DEFAULT}
 								{...props}
 							></MarcosButton>
 						{/snippet}
@@ -92,7 +96,7 @@
 							{:else}
 								<MarcosButton
 									icon={IconType.TRASH}
-									variant={ButtonStyle.DELETE}
+									variant={ButtonVariant.DELETE}
 									onclick={() => handleBottomSheetDelete()}
 								>
 									Confirmar

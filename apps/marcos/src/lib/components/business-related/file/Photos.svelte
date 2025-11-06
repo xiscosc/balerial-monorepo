@@ -4,7 +4,7 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { Skeleton } from '@/components/ui/skeleton';
@@ -154,7 +154,11 @@
 					{#if sheetLoading}
 						<BottomSheetLoading />
 					{:else}
-						<MarcosButton icon={IconType.TRASH} variant={ButtonStyle.DELETE} onclick={handleDelete}>
+						<MarcosButton
+							icon={IconType.TRASH}
+							variant={ButtonVariant.DELETE}
+							onclick={handleDelete}
+						>
 							Confirmar
 						</MarcosButton>
 					{/if}

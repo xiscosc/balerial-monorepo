@@ -4,7 +4,7 @@
 	import { slide, fade } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonSize } from '@/components/generic/button/button.enum';
 
 	function close() {
 		ActionBarState.hide();
@@ -42,7 +42,7 @@
 
 					<div class="flex items-center gap-2">
 						<MarcosButton
-							size={ButtonType.SMALL}
+							size={ButtonSize.SMALL}
 							iconSize={IconSize.SMALL}
 							icon={IconType.CLOSE}
 							onclick={close}

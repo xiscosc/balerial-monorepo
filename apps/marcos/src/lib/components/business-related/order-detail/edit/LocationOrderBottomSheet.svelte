@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form/index.js';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import {
@@ -36,8 +36,8 @@
 		<MarcosButton
 			{...props}
 			icon={IconType.LOCATION}
-			variant={ButtonStyle.NEUTRAL_VARIANT}
-			textVariant={ButtonText.NO_COLOR}
+			variant={ButtonVariant.NEUTRAL_VARIANT}
+			textVariant={ButtonTextVariant.NO_COLOR}
 		>
 			Ubicación: {order.location.length === 0 ? 'Sin ubicación' : order.location}
 		</MarcosButton>

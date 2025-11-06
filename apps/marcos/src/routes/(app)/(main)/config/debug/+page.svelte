@@ -10,7 +10,7 @@
 	import { type ProfilerConfig } from '@/shared/profiler/profiler';
 	import { toast, Toaster } from 'svelte-sonner';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { ProfilerState } from '@/state/profiler/profiler.state';
 
 	let profilerEnabled = $state(false);
@@ -109,7 +109,7 @@
 			<div class="flex">
 				<MarcosButton
 					icon={IconType.ORDER_PENDING}
-					variant={ButtonStyle.FORM}
+					variant={ButtonVariant.FORM}
 					onclick={() => {
 						if (browser) {
 							profilerState.updateDebugConfig(debugConfig);
@@ -125,7 +125,7 @@
 			<div class="flex">
 				<MarcosButton
 					icon={IconType.TRASH}
-					variant={ButtonStyle.DELETE}
+					variant={ButtonVariant.DELETE}
 					onclick={() => {
 						if (browser) {
 							profilerState.clearDebugConfig();

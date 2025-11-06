@@ -2,7 +2,7 @@
 	import * as Form from '@/components/ui/form/index.js';
 	import * as NativeSelect from '@/components/ui/native-select/index.js';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { OrderActionNames, orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
@@ -50,7 +50,7 @@
 			{...props}
 			icon={getStatusUIInfo(order.status).statusIcon}
 			variant={getStatusUIInfoWithPaymentInfo(order.status, fullOrder.totals.payed, true).colors}
-			textVariant={ButtonText.NO_COLOR}
+			textVariant={ButtonTextVariant.NO_COLOR}
 		>
 			Estado: {orderStatusMap[order.status]}
 		</MarcosButton>
@@ -83,7 +83,7 @@
 					</Form.Field>
 					<MarcosButton
 						onclick={() => triggerForm(OrderStatus.FINISHED)}
-						textVariant={ButtonText.NO_COLOR}
+						textVariant={ButtonTextVariant.NO_COLOR}
 						icon={getStatusUIInfo(OrderStatus.FINISHED).statusIcon}
 						variant={getStatusUIInfo(OrderStatus.FINISHED, true).colors}
 					>
@@ -94,7 +94,7 @@
 
 				{#if statuses.includes(OrderStatus.PICKED_UP)}
 					<MarcosButton
-						textVariant={ButtonText.NO_COLOR}
+						textVariant={ButtonTextVariant.NO_COLOR}
 						onclick={() => triggerForm(OrderStatus.PICKED_UP)}
 						icon={getStatusUIInfo(OrderStatus.PICKED_UP).statusIcon}
 						variant={getStatusUIInfo(OrderStatus.PICKED_UP, true).colors}
@@ -105,7 +105,7 @@
 
 				{#if statuses.includes(OrderStatus.PENDING)}
 					<MarcosButton
-						textVariant={ButtonText.NO_COLOR}
+						textVariant={ButtonTextVariant.NO_COLOR}
 						onclick={() => triggerForm(OrderStatus.PENDING)}
 						icon={getStatusUIInfo(OrderStatus.PENDING).statusIcon}
 						variant={getStatusUIInfo(OrderStatus.PENDING, true).colors}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
@@ -30,7 +30,7 @@
 	iconType={IconType.TRASH}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
-		<MarcosButton {...props} variant={ButtonStyle.DELETE} icon={IconType.TRASH}>
+		<MarcosButton {...props} variant={ButtonVariant.DELETE} icon={IconType.TRASH}>
 			{order.status !== OrderStatus.QUOTE ? 'Eliminar pedido' : 'Eliminar presupuesto'}
 		</MarcosButton>
 	{/snippet}
@@ -45,7 +45,7 @@
 			{#if sheetLoading}
 				<BottomSheetLoading />
 			{:else}
-				<MarcosButton icon={IconType.TRASH} variant={ButtonStyle.DELETE} type="submit">
+				<MarcosButton icon={IconType.TRASH} variant={ButtonVariant.DELETE} type="submit">
 					Confirmar
 				</MarcosButton>
 			{/if}

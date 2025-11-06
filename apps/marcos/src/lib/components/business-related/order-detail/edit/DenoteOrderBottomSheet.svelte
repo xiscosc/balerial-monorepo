@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
@@ -24,7 +24,7 @@ precios y fotos del pedido. Se eliminarán pagos a cuenta y fecha de entrega."
 	iconType={IconType.ORDER_QUOTE}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
-		<MarcosButton {...props} icon={IconType.ORDER_QUOTE} variant={ButtonStyle.ORDER_QUOTE}>
+		<MarcosButton {...props} icon={IconType.ORDER_QUOTE} variant={ButtonVariant.ORDER_QUOTE}>
 			Convertir en presupuesto
 		</MarcosButton>
 	{/snippet}

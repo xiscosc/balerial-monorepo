@@ -4,7 +4,7 @@
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
 	import { Changelogs } from '@/data/changelog';
@@ -57,7 +57,7 @@
 			<MarcosButton
 				onclick={() => goto(resolve('/config/prices/molds'))}
 				icon={IconType.MOLD}
-				variant={ButtonStyle.NEUTRAL}
+				variant={ButtonVariant.NEUTRAL}
 			>
 				Cargar molduras
 			</MarcosButton>
@@ -65,7 +65,7 @@
 			<MarcosButton
 				onclick={() => goto(resolve('/config/prices/new'))}
 				icon={IconType.COINS}
-				variant={ButtonStyle.FORM}
+				variant={ButtonVariant.FORM}
 			>
 				Nuevo precio
 			</MarcosButton>
@@ -73,8 +73,8 @@
 			<MarcosButton
 				onclick={() => goto(resolve('/config/prices/list'))}
 				icon={IconType.LIST}
-				variant={ButtonStyle.ORDER_GENERIC}
-				textVariant={ButtonText.GRAY}
+				variant={ButtonVariant.ORDER_GENERIC}
+				textVariant={ButtonTextVariant.GRAY}
 			>
 				Lista de precios
 			</MarcosButton>
@@ -87,7 +87,7 @@
 		>
 			<MarcosButton
 				onclick={() => goto(resolve('/config/orders/locations'))}
-				variant={ButtonStyle.NEUTRAL}
+				variant={ButtonVariant.NEUTRAL}
 				icon={IconType.LOCATION}
 			>
 				Editar ubicaciones
@@ -109,8 +109,8 @@
 				<MarcosButton
 					onclick={() => goto(resolve('/config/changelog'))}
 					icon={IconType.CHANGELOG}
-					variant={ButtonStyle.NEUTRAL}
-					textVariant={ButtonText.WHITE}
+					variant={ButtonVariant.NEUTRAL}
+					textVariant={ButtonTextVariant.WHITE}
 				>
 					Ver todos los cambios
 				</MarcosButton>

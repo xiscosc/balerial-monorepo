@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { type HTMLAnchorAttributes } from 'svelte/elements';
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
+	import {
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
+	} from '@/components/generic/button/button.enum';
 	import { IconSize } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { cn } from '@/utils';
@@ -12,9 +16,9 @@
 
 	let {
 		children = undefined,
-		variant = ButtonStyle.NEUTRAL,
-		size = ButtonType.DEFAULT,
-		textVariant = ButtonText.WHITE,
+		variant = ButtonVariant.NEUTRAL,
+		size = ButtonSize.DEFAULT,
+		textVariant = ButtonTextVariant.WHITE,
 		iconSize = IconSize.DEFAULT,
 		icon = undefined,
 		disabled = false,
@@ -32,17 +36,17 @@
 	{...others}
 	class={cn(
 		'w-full flex-1',
-		disabled ? ButtonStyle.DISABLED : variant,
+		disabled ? ButtonVariant.DISABLED : variant,
 		disabled ? 'cursor-not-allowed' : 'cursor-pointer',
 		size,
 		textVariant,
-		size === ButtonType.SMALL ? 'flex items-center justify-center text-xs' : '',
+		size === ButtonSize.SMALL ? 'flex items-center justify-center text-xs' : '',
 		others.class
 	)}
 	onclick={handleClick}
 	aria-disabled={disabled}
 >
-	<div class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
+	<div class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonSize.HOME}>
 		{#if icon}
 			<Icon type={icon} size={iconSize} />
 		{/if}

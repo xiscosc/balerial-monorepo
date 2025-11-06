@@ -2,7 +2,7 @@
 	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import { onMount } from 'svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
@@ -33,8 +33,8 @@
 		{#each customers as customer (customer.id)}
 			<MarcosButton
 				icon={IconType.USER}
-				variant={ButtonStyle.ORDER_GENERIC}
-				textVariant={ButtonText.GRAY}
+				variant={ButtonVariant.ORDER_GENERIC}
+				textVariant={ButtonTextVariant.GRAY}
 				onclick={() => goto(resolve(`/(app)/(main)/customers/[id]`, { id: customer.id }))}
 			>
 				{customer.name}
@@ -42,7 +42,7 @@
 		{/each}
 
 		{#if lastKey}
-			<MarcosButton icon={IconType.PLUS} variant={ButtonStyle.NEUTRAL} onclick={loadCustomers}>
+			<MarcosButton icon={IconType.PLUS} variant={ButtonVariant.NEUTRAL} onclick={loadCustomers}>
 				Cargar más
 			</MarcosButton>
 		{/if}

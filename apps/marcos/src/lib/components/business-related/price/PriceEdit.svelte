@@ -17,7 +17,7 @@
 		type MaxArea,
 		type MaxAreaM2
 	} from '@marcsimolduressonsardina/core/type';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
@@ -392,9 +392,9 @@
 							<div class="lg:col-span-2">
 								<MarcosButton
 									icon={IconType.EDIT}
-									textVariant={ButtonText.GRAY}
+									textVariant={ButtonTextVariant.GRAY}
 									type="submit"
-									variant={ButtonStyle.ORDER_GENERIC}
+									variant={ButtonVariant.ORDER_GENERIC}
 								>
 									Guardar
 								</MarcosButton>
@@ -411,7 +411,7 @@
 					iconType={IconType.TRASH}
 				>
 					{#snippet trigger({ props }: { props: Record<string, unknown> })}
-						<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonStyle.DELETE}>
+						<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonVariant.DELETE}>
 							Eliminar precio
 						</MarcosButton>
 					{/snippet}
@@ -431,7 +431,7 @@
 							{#if formLoading}
 								<BottomSheetLoading />
 							{:else}
-								<MarcosButton icon={IconType.TRASH} variant={ButtonStyle.DELETE} type="submit">
+								<MarcosButton icon={IconType.TRASH} variant={ButtonVariant.DELETE} type="submit">
 									Confirmar
 								</MarcosButton>
 							{/if}

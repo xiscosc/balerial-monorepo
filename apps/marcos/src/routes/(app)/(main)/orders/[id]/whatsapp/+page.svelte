@@ -8,7 +8,7 @@
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
 	import Banner from '@/components/generic/Banner.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
@@ -61,8 +61,8 @@
 
 						<div class="flex flex-col gap-2 lg:flex-row">
 							<MarcosButton
-								variant={ButtonStyle.ORDER_GENERIC}
-								textVariant={ButtonText.GRAY}
+								variant={ButtonVariant.ORDER_GENERIC}
+								textVariant={ButtonTextVariant.GRAY}
 								icon={IconType.ORDER_DEFAULT}
 								onclick={() => goto(resolve(`/orders/${data.order.id}/day`))}
 							>

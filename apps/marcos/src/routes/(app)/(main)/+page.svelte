@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { ButtonStyle, ButtonText, ButtonType } from '@/components/generic/button/button.enum';
+	import {
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
+	} from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { Changelogs } from '@/data/changelog';
 	import type { Changelog } from '@/type/changelog.type';
@@ -16,8 +20,8 @@
 	<MarcosButton
 		icon={IconType.SEARCH}
 		iconSize={IconSize.BIG}
-		size={ButtonType.HOME}
-		variant={ButtonStyle.CUSTOMER}
+		size={ButtonSize.HOME}
+		variant={ButtonVariant.CUSTOMER}
 		onclick={() => {
 			goto(resolve('/customers/search'));
 		}}
@@ -28,9 +32,9 @@
 	<MarcosButton
 		icon={IconType.LIST}
 		iconSize={IconSize.BIG}
-		size={ButtonType.HOME}
-		variant={ButtonStyle.ORDER_GENERIC}
-		textVariant={ButtonText.GRAY}
+		size={ButtonSize.HOME}
+		variant={ButtonVariant.ORDER_GENERIC}
+		textVariant={ButtonTextVariant.GRAY}
 		onclick={() => {
 			goto(resolve('/orders/list'));
 		}}
@@ -41,8 +45,8 @@
 	<MarcosButton
 		icon={IconType.ORDER_QUOTE}
 		iconSize={IconSize.BIG}
-		size={ButtonType.HOME}
-		variant={ButtonStyle.ORDER_QUOTE}
+		size={ButtonSize.HOME}
+		variant={ButtonVariant.ORDER_QUOTE}
 		onclick={() => {
 			goto(resolve('/orders/list?status=quote'));
 		}}
@@ -53,8 +57,8 @@
 	<MarcosButton
 		icon={IconType.QR}
 		iconSize={IconSize.BIG}
-		size={ButtonType.HOME}
-		variant={ButtonStyle.NEUTRAL}
+		size={ButtonSize.HOME}
+		variant={ButtonVariant.NEUTRAL}
 		onclick={() => {
 			goto(resolve('/orders/scan'));
 		}}
@@ -65,8 +69,8 @@
 	<MarcosButton
 		icon={IconType.FORM}
 		iconSize={IconSize.BIG}
-		size={ButtonType.HOME}
-		variant={ButtonStyle.FORM}
+		size={ButtonSize.HOME}
+		variant={ButtonVariant.FORM}
 		onclick={() => {
 			goto(resolve('/orders/new'));
 		}}
