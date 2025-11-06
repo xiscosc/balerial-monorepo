@@ -62,7 +62,7 @@
 <Dialog.Root>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
-			<span class="hidden flex-1 lg:block">
+			<span class="hidden w-full flex-1 lg:block">
 				{@render trigger({ props })}
 			</span>
 		{/snippet}
