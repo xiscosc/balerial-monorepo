@@ -101,7 +101,7 @@
 			{#if !isSelectMode}
 				<button
 					onclick={handlePublicIdClick}
-					class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
+					class="cursor-pointer overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
 					id="order-public-id"
 					in:fade={{ duration: 200 }}
 					out:fade={{ duration: 150 }}

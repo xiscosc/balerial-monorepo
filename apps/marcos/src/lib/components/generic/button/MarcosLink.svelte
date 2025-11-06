@@ -33,6 +33,7 @@
 	class={cn(
 		'w-full flex-1',
 		disabled ? ButtonStyle.DISABLED : variant,
+		disabled ? 'cursor-not-allowed' : 'cursor-pointer',
 		size,
 		textVariant,
 		size === ButtonType.SMALL ? 'flex items-center justify-center text-xs' : '',

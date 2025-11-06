@@ -23,8 +23,9 @@
 	type="button"
 	{...others}
 	class={cn(
-		'w-full flex-1',
+		'po w-full flex-1',
 		others.disabled ? ButtonStyle.DISABLED : variant,
+		others.disabled ? 'cursor-not-allowed' : 'cursor-pointer',
 		size,
 		textVariant,
 		size === ButtonType.SMALL ? 'flex items-center justify-center text-xs' : '',
