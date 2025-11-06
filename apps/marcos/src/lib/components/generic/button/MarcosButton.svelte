@@ -23,13 +23,13 @@
 	type="button"
 	{...others}
 	class={cn(
+		'w-full flex-1',
 		others.disabled ? ButtonStyle.DISABLED : variant,
 		size,
 		textVariant,
-		size === ButtonType.SMALL ? 'flex items-center' : '',
+		size === ButtonType.SMALL ? 'flex items-center justify-center text-xs' : '',
 		others.class
 	)}
-	class:w-full={size !== ButtonType.SMALL}
 >
 	<div class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
 		{#if icon}

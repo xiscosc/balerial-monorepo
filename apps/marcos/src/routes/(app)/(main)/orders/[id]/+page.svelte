@@ -166,6 +166,7 @@
 							counters={info.unfinishedSameDayCount}
 							hasFiles={info.hasFiles}
 						></WhatsAppOrderButtons>
+
 						<Divider hideOnDesktop={true}></Divider>
 						<TooltipButtonWrapper enabled={!info.hasFiles} text="Faltan fotos">
 							<MarcosButton
@@ -176,6 +177,7 @@
 								Imprimir
 							</MarcosButton>
 						</TooltipButtonWrapper>
+
 						<MarcosButton
 							icon={IconType.EDIT}
 							onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/edit`))}

@@ -176,13 +176,15 @@
 		<SimpleHeading icon={IconType.CAMERA}>Archivos y fotos</SimpleHeading>
 
 		{#if !(loading || uploading) && data.order}
-			<MarcosButton
-				icon={IconType.ORDER_PICKED_UP}
-				onclick={() => goto(resolve(`/(app)/(main)/orders/[id]`, { id: data.order.id }))}
-				size={ButtonType.SMALL}
-			>
-				Volver al pedido
-			</MarcosButton>
+			<div>
+				<MarcosButton
+					icon={IconType.ORDER_PICKED_UP}
+					onclick={() => goto(resolve(`/(app)/(main)/orders/[id]`, { id: data.order.id }))}
+					size={ButtonType.SMALL}
+				>
+					Volver al pedido
+				</MarcosButton>
+			</div>
 		{/if}
 	</div>
 

@@ -44,11 +44,7 @@
 </script>
 
 {#snippet downloadButton()}
-	<MarcosLink
-		icon={downloadIcon}
-		target="_blank"
-		href={downloadUrl}
-		aria-disabled={downloadUrl == null}
+	<MarcosLink icon={downloadIcon} target="_blank" href={downloadUrl} disabled={downloadUrl == null}
 	></MarcosLink>
 {/snippet}
 

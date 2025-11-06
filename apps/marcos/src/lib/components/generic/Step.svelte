@@ -93,7 +93,6 @@
 								<MarcosButton
 									icon={IconType.TRASH}
 									variant={ButtonStyle.DELETE}
-									textVariant={ButtonText.GRAY}
 									onclick={() => handleBottomSheetDelete()}
 								>
 									Confirmar

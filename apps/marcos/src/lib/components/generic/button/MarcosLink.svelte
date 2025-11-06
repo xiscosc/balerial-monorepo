@@ -20,26 +20,35 @@
 		disabled = false,
 		...others
 	}: Properties = $props();
+
+	function handleClick(event: MouseEvent) {
+		if (disabled) {
+			event.preventDefault();
+		}
+	}
 </script>
 
 <a
 	{...others}
 	class={cn(
+		'w-full flex-1',
 		disabled ? ButtonStyle.DISABLED : variant,
 		size,
 		textVariant,
-		size === ButtonType.SMALL ? 'flex items-center' : '',
+		size === ButtonType.SMALL ? 'flex items-center justify-center text-xs' : '',
 		others.class
 	)}
+	onclick={handleClick}
 	aria-disabled={disabled}
-	class:w-full={size !== ButtonType.SMALL}
 >
 	<div class="flex items-center gap-2 p-0" class:justify-center={size !== ButtonType.HOME}>
 		{#if icon}
 			<Icon type={icon} size={iconSize} />
 		{/if}
-		<span>
-			{@render children?.()}
-		</span>
+		{#if children}
+			<span>
+				{@render children()}
+			</span>
+		{/if}
 	</div>
 </a>

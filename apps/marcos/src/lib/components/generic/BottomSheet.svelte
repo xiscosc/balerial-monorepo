@@ -25,7 +25,7 @@
 <Sheet.Root>
 	<Sheet.Trigger>
 		{#snippet child({ props })}
-			<span class="lg:hidden">
+			<span class="flex-1 lg:hidden">
 				{@render trigger({ props })}
 			</span>
 		{/snippet}
@@ -62,7 +62,7 @@
 <Dialog.Root>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
-			<span class="hidden lg:block">
+			<span class="hidden flex-1 lg:block">
 				{@render trigger({ props })}
 			</span>
 		{/snippet}
