@@ -3,6 +3,7 @@
 	import '../../app.css';
 	import type { LayoutData } from './$types';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import { browser } from '$app/environment';
 
 	interface Props {
 		data: LayoutData;
