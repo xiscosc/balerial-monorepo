@@ -7,6 +7,7 @@ export class OrderListState {
 	private allOrders: Map<string, FullOrder>;
 	private selectMode: boolean;
 	private selectedOrdersFinished: boolean;
+	private selectedSomeOrdersFinished: boolean;
 	private selectedQuotes: boolean;
 	private selectedOrdersAreFromSameCustomer: boolean;
 
@@ -16,6 +17,9 @@ export class OrderListState {
 		this.selectMode = $state(false);
 		this.selectedOrdersFinished = $derived(
 			!this.selectedOrders.values().some((fo) => fo.order.status !== OrderStatus.FINISHED)
+		);
+		this.selectedSomeOrdersFinished = $derived(
+			this.selectedOrders.values().some((fo) => fo.order.status === OrderStatus.FINISHED)
 		);
 		this.selectedQuotes = $derived(
 			this.selectedOrders.values().some((fo) => fo.order.status === OrderStatus.QUOTE)
@@ -31,6 +35,12 @@ export class OrderListState {
 
 	public getSelectedOrdersIds(): string[] {
 		return Array.from(this.selectedOrders.keys());
+	}
+
+	public getSelectedFinishedOrdersIds(): string[] {
+		return Array.from(this.selectedOrders.values())
+			.filter((fo) => fo.order.status === OrderStatus.FINISHED)
+			.map((fo) => fo.order.id);
 	}
 
 	public getSelectedOrders(): FullOrder[] {
@@ -114,6 +124,10 @@ export class OrderListState {
 
 	public getSelectedOrdersAreFinished(): boolean {
 		return this.selectedOrdersFinished;
+	}
+
+	public getSomeSelectedOrdersAreFinished(): boolean {
+		return this.selectedSomeOrdersFinished;
 	}
 
 	public getSelectedQuotesExist(): boolean {

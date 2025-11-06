@@ -113,10 +113,15 @@ export class OrderListBulkOperationState {
 		this.whatsappButtonVisible = false;
 		this.loading = true;
 		this.active = true;
-		const promise = OrderApiGateway.patchOrders(this.orderListState.getSelectedOrdersIds(), [
-			this.orderSetCurrentOperation
-		]);
-		await getGlobalProfiler().measure(promise);
+
+		const orderIds =
+			this.orderSetCurrentOperation === BatchOperation.NOTIFY_ORDERS
+				? this.orderListState.getSelectedFinishedOrdersIds()
+				: this.orderListState.getSelectedOrdersIds();
+
+		await getGlobalProfiler().measure(
+			OrderApiGateway.patchOrders(orderIds, [this.orderSetCurrentOperation])
+		);
 		this.orderListState.runBulkOperation(this.orderSetCurrentOperation);
 		this.loading = false;
 		if (this.orderSetCurrentOperation === BatchOperation.NOTIFY_ORDERS) {

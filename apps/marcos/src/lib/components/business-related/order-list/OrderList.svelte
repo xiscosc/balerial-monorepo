@@ -49,7 +49,7 @@
 	let paginationLoading = $state(false);
 
 	let whatsAppButtonDisabled = $derived(
-		!orderListState.getSelectedOrdersAreFinished() ||
+		!orderListState.getSomeSelectedOrdersAreFinished() ||
 			!orderListState.getSelectedOrdersAreFromSameCustomer()
 	);
 

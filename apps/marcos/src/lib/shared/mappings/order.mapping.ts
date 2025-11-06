@@ -25,7 +25,7 @@ export const orderBatchOperationTitleMap: Record<BatchOperation, string> = {
 	[BatchOperation.SET_PAID]: 'Marcar pedidos como pagados',
 	[BatchOperation.SET_INVOICED]: 'Marcar pedidos como facturados',
 	[BatchOperation.SET_PICKED_UP]: 'Marcar pedidos como recogidos',
-	[BatchOperation.NOTIFY_ORDERS]: 'Notificar pedidos'
+	[BatchOperation.NOTIFY_ORDERS]: 'Notificar pedidos (sólo finalizados)'
 };
 
 export const orderStatusMap: Record<OrderStatus, string> = {
