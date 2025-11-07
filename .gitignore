@@ -44,3 +44,5 @@ yarn-error.log*
 
 sharp-layer.zip
 .idea
+
+static/vendor/

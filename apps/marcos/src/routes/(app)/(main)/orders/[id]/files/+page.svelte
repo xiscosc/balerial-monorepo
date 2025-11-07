@@ -14,9 +14,9 @@
 	import { Input } from '@/components/ui/input';
 	import Photos from '@/components/business-related/file/Photos.svelte';
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
-	import Progress from '@/components/ui/progress/progress.svelte';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import MaterialProgressBar from '@/components/generic/MaterialProgressBar.svelte';
 
 	interface Props {
 		data: PageData;
@@ -197,7 +197,7 @@
 		<Box>
 			<div class="flex flex-col items-center gap-3 text-center">
 				<span class="text-md font-medium">Cargando archivos...</span>
-				<Progress value={loadingProgress} />
+				<MaterialProgressBar value={loadingProgress}></MaterialProgressBar>
 				<p>{loadingProgress}%</p>
 			</div>
 		</Box>

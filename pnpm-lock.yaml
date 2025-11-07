@@ -41,7 +41,13 @@ importers:
       '@auth/sveltekit':
         specifier: 1.11.0
         version: 1.11.0(@sveltejs/kit@2.47.2(@sveltejs/vite-plugin-svelte@6.1.3(svelte@5.41.1)(vite@7.1.12(@types/node@22.13.14)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.3)))(svelte@5.41.1)(vite@7.1.12(@types/node@22.13.14)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.3)))(svelte@5.41.1)
+      '@m3e/core':
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)
       '@m3e/loading-indicator':
+        specifier: 1.0.0-rc.4
+        version: 1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)
+      '@m3e/progress-indicator':
         specifier: 1.0.0-rc.4
         version: 1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)
       '@marcsimolduressonsardina/core':
@@ -1098,6 +1104,12 @@ packages:
 
   '@m3e/loading-indicator@1.0.0-rc.4':
     resolution: {integrity: sha512-gbKP6/lTdegqR/codm+sqxlb859Mhez5l6fMWO3PU+xG42PKlWDPL4mpbXJU/lcNxIgs6BvE1Y6xKTsHvpHG4g==}
+    peerDependencies:
+      '@m3e/core': 1.0.0-rc.4
+      lit: ^3.3.0
+
+  '@m3e/progress-indicator@1.0.0-rc.4':
+    resolution: {integrity: sha512-am5IlwA1XEamRB96iFRTkwjJh4Fu4EaOoncAMugMFVjtGeisHu7EOPNVxZJPlLygvc7Xf4gptm3B1ZFDi64R1w==}
     peerDependencies:
       '@m3e/core': 1.0.0-rc.4
       lit: ^3.3.0
@@ -4793,6 +4805,11 @@ snapshots:
       - '@floating-ui/utils'
 
   '@m3e/loading-indicator@1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)':
+    dependencies:
+      '@m3e/core': 1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)
+      lit: 3.3.1
+
+  '@m3e/progress-indicator@1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)':
     dependencies:
       '@m3e/core': 1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)
       lit: 3.3.1

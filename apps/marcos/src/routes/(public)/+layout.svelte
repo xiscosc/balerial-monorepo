@@ -2,15 +2,10 @@
 	import { type Snippet } from 'svelte';
 	import type { LayoutData } from './$types';
 	import '../../app.css';
-	import { browser } from '$app/environment';
 
 	interface Props {
 		data: LayoutData;
 		children?: Snippet;
-	}
-
-	if (browser) {
-		import('@m3e/loading-indicator');
 	}
 
 	let { children }: Props = $props();

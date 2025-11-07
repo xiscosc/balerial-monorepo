@@ -10,15 +10,10 @@
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
-	import { browser } from '$app/environment';
 
 	interface Props {
 		data: LayoutData;
 		children?: Snippet;
-	}
-
-	if (browser) {
-		import('@m3e/loading-indicator');
 	}
 
 	let { data, children }: Props = $props();

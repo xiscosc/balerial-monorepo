@@ -4,10 +4,10 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { Input } from '@/components/ui/input';
-	import Progress from '@/components/ui/progress/progress.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { PriceApiGateway } from '@/gateway/price-api.gateway';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import MaterialProgressBar from '@/components/generic/MaterialProgressBar.svelte';
 
 	let files: FileList | undefined = $state();
 	let loadingText = $state('');
@@ -134,7 +134,7 @@
 				{#if loading}
 					<div class="flex w-full flex-col items-center gap-2">
 						<span class="font-medium">{loadingText}</span>
-						<Progress value={loadingProgress} />
+						<MaterialProgressBar value={loadingProgress} />
 					</div>
 				{:else}
 					<Input id="moldFile" type="file" bind:files />
