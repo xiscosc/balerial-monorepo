@@ -27,7 +27,17 @@
 	});
 </script>
 
-<main class="flex flex-col gap-2 print:block">
+<svelte:head>
+	<style>
+		@media print {
+			@page {
+				size: A4 portrait;
+			}
+		}
+	</style>
+</svelte:head>
+
+<main class="flex flex-col gap-2 print:m-4 print:block">
 	<div
 		class="flex flex-col gap-4 p-4 print:break-inside-avoid print:pb-8 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 		id="order-set-print"

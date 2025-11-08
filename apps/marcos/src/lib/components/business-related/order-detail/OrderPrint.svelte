@@ -70,7 +70,17 @@
 	});
 </script>
 
-<main class="flex flex-col gap-2 print:block print:gap-0">
+<svelte:head>
+	<style>
+		@media print {
+			@page {
+				size: A5 portrait;
+			}
+		}
+	</style>
+</svelte:head>
+
+<main class="flex flex-col gap-2 print:m-0.5 print:block print:gap-0">
 	<div
 		class="mx-auto flex max-w-full flex-col gap-0 font-mono print:block print:w-full print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 		id="order-print"
