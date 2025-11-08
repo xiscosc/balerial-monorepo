@@ -63,9 +63,9 @@
 			</div>
 
 			<div class="flex w-2/5 flex-col gap-2">
-				<div class="flex flex-col border-1 border-gray-800 text-[10px]">
+				<div class="flex flex-col border border-gray-800 text-[10px]">
 					<div
-						class="border-b-1 border-b-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
+						class="border-b border-b-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
 					>
 						DATOS DEL CLIENTE
 					</div>
@@ -74,13 +74,13 @@
 						<span>{customer.phone}</span>
 					</div>
 				</div>
-				<div class="flex flex-col border-1 border-gray-800 text-[10px]">
+				<div class="flex flex-col border border-gray-800 text-[10px]">
 					<div class="flex flex-row">
-						<span class="w-1/2 border-r-1 border-r-gray-800 px-2 py-1 text-center font-bold">
+						<span class="w-1/2 border-r border-r-gray-800 px-2 py-1 text-center font-bold">
 							RESUMEN
 						</span>
 						<span
-							class="w-1/2 border-r-1 border-r-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
+							class="w-1/2 border-r border-r-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
 						>
 							FECHA
 						</span>
@@ -92,45 +92,45 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col border-1 border-gray-800 text-[10px]">
-			<div class="flex flex-row border-b-1 border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
-				<span class="w-[30%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Descripción</span>
-				<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Unid.</span>
-				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Precio</span>
-				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">IVA</span>
-				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">PVP</span>
-				<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">%Dto.</span>
-				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">P.C.Dto</span>
-				<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">Tot.SinIVA</span>
+		<div class="flex flex-col border border-gray-800 text-[10px]">
+			<div class="flex flex-row border-b border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
+				<span class="w-[30%] border-r border-r-gray-800 px-2 py-1 text-center">Descripción</span>
+				<span class="w-[5%] border-r border-r-gray-800 px-2 py-1 text-center">Unid.</span>
+				<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">Precio</span>
+				<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">IVA</span>
+				<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">PVP</span>
+				<span class="w-[5%] border-r border-r-gray-800 px-2 py-1 text-center">%Dto.</span>
+				<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">P.C.Dto</span>
+				<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">Tot.SinIVA</span>
 				<span class="w-[10%] px-2 py-1 text-center">Total</span>
 			</div>
 			{#each Object.values(orderSet.orders) as fullOrder (fullOrder.order.id)}
-				<div class="flex flex-row border-b-1 border-b-gray-800 font-mono last:border-b-0">
-					<span class="w-[30%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+				<div class="flex flex-row border-b border-b-gray-800 font-mono last:border-b-0">
+					<span class="w-[30%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.order.publicId}
 					</span>
-					<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[5%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.order.item.quantity}
 					</span>
-					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{(fullOrder.totals.unitPriceWithoutDiscount / 1.21).toFixed(2)}
 					</span>
-					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{(
 							fullOrder.totals.unitPriceWithoutDiscount -
 							fullOrder.totals.unitPriceWithoutDiscount / 1.21
 						).toFixed(2)}
 					</span>
-					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.totals.unitPriceWithoutDiscount.toFixed(2)}
 					</span>
-					<span class="w-[5%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[5%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.calculatedItem.discount}
 					</span>
-					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.totals.unitPrice.toFixed(2)}
 					</span>
-					<span class="w-[10%] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+					<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{(fullOrder.totals.total / 1.21).toFixed(2)}
 					</span>
 					<span class="w-[10%] px-2 py-1 text-center">
@@ -140,25 +140,25 @@
 			{/each}
 		</div>
 
-		<div class="min-h-8 flex-grow print:block"></div>
+		<div class="min-h-8 grow print:block"></div>
 
-		<div class="ml-auto flex w-fit flex-col border-1 border-gray-800 text-[10px] print:mt-auto">
-			<div class="flex flex-row border-b-1 border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+		<div class="ml-auto flex w-fit flex-col border border-gray-800 text-[10px] print:mt-auto">
+			<div class="flex flex-row border-b border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
+				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center">
 					Base Imponible
 				</span>
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">IVA</span>
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">RE</span>
+				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center">IVA</span>
+				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center">RE</span>
 				<span class="w-[100px] px-2 py-1 text-center">TOTAL</span>
 			</div>
 			<div class="flex flex-row font-mono">
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center">
 					{base.toFixed(2)}
 				</span>
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center">
+				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center">
 					{tax.toFixed(2)}
 				</span>
-				<span class="w-[100px] border-r-1 border-r-gray-800 px-2 py-1 text-center"> 00 </span>
+				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center"> 00 </span>
 				<span class="w-[100px] px-2 py-1 text-center font-bold">
 					{total.toFixed(2)}
 				</span>

@@ -89,7 +89,7 @@
 		<div class="border-t border-r border-l border-black">
 			<div class="flex flex-row">
 				<div
-					class="flex flex-grow flex-col items-center justify-center border-r border-black px-1 py-0.5"
+					class="flex grow flex-col items-center justify-center border-r border-black px-1 py-0.5"
 				>
 					<div class="flex items-center justify-center py-0.5">
 						<Qr
@@ -104,21 +104,21 @@
 						{order.publicId}
 					</div>
 				</div>
-				<div
-					class="flex min-w-0 flex-grow-[2] flex-col items-center justify-center p-0.5 text-[10px]"
-				>
+				<div class="flex min-w-0 grow-2 flex-col items-center justify-center p-0.5 text-[10px]">
 					<img class="h-[55px]" src={asset('/mmlogo.png')} alt="logo" />
-					<div class="max-w-full font-sans text-[10px] break-words whitespace-normal">
-						<p class="m-0 text-center break-words whitespace-normal">
+					<div class="max-w-full font-sans text-[10px] wrap-break-word whitespace-normal">
+						<p class="m-0 text-center wrap-break-word whitespace-normal">
 							Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920
 						</p>
-						<p class="m-0 text-center break-words whitespace-normal">
+						<p class="m-0 text-center wrap-break-word whitespace-normal">
 							www.marcsimoldures.com - mmss@marcsimoldures.com
 						</p>
-						<p class="m-0 text-center break-words whitespace-normal">
+						<p class="m-0 text-center wrap-break-word whitespace-normal">
 							Horario de lunes a viernes de 09:00 a 18:00,
 						</p>
-						<p class="m-0 text-center break-words whitespace-normal">sábados de 09:30 a 13:15</p>
+						<p class="m-0 text-center wrap-break-word whitespace-normal">
+							sábados de 09:30 a 13:15
+						</p>
 					</div>
 				</div>
 			</div>
@@ -419,7 +419,7 @@
 					<div class="border-b border-black bg-[#ececec] px-0.5 py-0.5 font-bold text-[#393939]">
 						Total {order.hasArrow ? '⬇︎' : ''}
 					</div>
-					<div class="flex flex-grow items-center justify-center p-0.5 text-[13px]">
+					<div class="flex grow items-center justify-center p-0.5 text-[13px]">
 						{totals.total.toFixed(2)} €
 					</div>
 				</div>
