@@ -32,6 +32,7 @@
 		@media print {
 			@page {
 				size: A4 portrait;
+				margin: 0 !important;
 			}
 		}
 	</style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type HTMLAnchorAttributes } from 'svelte/elements';
+	import type { HTMLAnchorAttributes } from 'svelte/elements';
 	import {
 		ButtonVariant,
 		ButtonTextVariant,

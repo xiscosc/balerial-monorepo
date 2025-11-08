@@ -75,6 +75,7 @@
 		@media print {
 			@page {
 				size: A5 portrait;
+				margin: 0 !important;
 			}
 		}
 	</style>
