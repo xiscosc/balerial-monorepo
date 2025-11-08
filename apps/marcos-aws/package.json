@@ -14,7 +14,7 @@
 		"@types/eslint": "9.6.1",
 		"@types/node": "22.13.14",
 		"aws-cdk": "2.1030.0",
-		"esbuild": "0.25.9",
+		"esbuild": "0.25.12",
 		"typescript": "5.9.3"
 	},
 	"type": "module",
