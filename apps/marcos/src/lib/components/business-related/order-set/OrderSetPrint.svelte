@@ -34,6 +34,18 @@
 				size: A4 portrait;
 				margin: 0 !important;
 			}
+
+			* {
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+			}
+
+			body {
+				margin: 0 !important;
+				-webkit-text-size-adjust: 100%;
+			}
 		}
 	</style>
 </svelte:head>
