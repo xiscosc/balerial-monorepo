@@ -52,11 +52,11 @@
 
 <main class="flex flex-col gap-2 print:m-4 print:block">
 	<div
-		class="flex flex-col gap-4 p-4 print:break-inside-avoid print:pb-8 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
+		class="flex flex-col gap-4 p-4 print:grid print:max-h-[calc(297mm-2rem)] print:min-h-[calc(297mm-2rem)] print:break-inside-avoid print:grid-rows-[auto_1fr_auto] print:pb-8 print:[-webkit-print-color-adjust:exact] print:[print-color-adjust:exact]"
 		id="order-set-print"
 	>
-		<div class="mb-4 flex flex-row justify-between gap-2">
-			<div class="flex h-[109px] w-2/5 flex-col items-center justify-center p-0.5 text-[9px]">
+		<div class="mb-4 flex flex-row justify-between gap-2 print:my-8">
+			<div class="flex w-2/5 flex-col items-center justify-center p-0.5 text-[9px]">
 				<img class="h-[75px]" src={asset('/mmlogo.png')} alt="logo" />
 				<div class="font-sans">
 					<p class="m-0 text-center">Polígono de Son Rossinyol - Gremi Hortolans 19 - 971666920</p>
@@ -66,7 +66,7 @@
 				</div>
 			</div>
 
-			<div class="flex h-[109px] w-1/5 items-center justify-center">
+			<div class="flex w-1/5 items-start">
 				<Qr
 					size={109}
 					qrData={QrUtilities.generateQrStringForOrderSet({
@@ -75,7 +75,7 @@
 				></Qr>
 			</div>
 
-			<div class="flex w-2/5 flex-col gap-2">
+			<div class="flex w-2/5 flex-col justify-between gap-2">
 				<div class="flex flex-col border border-gray-800 text-[10px]">
 					<div
 						class="border-b border-b-gray-800 bg-zinc-400 px-2 py-1 text-center font-bold text-gray-800"
@@ -105,7 +105,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col border border-gray-800 text-[10px]">
+		<div class="flex flex-col border border-gray-800 text-[10px] print:self-start">
 			<div class="flex flex-row border-b border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
 				<span class="w-[30%] border-r border-r-gray-800 px-2 py-1 text-center">Descripción</span>
 				<span class="w-[5%] border-r border-r-gray-800 px-2 py-1 text-center">Unid.</span>
@@ -153,9 +153,7 @@
 			{/each}
 		</div>
 
-		<div class="min-h-8 grow print:block"></div>
-
-		<div class="ml-auto flex w-fit flex-col border border-gray-800 text-[10px] print:mt-auto">
+		<div class="ml-auto flex w-fit flex-col border border-gray-800 text-[10px]">
 			<div class="flex flex-row border-b border-b-gray-800 bg-zinc-400 font-bold text-gray-800">
 				<span class="w-[100px] border-r border-r-gray-800 px-2 py-1 text-center">
 					Base Imponible
