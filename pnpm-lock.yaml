@@ -42,14 +42,14 @@ importers:
         specifier: 1.11.1
         version: 1.11.1(@sveltejs/kit@2.48.4(@sveltejs/vite-plugin-svelte@6.2.1(svelte@5.43.4)(vite@7.2.2(@types/node@22.13.14)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.3)))(svelte@5.43.4)(vite@7.2.2(@types/node@22.13.14)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.20.3)))(svelte@5.43.4)
       '@m3e/core':
-        specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)
+        specifier: 1.0.2
+        version: 1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1)
       '@m3e/loading-indicator':
-        specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)
+        specifier: 1.0.2
+        version: 1.0.2(@m3e/core@1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)
       '@m3e/progress-indicator':
-        specifier: 1.0.0-rc.4
-        version: 1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)
+        specifier: 1.0.2
+        version: 1.0.2(@m3e/core@1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)
       '@marcsimolduressonsardina/core':
         specifier: workspace:*
         version: link:../../packages/marcos-core
@@ -1097,21 +1097,21 @@ packages:
     peerDependencies:
       svelte: ^5
 
-  '@m3e/core@1.0.0-rc.4':
-    resolution: {integrity: sha512-BGnL+0Z/+RvvmA0bSkrbuIMmBddex5hSDG37rZsm/XFscTyMyZiK9HgR/ioLiLgzk11C1DOt2LRaZSRe0boXBw==}
+  '@m3e/core@1.0.2':
+    resolution: {integrity: sha512-MsxXrUaDaoWPvIgf4JaZkDRB/nq15qly8V2hoZjzl70ExOqe4dRhrRMqim6UMGFcO1ZZnOX4K9MnhnznxCQb1Q==}
     peerDependencies:
       lit: ^3.3.0
 
-  '@m3e/loading-indicator@1.0.0-rc.4':
-    resolution: {integrity: sha512-gbKP6/lTdegqR/codm+sqxlb859Mhez5l6fMWO3PU+xG42PKlWDPL4mpbXJU/lcNxIgs6BvE1Y6xKTsHvpHG4g==}
+  '@m3e/loading-indicator@1.0.2':
+    resolution: {integrity: sha512-yPaeTSyTX7Q72ALvYxF4ocwWWFqY/lRXBtCi10DkWvtATXQvWZY7eef4mYn4HdjWIoT1Dg1/oOdmIl26uYl1pQ==}
     peerDependencies:
-      '@m3e/core': 1.0.0-rc.4
+      '@m3e/core': 1.0.2
       lit: ^3.3.0
 
-  '@m3e/progress-indicator@1.0.0-rc.4':
-    resolution: {integrity: sha512-am5IlwA1XEamRB96iFRTkwjJh4Fu4EaOoncAMugMFVjtGeisHu7EOPNVxZJPlLygvc7Xf4gptm3B1ZFDi64R1w==}
+  '@m3e/progress-indicator@1.0.2':
+    resolution: {integrity: sha512-GRllznjjANZTBk4nCpb7mbgSMmYIg+XppxFsOhCKgTGv15zeS2o1QaFF95Kfr3bRIgsEbK83qb3h1JFwKskuwQ==}
     peerDependencies:
-      '@m3e/core': 1.0.0-rc.4
+      '@m3e/core': 1.0.2
       lit: ^3.3.0
 
   '@mapbox/node-pre-gyp@2.0.0':
@@ -4806,7 +4806,7 @@ snapshots:
     dependencies:
       svelte: 5.43.4
 
-  '@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)':
+  '@m3e/core@1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1)':
     dependencies:
       '@floating-ui/dom': 1.7.3
       composed-offset-position: 0.0.6(@floating-ui/utils@0.2.10)
@@ -4814,14 +4814,14 @@ snapshots:
     transitivePeerDependencies:
       - '@floating-ui/utils'
 
-  '@m3e/loading-indicator@1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)':
+  '@m3e/loading-indicator@1.0.2(@m3e/core@1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)':
     dependencies:
-      '@m3e/core': 1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)
+      '@m3e/core': 1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1)
       lit: 3.3.1
 
-  '@m3e/progress-indicator@1.0.0-rc.4(@m3e/core@1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)':
+  '@m3e/progress-indicator@1.0.2(@m3e/core@1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1))(lit@3.3.1)':
     dependencies:
-      '@m3e/core': 1.0.0-rc.4(@floating-ui/utils@0.2.10)(lit@3.3.1)
+      '@m3e/core': 1.0.2(@floating-ui/utils@0.2.10)(lit@3.3.1)
       lit: 3.3.1
 
   '@mapbox/node-pre-gyp@2.0.0':
