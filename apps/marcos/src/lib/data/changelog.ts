@@ -62,7 +62,18 @@ export const Changelogs: Changelog[] = [
 		version: 20251027,
 		title: 'Octubre 2025',
 		items: [
-			{ text: 'Acciones en lote: Recogido, pagado y facturado', type: ChangelogItemType.NEW },
+			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY }
+		]
+	},
+	{
+		version: 20251117,
+		title: 'Noviembre 2025',
+		items: [
+			{
+				text: 'Acciones en lote: WhatsApp, recogido, pagado y facturado',
+				type: ChangelogItemType.NEW
+			},
 			{ text: 'Creación de listado de pedidos', type: ChangelogItemType.NEW },
 			{ text: 'Nuevo sistema de impresión', type: ChangelogItemType.TECHNICAL },
 			{ text: 'Base e IVA en impresión de pedidos', type: ChangelogItemType.MINOR_CHANGE },
@@ -71,14 +82,6 @@ export const Changelogs: Changelog[] = [
 				type: ChangelogItemType.SECURITY
 			},
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY }
-		]
-	},
-	{
-		version: 20251113,
-		title: 'Noviembre 2025',
-		items: [
-			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
-			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY }
 		]
 	}
 ];
