@@ -12,7 +12,8 @@ import {
 	TransactWriteCommand,
 	type TransactWriteCommandInput,
 	type NativeAttributeValue,
-	ScanCommandInput
+	ScanCommandInput,
+	BatchGetCommand
 } from '@aws-sdk/lib-dynamodb';
 import _ from 'lodash';
 import type { IDynamoPaginatedResult } from '../type/result.dynamodb.type';
@@ -21,7 +22,6 @@ import {
 	IPrimaryDynamoDbIndex,
 	ISecondaryDynamoDbIndex
 } from '../type/index.dynamodb.type';
-import pino, { Logger } from 'pino';
 import {
 	DynamoFilterElement,
 	DynamoFilterExpression,
@@ -36,17 +36,27 @@ import {
 	DynamoGetRequestPaginated,
 	DynamoScanRequest
 } from '../type/request.dynamodb.type';
+import pino, { Logger } from 'pino';
+import pretty from 'pino-pretty';
+
 export class BalerialDynamoRepository<T> {
 	private readonly defaultLimit: number = 25;
 	private client: DynamoDBDocumentClient;
 	private logger: Logger;
+	private readonly hasDefaultFilters: boolean;
 
 	constructor(
 		config: { region?: string; credentials?: AwsCredentialIdentity },
 		private readonly table: BalerialDynamoTable
 	) {
-		this.logger = pino();
+		this.logger = pino(
+			{ base: { name: `BalerialDynamoRepository - ${table.getTableName()}` } },
+			pretty({
+				colorize: true
+			})
+		);
 
+		this.hasDefaultFilters = table.getDefaultFilters().length > 0;
 		try {
 			this.client = DynamoDBDocument.from(new DynamoDBClient(config), {
 				marshallOptions: { removeUndefinedValues: true }
@@ -259,6 +269,45 @@ export class BalerialDynamoRepository<T> {
 		}
 	}
 
+	async batchGet(values: { partitionKey: string; sortKey?: string | number }[]) {
+		if (this.hasDefaultFilters) {
+			this.logger.warn('BatchGet - This method will run without filters');
+		}
+
+		const getRequests = values.map((value) => {
+			const key: {
+				[x: string]: string | number;
+			} = {
+				[this.table.getPrimaryIndex().partitionKeyName]: value.partitionKey
+			};
+
+			const sortKeyName = this.table.getPrimaryIndex().sortKeyName;
+			if (sortKeyName && !value.sortKey) {
+				throw Error("Sort key value can't be null");
+			}
+
+			if (sortKeyName && value.sortKey) {
+				key[sortKeyName] = value.sortKey;
+			}
+
+			return key;
+		});
+		const chunkedRequests = _.chunk(getRequests, 100);
+		const results: T[] = [];
+		try {
+			for (const chunk of chunkedRequests) {
+				const response = await this.batchRead({ Keys: chunk });
+				if (response.Responses && response.Responses[this.table.getTableName()]) {
+					results.push(...(response.Responses[this.table.getTableName()] as T[]));
+				}
+			}
+			return results;
+		} catch (error: unknown) {
+			this.logError('batchGet', error);
+			throw error;
+		}
+	}
+
 	async batchPut(dtoList: T[]) {
 		const putRequests = dtoList.map((dto) => ({
 			PutRequest: {
@@ -378,9 +427,24 @@ export class BalerialDynamoRepository<T> {
 		}
 	}
 
+	private async batchRead(requests: { Keys: { [x: string]: string | number }[] }) {
+		const params = {
+			RequestItems: {
+				[this.table.getTableName()]: requests
+			}
+		};
+
+		try {
+			return this.client.send(new BatchGetCommand(params));
+		} catch (error: unknown) {
+			this.logError('batchRead', error);
+			throw error;
+		}
+	}
+
 	private logError(functionName: string, error: unknown, otherInfo?: object) {
 		this.logger.error(
-			`Error repo ${this.table.getTableName()}, partitionKey ${this.table.getPrimaryIndex().partitionKeyName}, sortkey ${
+			`PartitionKey ${this.table.getPrimaryIndex().partitionKeyName}, sortkey ${
 				this.table.getPrimaryIndex().sortKeyName
 			}, and function ${functionName}: ${(error as Error).toString()}`
 		);

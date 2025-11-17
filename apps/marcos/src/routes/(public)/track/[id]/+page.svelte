@@ -6,12 +6,12 @@
 	import { DateTime } from 'luxon';
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction } from '@/components/generic/button/button.enum';
 	import OrderInfoStep from '@/components/business-related/order-detail/OrderInfoStep.svelte';
 	import { QrOrigin } from '@/type/qr.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { QrUtilities } from '@/shared/order/qr.utilities';
+	import { asset, resolve } from '$app/paths';
+	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
 
 	interface Props {
 		data: PageData;
@@ -39,14 +39,10 @@
 >
 	<div class="flex w-full flex-col items-center gap-2">
 		<div
-			class="flex w-full flex-col items-center justify-center gap-4 rounded-xl border bg-white pb-4 pt-2 md:w-2/3 lg:w-1/3"
+			class="flex w-full flex-col items-center justify-center gap-4 rounded-xl border bg-white pt-2 pb-4 md:w-2/3 lg:w-1/3"
 		>
 			<div class="flex w-full flex-col items-center">
-				<img
-					class="w-1/2"
-					src="https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png"
-					alt="logo"
-				/>
+				<img class="w-1/2" src={asset('/mmlogo.png')} alt="logo" />
 				<span class="px-2 text-center text-[0.625rem]">
 					Horario de lunes a viernes de 09:00 a 18:00, sábados de 09:30 a 13:15
 				</span>
@@ -55,7 +51,7 @@
 			<div class="flex rounded-xl border p-3">
 				<Qr
 					size={125}
-					qrData={QrUtilities.generateQrString({
+					qrData={QrUtilities.generateQrStringForOrder({
 						orderId: data.fullOrder.order.id,
 						origin: QrOrigin.CUSTOMER_V2
 					})}
@@ -64,11 +60,19 @@
 			<span class="font-mono text-xs">
 				{data.fullOrder.order.publicId}
 			</span>
-			<span
-				class={`rounded-2xl border px-3 py-1 text-xs font-semibold uppercase text-white ${getStatusUIInfo(data.fullOrder.order.status).staticColor}`}
-			>
-				{orderStatusMap[data.fullOrder.order.status]}
-			</span>
+			<div class="flex flex-row gap-2">
+				<span
+					class={`rounded-2xl border-black px-3 py-1 text-xs font-semibold text-white uppercase ${getStatusUIInfo(data.fullOrder.order.status).staticColor}`}
+				>
+					{orderStatusMap[data.fullOrder.order.status]}
+				</span>
+				<span
+					class="rounded-2xl border-indigo-900 bg-indigo-700 px-3 py-1 text-xs font-semibold text-white uppercase"
+				>
+					{data.fullOrder.totals.total.toFixed(2) + ' €'}
+				</span>
+			</div>
+
 			<div class="flex flex-col gap-3 px-5">
 				<div class="flex flex-col gap-2">
 					<OrderInfoStep
@@ -98,13 +102,7 @@
 					/>
 				</div>
 
-				<Button
-					icon={IconType.PHONE}
-					text="Llamar"
-					action={ButtonAction.LINK}
-					link="tel:+34971666920"
-				></Button>
-
+				<MarcosLink icon={IconType.PHONE} href="tel:+34971666920">Llamar</MarcosLink>
 				<span class="text-center text-[0.625rem]">
 					Una vez pasados <span class="font-semibold">
 						15 días desde la fecha estipulada de entrega
@@ -113,7 +111,11 @@
 				</span>
 			</div>
 		</div>
-		<a href={`/s/${data.fullOrder.order.shortId}`} target="_blank" class="text-xs">
+		<a
+			href={resolve('/(public)/s/[id]', { id: data.fullOrder.order.shortId })}
+			target="_blank"
+			class="text-xs"
+		>
 			<span class="flex items-center gap-1 hover:underline">
 				<Icon type={IconType.PRINTER} size={IconSize.SMALL}></Icon> Versión para imprimir
 			</span>

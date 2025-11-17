@@ -46,6 +46,18 @@ export class CustomerRepositoryDynamoDb {
 		return dto[0];
 	}
 
+	public async getCustomersByIds(customerIds: string[]): Promise<Record<string, CustomerDto>> {
+		const ids = customerIds.map((id) => ({ partitionKey: id }));
+		const dtos = await this.repository.batchGet(ids);
+		const result: Record<string, CustomerDto> = {};
+		dtos
+			.filter((d) => d.storeId === this.config.storeId)
+			.forEach((dto) => {
+				result[dto.uuid] = dto;
+			});
+		return result;
+	}
+
 	public async deleteCustomer(customer: CustomerDto): Promise<void> {
 		this.checkCustomerStore(customer);
 		await this.repository.batchDelete([{ partitionKey: customer.uuid }]);

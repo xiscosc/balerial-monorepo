@@ -6,13 +6,14 @@
 	import OrderElements from '@/components/business-related/order-detail/OrderElements.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { Input } from '@/components/ui/input';
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
@@ -86,14 +87,20 @@
 				</div>
 
 				{#if loading}
-					<ProgressBar text="Buscando clientes" />
+					<Loading text="Buscando clientes" />
 				{:else if !firstTimeSearch}
 					<ScrollArea class="h-72 rounded-md border lg:col-span-2">
 						<div class="p-4">
-							<h4 class="mb-4 text-sm font-medium leading-none">Clientes encontrados</h4>
+							<h4 class="mb-4 text-sm leading-none font-medium">Clientes encontrados</h4>
 							{#each customers as customer (customer.id)}
 								<button
-									onclick={() => goto(`/orders/${data.fullOrder.order.id}/link/${customer.id}`)}
+									onclick={() =>
+										goto(
+											resolve(`/(app)/(main)/orders/[id]/link/[customerId]`, {
+												id: data.fullOrder.order.id,
+												customerId: customer.id
+											})
+										)}
 									class="flexr-row flex w-full items-center gap-2 rounded-md p-2 hover:bg-gray-50"
 									type="button"
 								>

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import type { ListPriceWithMold, PricingType } from '@marcsimolduressonsardina/core/type';
-	import Button from '@/components/generic/button/Button.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Label from '@/components/ui/label/label.svelte';
 	import Input from '@/components/ui/input/input.svelte';
@@ -91,26 +92,36 @@
 			</div>
 			{@render children?.()}
 			<div class="w-full lg:col-span-2 lg:w-auto">
-				<Button
-					icon={IconType.PLUS}
-					iconSize={IconSize.BIG}
-					disabled={!selectorState.getCanBeAdded()}
-					tooltipText={selectorState.getTooltipText()}
-					text="Añadir a la lista"
-					onClick={() => selectorState.add()}
-				></Button>
+				<TooltipButtonWrapper
+					text={selectorState.getTooltipText() ?? ''}
+					enabled={!selectorState.getCanBeAdded()}
+				>
+					<MarcosButton
+						icon={IconType.PLUS}
+						iconSize={IconSize.BIG}
+						disabled={!selectorState.getCanBeAdded()}
+						onclick={() => selectorState.add()}
+					>
+						Añadir a la lista
+					</MarcosButton>
+				</TooltipButtonWrapper>
 			</div>
 		{:else}
 			{@render children?.()}
 			<div class="w-full lg:w-auto">
-				<Button
-					icon={IconType.PLUS}
-					iconSize={IconSize.BIG}
-					disabled={!selectorState.getCanBeAdded()}
-					tooltipText={selectorState.getTooltipText()}
-					text="Añadir a la lista"
-					onClick={() => selectorState.add()}
-				></Button>
+				<TooltipButtonWrapper
+					text={selectorState.getTooltipText() ?? ''}
+					enabled={!selectorState.getCanBeAdded()}
+				>
+					<MarcosButton
+						icon={IconType.PLUS}
+						iconSize={IconSize.BIG}
+						disabled={!selectorState.getCanBeAdded()}
+						onclick={() => selectorState.add()}
+					>
+						Añadir a la lista
+					</MarcosButton>
+				</TooltipButtonWrapper>
 			</div>
 		{/if}
 	</div>

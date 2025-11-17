@@ -7,6 +7,31 @@
 	],
 	"versionGroups": [
 		{
+			"label": "Group 1: Ignore 'xlsx' completely",
+			"dependencies": [
+				"xlsx"
+			],
+			"isIgnored": true
+		},
+		{
+			"label": "Group 2: Pin internal packages to 'workspace:*'",
+			"dependencies": [
+				"@balerial/**",
+				"@marcsimolduressonsardina/**",
+				"@repo/**"
+			],
+			"packages": [
+				"**"
+			],
+			"pinVersion": "workspace:*",
+			"dependencyTypes": [
+				"dependencies",
+				"devDependencies",
+				"peerDependencies"
+			]
+		},
+		{
+			"label": "Group 3: Sync all other external packages",
 			"dependencies": [
 				"**"
 			],

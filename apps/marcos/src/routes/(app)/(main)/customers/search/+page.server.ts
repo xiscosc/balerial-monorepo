@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { z } from 'zod';
 
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
@@ -11,13 +11,13 @@ const schema = z.object({
 });
 
 export const load = async ({ locals }) => {
-	const form = await superValidate(zod(schema));
+	const form = await superValidate(zod4(schema));
 	return { form, canSeeList: AuthService.isAdmin(locals.user) };
 };
 
 export const actions = {
 	async default({ request, locals }) {
-		const form = await superValidate(request, zod(schema));
+		const form = await superValidate(request, zod4(schema));
 
 		if (!form.valid) {
 			// Again, return { form } and things will just work.

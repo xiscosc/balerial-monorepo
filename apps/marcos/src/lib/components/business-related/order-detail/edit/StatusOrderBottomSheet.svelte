@@ -2,8 +2,8 @@
 	import * as Form from '@/components/ui/form/index.js';
 	import * as NativeSelect from '@/components/ui/native-select/index.js';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonAction, ButtonText } from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
+	import { ButtonTextVariant } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { OrderActionNames, orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
@@ -44,15 +44,16 @@
 	title="Cambiar estado"
 	description="Seleccione el nuevo estado del pedido"
 	iconType={getStatusUIInfo(order.status).statusIcon}
-	triggerStyle={getStatusUIInfoWithPaymentInfo(order.status, fullOrder.totals.payed, true).colors}
-	triggerTextType={ButtonText.NO_COLOR}
 >
-	{#snippet trigger()}
-		<Button
-			text="Estado: {orderStatusMap[order.status]}"
+	{#snippet trigger({ props }: { props: Record<string, unknown> })}
+		<MarcosButton
+			{...props}
 			icon={getStatusUIInfo(order.status).statusIcon}
-			action={ButtonAction.TRIGGER}
-		></Button>
+			variant={getStatusUIInfoWithPaymentInfo(order.status, fullOrder.totals.payed, true).colors}
+			textVariant={ButtonTextVariant.NO_COLOR}
+		>
+			Estado: {orderStatusMap[order.status]}
+		</MarcosButton>
 	{/snippet}
 
 	{#snippet action()}
@@ -80,37 +81,37 @@
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
-					<Button
-						action={ButtonAction.CLICK}
-						onClick={() => triggerForm(OrderStatus.FINISHED)}
-						textType={ButtonText.NO_COLOR}
-						text="Cambiar a {orderStatusMap[OrderStatus.FINISHED]}"
+					<MarcosButton
+						onclick={() => triggerForm(OrderStatus.FINISHED)}
+						textVariant={ButtonTextVariant.NO_COLOR}
 						icon={getStatusUIInfo(OrderStatus.FINISHED).statusIcon}
-						style={getStatusUIInfo(OrderStatus.FINISHED, true).colors}
-					></Button>
+						variant={getStatusUIInfo(OrderStatus.FINISHED, true).colors}
+					>
+						Cambiar a {orderStatusMap[OrderStatus.FINISHED]}
+					</MarcosButton>
 					<Divider hideOnDesktop={false}></Divider>
 				{/if}
 
 				{#if statuses.includes(OrderStatus.PICKED_UP)}
-					<Button
-						action={ButtonAction.CLICK}
-						textType={ButtonText.NO_COLOR}
-						onClick={() => triggerForm(OrderStatus.PICKED_UP)}
-						text="Cambiar a {orderStatusMap[OrderStatus.PICKED_UP]}"
+					<MarcosButton
+						textVariant={ButtonTextVariant.NO_COLOR}
+						onclick={() => triggerForm(OrderStatus.PICKED_UP)}
 						icon={getStatusUIInfo(OrderStatus.PICKED_UP).statusIcon}
-						style={getStatusUIInfo(OrderStatus.PICKED_UP, true).colors}
-					></Button>
+						variant={getStatusUIInfo(OrderStatus.PICKED_UP, true).colors}
+					>
+						Cambiar a {orderStatusMap[OrderStatus.PICKED_UP]}
+					</MarcosButton>
 				{/if}
 
 				{#if statuses.includes(OrderStatus.PENDING)}
-					<Button
-						action={ButtonAction.CLICK}
-						textType={ButtonText.NO_COLOR}
-						onClick={() => triggerForm(OrderStatus.PENDING)}
-						text="Cambiar a {orderStatusMap[OrderStatus.PENDING]}"
+					<MarcosButton
+						textVariant={ButtonTextVariant.NO_COLOR}
+						onclick={() => triggerForm(OrderStatus.PENDING)}
 						icon={getStatusUIInfo(OrderStatus.PENDING).statusIcon}
-						style={getStatusUIInfo(OrderStatus.PENDING, true).colors}
-					></Button>
+						variant={getStatusUIInfo(OrderStatus.PENDING, true).colors}
+					>
+						Cambiar a {orderStatusMap[OrderStatus.PENDING]}
+					</MarcosButton>
 				{/if}
 			{/if}
 		</form>

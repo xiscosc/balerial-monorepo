@@ -1,8 +1,8 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form/index.js';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { Input } from '@/components/ui/input';
 	import {
@@ -10,7 +10,7 @@
 		type PromoteOrderSchema
 	} from '@/shared/form-schema/order.form-schema';
 	import { dateProxy, superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { OrderActionNames } from '@/shared/mappings/order.mapping';
 	interface Props {
@@ -19,7 +19,7 @@
 
 	let { data }: Props = $props();
 	const form = superForm(data, {
-		validators: zodClient(promoteOrderSchema),
+		validators: zod4Client(promoteOrderSchema),
 		id: 'promote-order-form'
 	});
 
@@ -32,12 +32,16 @@
 	description="Rellene la fecha de entrega para el pedido. Esta acción no se puede deshacer. El nuevo
 pedido conservará todos los elementos, precios y fotos del presupuesto."
 	iconType={IconType.ORDER_DEFAULT}
-	triggerTextType={ButtonText.GRAY}
-	triggerStyle={ButtonStyle.ORDER_GENERIC}
 >
-	{#snippet trigger()}
-		<Button icon={IconType.ORDER_DEFAULT} text="Convertir en pedido" action={ButtonAction.TRIGGER}
-		></Button>
+	{#snippet trigger({ props }: { props: Record<string, unknown> })}
+		<MarcosButton
+			{...props}
+			icon={IconType.ORDER_DEFAULT}
+			textVariant={ButtonTextVariant.GRAY}
+			variant={ButtonVariant.ORDER_GENERIC}
+		>
+			Convertir en pedido
+		</MarcosButton>
 	{/snippet}
 
 	{#snippet action()}
@@ -60,8 +64,7 @@ pedido conservará todos los elementos, precios y fotos del presupuesto."
 					<Form.Description>La fecha debe ser posterior o igual a hoy.</Form.Description>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Button text="Convertir en pedido" icon={IconType.EDIT} action={ButtonAction.SUBMIT}
-				></Button>
+				<MarcosButton icon={IconType.EDIT} type="submit">Convertir en pedido</MarcosButton>
 			{/if}
 		</form>
 	{/snippet}

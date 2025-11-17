@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import ChangelogItem from '@/components/business-related/config/ChangelogItem.svelte';
 	import { Changelogs } from '@/data/changelog';
@@ -23,7 +24,7 @@
 
 		if (tapCount >= requiredTaps) {
 			tapCount = 0;
-			goto('/config/debug');
+			goto(resolve('/config/debug'));
 		} else {
 			tapTimer = setTimeout(() => {
 				tapCount = 0;
@@ -40,8 +41,8 @@
 
 <div class="flex flex-col gap-4">
 	<div
-		on:click={handleHeadingTap}
-		on:keydown={handleKeyDown}
+		onclick={handleHeadingTap}
+		onkeydown={handleKeyDown}
 		role="button"
 		tabindex="0"
 		class="cursor-defaul"
@@ -53,27 +54,30 @@
 		<div
 			class="flex w-full flex-col place-content-center items-center justify-center gap-4 p-2 md:grid md:grid-cols-2 lg:grid-cols-3"
 		>
-			<Button
-				link="/config/prices/molds"
-				text="Cargar molduras"
+			<MarcosButton
+				onclick={() => goto(resolve('/config/prices/molds'))}
 				icon={IconType.MOLD}
-				style={ButtonStyle.NEUTRAL}
-			></Button>
+				variant={ButtonVariant.NEUTRAL}
+			>
+				Cargar molduras
+			</MarcosButton>
 
-			<Button
-				link="/config/prices/new"
-				text="Nuevo precio"
+			<MarcosButton
+				onclick={() => goto(resolve('/config/prices/new'))}
 				icon={IconType.COINS}
-				style={ButtonStyle.FORM}
-			></Button>
+				variant={ButtonVariant.FORM}
+			>
+				Nuevo precio
+			</MarcosButton>
 
-			<Button
-				link="/config/prices/list"
-				text="Lista de precios"
+			<MarcosButton
+				onclick={() => goto(resolve('/config/prices/list'))}
 				icon={IconType.LIST}
-				style={ButtonStyle.ORDER_GENERIC}
-				textType={ButtonText.GRAY}
-			></Button>
+				variant={ButtonVariant.ORDER_GENERIC}
+				textVariant={ButtonTextVariant.GRAY}
+			>
+				Lista de precios
+			</MarcosButton>
 		</div>
 	</Box>
 
@@ -81,12 +85,13 @@
 		<div
 			class="flex w-full flex-col place-content-center items-center justify-center gap-4 p-2 md:grid md:grid-cols-2 lg:grid-cols-3"
 		>
-			<Button
-				link="/config/orders/locations"
-				text="Editar ubicaciones"
-				style={ButtonStyle.NEUTRAL}
+			<MarcosButton
+				onclick={() => goto(resolve('/config/orders/locations'))}
+				variant={ButtonVariant.NEUTRAL}
 				icon={IconType.LOCATION}
-			></Button>
+			>
+				Editar ubicaciones
+			</MarcosButton>
 		</div>
 	</Box>
 
@@ -101,13 +106,14 @@
 				/>
 			{/each}
 			<div class="flex justify-center pt-2">
-				<Button
-					link="/config/changelog"
-					text="Ver todos los cambios"
+				<MarcosButton
+					onclick={() => goto(resolve('/config/changelog'))}
 					icon={IconType.CHANGELOG}
-					style={ButtonStyle.NEUTRAL}
-					textType={ButtonText.WHITE}
-				/>
+					variant={ButtonVariant.NEUTRAL}
+					textVariant={ButtonTextVariant.WHITE}
+				>
+					Ver todos los cambios
+				</MarcosButton>
 			</div>
 		</div>
 	</Box>

@@ -11,7 +11,7 @@ const { handle } = SvelteKitAuth({
 	providers,
 	theme: {
 		colorScheme: 'light',
-		logo: 'https://marcsimoldures.com/wp-content/uploads/2017/02/MMlogo111.png'
+		logo: '/mmlogo.png'
 	},
 	callbacks: {
 		async jwt({ token, profile }) {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { Toaster, toast } from 'svelte-sonner';
 	import { enhance as sEnhance } from '$app/forms';
 	import * as Form from '@/components/ui/form/index.js';
@@ -17,8 +17,7 @@
 		type MaxArea,
 		type MaxAreaM2
 	} from '@marcsimolduressonsardina/core/type';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
@@ -31,9 +30,10 @@
 	import { fitFormulas } from '@marcsimolduressonsardina/core/util';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import Step from '@/components/generic/Step.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import { SvelteMap } from 'svelte/reactivity';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	interface Props {
 		data: SuperValidated<Infer<LisPriceSchemaEdit | LisPriceSchemaNew>>;
@@ -42,7 +42,7 @@
 
 	let { data, isNew }: Props = $props();
 	const form = superForm(data, {
-		validators: zodClient(isNew ? listPriceSchemaNew : listPriceSchemaEdit),
+		validators: zod4Client(isNew ? listPriceSchemaNew : listPriceSchemaEdit),
 		dataType: 'json'
 	});
 
@@ -158,7 +158,7 @@
 		<div class="flex flex-col gap-2">
 			<form use:enhance method="post" action="?/createOrEdit">
 				{#if $submitting}
-					<ProgressBar text="Guardando precio" />
+					<Loading text="Guardando precio" />
 				{:else}
 					<div class="flex flex-col gap-2">
 						<div class="flex w-full flex-col place-content-center gap-2 lg:grid lg:grid-cols-2">
@@ -258,7 +258,9 @@
 											<Input type="number" step="0.01" name="piecePrice" bind:value={priceValue} />
 										</div>
 										<div class="flex-1">
-											<Button text="Añadir" icon={IconType.PLUS} onClick={handleAddArea}></Button>
+											<MarcosButton icon={IconType.PLUS} onclick={handleAddArea}>
+												Añadir
+											</MarcosButton>
 										</div>
 									</div>
 
@@ -300,7 +302,9 @@
 									</div>
 
 									<div class="lg:col-span-2">
-										<Button text="Añadir" icon={IconType.PLUS} onClick={handleAddAreaM2} />
+										<MarcosButton icon={IconType.PLUS} onclick={handleAddAreaM2}>
+											Añadir
+										</MarcosButton>
 									</div>
 									{#if areasM2.length > 0}
 										<Spacer title="Trozos añadidos" />
@@ -386,13 +390,14 @@
 							</Form.Field>
 
 							<div class="lg:col-span-2">
-								<Button
-									text="Guardar"
+								<MarcosButton
 									icon={IconType.EDIT}
-									style={ButtonStyle.ORDER_GENERIC}
-									action={ButtonAction.SUBMIT}
-									textType={ButtonText.GRAY}
-								></Button>
+									textVariant={ButtonTextVariant.GRAY}
+									type="submit"
+									variant={ButtonVariant.ORDER_GENERIC}
+								>
+									Guardar
+								</MarcosButton>
 							</div>
 						</div>
 					</div>
@@ -404,11 +409,11 @@
 					title="Eliminar precio"
 					description="Esta acción no se puede desacer"
 					iconType={IconType.TRASH}
-					triggerStyle={ButtonStyle.DELETE}
 				>
-					{#snippet trigger()}
-						<Button icon={IconType.TRASH} text="Eliminar precio" action={ButtonAction.TRIGGER}
-						></Button>
+					{#snippet trigger({ props }: { props: Record<string, unknown> })}
+						<MarcosButton {...props} icon={IconType.TRASH} variant={ButtonVariant.DELETE}>
+							Eliminar precio
+						</MarcosButton>
 					{/snippet}
 
 					{#snippet action()}
@@ -426,12 +431,9 @@
 							{#if formLoading}
 								<BottomSheetLoading />
 							{:else}
-								<Button
-									icon={IconType.TRASH}
-									text="Confirmar"
-									style={ButtonStyle.DELETE}
-									action={ButtonAction.SUBMIT}
-								></Button>
+								<MarcosButton icon={IconType.TRASH} variant={ButtonVariant.DELETE} type="submit">
+									Confirmar
+								</MarcosButton>
 							{/if}
 						</form>
 					{/snippet}

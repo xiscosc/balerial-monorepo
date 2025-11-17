@@ -1,7 +1,7 @@
 import { orderSchema, quoteSchema } from '$lib/shared/form-schema/order.form-schema';
 import { setError, superValidate, type SuperValidated } from 'sveltekit-superforms';
 import { z } from 'zod';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
 import { PricingHelper } from '../pricing/pricing.helper';
 import { AuthService } from '$lib/server/service/auth.service';
@@ -74,7 +74,7 @@ export class OrderCreationUtilities {
 		orderId?: string,
 		editing = false
 	): Promise<OrderCreationFormData> {
-		const form = await superValidate(zod(orderSchema));
+		const form = await superValidate(zod4(orderSchema));
 		const config = AuthService.generateConfiguration(locals.user!);
 		const pricingService = new PricingService(config);
 		const pricing = PricingHelper.getPricing(pricingService);
@@ -126,7 +126,7 @@ export class OrderCreationUtilities {
 
 		const isQuote = order.status === OrderStatus.QUOTE;
 		const schema = isQuote ? quoteSchema : orderSchema;
-		const form = await superValidate(request, zod(schema));
+		const form = await superValidate(request, zod4(schema));
 
 		if (!form.valid) {
 			return fail(400, { form });
@@ -173,7 +173,7 @@ export class OrderCreationUtilities {
 	}
 
 	static async handleCreateExternalOrder(request: Request, locals: App.Locals) {
-		const form = await superValidate(request, zod(orderSchema));
+		const form = await superValidate(request, zod4(orderSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
@@ -228,7 +228,7 @@ export class OrderCreationUtilities {
 		customerId?: string
 	) {
 		const schema = isQuote ? quoteSchema : orderSchema;
-		const form = await superValidate(request, zod(schema));
+		const form = await superValidate(request, zod4(schema));
 
 		if (!form.valid) {
 			return fail(400, { form });

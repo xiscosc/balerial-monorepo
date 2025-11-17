@@ -6,8 +6,8 @@ const client = buildPostHogServer();
 
 export const handleErrorWithPostHog: HandleServerError = async ({ error, status, event }) => {
 	if (status !== 404 && !dev) {
-		client.captureException(error, undefined, event);
 		try {
+			client.captureException(error, undefined, event);
 			await client.shutdown();
 		} catch (e) {
 			console.error('Failed to shutdown PostHog client:', e);

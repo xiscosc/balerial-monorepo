@@ -4,7 +4,7 @@ import { lambdaGenerateReports } from '@marcsimolduressonsardina/lambda/reports'
 import { getLoggerForLambda } from '@marcsimolduressonsardina/core/logger';
 
 export async function handler(event: unknown): Promise<void> {
-	const logger = getLoggerForLambda();
+	const logger = getLoggerForLambda('generate-reports-lambda');
 	logger.info(event);
 	try {
 		await lambdaGenerateReports(

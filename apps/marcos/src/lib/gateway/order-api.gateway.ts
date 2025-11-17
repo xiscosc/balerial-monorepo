@@ -8,6 +8,7 @@ import type {
 	ReportDate,
 	DashboardReport
 } from '@marcsimolduressonsardina/core/type';
+import type { BatchOperation } from '@/type/api.type';
 
 export class OrderApiGateway extends BaseApiGateway {
 	public static async notifyOrder(orderId: string): Promise<void> {
@@ -16,6 +17,13 @@ export class OrderApiGateway extends BaseApiGateway {
 			headers: {
 				'content-type': 'application/json'
 			}
+		});
+	}
+
+	public static async patchOrders(orderIds: string[], operations: BatchOperation[]) {
+		await this.requestWithErrorHandling<{ result: string }>('PATCH', '/api/orders', {
+			orderIds,
+			operations
 		});
 	}
 

@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
 	import { navigating } from '$app/state';
+	import { resolve } from '$app/paths';
 	import '../../app.css';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 
 	interface Props {
 		data: LayoutData;
@@ -36,14 +38,14 @@
 <svelte:head>
 	<title>Marcs i Moldures Son Sardina</title>
 </svelte:head>
-<div class="flex min-h-screen flex-col bg-[#eeefe9]">
+<div class="flex min-h-screen flex-col bg-[#eeefe9] print:block print:min-h-0 print:bg-white">
 	<header
-		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses}`}
+		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses} print:hidden`}
 	>
 		<div
 			class="flex w-full flex-row items-center justify-between px-1 md:px-2 lg:max-w-[1650px] lg:px-3"
 		>
-			<a href="/" class="text-black">
+			<a href={resolve('/')} class="text-black">
 				<Icon type={IconType.HOME} />
 			</a>
 
@@ -63,11 +65,11 @@
 
 			<div class="flex items-center gap-3">
 				{#if data.user.priceManager}
-					<a href="/config" class="text-black">
+					<a href={resolve('/config')} class="text-black">
 						<Icon type={IconType.SETTINGS} />
 					</a>
 				{/if}
-				<a href="/auth/signout?callbackUrl=/" class="text-black">
+				<a href={resolve('/auth/signout?callbackUrl=/')} class="text-black">
 					<Icon type={IconType.LOGOUT} />
 				</a>
 			</div>
@@ -75,15 +77,29 @@
 	</header>
 
 	<!-- Scrollable Content Block filling remaining space -->
-	<main class="flex-1 overflow-y-auto p-2">
-		<div class="mx-auto w-full px-1 pb-3 md:px-2 md:pb-0 md:pt-2 lg:max-w-[1650px] lg:px-4">
+	<main class="flex-1 overflow-y-auto p-2 print:block print:overflow-visible print:p-0">
+		<div
+			class="mx-auto w-full px-1 pb-3 md:px-2 md:pt-2 md:pb-0 lg:max-w-[1650px] lg:px-4 print:mx-0 print:max-w-none print:p-0"
+		>
 			{#if navigating.from != null}
 				<Box>
-					<ProgressBar></ProgressBar>
+					<Loading></Loading>
 				</Box>
 			{:else}
 				{@render children?.()}
 			{/if}
 		</div>
 	</main>
+
+	<ActionBar />
 </div>
+
+<style>
+	@media print {
+		:global(body),
+		:global(html) {
+			margin: 0 !important;
+			padding: 0 !important;
+		}
+	}
+</style>

@@ -1,26 +1,74 @@
 <script lang="ts">
 	import { DateTime } from 'luxon';
+	import { watch } from 'runed';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { orderStatusMap } from '@/shared/mappings/order.mapping';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import { OrderUtilities as CoreOrderUtilities } from '@marcsimolduressonsardina/core/util';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
-	import { IconType } from '@/components/generic/icon/icon.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
+	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
+	import { fade } from 'svelte/transition';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	interface Props {
 		fullOrder: FullOrder;
 		showCustomer?: boolean;
+		isSelectMode?: boolean;
+		isSelected?: boolean;
+		handleSelectModeActivation: () => void;
+		handleSelectOrder: (orderId: string, selected: boolean) => void;
 	}
 
-	let { fullOrder, showCustomer = true }: Props = $props();
-	const order = fullOrder.order;
+	let {
+		fullOrder,
+		showCustomer = true,
+		isSelectMode = false,
+		isSelected = false,
+		handleSelectModeActivation,
+		handleSelectOrder
+	}: Props = $props();
+	let order = $derived(fullOrder.order);
 	const calculatedItem = fullOrder.calculatedItem;
+	let internalSelected = $state(false);
 	let measures = $derived(`${order.item.height}x${order.item.width} cm`);
 	let mold = $derived(
 		OrderRepresentationUtilities.getFirstMoldDescriptionFromOrder(order, calculatedItem)
+	);
+
+	function handlePublicIdClick() {
+		handleSelectModeActivation();
+		internalSelected = true;
+	}
+	watch(
+		() => internalSelected,
+		() => {
+			if (isSelectMode) {
+				handleSelectOrder(order.id, internalSelected);
+			}
+		}
+	);
+
+	watch(
+		() => isSelected,
+		() => {
+			if (isSelectMode) {
+				internalSelected = isSelected;
+			}
+		}
+	);
+
+	watch(
+		() => isSelectMode,
+		() => {
+			if (!isSelectMode) {
+				internalSelected = false;
+			}
+		}
 	);
 </script>
 
@@ -50,11 +98,28 @@
 				<span class="font-semibold">{orderStatusMap[order.status]}</span>
 			</div>
 
-			<div class="overflow-hidden text-ellipsis whitespace-nowrap text-[0.6rem]">
-				<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
-					{order.publicId}
-				</span>
-			</div>
+			{#if !isSelectMode}
+				<button
+					onclick={handlePublicIdClick}
+					class="cursor-pointer overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
+					id="order-public-id"
+					in:fade={{ duration: 200 }}
+					out:fade={{ duration: 150 }}
+				>
+					<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
+						{order.publicId}
+					</span>
+				</button>
+			{:else}
+				<div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
+					<Checkbox
+						checked={isSelected}
+						onCheckedChange={(checked: boolean) => {
+							internalSelected = checked;
+						}}
+					/>
+				</div>
+			{/if}
 		</div>
 	</div>
 
@@ -111,43 +176,54 @@
 
 	<!-- Footer Section -->
 	<div class="flex items-center justify-between bg-white p-3">
-		<div>
-			{#if order.status === OrderStatus.FINISHED && order.notified}
+		<div class="flex flex-row gap-1">
+			{#if fullOrder.order.status === OrderStatus.FINISHED && fullOrder.order.notified}
 				<div
-					class="flex items-center gap-2 rounded-md border border-emerald-500 bg-emerald-100 px-2 py-0.5 text-emerald-800"
+					class="flex items-center rounded-md border border-emerald-500 bg-emerald-100 px-0.5 py-0.5 text-emerald-800"
 				>
 					<div class="flex items-center p-1">
-						<Icon type={IconType.SENT} />
+						<Icon type={IconType.SENT} size={IconSize.SMALL} />
+					</div>
+				</div>
+			{/if}
+
+			{#if fullOrder.order.invoiced}
+				<div
+					class="flex items-center rounded-md border border-amber-500 bg-amber-100 px-0.5 py-0.5 text-amber-800"
+				>
+					<div class="flex items-center p-1">
+						<Icon type={IconType.INVOICED} size={IconSize.SMALL} />
 					</div>
 				</div>
 			{/if}
 
 			{#if CoreOrderUtilities.isOrderTemp(order)}
 				<div
-					class="flex items-center gap-2 rounded-md border border-red-400 bg-red-50 px-2 py-0.5 text-red-700"
+					class="flex items-center gap-2 rounded-md border border-red-400 bg-red-50 px-0.5 py-0.5 text-red-700"
 				>
 					<div class="flex items-center p-1">
-						<Icon type={IconType.USER_PLUS} />
+						<Icon type={IconType.USER_PLUS} size={IconSize.SMALL} />
 					</div>
 				</div>
 			{/if}
 		</div>
-		<div class="flex flex-row justify-end gap-2 text-xs">
+		<div class="flex flex-row justify-end gap-1 text-xs">
 			{#if !CoreOrderUtilities.isOrderTemp(order)}
-				<Button
+				<MarcosButton
+					variant={ButtonVariant.NEUTRAL}
 					icon={IconType.PRINTER}
-					text="Imprimir"
-					action={ButtonAction.LINK}
-					link={`/orders/${order.id}/print`}
-					style={ButtonStyle.NEUTRAL}
-				></Button>
+					onclick={() => goto(resolve(`/orders/${order.id}/print`))}
+				>
+					Imprimir
+				</MarcosButton>
 			{/if}
-			<Button
+			<MarcosButton
+				variant={ButtonVariant.CUSTOMER}
 				icon={CoreOrderUtilities.isOrderTemp(order) ? IconType.LINK : IconType.EYE}
-				text={CoreOrderUtilities.isOrderTemp(order) ? `Vincular` : `Ver`}
-				link={`/orders/${order.id}`}
-				style={ButtonStyle.CUSTOMER}
-			></Button>
+				onclick={() => goto(resolve(`/orders/${order.id}`))}
+			>
+				{CoreOrderUtilities.isOrderTemp(order) ? `Vincular` : `Ver`}
+			</MarcosButton>
 		</div>
 	</div>
 </div>

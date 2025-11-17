@@ -26,6 +26,18 @@ export class CalculatedItemRepositoryDynamoDb {
 		return dtos[0] ?? null;
 	}
 
+	public async getCalculatedItemsByIds(
+		orderUuids: string[]
+	): Promise<Record<string, CalculatedItemDto>> {
+		const ids = orderUuids.map((id) => ({ partitionKey: id }));
+		const dtos = await this.repository.batchGet(ids);
+		const result: Record<string, CalculatedItemDto> = {};
+		dtos.forEach((dto) => {
+			result[dto.orderUuid] = dto;
+		});
+		return result;
+	}
+
 	public async createCalculatedItem(calculatedItem: CalculatedItemDto) {
 		await this.repository.put(calculatedItem);
 	}

@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import { read } from 'xlsx';
 
-import { PricingService } from '../service/pricing.service';
-import { ListPrice, PricingFormula, PricingType } from '../types/pricing.type';
+import { PricingService } from '../service';
+import { ListPrice, PricingFormula, PricingType } from '../types';
 import {
 	ICoreConfiguration,
 	ICoreConfigurationForAWSLambda

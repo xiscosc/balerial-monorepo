@@ -1,11 +1,11 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import * as Form from '@/components/ui/form/index.js';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Input from '@/components/ui/input/input.svelte';
 	import {
@@ -26,7 +26,7 @@
 
 	let { data, icon, title = 'Crear Cliente', buttonText = 'Crear', link = false }: Props = $props();
 	const form = superForm(data.form, {
-		validators: zodClient(link ? linkCustomerSchema : customerSchema)
+		validators: zod4Client(link ? linkCustomerSchema : customerSchema)
 	});
 	const { form: formData, enhance, submitting } = form;
 </script>
@@ -35,7 +35,7 @@
 	<div>
 		<form method="POST" use:enhance class="flex flex-col gap-2">
 			{#if $submitting}
-				<ProgressBar text="Guardando cambios" />
+				<Loading text="Guardando cambios" />
 			{:else}
 				<Form.Field {form} name="name">
 					<Form.Control>
@@ -55,12 +55,9 @@
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Button
-					icon={IconType.EDIT}
-					text={buttonText}
-					style={ButtonStyle.NEUTRAL}
-					action={ButtonAction.SUBMIT}
-				></Button>
+				<MarcosButton icon={IconType.EDIT} variant={ButtonVariant.NEUTRAL} type="submit">
+					{buttonText}
+				</MarcosButton>
 			{/if}
 		</form>
 	</div>

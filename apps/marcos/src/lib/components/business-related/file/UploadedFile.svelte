@@ -1,9 +1,8 @@
 <script lang="ts">
 	import Step from '@/components/generic/Step.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { FileType } from '@marcsimolduressonsardina/core/type';
+	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
 
 	interface Props {
 		id?: string;
@@ -45,14 +44,8 @@
 </script>
 
 {#snippet downloadButton()}
-	<Button
-		text=""
-		icon={downloadIcon}
-		action={ButtonAction.LINK}
-		link={downloadUrl}
-		newWindow={true}
-		disabled={downloadUrl == null}
-	/>
+	<MarcosLink icon={downloadIcon} target="_blank" href={downloadUrl} disabled={downloadUrl == null}
+	></MarcosLink>
 {/snippet}
 
 <Step

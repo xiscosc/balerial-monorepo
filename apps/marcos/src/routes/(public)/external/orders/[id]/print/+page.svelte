@@ -54,9 +54,25 @@
 </script>
 
 {#if fullOrder}
-	<ExternalOrderPrint {fullOrder} print></ExternalOrderPrint>
+	<div class="w-full px-1 py-3 print:p-0">
+		<div class="flex justify-center print:block">
+			<div class="w-fit print:w-full">
+				<ExternalOrderPrint {fullOrder} print></ExternalOrderPrint>
+			</div>
+		</div>
+	</div>
 {:else if notFound}
 	<div>No se encontró el pedido</div>
 {:else}
 	<div>Cargando...</div>
 {/if}
+
+<style>
+	@media print {
+		:global(body),
+		:global(html) {
+			margin: 0 !important;
+			padding: 0 !important;
+		}
+	}
+</style>

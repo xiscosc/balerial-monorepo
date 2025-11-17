@@ -18,7 +18,7 @@ import {
 } from '@marcsimolduressonsardina/core/type';
 import { AuthService } from '$lib/server/service/auth.service';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import {
 	locationOrderSchema,
 	promoteOrderSchema,
@@ -129,9 +129,9 @@ async function loadData(
 }
 
 export const load = (async ({ params, locals }) => {
-	const promoteForm = await superValidate(zod(promoteOrderSchema), { id: 'promote-order-form' });
-	const locationForm = await superValidate(zod(locationOrderSchema));
-	const statusForm = await superValidate(zod(statusOrderSchema));
+	const promoteForm = await superValidate(zod4(promoteOrderSchema), { id: 'promote-order-form' });
+	const locationForm = await superValidate(zod4(locationOrderSchema));
+	const statusForm = await superValidate(zod4(statusOrderSchema));
 
 	const { id } = params;
 	return {
@@ -177,7 +177,7 @@ export const actions = {
 			return fail(404, { missing: true });
 		}
 
-		const form = await superValidate(request, zod(promoteOrderSchema));
+		const form = await superValidate(request, zod4(promoteOrderSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
@@ -199,7 +199,7 @@ export const actions = {
 		};
 	},
 	[OrderActionNames.SAVE_LOCATION]: async ({ request, locals, params }) => {
-		const form = await superValidate(request, zod(locationOrderSchema));
+		const form = await superValidate(request, zod4(locationOrderSchema));
 		if (!form.valid) {
 			return fail(400, { form });
 		}
@@ -210,7 +210,7 @@ export const actions = {
 		};
 	},
 	[OrderActionNames.CHANGE_STATUS]: async ({ request, locals, params }) => {
-		const form = await superValidate(request, zod(statusOrderSchema));
+		const form = await superValidate(request, zod4(statusOrderSchema));
 		if (!form.valid) {
 			return fail(400, { form });
 		}

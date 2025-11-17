@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import OrderInfo from '@/components/business-related/order-detail/OrderInfo.svelte';
 	import OrderElements from '@/components/business-related/order-detail/OrderElements.svelte';
 	import OrderHeader from '@/components/business-related/order-detail/OrderHeader.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
-	import { ButtonAction, ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import DeleteOrderBottomSheet from '@/components/business-related/order-detail/edit/DeleteOrderBottomSheet.svelte';
@@ -32,6 +32,8 @@
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 	import { BreakpointStateClass } from '@/state/breakpoint/breakpoint.state.svelte';
 	import { onDestroy } from 'svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
 	let formLoading = $state(false);
 
 	interface Props {
@@ -48,7 +50,7 @@
 			data.info.then((info) => {
 				const order = info.fullOrder?.order;
 				if (order != null && OrderUtilities.isOrderTemp(order)) {
-					goto(`/orders/${order.id}/link`);
+					goto(resolve('/(app)/(main)/orders/[id]/link', { id: order.id }));
 				}
 
 				if (order == null) {
@@ -139,21 +141,23 @@
 						{#if info.fullOrder.order.status === OrderStatus.QUOTE}
 							<PromoteOrderBottomSheet data={data.promoteForm}></PromoteOrderBottomSheet>
 						{:else}
-							<Button
-								textType={ButtonText.GRAY}
+							<MarcosButton
 								icon={IconType.ORDER_DEFAULT}
-								style={ButtonStyle.ORDER_GENERIC}
-								text="Pedidos del cliente"
-								link={`/customers/${info.fullOrder.order.customer.id}/orders`}
-							></Button>
-							<Button
-								textType={ButtonText.GRAY}
+								textVariant={ButtonTextVariant.GRAY}
+								variant={ButtonVariant.ORDER_GENERIC}
+								onclick={() =>
+									goto(resolve(`/customers/${info.fullOrder.order.customer.id}/orders`))}
+							>
+								Pedidos del cliente
+							</MarcosButton>
+							<MarcosButton
 								icon={IconType.DAY}
-								style={ButtonStyle.ORDER_GENERIC}
-								text="Pedidos del día"
-								link={`/orders/${info.fullOrder.order.id}/day`}
-							></Button>
-
+								textVariant={ButtonTextVariant.GRAY}
+								variant={ButtonVariant.ORDER_GENERIC}
+								onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/day`))}
+							>
+								Pedidos del día
+							</MarcosButton>
 							<DenoteOrderBottomSheet></DenoteOrderBottomSheet>
 						{/if}
 
@@ -162,37 +166,43 @@
 							counters={info.unfinishedSameDayCount}
 							hasFiles={info.hasFiles}
 						></WhatsAppOrderButtons>
-						<Divider hideOnDesktop={true}></Divider>
-						<Button
-							disabled={!info.hasFiles}
-							tooltipText="Faltan fotos"
-							icon={IconType.PRINTER}
-							text="Imprimir"
-							action={ButtonAction.LINK}
-							link={`/orders/${info.fullOrder.order.id}/print`}
-						></Button>
-						<Button
-							icon={IconType.EDIT}
-							text="Editar"
-							link={`/orders/${info.fullOrder.order.id}/edit`}
-						></Button>
-						<Button
-							icon={IconType.COPY}
-							text="Copiar"
-							link={`/orders/new?originId=${info.fullOrder.order.id}`}
-						></Button>
 
 						<Divider hideOnDesktop={true}></Divider>
-						<Button
+						<TooltipButtonWrapper enabled={!info.hasFiles} text="Faltan fotos">
+							<MarcosButton
+								disabled={!info.hasFiles}
+								icon={IconType.PRINTER}
+								onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/print`))}
+							>
+								Imprimir
+							</MarcosButton>
+						</TooltipButtonWrapper>
+
+						<MarcosButton
+							icon={IconType.EDIT}
+							onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/edit`))}
+						>
+							Editar
+						</MarcosButton>
+						<MarcosButton
+							icon={IconType.COPY}
+							onclick={() => goto(resolve(`/orders/new?originId=${info.fullOrder.order.id}`))}
+						>
+							Copiar
+						</MarcosButton>
+
+						<Divider hideOnDesktop={true}></Divider>
+						<MarcosButton
 							icon={IconType.CAMERA}
-							text="Cámara"
-							link={`/orders/${info.fullOrder.order.id}/files`}
-						></Button>
+							onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/files`))}
+						>
+							Cámara
+						</MarcosButton>
 					</div>
 				{/if}
 
 				{#if formLoading}
-					<span class=""> <ProgressBar text="Aplicando cambios..." /> </span>
+					<span class=""> <Loading text="Aplicando cambios..." /> </span>
 				{/if}
 
 				<div class="lg:mt-3 lg:break-inside-avoid">

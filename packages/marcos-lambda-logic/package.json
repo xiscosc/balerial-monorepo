@@ -18,15 +18,15 @@
 		"@repo/typescript-config": "workspace:*",
 		"@types/aws-lambda": "8.10.152",
 		"@types/luxon": "3.7.1",
-		"typescript": "5.9.2",
+		"typescript": "5.9.3",
 		"sharp": "0.34.2",
 		"aws-lambda": "1.0.7",
-		"pino": "9.9.0"
+		"pino": "10.1.0"
 	},
 	"dependencies": {
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"@balerial/s3": "workspace:*",
-		"luxon": "3.7.1",
-		"posthog-node": "5.8.1"
+		"luxon": "3.7.2",
+		"posthog-node": "5.11.2"
 	}
 }

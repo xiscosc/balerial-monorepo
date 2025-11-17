@@ -1,16 +1,15 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import {
-		ButtonAction,
-		ButtonStyle,
-		ButtonText,
-		ButtonType
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
 	} from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	let sheetLoading = $state(false);
 
@@ -54,7 +53,7 @@
 				</div>
 				{#if quantity > 1}
 					<span
-						class="animate-in zoom-in-50 absolute -right-1 -top-1 rounded-full border border-red-800 bg-red-500 px-1 text-xs font-medium text-white transition-all duration-300 ease-out"
+						class="animate-in zoom-in-50 absolute -top-1 -right-1 rounded-full border border-red-800 bg-red-500 px-1 text-xs font-medium text-white transition-all duration-300 ease-out"
 					>
 						{quantity}
 					</span>
@@ -69,41 +68,39 @@
 			{@render otherAction?.()}
 			{#if showDelete}
 				{#if !deleteConfirmation}
-					<Button
+					<MarcosButton
 						icon={IconType.TRASH}
-						buttonType={ButtonType.DEFAULT}
-						text=""
-						textType={ButtonText.GRAY}
-						style={ButtonStyle.SOFT_DELETE}
-						onClick={() => deleteFunction()}
-					></Button>
+						variant={ButtonVariant.SOFT_DELETE}
+						textVariant={ButtonTextVariant.GRAY}
+						size={ButtonSize.DEFAULT}
+						onclick={() => deleteFunction()}
+					></MarcosButton>
 				{:else}
 					<BottomSheet
 						title="Eliminar elemento"
 						description="Esta acción no se puede deshacer"
 						iconType={IconType.TRASH}
 					>
-						{#snippet trigger()}
-							<Button
+						{#snippet trigger({ props }: { props: Record<string, unknown> })}
+							<MarcosButton
 								icon={IconType.TRASH}
-								buttonType={ButtonType.DEFAULT}
-								text=""
-								textType={ButtonText.GRAY}
-								style={ButtonStyle.SOFT_DELETE}
-								action={ButtonAction.TRIGGER}
-							></Button>
+								variant={ButtonVariant.SOFT_DELETE}
+								textVariant={ButtonTextVariant.GRAY}
+								size={ButtonSize.DEFAULT}
+								{...props}
+							></MarcosButton>
 						{/snippet}
 						{#snippet action()}
 							{#if sheetLoading}
 								<BottomSheetLoading />
 							{:else}
-								<Button
+								<MarcosButton
 									icon={IconType.TRASH}
-									text="Confirmar"
-									style={ButtonStyle.DELETE}
-									action={ButtonAction.CLICK}
-									onClick={() => handleBottomSheetDelete()}
-								></Button>
+									variant={ButtonVariant.DELETE}
+									onclick={() => handleBottomSheetDelete()}
+								>
+									Confirmar
+								</MarcosButton>
 							{/if}
 						{/snippet}
 					</BottomSheet>
@@ -116,7 +113,7 @@
 		<div class="px-2">
 			<ul class="flex flex-col gap-1">
 				{#each textList as value (value)}
-					<li class="whitespace-normal break-words text-sm text-gray-800">{value}</li>
+					<li class="text-sm break-words whitespace-normal text-gray-800">{value}</li>
 				{/each}
 			</ul>
 		</div>

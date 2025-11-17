@@ -13,6 +13,7 @@ interface ICoreConfigurationBase {
 	filesBucket?: string;
 	reportsBucket?: string;
 	moldPricesBucket?: string;
+	orderSetTable?: string;
 	runInAWSLambda: boolean;
 	user: AppUser;
 	disableOrderAuditTrail?: boolean;

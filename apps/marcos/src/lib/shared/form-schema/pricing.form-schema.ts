@@ -16,12 +16,12 @@ const areaM2Schema = z.object({
 const listPriceSchema = {
 	id: z
 		.string()
-		.regex(/^[^\s]*$/, { message: 'El id no puede contener espacios' })
-		.min(3, { message: 'El id debe tener al menos 3 caracteres' }),
-	price: z.number().min(0, { message: 'El precio no puede ser negativo' }),
-	minPrice: z.number().min(0, { message: 'El precio minimo no puede ser negativo' }),
+		.regex(/^[^\s]*$/, { error: 'El id no puede contener espacios' })
+		.min(3, { error: 'El id debe tener al menos 3 caracteres' }),
+	price: z.number().min(0, { error: 'El precio no puede ser negativo' }),
+	minPrice: z.number().min(0, { error: 'El precio minimo no puede ser negativo' }),
 	discountAllowed: z.boolean().default(true),
-	description: z.string().min(1, { message: 'La descripción no puede estar vacía' }),
+	description: z.string().min(1, { error: 'La descripción no puede estar vacía' }),
 	type: z.enum(newEditablePricingTypes as [string, ...string[]]),
 	formula: z.enum([
 		PricingFormula.FORMULA_LEFTOVER,

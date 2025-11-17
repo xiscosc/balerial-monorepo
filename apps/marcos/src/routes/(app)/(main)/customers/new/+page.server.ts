@@ -1,6 +1,6 @@
 import { fail, error, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { AuthService } from '$lib/server/service/auth.service';
@@ -9,14 +9,14 @@ import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 export const load = async ({ url }) => {
 	const phone = url.searchParams.get('phone');
-	const form = await superValidate(zod(customerSchema));
+	const form = await superValidate(zod4(customerSchema));
 	if (phone) form.data.phone = phone;
 	return { form };
 };
 
 export const actions = {
 	async default({ request, locals }) {
-		const form = await superValidate(request, zod(customerSchema));
+		const form = await superValidate(request, zod4(customerSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });

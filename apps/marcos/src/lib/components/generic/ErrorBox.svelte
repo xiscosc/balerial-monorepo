@@ -1,15 +1,17 @@
 <script lang="ts">
 	import Box from '@/components/generic/Box.svelte';
-	import { ButtonAction } from '@/components/generic/button/button.enum';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	interface Props {
 		status: 'error' | 'not-found';
+		errorInfo?: string;
 	}
 
-	let { status }: Props = $props();
+	let { status, errorInfo }: Props = $props();
 </script>
 
 <div class="w-full px-3 md:w-1/2 md:px-0 lg:w-1/3">
@@ -30,8 +32,14 @@
 						Página no encontrada
 					{/if}
 				</span>
-				<Button icon={IconType.HOME} text="Volver al inicio" action={ButtonAction.LINK} link="/"
-				></Button>
+				{#if errorInfo}
+					<div class="rounded bg-gray-100 p-3 font-mono text-xs text-gray-700">
+						{errorInfo}
+					</div>
+				{/if}
+				<MarcosButton icon={IconType.HOME} onclick={() => goto(resolve('/'))}>
+					Volver al inicio
+				</MarcosButton>
 			</div>
 		</div>
 	</Box>

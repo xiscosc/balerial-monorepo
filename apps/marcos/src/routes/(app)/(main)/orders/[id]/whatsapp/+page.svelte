@@ -6,12 +6,14 @@
 
 	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
 	import Banner from '@/components/generic/Banner.svelte';
-	import { ButtonStyle, ButtonText } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	interface Props {
 		data: PageData;
@@ -58,14 +60,14 @@
 						{/if}
 
 						<div class="flex flex-col gap-2 lg:flex-row">
-							<Button
+							<MarcosButton
+								variant={ButtonVariant.ORDER_GENERIC}
+								textVariant={ButtonTextVariant.GRAY}
 								icon={IconType.ORDER_DEFAULT}
-								text="Ver pedidos del día"
-								style={ButtonStyle.ORDER_GENERIC}
-								textType={ButtonText.GRAY}
-								link={`/orders/${data.order.id}/day`}
-							></Button>
-
+								onclick={() => goto(resolve(`/orders/${data.order.id}/day`))}
+							>
+								Ver pedidos del día
+							</MarcosButton>
 							<WhatsAppButton
 								label="Enviar mensaje finalizado"
 								message={OrderRepresentationUtilities.getWhatsappFinishedText([data.order])}

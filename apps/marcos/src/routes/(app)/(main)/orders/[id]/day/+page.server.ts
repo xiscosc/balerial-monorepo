@@ -11,5 +11,5 @@ export const load = (async ({ params, locals }) => {
 		redirect(303, '/');
 	}
 
-	return { orders: orderService.getOrdersOnSameDay(order) };
+	return { orders: orderService.getOrdersOnSameDay(order), customer: order.customer };
 }) satisfies PageServerLoad;

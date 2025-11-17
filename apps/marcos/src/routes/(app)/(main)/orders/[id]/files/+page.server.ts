@@ -15,7 +15,7 @@ export const load = (async ({ params, locals }) => {
 		return fail(404, { missing: true });
 	}
 
-	const files = await fileService.getFilesByOrder(order.id);
+	const files = fileService.getFilesByOrder(order.id);
 	return {
 		order,
 		files

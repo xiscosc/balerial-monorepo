@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { Customer, Order } from '@marcsimolduressonsardina/core/type';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction, ButtonStyle } from '@/components/generic/button/button.enum';
+	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
+	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
+	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
+	import { BatchOperation } from '@/type/api.type';
 
 	interface Props {
 		label: string;
@@ -40,8 +43,12 @@
 			return;
 		}
 
-		const promises = orders.map((order) => OrderApiGateway.notifyOrder(order.id));
-		await Promise.all(promises);
+		await getGlobalProfiler().measure(
+			OrderApiGateway.patchOrders(
+				orders.map((order) => order.id),
+				[BatchOperation.NOTIFY_ORDERS]
+			)
+		);
 
 		orders.forEach((order) => {
 			order.notified = true;
@@ -49,10 +56,6 @@
 
 		handleAfterNotify();
 		loading = false;
-	}
-
-	function trackWhatsAppClicked() {
-		trackEvent('WhatsApp clicked', { action: label, customerId: customer.id });
 	}
 
 	function getWhatsappLink(customer: Customer, text?: string): string {
@@ -73,49 +76,46 @@
 </script>
 
 {#if notifyOrder && !disabled}
-	<BottomSheet
-		title="WhatsApp"
-		description=""
-		iconType={IconType.WHATSAPP}
-		triggerStyle={ButtonStyle.WHATSAPP}
-	>
-		{#snippet trigger()}
-			<Button icon={IconType.WHATSAPP} text={label} action={ButtonAction.TRIGGER}></Button>
+	<BottomSheet title="WhatsApp" description="" iconType={IconType.WHATSAPP}>
+		{#snippet trigger({ props }: { props: Record<string, unknown> })}
+			<MarcosButton {...props} icon={IconType.WHATSAPP} variant={ButtonVariant.WHATSAPP}>
+				{label}
+			</MarcosButton>
 		{/snippet}
 
 		{#snippet action()}
 			<div class="flex" {@attach triggerNotify}>
 				{#if loading}
-					<ProgressBar text="Marcando pedido como notificado"></ProgressBar>
+					<Loading text="Marcando pedido como notificado"></Loading>
 				{/if}
 			</div>
 			{#if !loading}
 				<div class="flex">
-					<Button
-						icon={IconType.WHATSAPP}
-						action={ButtonAction.LINK}
-						trackFunction={trackWhatsAppClicked}
-						newWindow={true}
-						text="Enviar mensaje a cliente"
-						style={ButtonStyle.WHATSAPP}
-						{disabled}
-						{tooltipText}
-						link={getWhatsappLink(customer, message)}
-					></Button>
+					<TooltipButtonWrapper text={tooltipText ?? ''} enabled={disabled}>
+						<MarcosLink
+							href={getWhatsappLink(customer, message)}
+							target="_blank"
+							icon={IconType.WHATSAPP}
+							variant={ButtonVariant.WHATSAPP}
+							{disabled}
+						>
+							{label}
+						</MarcosLink>
+					</TooltipButtonWrapper>
 				</div>
 			{/if}
 		{/snippet}
 	</BottomSheet>
 {:else}
-	<Button
-		icon={IconType.WHATSAPP}
-		action={ButtonAction.LINK}
-		trackFunction={trackWhatsAppClicked}
-		newWindow={true}
-		text={label}
-		style={ButtonStyle.WHATSAPP}
-		{disabled}
-		{tooltipText}
-		link={getWhatsappLink(customer, message)}
-	></Button>
+	<TooltipButtonWrapper text={tooltipText ?? ''} enabled={disabled}>
+		<MarcosLink
+			href={getWhatsappLink(customer, message)}
+			target="_blank"
+			icon={IconType.WHATSAPP}
+			variant={ButtonVariant.WHATSAPP}
+			{disabled}
+		>
+			{label}
+		</MarcosLink>
+	</TooltipButtonWrapper>
 {/if}

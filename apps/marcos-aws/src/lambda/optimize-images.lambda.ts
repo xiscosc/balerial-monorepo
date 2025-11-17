@@ -4,7 +4,7 @@ import { lambdaOptimizeImages } from '@marcsimolduressonsardina/lambda/images';
 import { getLoggerForLambda } from '@marcsimolduressonsardina/core/logger';
 
 export async function handler(event: S3CreateEvent): Promise<void> {
-	const logger = getLoggerForLambda();
+	const logger = getLoggerForLambda('optimize-images-lambda');
 	const input = {
 		s3Records: event.Records,
 		envName: process.env.ENV_NAME ?? 'env-not-set',

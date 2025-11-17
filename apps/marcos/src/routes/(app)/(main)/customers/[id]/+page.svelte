@@ -1,7 +1,8 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import type { PageData } from './$types';
+	import { resolve } from '$app/paths';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import CustomerDetails from '@/components/business-related/customer/CustomerDetails.svelte';
@@ -17,14 +18,14 @@
 	<SimpleHeading icon={IconType.LIST}>Detalles del cliente</SimpleHeading>
 	<Box>
 		{#await data.customer}
-			<ProgressBar />
+			<Loading />
 		{:then customer}
 			{#if customer == null}
 				<p class="text-center text-3xl">Cliente no encontrado</p>
 				<div class="mt-4 flex justify-center">
 					<a
-						href="/customers/search"
-						class="focus:outline-hidden w-full rounded-md bg-blue-800 px-4 py-2 text-white hover:bg-blue-900 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2"
+						href={resolve('/(app)/(main)/customers/search')}
+						class="w-full rounded-md bg-blue-800 px-4 py-2 text-white hover:bg-blue-900 focus:ring-2 focus:ring-blue-900 focus:ring-offset-2 focus:outline-hidden"
 					>
 						Buscar cliente
 					</a>

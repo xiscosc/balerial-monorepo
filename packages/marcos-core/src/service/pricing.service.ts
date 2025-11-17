@@ -13,20 +13,26 @@ import {
 } from '../data/static-pricing';
 import type { ListPriceDto } from '../repository/dto/list-price.dto';
 import { ListPricingRepositoryDynamoDb } from '../repository/dynamodb/list-pricing.repository.dynamodb';
-import { InvalidSizeError } from '../error/invalid-size.error';
+import { InvalidSizeError } from '../error';
 import {
 	PricingUtilites,
 	fabricDefaultPricing,
 	fabricIds,
 	fitFormulas,
 	noDimensionCheckPricingTypes
-} from '../utilities/pricing.utilites';
+} from '../utilities';
 import {
 	ICoreConfiguration,
 	ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
-import { ListPrice, MaxArea, MaxAreaM2, PricingFormula, PricingType } from '../types/pricing.type';
-import { OrderDimensions } from '../types/order.type';
+import {
+	ListPrice,
+	MaxArea,
+	MaxAreaM2,
+	PricingFormula,
+	PricingType,
+	OrderDimensions
+} from '../types';
 
 export class PricingService {
 	private listPricingRepository: ListPricingRepositoryDynamoDb;

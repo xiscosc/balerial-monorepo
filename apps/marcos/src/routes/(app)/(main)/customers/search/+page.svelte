@@ -1,18 +1,15 @@
 <script lang="ts">
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import { goto } from '$app/navigation';
-	import {
-		ButtonAction,
-		ButtonStyle,
-		ButtonText
-	} from '@/components/generic/button/button.enum.js';
+	import { resolve } from '$app/paths';
+	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum.js';
 	import { IconType } from '@/components/generic/icon/icon.enum.js';
 	import Input from '@/components/ui/input/input.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { SearchCustomerState } from '@/state/search/search-customer.state.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	let { data } = $props();
 	const { form, enhance, submitting } = superForm(data.form);
@@ -21,7 +18,7 @@
 
 	function triggerSearch() {
 		SearchCustomerState.setSearchValue(searchQuery);
-		goto(`/customers/search-list`);
+		goto(resolve(`/(app)/(main)/customers/search-list`));
 	}
 </script>
 
@@ -30,7 +27,7 @@
 	<div class="flex flex-col gap-2">
 		<Box title="Buscar cliente por teléfono">
 			{#if $submitting}
-				<ProgressBar />
+				<Loading />
 			{:else}
 				<form use:enhance class="flex flex-col gap-2" method="post">
 					<div>
@@ -38,12 +35,9 @@
 						<Input bind:value={$form.phone} id="phone" type="tel" name="phone" />
 					</div>
 
-					<Button
-						icon={IconType.SEARCH}
-						text="Buscar"
-						action={ButtonAction.SUBMIT}
-						style={ButtonStyle.CUSTOMER}
-					></Button>
+					<MarcosButton icon={IconType.SEARCH} type="submit" variant={ButtonVariant.CUSTOMER}>
+						Buscar
+					</MarcosButton>
 				</form>
 			{/if}
 		</Box>
@@ -55,34 +49,37 @@
 					<Input bind:value={searchQuery} id="name" required type="text" name="name" />
 				</div>
 
-				<Button
+				<MarcosButton
 					icon={IconType.SEARCH}
 					disabled={searchQuery.length < 3}
-					onClick={triggerSearch}
-					text="Buscar"
-					style={ButtonStyle.CUSTOMER}
-				></Button>
+					onclick={triggerSearch}
+					variant={ButtonVariant.CUSTOMER}
+				>
+					Buscar
+				</MarcosButton>
 			</div>
 		</Box>
 
 		<Box title="Gestión">
 			<div class="flex flex-col gap-2 md:flex-row">
 				{#if data.canSeeList}
-					<Button
+					<MarcosButton
 						icon={IconType.USER}
-						textType={ButtonText.GRAY}
-						link="/customers/list"
-						text="Ver listado"
-						style={ButtonStyle.ORDER_GENERIC}
-					></Button>
+						textVariant={ButtonTextVariant.GRAY}
+						onclick={() => goto(resolve('/(app)/(main)/customers/list'))}
+						variant={ButtonVariant.ORDER_GENERIC}
+					>
+						Ver listado
+					</MarcosButton>
 				{/if}
 
-				<Button
-					link="/customers/new"
+				<MarcosButton
+					onclick={() => goto(resolve('/(app)/(main)/customers/new'))}
 					icon={IconType.USER_PLUS}
-					text="Crear cliente"
-					style={ButtonStyle.NEUTRAL}
-				></Button>
+					variant={ButtonVariant.NEUTRAL}
+				>
+					Crear cliente
+				</MarcosButton>
 			</div>
 		</Box>
 	</div>

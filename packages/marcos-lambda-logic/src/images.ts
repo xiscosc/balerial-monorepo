@@ -1,8 +1,8 @@
 import { ICoreConfigurationForAWSLambda } from '@marcsimolduressonsardina/core/config';
-import { getLoggerForLambda } from '@marcsimolduressonsardina/core/logger';
+import { getLogger } from '@marcsimolduressonsardina/core/logger';
 import {
 	FileService,
-	OptmizationAndThumbnailTypeInfo
+	OptimizationAndThumbnailTypeInfo
 } from '@marcsimolduressonsardina/core/service';
 import { AppUser } from '@marcsimolduressonsardina/core/type';
 import { S3EventRecord } from 'aws-lambda';
@@ -44,7 +44,7 @@ export async function lambdaOptimizeImages({
 		user
 	};
 
-	const logger = getLoggerForLambda();
+	const logger = getLogger('lambdaOptimizeImages', configuration.runInAWSLambda);
 	const postHogClient = postHogKey ? createPostHogClient(postHogKey) : undefined;
 	const fileService = new FileService(configuration);
 	const promises = s3Records.map((record) =>
@@ -83,7 +83,7 @@ async function processImage(
 			.toBuffer();
 		const thumbnail = await sharp(content).resize(FileService.thumbnailImageSize).webp().toBuffer();
 
-		const types: OptmizationAndThumbnailTypeInfo = {
+		const types: OptimizationAndThumbnailTypeInfo = {
 			optimizedContentType: 'image/webp',
 			thumbnailContentType: 'image/webp',
 			optimizedExtension: '.webp',

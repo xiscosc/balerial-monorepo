@@ -1,18 +1,17 @@
 <script lang="ts">
 	import * as Form from '@/components/ui/form/index.js';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
-	import { ButtonAction } from '@/components/generic/button/button.enum.js';
 	import { IconType } from '@/components/generic/icon/icon.enum.js';
 	import { Input } from '@/components/ui/input';
 	import { orderPublicIdSchema } from '@/shared/form-schema/order.form-schema';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 
 	let { data } = $props();
-	const form = superForm(data.form, { validators: zodClient(orderPublicIdSchema) });
+	const form = superForm(data.form, { validators: zod4Client(orderPublicIdSchema) });
 	const { form: formData, enhance, submitting } = form;
 </script>
 
@@ -21,7 +20,7 @@
 	<Box>
 		<form use:enhance method="post">
 			{#if $submitting}
-				<ProgressBar text="Buscando pedido..." />
+				<Loading text="Buscando pedido..." />
 			{:else}
 				<Form.Field {form} name="id">
 					<Form.Control>
@@ -33,7 +32,7 @@
 					<Form.Description>Ejemplo: 20240315/AB/34612345678</Form.Description>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Button text="Buscar" icon={IconType.SEARCH} action={ButtonAction.SUBMIT}></Button>
+				<MarcosButton icon={IconType.SEARCH} type="submit">Buscar</MarcosButton>
 			{/if}
 		</form>
 	</Box>

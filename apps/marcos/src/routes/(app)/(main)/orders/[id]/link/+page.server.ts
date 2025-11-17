@@ -1,7 +1,7 @@
 import { superValidate, setError } from 'sveltekit-superforms';
 import type { PageServerLoad } from './$types';
 import { linkCustomerSchema } from '$lib/shared/form-schema/customer.form-schema';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
@@ -23,7 +23,7 @@ export const load = (async ({ params, locals }) => {
 		redirect(302, `/orders/${id}`);
 	}
 
-	const form = await superValidate(zod(linkCustomerSchema));
+	const form = await superValidate(zod4(linkCustomerSchema));
 	return {
 		form,
 		orderName: fullOrder.order.status === OrderStatus.QUOTE ? 'presupuesto' : 'pedido',
@@ -43,7 +43,7 @@ export const actions = {
 			return fail(404, { missing: true });
 		}
 
-		const form = await superValidate(request, zod(linkCustomerSchema));
+		const form = await superValidate(request, zod4(linkCustomerSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });

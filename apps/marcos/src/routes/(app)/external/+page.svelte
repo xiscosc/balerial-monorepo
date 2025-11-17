@@ -1,8 +1,10 @@
 <script lang="ts">
-	import Button from '@/components/generic/button/Button.svelte';
 	import type { PageData } from './$types';
-	import { ButtonStyle, ButtonType } from '@/components/generic/button/button.enum';
+	import { ButtonVariant, ButtonSize } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 
 	let { data }: { data: PageData } = $props();
 </script>
@@ -10,14 +12,17 @@
 <div
 	class="flex w-full flex-col place-content-center items-center justify-center gap-4 py-2 md:grid md:grid-cols-2 lg:grid-cols-3"
 >
-	<Button
-		text="Crear nota"
-		link="/external/orders/new"
-		buttonType={ButtonType.HOME}
-		style={ButtonStyle.FORM}
-		icon={IconType.FORM}
+	<MarcosButton
+		onclick={() => {
+			goto(resolve('/external/orders/new'));
+		}}
+		size={ButtonSize.HOME}
 		iconSize={IconSize.BIG}
-	></Button>
+		icon={IconType.FORM}
+		variant={ButtonVariant.FORM}
+	>
+		Crear nota
+	</MarcosButton>
 </div>
 
 <div class="flex flex-row items-center justify-center pt-3">

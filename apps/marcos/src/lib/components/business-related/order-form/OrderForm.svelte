@@ -15,17 +15,16 @@
 	import AutocompleteSection from '@/components/business-related/order-form/AutocompleteSection.svelte';
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
 	import ChipSet from '@/components/business-related/order-form/ChipSet.svelte';
-	import ProgressBar from '@/components/generic/ProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 	import { onMount, type Snippet } from 'svelte';
 	import type { OrderCreationFormData } from '@/server/shared/order/order-creation.utilities';
 	import Box from '@/components/generic/Box.svelte';
-	import Button from '@/components/generic/button/Button.svelte';
 	import {
-		ButtonAction,
-		ButtonStyle,
-		ButtonText,
-		ButtonType
+		ButtonVariant,
+		ButtonTextVariant,
+		ButtonSize
 	} from '@/components/generic/button/button.enum';
+	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { discountMap } from '@/shared/mappings/order.mapping';
@@ -623,14 +622,14 @@
 
 	{#if loadingInitialParts}
 		<Box>
-			<ProgressBar text="Iniciando edición del pedido..." />
+			<Loading text="Iniciando edición del pedido..." />
 		</Box>
 	{:else}
 		<form use:enhance method="post">
 			<div class="flex flex-col gap-2">
 				{#if $submitting}
 					<Box>
-						<ProgressBar text="Guardando" />
+						<Loading text="Guardando" />
 					</Box>
 				{:else}
 					{#if isExternal}
@@ -656,7 +655,7 @@
 					{/if}
 					<Box>
 						{#await profiledPrices}
-							<ProgressBar text="Cargando precios" />
+							<Loading text="Cargando precios" />
 						{:then pricing}
 							<div class="flex w-full flex-col gap-2 lg:grid lg:grid-cols-2 lg:items-end">
 								<Spacer title="Datos de la obra" line={false} />
@@ -710,7 +709,7 @@
 									</div>
 
 									<div
-										class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+										class="flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 shadow-xs"
 									>
 										<Label for="pp">PP Asimétrico</Label>
 										<Switch
@@ -982,12 +981,13 @@
 								</div>
 
 								<div class="lg:col-span-2">
-									<Button
-										text="Añadir a la lista"
-										onClick={() => addOtherElement()}
+									<MarcosButton
+										onclick={() => addOtherElement()}
 										icon={IconType.PLUS}
 										iconSize={IconSize.BIG}
-									></Button>
+									>
+										Añadir a la lista
+									</MarcosButton>
 								</div>
 
 								{@render cartItemExtraList(orderFormItemsState.getOtherItems())}
@@ -1029,7 +1029,7 @@
 								<div class="flex flex-col gap-2 lg:col-span-2">
 									<Label for="quantity">Cantidad:</Label>
 									<div
-										class="shadow-xs flex flex-row justify-between gap-3 rounded-md border p-2 lg:col-span-2"
+										class="flex flex-row justify-between gap-3 rounded-md border p-2 shadow-xs lg:col-span-2"
 									>
 										<input
 											class="text-md w-full px-2"
@@ -1040,27 +1040,23 @@
 										/>
 
 										<div class="flex flex-row gap-2">
-											<Button
+											<MarcosButton
 												icon={IconType.PLUS}
-												buttonType={ButtonType.SMALL}
-												text=""
-												action={ButtonAction.CLICK}
-												onClick={() => {
+												size={ButtonSize.SMALL}
+												onclick={() => {
 													$form.quantity += 1;
 												}}
-											></Button>
-											<Button
+											></MarcosButton>
+											<MarcosButton
 												icon={IconType.MINUS}
-												textType={ButtonText.GRAY}
-												buttonType={ButtonType.SMALL}
-												style={ButtonStyle.ORDER_GENERIC}
-												action={ButtonAction.CLICK}
-												text=""
+												textVariant={ButtonTextVariant.GRAY}
+												size={ButtonSize.SMALL}
+												variant={ButtonVariant.ORDER_GENERIC}
 												disabled={$form.quantity <= 1}
-												onClick={() => {
+												onclick={() => {
 													$form.quantity -= 1;
 												}}
-											></Button>
+											></MarcosButton>
 										</div>
 									</div>
 								</div>
@@ -1078,7 +1074,7 @@
 								{/if}
 
 								<div
-									class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+									class="flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 shadow-xs"
 									class:lg:col-span-2={$form.instantDelivery}
 								>
 									<Label for="instantDelivery">Al momento</Label>
@@ -1100,7 +1096,7 @@
 								</div>
 
 								<div
-									class="shadow-xs flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2"
+									class="flex h-10 flex-1 flex-row items-center justify-between gap-2 rounded-md border p-2 shadow-xs"
 								>
 									<Label for="hasArrow"><Icon type={IconType.DOWN} /></Label>
 									<Switch name="hasArrow" bind:checked={$form.hasArrow} />

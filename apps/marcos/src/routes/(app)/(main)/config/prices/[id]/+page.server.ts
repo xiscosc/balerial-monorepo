@@ -1,6 +1,6 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaEdit } from '@/shared/form-schema/pricing.form-schema';
 import { AuthService } from '$lib/server/service/auth.service.js';
@@ -31,7 +31,7 @@ export const load = async ({ locals, params }) => {
 		id,
 		new PricingService(AuthService.generateConfiguration(locals.user!))
 	);
-	const form = await superValidate(zod(listPriceSchemaEdit));
+	const form = await superValidate(zod4(listPriceSchemaEdit));
 	form.data.id = listPrice.id;
 	form.data.price = listPrice.price;
 	form.data.description = listPrice.description;
@@ -49,7 +49,7 @@ export const load = async ({ locals, params }) => {
 
 export const actions = {
 	async createOrEdit({ request, locals, params }) {
-		const form = await superValidate(request, zod(listPriceSchemaEdit));
+		const form = await superValidate(request, zod4(listPriceSchemaEdit));
 		if (!form.valid) {
 			return fail(400, { form });
 		}
