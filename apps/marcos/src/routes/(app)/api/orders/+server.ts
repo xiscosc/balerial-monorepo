@@ -25,10 +25,6 @@ async function notifyOrders(orders: Order[], orderService: OrderService) {
 }
 
 export async function PATCH({ request, locals }) {
-	if (!AuthService.isAdmin(locals.user)) {
-		return json({ error: 'Unauthorized' }, { status: 403 });
-	}
-
 	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
 	const { orderIds, operations } = (await request.json()) as {
 		orderIds: string[];
