@@ -3,10 +3,6 @@ import { OrderSetService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, locals }) {
-	if (!AuthService.isAdmin(locals.user)) {
-		return json({ error: 'Unauthorized' }, { status: 403 });
-	}
-
 	const orderSetService = new OrderSetService(AuthService.generateConfiguration(locals.user!));
 	const { orderIds } = (await request.json()) as {
 		orderIds: string[];
