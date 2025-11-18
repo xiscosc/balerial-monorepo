@@ -33,7 +33,12 @@
 			return;
 		}
 		measuredOrders.then((fullOrders) => {
+			whatsAppOrders = fullOrders
+				.map((fullOrder) => fullOrder.order)
+				.filter((order) => order.status === OrderStatus.FINISHED);
+
 			whatsappDisabled =
+				whatsAppOrders.length === 0 ||
 				fullOrders.filter(
 					(fullOrder) =>
 						fullOrder.order.status === OrderStatus.FINISHED ||
@@ -45,10 +50,6 @@
 					.map((fullOrder) => fullOrder.order)
 					.filter((order) => order.status === OrderStatus.FINISHED)
 			);
-
-			whatsAppOrders = fullOrders
-				.map((fullOrder) => fullOrder.order)
-				.filter((order) => order.status === OrderStatus.FINISHED);
 		});
 	});
 </script>
@@ -66,7 +67,9 @@
 			label="Enviar mensaje todos finalizados"
 			message={whatsAppText}
 			customer={data.customer}
-			tooltipText="Hay pedidos pendientes"
+			tooltipText={whatsAppOrders.length === 0
+				? 'No hay pedidos finalizados'
+				: 'Hay pedidos pendientes'}
 			notifyOrder={true}
 			{handleAfterNotify}
 			orders={whatsAppOrders}

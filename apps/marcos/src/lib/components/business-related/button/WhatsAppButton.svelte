@@ -40,6 +40,7 @@
 	async function handleNotify() {
 		notified = true;
 		if (orders.length === 0) {
+			loading = false;
 			return;
 		}
 
