@@ -25,6 +25,10 @@ async function notifyOrders(orders: Order[], orderService: OrderService) {
 	await Promise.all(promises);
 }
 
+function trackBulkOperation(event: string, orderIds: string[], locals: App.Locals) {
+	return trackServerEvent(locals.user!, { event, properties: { orderIds } }, locals.posthog);
+}
+
 export async function PATCH({ request, locals }) {
 	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
 	const { orderIds, operations } = (await request.json()) as {
@@ -46,66 +50,22 @@ export async function PATCH({ request, locals }) {
 
 	if (operationSet.has(BatchOperation.SET_PAID)) {
 		promises.push(setOrdersPaid(orders, orderService));
-		promises.push(
-			trackServerEvent(
-				locals.user!,
-				{
-					event: 'orders_bulk_set_paid',
-					properties: {
-						orderIds: orderIds
-					}
-				},
-				locals.posthog
-			)
-		);
+		promises.push(trackBulkOperation('orders_bulk_set_paid', orderIds, locals));
 	}
 
 	if (operationSet.has(BatchOperation.SET_INVOICED)) {
 		promises.push(setOrdersInvoiced(orders, orderService));
-		promises.push(
-			trackServerEvent(
-				locals.user!,
-				{
-					event: 'orders_bulk_set_invoiced',
-					properties: {
-						orderIds: orderIds
-					}
-				},
-				locals.posthog
-			)
-		);
+		promises.push(trackBulkOperation('orders_bulk_set_invoiced', orderIds, locals));
 	}
 
 	if (operationSet.has(BatchOperation.SET_PICKED_UP)) {
 		promises.push(setOrdersPickedUp(orders, orderService));
-		promises.push(
-			trackServerEvent(
-				locals.user!,
-				{
-					event: 'orders_bulk_set_picked_up',
-					properties: {
-						orderIds: orderIds
-					}
-				},
-				locals.posthog
-			)
-		);
+		promises.push(trackBulkOperation('orders_bulk_set_picked_up', orderIds, locals));
 	}
 
 	if (operationSet.has(BatchOperation.NOTIFY_ORDERS)) {
 		promises.push(notifyOrders(orders, orderService));
-		promises.push(
-			trackServerEvent(
-				locals.user!,
-				{
-					event: 'orders_bulk_notify',
-					properties: {
-						orderIds: orderIds
-					}
-				},
-				locals.posthog
-			)
-		);
+		promises.push(trackBulkOperation('orders_bulk_notify', orderIds, locals));
 	}
 
 	await Promise.all(promises);
