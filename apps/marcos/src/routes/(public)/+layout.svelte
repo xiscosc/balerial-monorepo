@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type Snippet } from 'svelte';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 	import type { LayoutData } from './$types';
 	import '../../app.css';
 
@@ -9,6 +10,7 @@
 	}
 
 	let { children }: Props = $props();
+	injectSpeedInsights();
 </script>
 
 <svelte:head>

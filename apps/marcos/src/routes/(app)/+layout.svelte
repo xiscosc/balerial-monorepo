@@ -10,6 +10,8 @@
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+
 
 	interface Props {
 		data: LayoutData;
@@ -19,6 +21,7 @@
 	let { data, children }: Props = $props();
 
 	initPosthog(data.envName, data.user);
+	injectSpeedInsights();
 
 	const headerColors = {
 		prod: 'bg-[#e9eae3]/70 border-gray-300',

@@ -3,6 +3,7 @@
 	import '../../app.css';
 	import type { LayoutData } from './$types';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	interface Props {
 		data: LayoutData;
@@ -11,6 +12,7 @@
 
 	let { data, children }: Props = $props();
 
+	injectSpeedInsights();
 	onMount(() => {
 		initPosthog(data.envName);
 	});

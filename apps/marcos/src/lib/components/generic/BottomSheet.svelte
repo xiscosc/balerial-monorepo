@@ -25,7 +25,7 @@
 <Sheet.Root>
 	<Sheet.Trigger>
 		{#snippet child({ props })}
-			<span class="flex-1 lg:hidden">
+			<span class="flex-1 lg:hidden w-full">
 				{@render trigger({ props })}
 			</span>
 		{/snippet}

@@ -22,9 +22,9 @@
 		"@smithy/types": "4.8.0"
 	},
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "3.928.0",
-		"@aws-sdk/lib-dynamodb": "3.928.0",
-		"aws-cdk-lib": "2.223.0",
+		"@aws-sdk/client-dynamodb": "3.940.0",
+		"@aws-sdk/lib-dynamodb": "3.940.0",
+		"aws-cdk-lib": "2.230.0",
 		"lodash": "4.17.21",
 		"pino": "10.1.0",
 		"pino-pretty": "13.1.2"
