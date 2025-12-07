@@ -85,7 +85,7 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20251205,
+		version: 20251209,
 		title: 'Diciembre 2025',
 		items: [
 			{
