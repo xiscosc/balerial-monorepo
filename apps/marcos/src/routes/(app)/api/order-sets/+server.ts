@@ -1,4 +1,5 @@
 import { AuthService } from '@/server/service/auth.service';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 import { OrderSetService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
@@ -13,5 +14,15 @@ export async function POST({ request, locals }) {
 	}
 
 	const orderSet = await orderSetService.createOrderSet(orderIds);
+	await trackServerEvent(
+		locals.user!,
+		{
+			event: 'order_set_created',
+			properties: {
+				orderSetId: orderSet.id
+			}
+		},
+		locals.posthog
+	);
 	return json({ orderSet });
 }

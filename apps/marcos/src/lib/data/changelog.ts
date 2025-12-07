@@ -83,5 +83,17 @@ export const Changelogs: Changelog[] = [
 			},
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY }
 		]
+	},
+	{
+		version: 20251209,
+		title: 'Diciembre 2025',
+		items: [
+			{
+				text: 'Actualización de seguridad',
+				type: ChangelogItemType.SECURITY
+			},
+			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Solucionado problema en boton de enviar WhatsApp', type: ChangelogItemType.TECHNICAL },
+		]
 	}
 ];

@@ -3,6 +3,7 @@ import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { type Order, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
 import { BatchOperation } from '@/type/api.type';
+import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
 
 async function setOrdersPaid(orders: Order[], orderService: OrderService) {
 	const promises = orders.map((order) => orderService.setOrderFullyPaid(order));
@@ -22,6 +23,10 @@ async function setOrdersPickedUp(orders: Order[], orderService: OrderService) {
 async function notifyOrders(orders: Order[], orderService: OrderService) {
 	const promises = orders.map((order) => orderService.setOrderAsNotified(order));
 	await Promise.all(promises);
+}
+
+function trackBulkOperation(event: string, orderIds: string[], locals: App.Locals) {
+	return trackServerEvent(locals.user!, { event, properties: { orderIds } }, locals.posthog);
 }
 
 export async function PATCH({ request, locals }) {
@@ -45,18 +50,22 @@ export async function PATCH({ request, locals }) {
 
 	if (operationSet.has(BatchOperation.SET_PAID)) {
 		promises.push(setOrdersPaid(orders, orderService));
+		promises.push(trackBulkOperation('orders_bulk_set_paid', orderIds, locals));
 	}
 
 	if (operationSet.has(BatchOperation.SET_INVOICED)) {
 		promises.push(setOrdersInvoiced(orders, orderService));
+		promises.push(trackBulkOperation('orders_bulk_set_invoiced', orderIds, locals));
 	}
 
 	if (operationSet.has(BatchOperation.SET_PICKED_UP)) {
 		promises.push(setOrdersPickedUp(orders, orderService));
+		promises.push(trackBulkOperation('orders_bulk_set_picked_up', orderIds, locals));
 	}
 
 	if (operationSet.has(BatchOperation.NOTIFY_ORDERS)) {
 		promises.push(notifyOrders(orders, orderService));
+		promises.push(trackBulkOperation('orders_bulk_notify', orderIds, locals));
 	}
 
 	await Promise.all(promises);
