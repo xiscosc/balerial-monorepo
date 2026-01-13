@@ -10,10 +10,6 @@ const files = [
 		dest: 'static/vendor/@m3e/core/index.min.js'
 	},
 	{
-		src: 'node_modules/@m3e/loading-indicator/dist/index.min.js',
-		dest: 'static/vendor/@m3e/loading-indicator/index.min.js'
-	},
-	{
 		src: 'node_modules/@m3e/progress-indicator/dist/index.min.js',
 		dest: 'static/vendor/@m3e/progress-indicator/index.min.js'
 	}
