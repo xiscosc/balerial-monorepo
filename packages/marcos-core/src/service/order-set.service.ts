@@ -1,5 +1,5 @@
-import { createHash } from 'crypto';
 import { v4 as uuid } from 'uuid';
+import { createHash } from 'crypto';
 import {
 	ICoreConfiguration,
 	ICoreConfigurationForAWSLambda

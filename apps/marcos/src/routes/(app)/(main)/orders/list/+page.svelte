@@ -15,7 +15,7 @@
 	const initialStatus = page.url.searchParams.get('status') as OrderStatus;
 	let { data }: { data: PageData } = $props();
 	let searchValue = $state('');
-	const listState = new ListStateClass(initialStatus, data.priceManager);
+	const listState = $derived(new ListStateClass(initialStatus, data.priceManager));
 </script>
 
 <div class="space flex w-full flex-col gap-4">

@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
+	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 
 	interface Props {
 		data: PageData;
@@ -20,7 +21,7 @@
 		if (data.orderSet == null) {
 			resolve(orders);
 		} else {
-			resolve(Object.values(data.orderSet.orders));
+			resolve(OrderRepresentationUtilities.getSortedOrdersFromOrderSet(data.orderSet));
 		}
 	});
 	let measuredOrders = $derived(getGlobalProfiler().measure(ordersPromise));

@@ -97,12 +97,13 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20260113,
+		version: 20260115,
 		title: 'Enero 2026',
 		items: [
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
 			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY },
-			{ text: 'Mejoras de rendimiento', type: ChangelogItemType.TECHNICAL }
+			{ text: 'Mejoras de rendimiento', type: ChangelogItemType.TECHNICAL },
+			{ text: 'Solucionada inconsistencia en la ordenación de los pedidos en listados', type: ChangelogItemType.TECHNICAL }
 		]
 	}
 ];

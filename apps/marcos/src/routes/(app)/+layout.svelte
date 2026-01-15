@@ -20,8 +20,10 @@
 
 	let { data, children }: Props = $props();
 
-	initPosthog(data.envName, data.user);
-	injectSpeedInsights();
+	$effect(() => {
+		initPosthog(data.envName, data.user);
+		injectSpeedInsights();
+	});
 
 	const headerColors = {
 		prod: 'bg-[#e9eae3]/70 border-gray-300',
@@ -34,7 +36,7 @@
 		dev: '👷'
 	};
 
-	let onTesting = $state(data.envName !== 'prod');
+	let onTesting = $derived(data.envName !== 'prod');
 	let headerBackgroundClasses = $derived(headerColors[data.envName as keyof typeof headerColors]);
 </script>
 
