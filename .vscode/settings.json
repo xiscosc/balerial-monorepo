@@ -7,10 +7,10 @@
 	"eslint.runtime": "node",
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "svelte"],
 	"editor.formatOnSave": true,
-	"prettier.configPath": ".prettierrc",
-	"[svelte]": {
-		"editor.defaultFormatter": "svelte.svelte-vscode"
-	},
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"typescript.preferences.importModuleSpecifier": "non-relative",
-	"javascript.preferences.importModuleSpecifier": "non-relative"
+	"javascript.preferences.importModuleSpecifier": "non-relative",
+	"html.customData": ["./node_modules/@m3e/core/dist/html-custom-data.json"],
+	"css.customData": ["./node_modules/@m3e/core/dist/css-custom-data.json"],
+	"biome.enabled": false
 }
