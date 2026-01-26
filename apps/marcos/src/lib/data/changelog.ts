@@ -97,7 +97,7 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20260115,
+		version: 20260126,
 		title: 'Enero 2026',
 		items: [
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
