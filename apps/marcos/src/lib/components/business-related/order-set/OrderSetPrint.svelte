@@ -8,7 +8,6 @@
 	import { onMount } from 'svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { goto } from '$app/navigation';
-	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 
 	let { orderSet }: { orderSet: OrderSet } = $props();
 
@@ -118,7 +117,7 @@
 				<span class="w-[10%] border-r border-r-gray-800 px-2 py-1 text-center">Tot.SinIVA</span>
 				<span class="w-[10%] px-2 py-1 text-center">Total</span>
 			</div>
-			{#each OrderRepresentationUtilities.getSortedOrdersFromOrderSet(orderSet) as fullOrder (fullOrder.order.id)}
+			{#each Object.values(orderSet.orders) as fullOrder (fullOrder.order.id)}
 				<div class="flex flex-row border-b border-b-gray-800 font-mono last:border-b-0">
 					<span class="w-[30%] border-r border-r-gray-800 px-2 py-1 text-center">
 						{fullOrder.order.publicId}
