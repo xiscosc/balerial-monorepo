@@ -13,12 +13,4 @@ export const handleErrorWithPostHog: HandleServerError = async ({ error, status,
 			console.error('Failed to shutdown PostHog client:', e);
 		}
 	}
-	
-	if (dev) {
-		console.error('Server error:', error);
-	}
-	
-	return {
-		message: error instanceof Error ? error.message : 'An unexpected error occurred'
-	};
 };
