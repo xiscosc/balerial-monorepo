@@ -7,7 +7,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { PriceApiGateway } from '@/gateway/price-api.gateway';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import MaterialProgressBar from '@/components/generic/MaterialProgressBar.svelte';
+	import Loading from '@/components/generic/Loading.svelte';
 
 	let files: FileList | undefined = $state();
 	let loadingText = $state('');
@@ -134,7 +134,7 @@
 				{#if loading}
 					<div class="flex w-full flex-col items-center gap-2">
 						<span class="font-medium">{loadingText}</span>
-						<MaterialProgressBar value={loadingProgress} />
+						<Loading text="" />
 					</div>
 				{:else}
 					<Input id="moldFile" type="file" bind:files />

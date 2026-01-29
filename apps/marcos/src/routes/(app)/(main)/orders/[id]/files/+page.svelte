@@ -16,7 +16,6 @@
 	import { trackEvent } from '@/shared/fronted-analytics/posthog';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import MaterialProgressBar from '@/components/generic/MaterialProgressBar.svelte';
 
 	interface Props {
 		data: PageData;
@@ -197,7 +196,7 @@
 		<Box>
 			<div class="flex flex-col items-center gap-3 text-center">
 				<span class="text-md font-medium">Cargando archivos...</span>
-				<MaterialProgressBar value={loadingProgress}></MaterialProgressBar>
+				<Loading text=""></Loading>
 				<p>{loadingProgress}%</p>
 			</div>
 		</Box>

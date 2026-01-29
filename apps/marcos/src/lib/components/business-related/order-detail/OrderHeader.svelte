@@ -26,8 +26,8 @@
 	}
 
 	let { fullOrder, locationForm, locations, statusForm }: Props = $props();
-	const order = $derived(fullOrder.order);
-	const totals = $derived(fullOrder.totals);
+	const order = fullOrder.order;
+	const totals = fullOrder.totals;
 </script>
 
 {#snippet dateCreated()}
