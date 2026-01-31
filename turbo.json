@@ -20,7 +20,7 @@
 				"REPORTS_BUCKET",
 				"ITEM_ORDER_TABLE",
 				"ORDER_TABLE",
-                "ORDER_SET_TABLE",
+				"ORDER_SET_TABLE",
 				"FILE_TABLE",
 				"ORDER_AUDIT_TRAIL_TABLE",
 				"CUSTOMER_TABLE",
@@ -37,7 +37,8 @@
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY"
+				"POSTHOG_KEY",
+				"PUBLIC_VERCEL_GIT_COMMIT_SHA"
 			]
 		},
 		"lint": {
@@ -56,7 +57,7 @@
 				"REPORTS_BUCKET",
 				"ITEM_ORDER_TABLE",
 				"ORDER_TABLE",
-                "ORDER_SET_TABLE",
+				"ORDER_SET_TABLE",
 				"FILE_TABLE",
 				"ORDER_AUDIT_TRAIL_TABLE",
 				"CUSTOMER_TABLE",
@@ -73,7 +74,8 @@
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY"
+				"POSTHOG_KEY",
+				"PUBLIC_VERCEL_GIT_COMMIT_SHA"
 			]
 		},
 		"check-types": {

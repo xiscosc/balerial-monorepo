@@ -7,7 +7,8 @@ import {
 	type ExternalFullOrder,
 	type ExternalOrder,
 	type FullOrder,
-	type Order
+	type Order,
+	type OrderSet
 } from '@marcsimolduressonsardina/core/type';
 import { CalculatedItemUtilities, otherExtraId } from '@marcsimolduressonsardina/core/util';
 import { customerMoldIds, discountMap } from '../mappings/order.mapping';
@@ -113,6 +114,12 @@ export class OrderRepresentationUtilities {
 		}
 
 		return `${discount}%`;
+	}
+
+	public static getSortedOrdersFromOrderSet(orderSet: OrderSet): FullOrder[] {
+		return Object.values(orderSet.orders).sort(
+			(a, b) => b.order.createdAt.getTime() - a.order.createdAt.getTime()
+		);
 	}
 
 	public static getPossibleNextStatuses(currentStatus: OrderStatus): OrderStatus[] {

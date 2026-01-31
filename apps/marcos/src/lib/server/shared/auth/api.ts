@@ -4,7 +4,7 @@ import { AuthService } from '@/server/service/auth.service';
 /**
 
  */
-export const apiAuthHandler: Handle = async ({ event, resolve }) => {
+export const apiAuthHandle: Handle = async ({ event, resolve }) => {
 	if (event.url.pathname.startsWith('/api')) {
 		if (!event.locals.user) {
 			return new Response(JSON.stringify({ error: 'Unauthorized' }), {
