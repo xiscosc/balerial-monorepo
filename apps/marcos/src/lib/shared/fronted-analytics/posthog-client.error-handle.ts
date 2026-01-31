@@ -1,9 +1,14 @@
 import posthog from 'posthog-js';
-import type { HandleClientError } from '@sveltejs/kit';
+import { isHttpError, type HandleClientError } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 
-export const handleClientErrorWithPostHog: HandleClientError = async ({ error, status }) => {
-	if (status !== 404 && !dev) {
-		posthog.captureException(error);
-	}
+const shouldCapture = (error: unknown): boolean => {
+	if (dev) return false;
+	if (isHttpError(error) && error.status < 500) return false;
+	return true;
+};
+
+export const handleClientErrorWithPostHog: HandleClientError = async ({ error }) => {
+	if (!shouldCapture(error)) return;
+	posthog.captureException(error);
 };

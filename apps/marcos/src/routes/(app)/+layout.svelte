@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
 	import { navigating } from '$app/state';
+
 	import { resolve } from '$app/paths';
 	import '../../app.css';
 	import Loading from '@/components/generic/Loading.svelte';
@@ -11,7 +12,6 @@
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
-
 
 	interface Props {
 		data: LayoutData;
@@ -34,7 +34,7 @@
 		dev: '👷'
 	};
 
-	let onTesting = $state(data.envName !== 'prod');
+	const onTesting = $derived(data.envName !== 'prod');
 	let headerBackgroundClasses = $derived(headerColors[data.envName as keyof typeof headerColors]);
 </script>
 
