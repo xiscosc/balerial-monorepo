@@ -37,8 +37,7 @@
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY",
-				"PUBLIC_VERCEL_GIT_COMMIT_SHA"
+				"POSTHOG_KEY"
 			]
 		},
 		"lint": {
@@ -74,8 +73,7 @@
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY",
-				"PUBLIC_VERCEL_GIT_COMMIT_SHA"
+				"POSTHOG_KEY"
 			]
 		},
 		"check-types": {
