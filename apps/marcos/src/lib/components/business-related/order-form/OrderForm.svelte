@@ -48,6 +48,7 @@
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
 	import { ExternalOrderPriceTrackerState } from '@/components/business-related/order-form/ExternalOrderPriceTracker.state.svelte';
+	import { trackEvent, trackError } from '@/shared/fronted-analytics/posthog';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -62,7 +63,22 @@
 	let profiledPrices = $derived(getGlobalProfiler().measure(data.pricing));
 
 	const { form, errors, enhance, submitting } = superForm(data.form, {
-		dataType: 'json'
+		dataType: 'json',
+		timeoutMs: 30000,
+		onSubmit: () => {
+			trackEvent('Order form submit started');
+		},
+		onResult: ({ result }) => {
+			trackEvent('Order form result', { type: result.type });
+			if (result.type === 'error') {
+				toast.error('Error al guardar: ' + (result.error?.message || 'Error desconocido'));
+			}
+		},
+		onError: ({ result }) => {
+			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
+			trackError(error);
+			toast.error('Error: ' + error.message);
+		}
 	});
 	const proxyDate = dateProxy(form, 'deliveryDate', { format: 'date' });
 

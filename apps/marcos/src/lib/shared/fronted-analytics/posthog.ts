@@ -5,6 +5,7 @@ import type { AppUser } from '@marcsimolduressonsardina/core/type';
 
 export function initPosthog(envName: string, appUser?: AppUser) {
 	if (dev) {
+		console.log('dev - initPosthog', envName, appUser);
 		return;
 	}
 
@@ -29,6 +30,7 @@ export function initPosthog(envName: string, appUser?: AppUser) {
 
 export function identifyUser(appUser: AppUser, envName: string) {
 	if (dev) {
+		console.log('dev - identifyUser', appUser, envName);
 		return;
 	}
 
@@ -46,10 +48,25 @@ export function trackEvent(
 	properties: Record<string, string | number | boolean | undefined> = {}
 ) {
 	if (dev) {
+		console.log('dev - trackEvent', eventName, properties);
 		return;
 	}
 
 	if (browser) {
 		posthog.capture(eventName, properties);
+	}
+}
+
+export function trackError(
+	error: Error,
+	properties: Record<string, string | number | boolean | undefined> = {}
+) {
+	if (dev) {
+		console.log('dev - trackError', error, properties);
+		return;
+	}
+
+	if (browser) {
+		posthog.captureException(error, properties);
 	}
 }
