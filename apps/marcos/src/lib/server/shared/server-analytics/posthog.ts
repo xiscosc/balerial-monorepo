@@ -67,11 +67,10 @@ export async function trackServerEvent(
 		}
 	});
 
-	try {
-		await client.shutdown();
-	} catch (error) {
+	// Don't await shutdown - let it run in background to avoid blocking redirects
+	client.shutdown().catch((error) => {
 		console.error('Failed to shutdown PostHog client:', error);
-	}
+	});
 }
 
 export async function trackAnonymousServerEvent(event: IServerEvent, context: PostHogContext) {
@@ -93,11 +92,10 @@ export async function trackAnonymousServerEvent(event: IServerEvent, context: Po
 		}
 	});
 
-	try {
-		await client.shutdown();
-	} catch (error) {
+	// Don't await shutdown - let it run in background to avoid blocking redirects
+	client.shutdown().catch((error) => {
 		console.error('Failed to shutdown PostHog client:', error);
-	}
+	});
 }
 
 export const posthogContextHandle: Handle = async ({ event, resolve }) => {
