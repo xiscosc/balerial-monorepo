@@ -1,4 +1,4 @@
-import posthog from 'posthog-js';
+import posthog, { type Properties } from 'posthog-js';
 import { PUBLIC_POSTHOG_KEY } from '$env/static/public';
 import { browser, dev } from '$app/environment';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
@@ -43,10 +43,7 @@ export function identifyUser(appUser: AppUser, envName: string) {
 	}
 }
 
-export function trackEvent(
-	eventName: string,
-	properties: Record<string, string | number | boolean | undefined> = {}
-) {
+export function trackEvent(eventName: string, properties: Properties = {}) {
 	if (dev) {
 		console.log('dev - trackEvent', eventName, properties);
 		return;
@@ -57,10 +54,7 @@ export function trackEvent(
 	}
 }
 
-export function trackError(
-	error: Error,
-	properties: Record<string, string | number | boolean | undefined> = {}
-) {
+export function trackError(error: Error, properties: Properties = {}) {
 	if (dev) {
 		console.log('dev - trackError', error, properties);
 		return;
