@@ -31,8 +31,8 @@
 	const form = superForm(data.form, {
 		validators: zod4Client(link ? linkCustomerSchema : customerSchema),
 		timeoutMs: 30000,
-		onSubmit: () => {
-			trackEvent('Customer form submit started', { link });
+		onSubmit: ({ formData }) => {
+			trackEvent('Customer form submit started', { link, formData });
 		},
 		onResult: ({ result }) => {
 			trackEvent('Customer form result', { type: result.type, link });

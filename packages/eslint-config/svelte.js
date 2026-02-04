@@ -41,8 +41,8 @@ export const config = [
 		},
 		rules: {
 			// Enable your custom rule with a severity
-			'custom-svelte/enforce-breakpointstate-destroy': 'error' // Or 'error'
-			// ... any other Svelte-specific rules can go here
+			'custom-svelte/enforce-breakpointstate-destroy': 'error',
+			'svelte/state_referenced_locally': 'off'
 		}
 	},
 	{

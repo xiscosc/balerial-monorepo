@@ -65,8 +65,8 @@
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json',
 		timeoutMs: 30000,
-		onSubmit: () => {
-			trackEvent('Order form submit started');
+		onSubmit: ({ formData }) => {
+			trackEvent('Order form submit started', { formData });
 		},
 		onResult: ({ result }) => {
 			trackEvent('Order form result', { type: result.type });
