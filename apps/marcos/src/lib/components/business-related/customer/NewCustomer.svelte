@@ -14,6 +14,9 @@
 		type CustomerSchema,
 		type LinkCustomerSchema
 	} from '@/shared/form-schema/customer.form-schema';
+	import { trackEvent, trackError } from '@/shared/fronted-analytics/posthog';
+	import { toast } from 'svelte-sonner';
+
 	interface Props {
 		data: {
 			form: SuperValidated<Infer<CustomerSchema | LinkCustomerSchema>>;
@@ -26,7 +29,22 @@
 
 	let { data, icon, title = 'Crear Cliente', buttonText = 'Crear', link = false }: Props = $props();
 	const form = superForm(data.form, {
-		validators: zod4Client(link ? linkCustomerSchema : customerSchema)
+		validators: zod4Client(link ? linkCustomerSchema : customerSchema),
+		timeoutMs: 30000,
+		onSubmit: () => {
+			trackEvent('Customer form submit started', { link });
+		},
+		onResult: ({ result }) => {
+			trackEvent('Customer form result', { type: result.type, link });
+			if (result.type === 'error') {
+				toast.error('Error al guardar: ' + (result.error?.message || 'Error desconocido'));
+			}
+		},
+		onError: ({ result }) => {
+			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
+			trackError(error);
+			toast.error('Error: ' + error.message);
+		}
 	});
 	const { form: formData, enhance, submitting } = form;
 </script>
