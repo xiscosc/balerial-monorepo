@@ -15,7 +15,7 @@
 		type LinkCustomerSchema
 	} from '@/shared/form-schema/customer.form-schema';
 	import { trackEvent, trackError } from '@/shared/fronted-analytics/posthog';
-	import { toast } from 'svelte-sonner';
+	import { Toaster, toast } from 'svelte-sonner';
 
 	interface Props {
 		data: {
@@ -80,3 +80,5 @@
 		</form>
 	</div>
 </Box>
+
+<Toaster richColors />
