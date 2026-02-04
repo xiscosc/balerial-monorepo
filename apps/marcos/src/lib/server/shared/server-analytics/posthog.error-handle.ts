@@ -1,16 +1,17 @@
 import { dev } from '$app/environment';
 import { buildPostHogServer } from '@/server/shared/server-analytics/posthog';
-import type { HandleServerError } from '@sveltejs/kit';
+import { isRedirect, type HandleServerError } from '@sveltejs/kit';
 
-const shouldCapture = (status: number): boolean => {
+const shouldCapture = (error: unknown, status: number): boolean => {
 	if (dev) return false;
+	if (isRedirect(error)) return false;
 	// Only capture 5xx errors
 	if (status < 500) return false;
 	return true;
 };
 
 export const handleErrorWithPostHog: HandleServerError = async ({ error, event, status }) => {
-	if (!shouldCapture(status)) return;
+	if (!shouldCapture(error, status)) return;
 
 	try {
 		const client = buildPostHogServer();
