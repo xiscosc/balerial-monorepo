@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { dateProxy, superForm } from 'sveltekit-superforms';
+	import { get } from 'svelte/store';
 	import { Toaster, toast } from 'svelte-sonner';
 	import {
 		type CalculatedItemPart,
@@ -65,8 +66,8 @@
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json',
 		timeoutMs: 5000,
-		onSubmit: ({ formData }) => {
-			trackEvent('Order form submit started', { formData });
+		onSubmit: () => {
+			trackEvent('Order form submit started', { isNew, isExternal, form: get(form) });
 		},
 		onResult: ({ result }) => {
 			trackEvent('Order form result', { type: result.type });
@@ -76,9 +77,14 @@
 		},
 		onError: ({ result }) => {
 			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
-			const isNetworkError = error.message.includes('fetch') || error.message.includes('network') || error.message.includes('timeout');
+			const isNetworkError =
+				error.message.includes('fetch') ||
+				error.message.includes('network') ||
+				error.message.includes('timeout');
 			trackError(error);
-			toast.error(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
+			toast.error(
+				isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message
+			);
 		}
 	});
 	const proxyDate = dateProxy(form, 'deliveryDate', { format: 'date' });
