@@ -82,7 +82,7 @@
 				error.message.includes('fetch') ||
 				error.message.includes('network') ||
 				error.message.includes('timeout');
-			queueError(error);
+			queueError(error, 'OrderForm');
 			toast.error(
 				isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message
 			);
