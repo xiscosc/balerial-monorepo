@@ -24,7 +24,13 @@ function saveQueue(queue: QueuedError[]) {
 	localStorage.setItem(QUEUE_KEY, JSON.stringify(queue.slice(-MAX_QUEUE_SIZE)));
 }
 
-export function queueError(error: Error) {
+export function queueError(error: Error, source?: string) {
+	if (!browser) return;
+	const success = trackError(error, { source, originalStack: error.stack });
+	if (success) {
+		return;
+	}
+
 	const queue = getQueue();
 	queue.push({
 		message: error.message,
@@ -45,7 +51,11 @@ export function flushErrorQueue() {
 	queue.forEach((item) => {
 		const error = new Error(item.message);
 		if (item.stack) error.stack = item.stack;
-		const success = trackError(error, { queuedAt: item.timestamp, wasOffline: true });
+		const success = trackError(error, {
+			queuedAt: item.timestamp,
+			wasOffline: true,
+			originalStack: item.stack
+		});
 		if (!success) {
 			failedItems.push(item);
 		}

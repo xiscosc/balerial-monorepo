@@ -1,6 +1,6 @@
-import posthog from 'posthog-js';
 import type { HandleClientError } from '@sveltejs/kit';
 import { dev } from '$app/environment';
+import { queueError } from '@/shared/fronted-analytics/offline-error-queue';
 
 const shouldCapture = (status: number): boolean => {
 	if (dev) return false;
@@ -11,5 +11,6 @@ const shouldCapture = (status: number): boolean => {
 
 export const handleClientErrorWithPostHog: HandleClientError = async ({ error, status }) => {
 	if (!shouldCapture(status)) return;
-	posthog.captureException(error);
+	const errorToTrack = error instanceof Error ? error : new Error(String(error));
+	queueError(errorToTrack);
 };

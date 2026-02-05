@@ -44,7 +44,7 @@
 		onError: ({ result }) => {
 			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
 			const isNetworkError = error.message.includes('fetch') || error.message.includes('network') || error.message.includes('timeout');
-			queueError(error);
+			queueError(error, 'CustomerForm');
 			toast.error(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
 		}
 	});
