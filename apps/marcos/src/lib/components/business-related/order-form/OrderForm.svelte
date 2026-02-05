@@ -49,7 +49,8 @@
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
 	import { ExternalOrderPriceTrackerState } from '@/components/business-related/order-form/ExternalOrderPriceTracker.state.svelte';
-	import { trackEvent, trackError } from '@/shared/fronted-analytics/posthog';
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { queueError } from '@/shared/fronted-analytics/offline-error-queue';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -81,7 +82,7 @@
 				error.message.includes('fetch') ||
 				error.message.includes('network') ||
 				error.message.includes('timeout');
-			trackError(error);
+			queueError(error);
 			toast.error(
 				isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message
 			);

@@ -14,7 +14,8 @@
 		type CustomerSchema,
 		type LinkCustomerSchema
 	} from '@/shared/form-schema/customer.form-schema';
-	import { trackEvent, trackError } from '@/shared/fronted-analytics/posthog';
+	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { queueError } from '@/shared/fronted-analytics/offline-error-queue';
 	import { Toaster, toast } from 'svelte-sonner';
 
 	interface Props {
@@ -43,7 +44,7 @@
 		onError: ({ result }) => {
 			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
 			const isNetworkError = error.message.includes('fetch') || error.message.includes('network') || error.message.includes('timeout');
-			trackError(error);
+			queueError(error);
 			toast.error(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
 		}
 	});

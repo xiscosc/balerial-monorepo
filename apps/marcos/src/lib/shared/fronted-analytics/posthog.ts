@@ -57,10 +57,13 @@ export function trackEvent(eventName: string, properties: Properties = {}) {
 export function trackError(error: Error, properties: Properties = {}) {
 	if (dev) {
 		console.log('dev - trackError', error, properties);
-		return;
+		return true;
 	}
 
 	if (browser) {
-		posthog.captureException(error, properties);
+		const result = posthog.captureException(error, properties);
+		return result !== undefined;
 	}
+
+	return false;
 }

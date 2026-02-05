@@ -10,6 +10,7 @@
 	import Box from '@/components/generic/Box.svelte';
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import { flushErrorQueue } from '@/shared/fronted-analytics/offline-error-queue';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
@@ -22,6 +23,12 @@
 
 	initPosthog(data.envName, data.user);
 	injectSpeedInsights();
+
+	$effect(() => {
+		if (!navigating.from) {
+			flushErrorQueue();
+		}
+	});
 
 	const headerColors = {
 		prod: 'bg-[#e9eae3]/70 border-gray-300',
