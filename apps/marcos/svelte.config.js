@@ -6,6 +6,9 @@ const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess: [vitePreprocess({})],
+	compilerOptions: {
+		warningFilter: (warning) => !warning.code.startsWith('state_referenced_locally')
+	},
 
 	kit: {
 		// adapter-auto only supports some environments, see https://kit.svelte.dev/docs/adapter-auto for a list.

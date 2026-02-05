@@ -30,7 +30,7 @@
 	let { data, icon, title = 'Crear Cliente', buttonText = 'Crear', link = false }: Props = $props();
 	const form = superForm(data.form, {
 		validators: zod4Client(link ? linkCustomerSchema : customerSchema),
-		timeoutMs: 30000,
+		timeoutMs: 5000,
 		onSubmit: ({ formData }) => {
 			trackEvent('Customer form submit started', { link, formData });
 		},
@@ -42,8 +42,9 @@
 		},
 		onError: ({ result }) => {
 			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
+			const isNetworkError = error.message.includes('fetch') || error.message.includes('network') || error.message.includes('timeout');
 			trackError(error);
-			toast.error('Error: ' + error.message);
+			toast.error(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
 		}
 	});
 	const { form: formData, enhance, submitting } = form;

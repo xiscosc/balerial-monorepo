@@ -64,7 +64,7 @@
 
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json',
-		timeoutMs: 30000,
+		timeoutMs: 5000,
 		onSubmit: ({ formData }) => {
 			trackEvent('Order form submit started', { formData });
 		},
@@ -76,8 +76,9 @@
 		},
 		onError: ({ result }) => {
 			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
+			const isNetworkError = error.message.includes('fetch') || error.message.includes('network') || error.message.includes('timeout');
 			trackError(error);
-			toast.error('Error: ' + error.message);
+			toast.error(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
 		}
 	});
 	const proxyDate = dateProxy(form, 'deliveryDate', { format: 'date' });
