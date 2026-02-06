@@ -24,6 +24,20 @@ function saveQueue(queue: QueuedError[]) {
 	localStorage.setItem(QUEUE_KEY, JSON.stringify(queue.slice(-MAX_QUEUE_SIZE)));
 }
 
+export function handleFormError(
+	result: { error: Error | { message: string } | unknown },
+	source: string,
+	onError: (message: string) => void
+) {
+	const error = result.error instanceof Error ? result.error : new Error(String(result.error));
+	const isNetworkError =
+		error.message.includes('fetch') ||
+		error.message.includes('network') ||
+		error.message.includes('timeout');
+	queueError(error, source);
+	onError(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
+}
+
 export function queueError(error: Error, source?: string) {
 	if (!browser) return;
 	const success = trackError(error, { source, originalStack: error.stack });

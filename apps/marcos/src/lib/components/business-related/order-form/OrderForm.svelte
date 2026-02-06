@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { dateProxy, superForm } from 'sveltekit-superforms';
-	import { get } from 'svelte/store';
 	import { Toaster, toast } from 'svelte-sonner';
 	import {
 		type CalculatedItemPart,
@@ -49,8 +48,7 @@
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
 	import { ExternalOrderPriceTrackerState } from '@/components/business-related/order-form/ExternalOrderPriceTracker.state.svelte';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
-	import { queueError } from '@/shared/fronted-analytics/offline-error-queue';
+	import { handleFormError } from '@/shared/fronted-analytics/offline-error-queue';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -67,26 +65,7 @@
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json',
 		timeoutMs: 5000,
-		onSubmit: () => {
-			trackEvent('Order form submit started', { isNew, isExternal, form: get(form) });
-		},
-		onResult: ({ result }) => {
-			trackEvent('Order form result', { type: result.type });
-			if (result.type === 'error') {
-				toast.error('Error al guardar: ' + (result.error?.message || 'Error desconocido'));
-			}
-		},
-		onError: ({ result }) => {
-			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
-			const isNetworkError =
-				error.message.includes('fetch') ||
-				error.message.includes('network') ||
-				error.message.includes('timeout');
-			queueError(error, 'OrderForm');
-			toast.error(
-				isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message
-			);
-		}
+		onError: ({ result }) => handleFormError(result, 'OrderForm', toast.error)
 	});
 	const proxyDate = dateProxy(form, 'deliveryDate', { format: 'date' });
 

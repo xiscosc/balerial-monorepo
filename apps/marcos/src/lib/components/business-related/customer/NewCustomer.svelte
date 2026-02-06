@@ -14,8 +14,7 @@
 		type CustomerSchema,
 		type LinkCustomerSchema
 	} from '@/shared/form-schema/customer.form-schema';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
-	import { queueError } from '@/shared/fronted-analytics/offline-error-queue';
+	import { handleFormError } from '@/shared/fronted-analytics/offline-error-queue';
 	import { Toaster, toast } from 'svelte-sonner';
 
 	interface Props {
@@ -32,21 +31,7 @@
 	const form = superForm(data.form, {
 		validators: zod4Client(link ? linkCustomerSchema : customerSchema),
 		timeoutMs: 5000,
-		onSubmit: ({ formData }) => {
-			trackEvent('Customer form submit started', { link, formData });
-		},
-		onResult: ({ result }) => {
-			trackEvent('Customer form result', { type: result.type, link });
-			if (result.type === 'error') {
-				toast.error('Error al guardar: ' + (result.error?.message || 'Error desconocido'));
-			}
-		},
-		onError: ({ result }) => {
-			const error = result.error instanceof Error ? result.error : new Error(String(result.error));
-			const isNetworkError = error.message.includes('fetch') || error.message.includes('network') || error.message.includes('timeout');
-			queueError(error, 'CustomerForm');
-			toast.error(isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message);
-		}
+		onError: ({ result }) => handleFormError(result, 'CustomerForm', toast.error)
 	});
 	const { form: formData, enhance, submitting } = form;
 </script>
