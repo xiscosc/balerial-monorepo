@@ -8,13 +8,13 @@
 		"format": "prettier --write ."
 	},
 	"devDependencies": {
-		"@aws-sdk/client-dynamodb": "3.940.0",
+		"@aws-sdk/client-dynamodb": "3.984.0",
 		"@repo/eslint-config": "workspace:*",
-		"@types/aws-lambda": "8.10.152",
+		"@types/aws-lambda": "8.10.160",
 		"@types/eslint": "9.6.1",
-		"@types/node": "22.13.14",
-		"aws-cdk": "2.1033.0",
-		"esbuild": "0.27.0",
+		"@types/node": "25.2.1",
+		"aws-cdk": "2.1105.0",
+		"esbuild": "0.27.3",
 		"typescript": "5.9.3"
 	},
 	"type": "module",
@@ -22,10 +22,10 @@
 		"@balerial/dynamo": "workspace:*",
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"@marcsimolduressonsardina/lambda": "workspace:*",
-		"aws-cdk-lib": "2.230.0",
+		"aws-cdk-lib": "2.237.1",
 		"aws-lambda": "1.0.7",
-		"constructs": "10.4.2",
-		"dotenv": "16.5.0",
+		"constructs": "10.4.5",
+		"dotenv": "17.2.4",
 		"source-map-support": "0.5.21"
 	}
 }

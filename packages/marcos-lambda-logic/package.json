@@ -16,17 +16,17 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
-		"@types/aws-lambda": "8.10.152",
+		"@types/aws-lambda": "8.10.160",
 		"@types/luxon": "3.7.1",
-		"typescript": "5.9.3",
-		"sharp": "0.34.2",
 		"aws-lambda": "1.0.7",
-		"pino": "10.1.0"
+		"pino": "10.3.0",
+		"sharp": "0.34.5",
+		"typescript": "5.9.3"
 	},
 	"dependencies": {
-		"@marcsimolduressonsardina/core": "workspace:*",
 		"@balerial/s3": "workspace:*",
+		"@marcsimolduressonsardina/core": "workspace:*",
 		"luxon": "3.7.2",
-		"posthog-node": "5.24.9"
+		"posthog-node": "5.24.11"
 	}
 }

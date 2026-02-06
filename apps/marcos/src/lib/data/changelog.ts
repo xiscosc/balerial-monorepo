@@ -111,5 +111,14 @@ export const Changelogs: Changelog[] = [
 				type: ChangelogItemType.TECHNICAL
 			}
 		]
+	},
+	{
+		version: 20260209,
+		title: 'Febrero 2026',
+		items: [
+			{ text: 'Solución de errores de conexión', type: ChangelogItemType.TECHNICAL },
+			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY }
+		]
 	}
 ];
