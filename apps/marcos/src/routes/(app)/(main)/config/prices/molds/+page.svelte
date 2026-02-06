@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Toaster, toast } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import Box from '@/components/generic/Box.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';
@@ -115,8 +115,6 @@
 		}
 	}
 </script>
-
-<Toaster richColors />
 
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.MOLD}>Carga de precios de Marcos/Molduras</SimpleHeading>

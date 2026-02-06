@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import { enhance as sEnhance } from '$app/forms';
 	import * as Form from '@/components/ui/form/index.js';
 	import {
@@ -142,8 +142,6 @@
 
 	let formLoading = $state(false);
 </script>
-
-<Toaster richColors />
 
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.COINS}>

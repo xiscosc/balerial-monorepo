@@ -8,7 +8,7 @@
 	import { Input } from '@/components/ui/input';
 	import { DateTime } from 'luxon';
 	import { type ProfilerConfig } from '@/shared/profiler/profiler';
-	import { toast, Toaster } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { ProfilerState } from '@/state/profiler/profiler.state';
@@ -49,8 +49,6 @@
 		}
 	}
 </script>
-
-<Toaster richColors />
 
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.SETTINGS}>Debug Settings</SimpleHeading>

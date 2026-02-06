@@ -15,7 +15,7 @@
 		type LinkCustomerSchema
 	} from '@/shared/form-schema/customer.form-schema';
 	import { handleFormError } from '@/shared/fronted-analytics/offline-error-queue';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 
 	interface Props {
 		data: {
@@ -67,5 +67,3 @@
 		</form>
 	</div>
 </Box>
-
-<Toaster richColors />

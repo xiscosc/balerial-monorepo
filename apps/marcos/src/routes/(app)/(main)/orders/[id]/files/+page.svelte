@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import { FileType, type File as MMSSFile } from '@marcsimolduressonsardina/core/type';
 	import Loading from '@/components/generic/Loading.svelte';
 	import UploadedFile from '@/components/business-related/file/UploadedFile.svelte';
@@ -167,8 +167,6 @@
 		});
 	}
 </script>
-
-<Toaster richColors />
 
 <div class="flex flex-col gap-4">
 	<div class="flex w-full flex-row items-end justify-between">

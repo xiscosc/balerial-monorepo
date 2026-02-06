@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { dateProxy, superForm } from 'sveltekit-superforms';
-	import { Toaster, toast } from 'svelte-sonner';
+	import { toast } from 'svelte-sonner';
 	import {
 		type CalculatedItemPart,
 		type ListPrice,
@@ -617,8 +617,6 @@
 		{/each}
 	</div>
 {/snippet}
-
-<Toaster richColors />
 
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.FORM}>{title}</SimpleHeading>
