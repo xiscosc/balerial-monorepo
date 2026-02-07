@@ -30,7 +30,7 @@ jobs:
           bun-version: latest
 
       - name: Download Sharp Layer
-        run: curl -L https://github.com/pH200/sharp-layer/releases/download/0.34.0/release-arm64.zip --output apps/marcos-aws/sharp-layer.zip
+        run: curl -L https://github.com/pH200/sharp-layer/releases/download/0.34.5/release-arm64.zip --output apps/marcos-aws/sharp-layer.zip
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -43,7 +43,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
-          aws-region: 'eu-central-1'
+          aws-region: "eu-central-1"
 
       - name: Bootstrap
         run: bun run --cwd apps/marcos-aws cdk bootstrap
