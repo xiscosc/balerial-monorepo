@@ -75,5 +75,6 @@ export enum IconType {
 	MESSAGE = 'message',
 	NEW_BOX = 'new-box',
 	TOOL = 'tool',
-	ERROR = 'error'
+	ERROR = 'error',
+	OFFLINE = 'offline'
 }

@@ -11,8 +11,10 @@
 	import { type Snippet } from 'svelte';
 	import { initPosthog } from '@/shared/fronted-analytics/posthog';
 	import { flushErrorQueue } from '@/shared/fronted-analytics/offline-error-queue';
+	import { initNetworkStatus } from '@/shared/network/network-status.svelte';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
+	import { Toaster } from 'svelte-sonner';
 
 	interface Props {
 		data: LayoutData;
@@ -23,6 +25,7 @@
 
 	initPosthog(data.envName, data.user);
 	injectSpeedInsights();
+	initNetworkStatus();
 
 	$effect(() => {
 		if (!navigating.from) {
@@ -103,6 +106,8 @@
 
 	<ActionBar />
 </div>
+
+<Toaster richColors />
 
 <style>
 	@media print {

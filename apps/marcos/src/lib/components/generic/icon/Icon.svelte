@@ -62,7 +62,8 @@
 		MessageCircle,
 		ToolCase,
 		Wrench,
-		CloudAlert
+		CloudAlert,
+		WifiOff
 	} from 'lucide-svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { siWhatsapp } from 'simple-icons';
@@ -145,7 +146,8 @@
 		[IconType.MESSAGE]: MessageCircle,
 		[IconType.NEW_BOX]: ToolCase,
 		[IconType.TOOL]: Wrench,
-		[IconType.ERROR]: CloudAlert
+		[IconType.ERROR]: CloudAlert,
+		[IconType.OFFLINE]: WifiOff
 	};
 
 	// Reactive declarations using Svelte 5 runes
