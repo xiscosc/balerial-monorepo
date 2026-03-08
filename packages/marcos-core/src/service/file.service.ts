@@ -10,7 +10,7 @@ import {
 	ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
-import { FileType, File } from '../types/file.type';
+import { FileType, File, ImageVariant } from '../types/file.type';
 import { getLogger } from '../logger/logger';
 import { BalerialCloudFileService } from '@balerial/s3/service';
 
@@ -56,7 +56,11 @@ export class FileService {
 		this.logger = getLogger('FileService', this.config.runInAWSLambda);
 	}
 
-	public async createFile(orderId: string, fileName: string): Promise<File> {
+	public async createFile(
+		orderId: string,
+		fileName: string,
+		variant: ImageVariant.ORIGINAL | ImageVariant.OPTIMIZED = ImageVariant.ORIGINAL
+	): Promise<File> {
 		const mimeType = mime.lookup(fileName);
 		if (mimeType === false) throw Error('Invalid filename');
 		const id = uuidv4();
@@ -67,8 +71,11 @@ export class FileService {
 			type,
 			originalFilename: fileName
 		};
-		const storageKey = FileService.generateStorageKey(file, fileName);
+		const storageKey = `${variant}/${FileService.generateStorageKey(file, fileName)}`;
 		const fileDto = FileService.toDto(file, storageKey);
+		if (variant === ImageVariant.OPTIMIZED) {
+			fileDto.optimizedKey = storageKey;
+		}
 		const metadata: IFileMetadata = {
 			store_id: this.config.storeId,
 			order_id: orderId,
@@ -135,8 +142,10 @@ export class FileService {
 
 		const originalFileContentType = originalFileHeaders.contentType;
 
+		const baseKey = FileService.stripVariantPrefix(fileDto.key);
+
 		if (fileDto.optimizedKey == null) {
-			fileDto.optimizedKey = `optimized/${fileDto.key}${optimizationAndThumbnailTypeInfo?.optimizedExtension ?? ''}`;
+			fileDto.optimizedKey = `${ImageVariant.OPTIMIZED}/${baseKey}${optimizationAndThumbnailTypeInfo?.optimizedExtension ?? ''}`;
 			await this.balerialFileCloudService.upload(
 				fileDto.optimizedKey,
 				optimizedImage,
@@ -146,7 +155,7 @@ export class FileService {
 		}
 
 		if (fileDto.thumbnailKey == null) {
-			fileDto.thumbnailKey = `thumbnail/${fileDto.key}${optimizationAndThumbnailTypeInfo?.thumbnailExtension ?? ''}`;
+			fileDto.thumbnailKey = `${ImageVariant.THUMBNAIL}/${baseKey}${optimizationAndThumbnailTypeInfo?.thumbnailExtension ?? ''}`;
 			await this.balerialFileCloudService.upload(
 				fileDto.thumbnailKey,
 				thumbnailImage,
@@ -316,6 +325,17 @@ export class FileService {
 		const extension =
 			lastDotIndex === -1 || lastDotIndex === 0 ? '' : fileName.substring(lastDotIndex + 1);
 		return `${file.orderId}/${file.type}/${file.id}.${extension.toLowerCase()}`;
+	}
+
+	private static stripVariantPrefix(key: string): string {
+		const variants = Object.values(ImageVariant);
+		for (const variant of variants) {
+			const prefix = `${variant}/`;
+			if (key.startsWith(prefix)) {
+				return key.slice(prefix.length);
+			}
+		}
+		return key;
 	}
 
 	private static getAllFileKeys(fileDto: FileDto): string[] {
