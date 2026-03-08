@@ -39,10 +39,15 @@
 		dev: 'bg-indigo-500/50 border-indigo-500'
 	};
 
+	const emojis: Record<string, string> = {
+		prod: '',
+		pre: '🧪',
+		dev: '🔬'
+	};
+
 	const onTesting = $derived(data.envName !== 'prod');
-	let headerBackgroundClasses = $derived(
-		headerColors[data.envName] ?? headerColors['dev']
-	);
+	let headerBackgroundClasses = $derived(headerColors[data.envName]);
+	let headerEmoji = $derived(emojis[data.envName]);
 </script>
 
 <svelte:head>
@@ -64,7 +69,7 @@
 			>
 				{#if onTesting}
 					<span class="text-md font-semibold">
-						ENTORNO DE PRUEBAS ({data.envName}) 🧪
+						ENTORNO DE PRUEBAS ({data.featureBranch}) {headerEmoji}
 					</span>
 				{:else}
 					<Icon type={IconType.LOGO} />

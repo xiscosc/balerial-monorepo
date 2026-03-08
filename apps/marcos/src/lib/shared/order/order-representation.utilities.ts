@@ -1,4 +1,5 @@
-import { env } from '$env/dynamic/public';
+import { PUBLIC_BASE_URL } from '$env/static/public';
+
 import {
 	OrderStatus,
 	PricingType,
@@ -73,8 +74,7 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getOrderPublicUrl(order: Order): string {
-		const baseUrl = env.PUBLIC_VERCEL_URL as string;
-		return `https://${baseUrl}/s/${order.shortId}`;
+		return `https://${PUBLIC_BASE_URL}/s/${order.shortId}`;
 	}
 
 	public static getWhatsappTicketText(order: Order): string {
