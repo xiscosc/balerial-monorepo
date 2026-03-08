@@ -1,7 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { toast } from 'svelte-sonner';
-	import { FileType, type File as MMSSFile } from '@marcsimolduressonsardina/core/type';
+	import {
+		FileType,
+		ImageVariant,
+		type File as MMSSFile
+	} from '@marcsimolduressonsardina/core/type';
+	import { ImageConverter } from '@/images/image-converter';
 	import Loading from '@/components/generic/Loading.svelte';
 	import UploadedFile from '@/components/business-related/file/UploadedFile.svelte';
 	import { goto } from '$app/navigation';
@@ -81,9 +86,17 @@
 		loading = false;
 	}
 
-	async function createFile(filename: string): Promise<MMSSFile | undefined> {
+	async function createFile(
+		filename: string,
+		imageVariant?: ImageVariant
+	): Promise<MMSSFile | undefined> {
 		try {
-			const file = await OrderApiGateway.createOrderFile(data!.order!.id, filename);
+			const file = await OrderApiGateway.createOrderFile(
+				data!.order!.id,
+				filename,
+				undefined,
+				imageVariant
+			);
 			return file;
 		} catch {
 			toast.error('Error al procesar el fichero');
@@ -110,8 +123,17 @@
 		const filesToUpload = [...inputFiles];
 		let progresses = Array(filesToUpload.length).fill(0);
 
-		const uploads = filesToUpload.map((f, i) =>
-			uploadIndividualFile(f, (p) => {
+		const processedFiles: { file: File; imageVariant: ImageVariant | undefined }[] = [];
+		for (const f of filesToUpload) {
+			const isImage = ImageConverter.isImageFile(f);
+			processedFiles.push({
+				file: isImage ? await ImageConverter.convertToWebP(f) : f,
+				imageVariant: isImage ? ImageVariant.OPTIMIZED : undefined
+			});
+		}
+
+		const uploads = processedFiles.map(({ file: f, imageVariant }, i) =>
+			uploadIndividualFile(f, imageVariant, (p) => {
 				progresses[i] = p;
 				loadingProgress = Math.round(progresses.reduce((a, b) => a + b, 0) / progresses.length);
 			})
@@ -130,9 +152,10 @@
 
 	async function uploadIndividualFile(
 		fileToUpload: File,
+		imageVariant: ImageVariant | undefined,
 		onProgress: (p: number) => void
 	): Promise<MMSSFile | undefined> {
-		const file = await createFile(fileToUpload.name);
+		const file = await createFile(fileToUpload.name, imageVariant);
 		if (file == null) return;
 		await uploadToS3(file.uploadUrl!, fileToUpload, onProgress);
 		return getFile(file.id);
