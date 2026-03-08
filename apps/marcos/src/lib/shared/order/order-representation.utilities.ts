@@ -74,7 +74,7 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getOrderPublicUrl(order: Order): string {
-		return `https://${VERCEL_PROJECT_PRODUCTION_URL}/s/${order.shortId}`;
+		return `https://${PUBLIC_VERCEL_URL}/s/${order.shortId}`;
 	}
 
 	public static getWhatsappTicketText(order: Order): string {
