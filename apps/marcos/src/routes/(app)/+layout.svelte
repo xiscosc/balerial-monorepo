@@ -33,19 +33,16 @@
 		}
 	});
 
-	const headerColors = {
+	const headerColors: Record<string, string> = {
 		prod: 'bg-[#e9eae3]/70 border-gray-300',
 		pre: 'bg-red-500/80 border-red-500',
 		dev: 'bg-indigo-500/50 border-indigo-500'
 	};
 
-	const headerEmojis = {
-		pre: '🧪',
-		dev: '👷'
-	};
-
 	const onTesting = $derived(data.envName !== 'prod');
-	let headerBackgroundClasses = $derived(headerColors[data.envName as keyof typeof headerColors]);
+	let headerBackgroundClasses = $derived(
+		headerColors[data.envName] ?? headerColors['dev']
+	);
 </script>
 
 <svelte:head>
@@ -67,9 +64,7 @@
 			>
 				{#if onTesting}
 					<span class="text-md font-semibold">
-						ENTORNO DE PRUEBAS ({data.envName}) {headerEmojis[
-							data.envName as keyof typeof headerEmojis
-						]}
+						ENTORNO DE PRUEBAS ({data.envName}) 🧪
 					</span>
 				{:else}
 					<Icon type={IconType.LOGO} />
