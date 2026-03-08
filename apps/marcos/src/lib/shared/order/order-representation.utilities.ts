@@ -1,4 +1,4 @@
-import { VERCEL_PROJECT_PRODUCTION_URL } from '$env/static/public';
+import { PUBLIC_VERCEL_URL } from '$env/static/public';
 
 import {
 	OrderStatus,
