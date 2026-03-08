@@ -71,9 +71,11 @@ export class FileService {
 			type,
 			originalFilename: fileName
 		};
-		const storageKey = `${variant}/${FileService.generateStorageKey(file, fileName)}`;
+		const baseStorageKey = FileService.generateStorageKey(file, fileName);
+		const storageKey =
+			type === FileType.PHOTO ? `${variant}/${baseStorageKey}` : baseStorageKey;
 		const fileDto = FileService.toDto(file, storageKey);
-		if (variant === ImageVariant.OPTIMIZED) {
+		if (type === FileType.PHOTO && variant === ImageVariant.OPTIMIZED) {
 			fileDto.optimizedKey = storageKey;
 		}
 		const metadata: IFileMetadata = {

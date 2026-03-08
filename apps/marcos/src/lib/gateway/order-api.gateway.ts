@@ -6,7 +6,8 @@ import type {
 	OrderStatus,
 	File,
 	ReportDate,
-	DashboardReport
+	DashboardReport,
+	ImageVariant
 } from '@marcsimolduressonsardina/core/type';
 import type { BatchOperation } from '@/type/api.type';
 
@@ -68,11 +69,12 @@ export class OrderApiGateway extends BaseApiGateway {
 	public static async createOrderFile(
 		orderId: string,
 		filename: string,
-		fileType?: FileType
+		fileType?: FileType,
+		imageVariant?: ImageVariant
 	): Promise<File> {
 		const response = await fetch(`/api/orders/${orderId}/files`, {
 			method: 'POST',
-			body: JSON.stringify({ filename, fileType }),
+			body: JSON.stringify({ filename, fileType, imageVariant }),
 			headers: {
 				'content-type': 'application/json'
 			}
