@@ -1,4 +1,4 @@
-import { PUBLIC_DOMAIN_URL } from '$env/static/public';
+import { VERCEL_PROJECT_PRODUCTION_URL } from '$env/static/public';
 
 import {
 	OrderStatus,
@@ -74,7 +74,7 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getOrderPublicUrl(order: Order): string {
-		return `${PUBLIC_DOMAIN_URL}/s/${order.shortId}`;
+		return `https://${VERCEL_PROJECT_PRODUCTION_URL}/s/${order.shortId}`;
 	}
 
 	public static getWhatsappTicketText(order: Order): string {
