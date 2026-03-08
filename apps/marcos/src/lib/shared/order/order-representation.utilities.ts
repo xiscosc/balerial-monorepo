@@ -1,4 +1,4 @@
-import * as env from '$env/dynamic/public';
+import { env } from '$env/dynamic/public';
 import {
 	OrderStatus,
 	PricingType,
