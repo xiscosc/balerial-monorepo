@@ -1,5 +1,3 @@
-import { PUBLIC_VERCEL_URL } from '$env/static/public';
-
 import {
 	OrderStatus,
 	PricingType,
@@ -74,7 +72,12 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getOrderPublicUrl(order: Order): string {
-		return `https://${PUBLIC_VERCEL_URL}/s/${order.shortId}`;
+		const baseUrl =
+			import.meta.env.VITE_VERCEL_ENV === 'production' ||
+			import.meta.env.VITE_VERCEL_ENV === 'preview'
+				? import.meta.env.VITE_VERCEL_PROJECT_PRODUCTION_URL
+				: import.meta.env.VITE_VERCEL_URL;
+		return `https://${baseUrl}/s/${order.shortId}`;
 	}
 
 	public static getWhatsappTicketText(order: Order): string {
