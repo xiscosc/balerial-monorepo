@@ -1,3 +1,4 @@
+import * as env from '$env/dynamic/public';
 import {
 	OrderStatus,
 	PricingType,
@@ -10,6 +11,7 @@ import {
 } from '@marcsimolduressonsardina/core/type';
 import { CalculatedItemUtilities, otherExtraId } from '@marcsimolduressonsardina/core/util';
 import { customerMoldIds, discountMap } from '../mappings/order.mapping';
+import { PUBLIC_VERCEL_URL } from '../../../../.svelte-kit/ambient';
 
 export class OrderRepresentationUtilities {
 	private static bullCharacter = '\u2022';
@@ -72,11 +74,7 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getOrderPublicUrl(order: Order): string {
-		const baseUrl =
-			import.meta.env.VITE_VERCEL_ENV === 'production' ||
-			import.meta.env.VITE_VERCEL_ENV === 'preview'
-				? import.meta.env.VITE_VERCEL_PROJECT_PRODUCTION_URL
-				: import.meta.env.VITE_VERCEL_URL;
+		const baseUrl = env.PUBLIC_VERCEL_URL as string;
 		return `https://${baseUrl}/s/${order.shortId}`;
 	}
 
