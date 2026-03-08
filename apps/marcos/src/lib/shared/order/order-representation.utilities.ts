@@ -1,5 +1,3 @@
-import { PUBLIC_BASE_URL } from '$env/static/public';
-
 import {
 	OrderStatus,
 	PricingType,
@@ -12,6 +10,7 @@ import {
 } from '@marcsimolduressonsardina/core/type';
 import { CalculatedItemUtilities, otherExtraId } from '@marcsimolduressonsardina/core/util';
 import { customerMoldIds, discountMap } from '../mappings/order.mapping';
+import { browser } from '$app/environment';
 
 export class OrderRepresentationUtilities {
 	private static bullCharacter = '\u2022';
@@ -74,7 +73,8 @@ export class OrderRepresentationUtilities {
 	}
 
 	public static getOrderPublicUrl(order: Order): string {
-		return `https://${PUBLIC_BASE_URL}/s/${order.shortId}`;
+		const baseUrl = browser ? window.location.origin : '';
+		return `${baseUrl}/s/${order.shortId}`;
 	}
 
 	public static getWhatsappTicketText(order: Order): string {

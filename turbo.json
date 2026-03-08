@@ -1,5 +1,5 @@
 {
-	"$schema": "https://turbo.build/schema.json",
+	"$schema": "https://turborepo.dev/schema.json",
 	"ui": "tui",
 	"tasks": {
 		"build": {
@@ -37,7 +37,8 @@
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY"
+				"POSTHOG_KEY",
+				"VERCEL_GIT_COMMIT_REF"
 			]
 		},
 		"lint": {
@@ -73,7 +74,8 @@
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY"
+				"POSTHOG_KEY",
+				"VERCEL_GIT_COMMIT_REF"
 			]
 		},
 		"check-types": {
