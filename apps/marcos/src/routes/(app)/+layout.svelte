@@ -68,9 +68,13 @@
 				class="pointer-events-none absolute inset-0 flex w-full items-center justify-center gap-3"
 			>
 				{#if onTesting}
-					<span class="text-md font-semibold">
-						ENTORNO DE PRUEBAS ({data.featureBranch}) {headerEmoji}
-					</span>
+					<div class="max-w-[70%] overflow-hidden">
+						<span
+							class="text-md inline-block whitespace-nowrap font-semibold animate-marquee"
+						>
+							ENTORNO DE PRUEBAS ({data.featureBranch}) {headerEmoji}
+						</span>
+					</div>
 				{:else}
 					<Icon type={IconType.LOGO} />
 				{/if}
