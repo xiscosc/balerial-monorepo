@@ -48,6 +48,8 @@
 	const onTesting = $derived(data.envName !== 'prod');
 	let headerBackgroundClasses = $derived(headerColors[data.envName]);
 	let headerEmoji = $derived(emojis[data.envName]);
+
+	let expanded = $state(false);
 </script>
 
 <svelte:head>
@@ -68,13 +70,16 @@
 				class="pointer-events-none absolute inset-0 flex w-full items-center justify-center gap-3"
 			>
 				{#if onTesting}
-					<div class="max-w-[70%] overflow-hidden">
-						<span
-							class="text-md inline-block whitespace-nowrap font-semibold animate-marquee"
-						>
-							ENTORNO DE PRUEBAS ({data.featureBranch}) {headerEmoji}
-						</span>
-					</div>
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<!-- svelte-ignore a11y_no_static_element_interactions -->
+					<span
+						class="text-md pointer-events-auto max-w-[70%] cursor-pointer font-semibold {expanded
+							? 'whitespace-normal text-center'
+							: 'truncate'}"
+						onclick={() => (expanded = !expanded)}
+					>
+						ENTORNO DE PRUEBAS ({data.featureBranch}) {headerEmoji}
+					</span>
 				{:else}
 					<Icon type={IconType.LOGO} />
 				{/if}
