@@ -33,7 +33,7 @@ export class ImageConverter {
 		trackEvent('Image converted to WebP', {
 			originalSize: file.size,
 			convertedSize: convertedFile.size,
-			compressionRate: (1 - convertedFile.size / file.size) * 100
+			compressionRate: ((1 - convertedFile.size / file.size) * 100).toFixed(2)
 		});
 		return convertedFile;
 	}
