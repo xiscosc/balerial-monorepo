@@ -31,7 +31,6 @@
 	let inputFiles: FileList | undefined = $state();
 	let loading = $state(false);
 	let uploading = $state(false);
-	let loadingProgress = $state(0);
 	let loadingText = $state('');
 
 	let profiledFiles: Promise<MMSSFile[]> = getGlobalProfiler().measure(
@@ -118,35 +117,41 @@
 			return;
 		}
 
-		loadingText = 'Cargando archivo, por favor no cierre la ventana';
 		uploading = true;
 		const filesToUpload = [...inputFiles];
-		let progresses = Array(filesToUpload.length).fill(0);
-
+		const total = filesToUpload.length;
 		const optimizeImages = isFeatureEnabled('optimize-images');
-		const processedFiles: { file: File; imageVariant: ImageVariant | undefined }[] = [];
-		for (const f of filesToUpload) {
+		let hasErrors = false;
+
+		for (let i = 0; i < total; i++) {
+			const current = i + 1;
+			const f = filesToUpload[i];
 			const shouldOptimize = optimizeImages && ImageConverter.isImageFile(f);
-			processedFiles.push({
-				file: shouldOptimize ? await ImageConverter.convertImage(f) : f,
-				imageVariant: shouldOptimize ? ImageVariant.OPTIMIZED : undefined
+
+			let fileToUpload: File = f;
+			let imageVariant: ImageVariant | undefined;
+
+			if (shouldOptimize) {
+				loadingText = `Optimizando imagen ${current} de ${total}`;
+				fileToUpload = await ImageConverter.convertImage(f);
+				imageVariant = ImageVariant.OPTIMIZED;
+			}
+
+			const result = await uploadIndividualFile(fileToUpload, imageVariant, (p) => {
+				loadingText = `Cargando imagen ${current} de ${total} (${p}%)`;
 			});
+
+			if (result != null) {
+				files = [...files, result];
+			} else {
+				hasErrors = true;
+			}
 		}
 
-		const uploads = processedFiles.map(({ file: f, imageVariant }, i) =>
-			uploadIndividualFile(f, imageVariant, (p) => {
-				progresses[i] = p;
-				loadingProgress = Math.round(progresses.reduce((a, b) => a + b, 0) / progresses.length);
-			})
-		);
-		const results = await Promise.all(uploads);
-		const uploadedFiles = results.filter((f) => f != null);
-		files = [...files, ...uploadedFiles];
 		inputFiles = undefined;
 		uploading = false;
-		loadingProgress = 0;
 
-		if (results.filter((f) => f == null).length > 0) {
+		if (hasErrors) {
 			toast.error('Algunos archivos no pudieron cargarse');
 		}
 	}
@@ -216,11 +221,7 @@
 	{/if}
 	{#if uploading}
 		<Box>
-			<div class="flex flex-col items-center gap-3 text-center">
-				<span class="text-md font-medium">Cargando archivos...</span>
-				<Loading text=""></Loading>
-				<p>{loadingProgress}%</p>
-			</div>
+			<Loading text={loadingText} />
 		</Box>
 	{/if}
 

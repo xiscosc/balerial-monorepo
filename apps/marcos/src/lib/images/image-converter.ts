@@ -8,32 +8,18 @@ export class ImageConverter {
 		return file.type.startsWith('image/');
 	}
 
-	private static webPSupported: boolean | null = null;
-
-	private static async supportsWebP(): Promise<boolean> {
-		if (ImageConverter.webPSupported !== null) {
-			return ImageConverter.webPSupported;
-		}
-
-		try {
-			const canvas = new OffscreenCanvas(1, 1);
-			const blob = await canvas.convertToBlob({ type: 'image/webp' });
-			ImageConverter.webPSupported = blob.type === 'image/webp';
-		} catch {
-			ImageConverter.webPSupported = false;
-		}
-
-		return ImageConverter.webPSupported;
+	private static get isSafari(): boolean {
+		return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 	}
 
-	private static async outputFormat(): Promise<{ mime: 'image/webp' | 'image/jpeg'; ext: string }> {
-		return (await ImageConverter.supportsWebP())
-			? { mime: 'image/webp', ext: 'webp' }
-			: { mime: 'image/jpeg', ext: 'jpg' };
+	private static get outputFormat(): { mime: 'image/webp' | 'image/jpeg'; ext: string } {
+		return ImageConverter.isSafari
+			? { mime: 'image/jpeg', ext: 'jpg' }
+			: { mime: 'image/webp', ext: 'webp' };
 	}
 
 	static async convertImage(file: File): Promise<File> {
-		const { mime, ext } = await ImageConverter.outputFormat();
+		const { mime, ext } = ImageConverter.outputFormat;
 
 		const bitmap = await createImageBitmap(file);
 		const scale =
@@ -63,11 +49,6 @@ export class ImageConverter {
 			compressionRate: ((1 - convertedFile.size / file.size) * 100).toFixed(2)
 		});
 		return convertedFile;
-	}
-
-	/** @deprecated Use convertImage instead */
-	static convertToWebP(file: File): Promise<File> {
-		return ImageConverter.convertImage(file);
 	}
 
 	private static changeExtension(filename: string, ext: string): string {
