@@ -8,19 +8,32 @@ export class ImageConverter {
 		return file.type.startsWith('image/');
 	}
 
-	private static get supportsWebP(): boolean {
-		const canvas = document.createElement('canvas');
-		return canvas.toDataURL('image/webp').startsWith('data:image/webp');
+	private static webPSupported: boolean | null = null;
+
+	private static async supportsWebP(): Promise<boolean> {
+		if (ImageConverter.webPSupported !== null) {
+			return ImageConverter.webPSupported;
+		}
+
+		try {
+			const canvas = new OffscreenCanvas(1, 1);
+			const blob = await canvas.convertToBlob({ type: 'image/webp' });
+			ImageConverter.webPSupported = blob.type === 'image/webp';
+		} catch {
+			ImageConverter.webPSupported = false;
+		}
+
+		return ImageConverter.webPSupported;
 	}
 
-	private static get outputFormat(): { mime: 'image/webp' | 'image/jpeg'; ext: string } {
-		return ImageConverter.supportsWebP
+	private static async outputFormat(): Promise<{ mime: 'image/webp' | 'image/jpeg'; ext: string }> {
+		return (await ImageConverter.supportsWebP())
 			? { mime: 'image/webp', ext: 'webp' }
 			: { mime: 'image/jpeg', ext: 'jpg' };
 	}
 
 	static async convertImage(file: File): Promise<File> {
-		const { mime, ext } = ImageConverter.outputFormat;
+		const { mime, ext } = await ImageConverter.outputFormat();
 
 		const bitmap = await createImageBitmap(file);
 		const scale =
