@@ -18,7 +18,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { Input } from '@/components/ui/input';
 	import Photos from '@/components/business-related/file/Photos.svelte';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { trackEvent, isFeatureEnabled } from '@/shared/fronted-analytics/posthog';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 
@@ -123,12 +123,13 @@
 		const filesToUpload = [...inputFiles];
 		let progresses = Array(filesToUpload.length).fill(0);
 
+		const optimizeImages = isFeatureEnabled('optimize-images');
 		const processedFiles: { file: File; imageVariant: ImageVariant | undefined }[] = [];
 		for (const f of filesToUpload) {
-			const isImage = ImageConverter.isImageFile(f);
+			const shouldOptimize = optimizeImages && ImageConverter.isImageFile(f);
 			processedFiles.push({
-				file: isImage ? await ImageConverter.convertToWebP(f) : f,
-				imageVariant: isImage ? ImageVariant.OPTIMIZED : undefined
+				file: shouldOptimize ? await ImageConverter.convertToWebP(f) : f,
+				imageVariant: shouldOptimize ? ImageVariant.OPTIMIZED : undefined
 			});
 		}
 
