@@ -128,7 +128,7 @@
 		for (const f of filesToUpload) {
 			const shouldOptimize = optimizeImages && ImageConverter.isImageFile(f);
 			processedFiles.push({
-				file: shouldOptimize ? await ImageConverter.convertToWebP(f) : f,
+				file: shouldOptimize ? await ImageConverter.convertImage(f) : f,
 				imageVariant: shouldOptimize ? ImageVariant.OPTIMIZED : undefined
 			});
 		}
