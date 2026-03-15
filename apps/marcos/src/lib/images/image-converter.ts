@@ -1,4 +1,6 @@
 import { trackEvent } from '@/shared/fronted-analytics/posthog';
+import { UAParser } from 'ua-parser-js';
+import { BrowserName } from 'ua-parser-js/enums';
 
 export class ImageConverter {
 	private static readonly MAX_IMAGE_WIDTH = 2160;
@@ -9,7 +11,9 @@ export class ImageConverter {
 	}
 
 	private static get isSafari(): boolean {
-		return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+		const parser = new UAParser();
+		const browser = parser.getBrowser();
+		return browser.is(BrowserName.SAFARI) || browser.is(BrowserName.SAFARI_MOBILE);
 	}
 
 	private static get outputFormat(): { mime: 'image/webp' | 'image/jpeg'; ext: string } {

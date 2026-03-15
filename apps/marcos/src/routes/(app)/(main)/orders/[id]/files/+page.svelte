@@ -118,6 +118,7 @@
 		}
 
 		uploading = true;
+		loadingText = 'Preparando archivos';
 		const filesToUpload = [...inputFiles];
 		const total = filesToUpload.length;
 		const optimizeImages = isFeatureEnabled('optimize-images');
@@ -130,6 +131,7 @@
 
 			let fileToUpload: File = f;
 			let imageVariant: ImageVariant | undefined;
+			const label = ImageConverter.isImageFile(f) ? 'imagen' : 'archivo';
 
 			if (shouldOptimize) {
 				loadingText = `Optimizando imagen ${current} de ${total}`;
@@ -137,8 +139,9 @@
 				imageVariant = ImageVariant.OPTIMIZED;
 			}
 
+			loadingText = `Cargando ${label} ${current} de ${total}`;
 			const result = await uploadIndividualFile(fileToUpload, imageVariant, (p) => {
-				loadingText = `Cargando imagen ${current} de ${total} (${p}%)`;
+				loadingText = `Cargando ${label} ${current} de ${total} (${p}%)`;
 			});
 
 			if (result != null) {
