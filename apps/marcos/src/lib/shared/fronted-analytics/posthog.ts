@@ -54,6 +54,19 @@ export function trackEvent(eventName: string, properties: Properties = {}) {
 	}
 }
 
+export function isFeatureEnabled(flag: string): boolean {
+	if (browser) {
+		if (dev) {
+			console.log('dev - isFeatureEnabled', flag);
+			return true;
+		}
+
+		return posthog.isFeatureEnabled(flag) ?? false;
+	}
+
+	return false;
+}
+
 export function trackError(error: Error, properties: Properties = {}) {
 	if (browser) {
 		if (dev) {
