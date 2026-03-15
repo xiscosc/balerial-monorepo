@@ -1,3 +1,5 @@
+import { trackEvent } from '@/shared/fronted-analytics/posthog';
+
 export class ImageConverter {
 	private static readonly MAX_IMAGE_WIDTH = 2160;
 	private static readonly WEBP_QUALITY = 0.8;
@@ -20,10 +22,20 @@ export class ImageConverter {
 		ctx.drawImage(bitmap, 0, 0, width, height);
 		bitmap.close();
 
-		const blob = await canvas.convertToBlob({ type: 'image/webp', quality: ImageConverter.WEBP_QUALITY });
-		return new File([blob], ImageConverter.changeExtensionToWebp(file.name), {
+		const blob = await canvas.convertToBlob({
+			type: 'image/webp',
+			quality: ImageConverter.WEBP_QUALITY
+		});
+		const convertedFile = new File([blob], ImageConverter.changeExtensionToWebp(file.name), {
 			type: 'image/webp'
 		});
+
+		trackEvent('Image converted to WebP', {
+			originalSize: file.size,
+			convertedSize: convertedFile.size,
+			compressionRate: (1 - convertedFile.size / file.size) * 100
+		});
+		return convertedFile;
 	}
 
 	private static changeExtensionToWebp(filename: string): string {
