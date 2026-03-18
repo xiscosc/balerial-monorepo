@@ -3,7 +3,6 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
-import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
 import { ServerTracking } from '@/server/shared/tracking';
 
@@ -22,7 +21,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const customerService = new CustomerService(AuthService.generateConfiguration(locals.user!));
+		const customerService = new CustomerService(locals.config!);
 		const existingCustomer = await customerService.getCustomerByPhone(form.data.phone);
 		if (existingCustomer) {
 			redirect(302, `/customers/${existingCustomer.id}`);
@@ -35,7 +34,7 @@ export const actions = {
 
 		await ServerTracking.event('customer_created', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			customerId: customer.id
 		});
 		redirect(302, `/customers/${customer.id}`);

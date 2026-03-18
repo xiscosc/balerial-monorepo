@@ -3,7 +3,6 @@ import type { PageServerLoad } from './$types';
 import { linkCustomerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
-import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
@@ -11,7 +10,7 @@ import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
+	const config = locals.config!;
 	const orderService = new OrderService(config);
 
 	const fullOrder = await orderService.getFullOrderById(id);
@@ -34,7 +33,7 @@ export const load = (async ({ params, locals }) => {
 export const actions = {
 	async default({ request, locals, params }) {
 		const { id } = params;
-		const config = AuthService.generateConfiguration(locals.user!);
+		const config = locals.config!;
 		const customerService = new CustomerService(config);
 		const orderService = new OrderService(config, customerService);
 
@@ -55,7 +54,7 @@ export const actions = {
 			await orderService.addCustomerToTemporaryOrder(customer, order);
 			ServerTracking.event('order_customer_linked_from_phone', {
 				user: locals.user!,
-				context: locals.posthog,
+				context: locals.trackingContext,
 				orderId: order.id,
 				customerId: customer.id
 			});
@@ -65,7 +64,7 @@ export const actions = {
 				await orderService.addCustomerToTemporaryOrder(customer, order);
 				ServerTracking.event('order_customer_linked_from_new_customer', {
 					user: locals.user!,
-					context: locals.posthog,
+					context: locals.trackingContext,
 					orderId: order.id,
 					customerId: customer.id
 				});

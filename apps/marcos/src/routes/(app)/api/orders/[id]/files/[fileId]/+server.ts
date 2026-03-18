@@ -1,11 +1,10 @@
-import { AuthService } from '@/server/service/auth.service';
 import { ServerTracking } from '@/server/shared/tracking';
 import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
 export async function DELETE({ locals, params }) {
 	const { id, fileId } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
+	const config = locals.config!;
 	const fileService = new FileService(config);
 	const orderService = new OrderService(config);
 	const order = await orderService.getOrderById(id);
@@ -17,7 +16,7 @@ export async function DELETE({ locals, params }) {
 
 	await ServerTracking.event('order_file_deleted', {
 		user: locals.user!,
-		context: locals.posthog,
+		context: locals.trackingContext,
 		properties: {
 			fileId: fileId
 		},
@@ -29,7 +28,7 @@ export async function DELETE({ locals, params }) {
 
 export async function GET({ locals, params }) {
 	const { id, fileId } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
+	const config = locals.config!;
 	const fileService = new FileService(config);
 	const orderService = new OrderService(config);
 	const order = await orderService.getOrderById(id);

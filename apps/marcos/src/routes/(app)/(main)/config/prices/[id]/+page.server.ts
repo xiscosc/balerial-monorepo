@@ -3,7 +3,6 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaEdit } from '@/shared/form-schema/pricing.form-schema';
-import { AuthService } from '$lib/server/service/auth.service.js';
 import { PricingService } from '@marcsimolduressonsardina/core/service';
 import { PricingUtilites, type EditablePricingTypes } from '@marcsimolduressonsardina/core/util';
 import type {
@@ -29,7 +28,7 @@ export const load = async ({ locals, params }) => {
 	const { id } = params;
 	const listPrice = await getListPrice(
 		id,
-		new PricingService(AuthService.generateConfiguration(locals.user!))
+		new PricingService(locals.config!)
 	);
 	const form = await superValidate(zod4(listPriceSchemaEdit));
 	form.data.id = listPrice.id;
@@ -55,7 +54,7 @@ export const actions = {
 		}
 
 		const { id } = params;
-		const pricingService = new PricingService(AuthService.generateConfiguration(locals.user!));
+		const pricingService = new PricingService(locals.config!);
 		const listPrice = await getListPrice(id, pricingService);
 
 		const { price, maxD1, maxD2, areas, areasM2 } = PricingUtilites.cleanFormValues(
@@ -92,7 +91,7 @@ export const actions = {
 		}
 		await ServerTracking.event('price_updated', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			properties: {
 				type: listPrice.type,
 				id: listPrice.id
@@ -103,7 +102,7 @@ export const actions = {
 	},
 	async deletePrice({ locals, params }) {
 		const { id } = params;
-		const pricingService = new PricingService(AuthService.generateConfiguration(locals.user!));
+		const pricingService = new PricingService(locals.config!);
 		const listPrice = await getListPrice(id, pricingService);
 		await pricingService.deleteListPrices([listPrice]);
 		redirect(302, `/config/prices/list?type=${listPrice.type}`);

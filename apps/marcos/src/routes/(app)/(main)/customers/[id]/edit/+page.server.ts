@@ -3,14 +3,13 @@ import type { PageServerLoad } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { fail, redirect } from '@sveltejs/kit';
-import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
 import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const customerService = new CustomerService(AuthService.generateConfiguration(locals.user!));
+	const customerService = new CustomerService(locals.config!);
 	const customer = await customerService.getCustomerById(id);
 	if (customer == null) {
 		redirect(302, '/');
@@ -31,7 +30,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const customerService = new CustomerService(AuthService.generateConfiguration(locals.user!));
+		const customerService = new CustomerService(locals.config!);
 		const existingCustomer = await customerService.getCustomerById(id);
 		if (existingCustomer == null) {
 			redirect(302, '/');
@@ -48,7 +47,7 @@ export const actions = {
 
 		await ServerTracking.event('customer_updated', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			customerId: existingCustomer.id
 		});
 		redirect(302, `/customers/${existingCustomer.id}`);

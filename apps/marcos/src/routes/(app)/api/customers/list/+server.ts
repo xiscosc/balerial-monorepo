@@ -7,7 +7,7 @@ export async function POST({ request, locals }) {
 		return json({ error: 'Unauthorized' }, { status: 403 });
 	}
 
-	const customerService = new CustomerService(AuthService.generateConfiguration(locals.user!));
+	const customerService = new CustomerService(locals.config!);
 	const { lastKey } = (await request.json()) as { lastKey?: Record<string, string | number> };
 	const customerPaginated = await customerService.getAllCustomersPaginated(lastKey);
 	return json({ customers: customerPaginated.customers, lastKey: customerPaginated.nextKey });

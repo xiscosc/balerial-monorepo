@@ -11,12 +11,12 @@ import {
 	OrderAuditTrailType,
 	OrderStatus,
 	PaymentStatus,
-	type AppUser,
 	type FullOrder,
 	type Order,
 	type OrderAuditTrailEntry
 } from '@marcsimolduressonsardina/core/type';
 import { AuthService } from '$lib/server/service/auth.service';
+import type { ICoreConfiguration } from '@marcsimolduressonsardina/core/config';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import {
@@ -39,7 +39,7 @@ async function setOrderStatus(
 		throw fail(403, {});
 	}
 
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const orderService = new OrderService(locals.config!);
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
@@ -57,7 +57,7 @@ async function setOrderStatus(
 	await orderService.setOrderStatus(order, status, location);
 	await ServerTracking.event('order_status_changed', {
 		user: locals.user!,
-		context: locals.posthog,
+		context: locals.trackingContext,
 		properties: { status, location },
 		orderId: order.id
 	});
@@ -71,7 +71,7 @@ async function setInvoiced(
 ): Promise<Order> {
 	const { id } = params;
 
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const orderService = new OrderService(locals.config!);
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
@@ -81,7 +81,7 @@ async function setInvoiced(
 	await orderService.setOrderInvoiced(order, invoiced);
 	await ServerTracking.event('order_invoiced_changed', {
 		user: locals.user!,
-		context: locals.posthog,
+		context: locals.trackingContext,
 		properties: { invoiced },
 		orderId: order.id
 	});
@@ -89,7 +89,7 @@ async function setInvoiced(
 }
 
 async function loadData(
-	user: AppUser,
+	config: ICoreConfiguration,
 	orderId: string
 ): Promise<{
 	fullOrder: FullOrder | null;
@@ -98,7 +98,6 @@ async function loadData(
 	locations: string[];
 	notificationEntries: OrderAuditTrailEntry[];
 }> {
-	const config = AuthService.generateConfiguration(user);
 	const orderService = new OrderService(config);
 	const configService = new ConfigService(config);
 	const auditTrailService = new OrderAuditTrailService(config);
@@ -129,7 +128,7 @@ export const load = (async ({ params, locals }) => {
 
 	const { id } = params;
 	return {
-		info: loadData(locals.user!, id),
+		info: loadData(locals.config!, id),
 		orderId: id,
 		isPriceManager: AuthService.isAdmin(locals.user),
 		promoteForm,
@@ -145,7 +144,7 @@ export const actions = {
 	},
 	[OrderActionNames.DENOTE]: async ({ locals, params }) => {
 		const { id } = params;
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const orderService = new OrderService(locals.config!);
 
 		const order = await orderService.getOrderById(id);
 		if (!order || order.status === OrderStatus.QUOTE) {
@@ -155,14 +154,14 @@ export const actions = {
 		await orderService.moveOrderToQuote(order);
 		await ServerTracking.event('order_status_changed', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			properties: { status: OrderStatus.QUOTE },
 			orderId: order.id
 		});
 	},
 	[OrderActionNames.PROMOTE]: async ({ request, locals, params }) => {
 		const { id } = params;
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const orderService = new OrderService(locals.config!);
 		const order = await orderService.getOrderById(id);
 		if (!order || order.status !== OrderStatus.QUOTE) {
 			return fail(404, { missing: true });
@@ -177,7 +176,7 @@ export const actions = {
 		await orderService.moveQuoteToOrder(order, form.data.deliveryDate);
 		await ServerTracking.event('order_status_changed', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			properties: { status: OrderStatus.PENDING },
 			orderId: order.id
 		});
@@ -221,7 +220,7 @@ export const actions = {
 		const amount = formData.get('amount')?.toString();
 
 		const { id } = params;
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const orderService = new OrderService(locals.config!);
 		const order = await orderService.getOrderById(id);
 		if (!order) {
 			return fail(500, { missing: true });
@@ -249,7 +248,7 @@ export const actions = {
 
 		await ServerTracking.event('order_payment_status_changed', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			properties: { status: newStatus },
 			orderId: order.id
 		});

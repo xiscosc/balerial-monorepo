@@ -18,7 +18,7 @@ export const actions = {
 				const qrInfo = qrData.info as QrOrderInfo;
 				ServerTracking.event('order_scan', {
 					user: locals.user!,
-					context: locals.posthog,
+					context: locals.trackingContext,
 					orderId: qrInfo.orderId,
 					properties: {
 						qrOrigin: qrInfo.origin
@@ -32,7 +32,7 @@ export const actions = {
 				const qrInfo = qrData.info as QrOrderSetInfo;
 				ServerTracking.event('order_set_scan', {
 					user: locals.user!,
-					context: locals.posthog,
+					context: locals.trackingContext,
 					properties: {
 						orderSetId: qrInfo.orderSetId
 					}

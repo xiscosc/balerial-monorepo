@@ -6,7 +6,7 @@ import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
+	const config = locals.config!;
 	const customerService = new CustomerService(config);
 	const orderService = new OrderService(config, customerService);
 	const customer = customerService.getCustomerById(id);
@@ -23,7 +23,7 @@ export const actions = {
 	async deleteCustomer({ params, locals }) {
 		const { id } = params;
 		if (AuthService.isAdmin(locals.user)) {
-			const config = AuthService.generateConfiguration(locals.user!);
+			const config = locals.config!;
 			const customerService = new CustomerService(config);
 			const orderService = new OrderService(config, customerService);
 			const orders = await orderService.getOrdersByCustomerId(id);

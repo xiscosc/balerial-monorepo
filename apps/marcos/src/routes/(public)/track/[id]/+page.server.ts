@@ -16,7 +16,7 @@ export const load = (async ({ params, locals }) => {
 		redirect(303, `/s/${id}`);
 	}
 
-	const receiptService = new PublicReceiptService(AuthService.generatePublicConfig());
+	const receiptService = new PublicReceiptService(AuthService.generatePublicConfiguration());
 	const fullOrder = await receiptService.getPublicOrder(id);
 	if (fullOrder == null) {
 		redirect(303, 'https://marcsimoldures.com/');
@@ -27,7 +27,7 @@ export const load = (async ({ params, locals }) => {
 	}
 
 	ServerTracking.anonymousEvent('public_order_viewed', {
-		context: locals.posthog,
+		context: locals.trackingContext,
 		orderId: fullOrder.order.id,
 		customerId: fullOrder.order.customer.id,
 		properties: {

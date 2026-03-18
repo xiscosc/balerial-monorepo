@@ -12,14 +12,14 @@ export const load = (async ({ params, locals }) => {
 	}
 
 	try {
-		const receiptService = new PublicReceiptService(AuthService.generatePublicConfig());
+		const receiptService = new PublicReceiptService(AuthService.generatePublicConfiguration());
 		const fullOrder = await receiptService.getPublicOrder(id);
 		if (fullOrder == null) {
 			redirect(303, 'https://marcsimoldures.com/');
 		}
 
 		ServerTracking.anonymousEvent('public_order_viewed', {
-			context: locals.posthog,
+			context: locals.trackingContext,
 			orderId: fullOrder.order.id,
 			customerId: fullOrder.order.customer.id,
 			properties: {

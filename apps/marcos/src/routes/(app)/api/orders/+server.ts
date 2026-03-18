@@ -1,4 +1,3 @@
-import { AuthService } from '@/server/service/auth.service';
 import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { type Order, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
@@ -26,11 +25,11 @@ async function notifyOrders(orders: Order[], orderService: OrderService) {
 }
 
 function trackBulkOperation(event: string, orderIds: string[], locals: App.Locals) {
-	return ServerTracking.event(event, { user: locals.user!, context: locals.posthog, properties: { orderIds } });
+	return ServerTracking.event(event, { user: locals.user!, context: locals.trackingContext, properties: { orderIds } });
 }
 
 export async function PATCH({ request, locals }) {
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const orderService = new OrderService(locals.config!);
 	const { orderIds, operations } = (await request.json()) as {
 		orderIds: string[];
 		operations: BatchOperation[];

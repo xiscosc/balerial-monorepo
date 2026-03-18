@@ -3,7 +3,6 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaNew } from '@/shared/form-schema/pricing.form-schema';
-import { AuthService } from '$lib/server/service/auth.service.js';
 import { PricingService } from '@marcsimolduressonsardina/core/service';
 import { PricingUtilites } from '@marcsimolduressonsardina/core/util';
 import type {
@@ -27,7 +26,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const pricingService = new PricingService(AuthService.generateConfiguration(locals.user!));
+		const pricingService = new PricingService(locals.config!);
 		try {
 			const { price, maxD1, maxD2, areas, areasM2 } = PricingUtilites.cleanFormValues(
 				form as unknown as {
@@ -65,7 +64,7 @@ export const actions = {
 
 		await ServerTracking.event('price_created', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			properties: {
 				type: form.data.type,
 				id: form.data.id

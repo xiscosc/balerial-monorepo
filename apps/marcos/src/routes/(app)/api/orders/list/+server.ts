@@ -8,7 +8,7 @@ export async function POST({ request, locals }) {
 		return json({ error: 'Unauthorized' }, { status: 403 });
 	}
 
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const orderService = new OrderService(locals.config!);
 	const { lastKey, status } = (await request.json()) as {
 		lastKey?: Record<string, string | number>;
 		status: OrderStatus;

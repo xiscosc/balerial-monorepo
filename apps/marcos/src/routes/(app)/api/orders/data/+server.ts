@@ -13,7 +13,7 @@ export async function POST({ request, locals }) {
 		return json({ error: 'Forbidden' }, { status: 403 });
 	}
 
-	const authConfiguration = AuthService.generateConfiguration(locals.user!);
+	const authConfiguration = locals.config!;
 	const orderAuditTrailService = new OrderAuditTrailService(authConfiguration);
 	const customerService = new CustomerService(authConfiguration);
 	const orderService = new OrderService(authConfiguration, customerService, orderAuditTrailService);

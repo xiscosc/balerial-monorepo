@@ -102,7 +102,7 @@ export class PostHogServerTracking implements IServerTracking {
 	};
 
 	readonly contextHandle: Handle = async ({ event, resolve }) => {
-		event.locals.posthog = {
+		event.locals.trackingContext = {
 			ip: event.getClientAddress(),
 			user_agent: event.request.headers.get('user-agent'),
 			current_url: event.url.toString(),

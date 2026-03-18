@@ -1,10 +1,9 @@
-import { AuthService } from '@/server/service/auth.service';
 import { ServerTracking } from '@/server/shared/tracking';
 import { OrderSetService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
 export async function POST({ request, locals }) {
-	const orderSetService = new OrderSetService(AuthService.generateConfiguration(locals.user!));
+	const orderSetService = new OrderSetService(locals.config!);
 	const { orderIds } = (await request.json()) as {
 		orderIds: string[];
 	};
@@ -16,7 +15,7 @@ export async function POST({ request, locals }) {
 	const orderSet = await orderSetService.createOrderSet(orderIds);
 	await ServerTracking.event('order_set_created', {
 		user: locals.user!,
-		context: locals.posthog,
+		context: locals.trackingContext,
 		properties: {
 			orderSetId: orderSet.id
 		}

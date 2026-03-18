@@ -1,13 +1,12 @@
 import type { PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id, customerId } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
+	const config = locals.config!;
 	const customerService = new CustomerService(config);
 	const orderService = new OrderService(config, customerService);
 
@@ -25,7 +24,7 @@ export const load = (async ({ params, locals }) => {
 	await orderService.addCustomerToTemporaryOrder(customer!, order!);
 	await ServerTracking.event('order_customer_linked_from_search', {
 		user: locals.user!,
-		context: locals.posthog,
+		context: locals.trackingContext,
 		orderId: order!.id,
 		customerId: customer!.id
 	});

@@ -1,11 +1,10 @@
-import { AuthService } from '@/server/service/auth.service';
 import { ServerTracking } from '@/server/shared/tracking';
 import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
 export async function GET({ locals, params }) {
 	const { id } = params;
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const orderService = new OrderService(locals.config!);
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -15,7 +14,7 @@ export async function GET({ locals, params }) {
 
 	await ServerTracking.event('order_notified', {
 		user: locals.user!,
-		context: locals.posthog,
+		context: locals.trackingContext,
 		orderId: id
 	});
 

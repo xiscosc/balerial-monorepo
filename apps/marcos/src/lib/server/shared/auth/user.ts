@@ -4,6 +4,10 @@ import type { CustomSession } from '$lib/type/api.type';
 
 export const getUserHandle: Handle = async ({ event, resolve }) => {
 	const session = await event.locals.auth();
-	event.locals.user = AuthService.generateUserFromAuth(session as CustomSession);
+	const user = AuthService.generateUserFromAuth(session as CustomSession);
+	event.locals.user = user;
+	if (user) {
+		event.locals.config = AuthService.generateConfiguration(user);
+	}
 	return resolve(event);
 };

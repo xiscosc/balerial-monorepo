@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
 import { PricingHelper } from '../pricing/pricing.helper';
-import { AuthService } from '$lib/server/service/auth.service';
 import {
 	DimensionsType,
 	OrderStatus,
@@ -75,7 +74,7 @@ export class OrderCreationUtilities {
 		editing = false
 	): Promise<OrderCreationFormData> {
 		const form = await superValidate(zod4(orderSchema));
-		const config = AuthService.generateConfiguration(locals.user!);
+		const config = locals.config!;
 		const pricingService = new PricingService(config);
 		const pricing = PricingHelper.getPricing(pricingService);
 		const orderService = new OrderService(config, undefined, undefined, pricingService);
@@ -118,7 +117,7 @@ export class OrderCreationUtilities {
 	}
 
 	static async handleEditOrder(request: Request, locals: App.Locals, orderId: string) {
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const orderService = new OrderService(locals.config!);
 		const order = await orderService.getOrderById(orderId);
 		if (order == null) {
 			return fail(404, {});
@@ -150,7 +149,7 @@ export class OrderCreationUtilities {
 
 		await ServerTracking.event('order_updated', {
 			user: locals.user!,
-			context: locals.posthog,
+			context: locals.trackingContext,
 			orderId
 		});
 		redirect(302, `/orders/${orderId}`);
@@ -177,7 +176,7 @@ export class OrderCreationUtilities {
 		}
 
 		const markup = form.data.markup ?? 0;
-		const config = AuthService.generateConfiguration(locals.user!);
+		const config = locals.config!;
 		const pricingService = new PricingService(config, markup);
 		const orderService = new OrderService(config, undefined, undefined, pricingService);
 		let orderId = '';
@@ -194,7 +193,7 @@ export class OrderCreationUtilities {
 
 			await ServerTracking.event('external_order_created', {
 				user: locals.user!,
-				context: locals.posthog,
+				context: locals.trackingContext,
 				orderId,
 				properties: {
 					reference: fullOrder.order.reference,
@@ -228,7 +227,7 @@ export class OrderCreationUtilities {
 			return fail(400, { form });
 		}
 
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const orderService = new OrderService(locals.config!);
 		let orderId = '';
 
 		try {
@@ -247,7 +246,7 @@ export class OrderCreationUtilities {
 
 			await ServerTracking.event('order_created', {
 				user: locals.user!,
-				context: locals.posthog,
+				context: locals.trackingContext,
 				orderId,
 				properties: {
 					status: isQuote ? OrderStatus.QUOTE : OrderStatus.PENDING,

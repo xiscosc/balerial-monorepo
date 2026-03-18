@@ -2,6 +2,7 @@
 // for information about these interfaces
 import type { TrackingContext } from '@/server/shared/tracking';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { ICoreConfiguration } from '@marcsimolduressonsardina/core/config';
 declare global {
 	namespace App {
 		// interface Error {}
@@ -10,8 +11,9 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 		interface Locals {
-			posthog: TrackingContext;
+			trackingContext: TrackingContext;
 			user?: AppUser;
+			config?: ICoreConfiguration;
 		}
 	}
 }

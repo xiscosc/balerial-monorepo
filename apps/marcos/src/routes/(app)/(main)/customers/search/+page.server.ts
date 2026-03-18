@@ -24,7 +24,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const customerService = new CustomerService(AuthService.generateConfiguration(locals.user!));
+		const customerService = new CustomerService(locals.config!);
 		const existingCustomer = await customerService.getCustomerByPhone(form.data.phone);
 		if (existingCustomer) {
 			redirect(302, `/customers/${existingCustomer.id}`);

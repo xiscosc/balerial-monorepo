@@ -1,11 +1,10 @@
 import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
 import type { PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
-import { AuthService } from '$lib/server/service/auth.service';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
+	const config = locals.config!;
 	const fileService = new FileService(config);
 	const orderService = new OrderService(config);
 
