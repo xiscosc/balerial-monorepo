@@ -1,22 +1,23 @@
+import { browser } from '$app/environment';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import type { HandleClientError } from '@sveltejs/kit';
 import type { IClientTracking } from './tracking.interface';
 
 export class NoOpTracking implements IClientTracking {
 	init(envName: string, appUser?: AppUser) {
-		console.log('[tracking:noop] init', envName, appUser);
+		if (browser) console.log('[tracking:noop] init', envName, appUser);
 	}
 
 	identify(appUser: AppUser, envName: string) {
-		console.log('[tracking:noop] identify', appUser, envName);
+		if (browser) console.log('[tracking:noop] identify', appUser, envName);
 	}
 
 	event(name: string, properties?: Record<string, unknown>) {
-		console.log('[tracking:noop] event', name, properties);
+		if (browser) console.log('[tracking:noop] event', name, properties);
 	}
 
 	error(error: Error | unknown, properties?: Record<string, unknown>): boolean {
-		console.log('[tracking:noop] error', error, properties);
+		if (browser) console.log('[tracking:noop] error', error, properties);
 		return true;
 	}
 
