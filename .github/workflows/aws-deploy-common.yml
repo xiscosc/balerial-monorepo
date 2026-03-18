@@ -23,7 +23,7 @@ jobs:
     name: Deploy to AWS ${{ inputs.env_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -36,7 +36,7 @@ jobs:
         run: bun install --cwd apps/marcos-aws
 
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
