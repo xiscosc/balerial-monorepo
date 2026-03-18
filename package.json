@@ -23,7 +23,7 @@
 		"prettier-plugin-svelte": "3.5.1",
 		"prettier-plugin-tailwindcss": "0.7.2",
 		"syncpack": "14.2.0",
-		"turbo": "2.8.17",
+		"turbo": "2.8.18",
 		"typescript": "5.9.3"
 	},
 	"packageManager": "pnpm@10.14.0",
