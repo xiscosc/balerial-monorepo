@@ -5,6 +5,7 @@
 		"build": "turbo build",
 		"dev": "turbo dev",
 		"lint": "turbo lint",
+		"skills": "pnpm dlx skills experimental_install",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"syncpack:list": "syncpack list-mismatches",
 		"syncpack:fix": "syncpack fix-mismatches",
