@@ -1,4 +1,4 @@
-import { trackEvent } from '@/shared/fronted-analytics/posthog';
+import { Tracking } from '@/shared/tracking';
 import { UAParser } from 'ua-parser-js';
 import { BrowserName } from 'ua-parser-js/enums';
 
@@ -46,7 +46,7 @@ export class ImageConverter {
 			type: mime
 		});
 
-		trackEvent('Image converted', {
+		Tracking.event('Image converted', {
 			format: ext,
 			originalSize: file.size,
 			convertedSize: convertedFile.size,

@@ -3,7 +3,7 @@ import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { type Order, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
 import { BatchOperation } from '@/type/api.type';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 async function setOrdersPaid(orders: Order[], orderService: OrderService) {
 	const promises = orders.map((order) => orderService.setOrderFullyPaid(order));
@@ -26,7 +26,7 @@ async function notifyOrders(orders: Order[], orderService: OrderService) {
 }
 
 function trackBulkOperation(event: string, orderIds: string[], locals: App.Locals) {
-	return trackServerEvent(locals.user!, { event, properties: { orderIds } }, locals.posthog);
+	return ServerTracking.event(event, { user: locals.user!, context: locals.posthog, properties: { orderIds } });
 }
 
 export async function PATCH({ request, locals }) {

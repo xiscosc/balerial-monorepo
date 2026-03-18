@@ -1,5 +1,5 @@
 import { AuthService } from '@/server/service/auth.service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
@@ -13,15 +13,11 @@ export async function GET({ locals, params }) {
 
 	await orderService.setOrderAsNotified(order);
 
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_notified',
-
-			orderId: id
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_notified', {
+		user: locals.user!,
+		context: locals.posthog,
+		orderId: id
+	});
 
 	return json({ success: true });
 }

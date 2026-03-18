@@ -9,8 +9,7 @@
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { type Snippet } from 'svelte';
-	import { initPosthog } from '@/shared/fronted-analytics/posthog';
-	import { flushErrorQueue } from '@/shared/fronted-analytics/offline-error-queue';
+	import { Tracking } from '@/shared/tracking';
 	import { initNetworkStatus } from '@/shared/network/network-status.svelte';
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
@@ -23,13 +22,13 @@
 
 	let { data, children }: Props = $props();
 
-	initPosthog(data.envName, data.user);
+	Tracking.init(data.envName, data.user);
 	injectSpeedInsights();
 	initNetworkStatus();
 
 	$effect(() => {
 		if (!navigating.from) {
-			flushErrorQueue();
+			Tracking.flushErrorQueue();
 		}
 	});
 

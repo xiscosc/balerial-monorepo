@@ -1,5 +1,5 @@
 import { AuthService } from '@/server/service/auth.service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { FileType, ImageVariant } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
@@ -27,19 +27,16 @@ export async function POST({ request, locals, params }) {
 		fileType === FileType.NO_ART
 			? await fileService.createNoArtFile(id)
 			: await fileService.createFile(id, filename, imageVariant);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_file_created',
-			orderId: id,
-			properties: {
-				fileId: file.id,
-				noArt: fileType === FileType.NO_ART,
-				fileType: file.type
-			}
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_file_created', {
+		user: locals.user!,
+		context: locals.posthog,
+		orderId: id,
+		properties: {
+			fileId: file.id,
+			noArt: fileType === FileType.NO_ART,
+			fileType: file.type
+		}
+	});
 
 	return json(file, { status: 201 });
 }

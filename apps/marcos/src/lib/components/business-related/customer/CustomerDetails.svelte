@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import { resolve } from '$app/paths';
 
 	interface Props {
@@ -89,7 +89,7 @@
 			<MarcosButton
 				icon={IconType.PHONE}
 				onclick={() => {
-					trackEvent('Customer called', { customerId: customer.id });
+					Tracking.event('Customer called', { customerId: customer.id });
 					window.location.href = `tel:${customer.phone}`;
 				}}
 			>

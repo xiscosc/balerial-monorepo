@@ -12,9 +12,13 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
-	export let order: Order;
-	export let counters: ISameDayOrderCounters;
-	export let hasFiles: boolean;
+	interface Props {
+		order: Order;
+		counters: ISameDayOrderCounters;
+		hasFiles: boolean;
+	}
+
+	let { order, counters, hasFiles }: Props = $props();
 	let whatsAppNotified = false;
 
 	function handleAfterNotify() {

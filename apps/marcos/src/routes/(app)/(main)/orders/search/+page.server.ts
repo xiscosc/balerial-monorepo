@@ -5,7 +5,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { orderPublicIdSchema } from '@/shared/form-schema/order.form-schema';
 import { AuthService } from '$lib/server/service/auth.service';
 import { OrderService } from '@marcsimolduressonsardina/core/service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog.js';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = async () => {
 	const form = await superValidate(zod4(orderPublicIdSchema));
@@ -26,11 +26,11 @@ export const actions = {
 			return setError(form, 'id', 'No se ha encontrado el pedido');
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{ event: 'order_search_by_public_id', orderId },
-			locals.posthog
-		);
+		await ServerTracking.event('order_search_by_public_id', {
+			user: locals.user!,
+			context: locals.posthog,
+			orderId
+		});
 		redirect(303, `/orders/${orderId}`);
 	}
 };

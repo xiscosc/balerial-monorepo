@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import ExternalOrderPrint from '@/components/business-related/order-detail/ExternalOrderPrint.svelte';
 	import { onMount } from 'svelte';
 	import type { ExternalFullOrder } from '@marcsimolduressonsardina/core/type';
@@ -12,7 +12,7 @@
 	}
 
 	let { data }: Props = $props();
-	initPosthog(data.envName, data.user);
+	Tracking.init(data.envName, data.user);
 	let fullOrder = $state<ExternalFullOrder | undefined>(undefined);
 	let notFound = $state(false);
 

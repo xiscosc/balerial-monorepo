@@ -29,7 +29,7 @@
 
 	import WhatsAppOrderButtons from '@/components/business-related/order-detail/WhatsAppOrderButtons.svelte';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import { BreakpointStateClass } from '@/state/breakpoint/breakpoint.state.svelte';
 	import { onDestroy } from 'svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
@@ -54,7 +54,7 @@
 				}
 
 				if (order == null) {
-					trackEvent('Order not found', { orderId: data.orderId });
+					Tracking.event('Order not found', { orderId: data.orderId });
 				}
 			});
 		}

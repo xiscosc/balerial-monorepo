@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id, customerId } = params;
@@ -23,15 +23,12 @@ export const load = (async ({ params, locals }) => {
 	}
 
 	await orderService.addCustomerToTemporaryOrder(customer!, order!);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_customer_linked_from_search',
-			orderId: order!.id,
-			customerId: customer!.id
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_customer_linked_from_search', {
+		user: locals.user!,
+		context: locals.posthog,
+		orderId: order!.id,
+		customerId: customer!.id
+	});
 
 	redirect(302, `/orders/${id}/files`);
 }) satisfies PageServerLoad;

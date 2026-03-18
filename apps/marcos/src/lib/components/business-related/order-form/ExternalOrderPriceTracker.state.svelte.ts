@@ -1,4 +1,4 @@
-import { trackEvent } from '@/shared/fronted-analytics/posthog';
+import { Tracking } from '@/shared/tracking';
 import { v4 as uuidv4 } from 'uuid';
 import { DateTime } from 'luxon';
 import { browser, dev } from '$app/environment';
@@ -46,7 +46,7 @@ export class ExternalOrderPriceTrackerState {
 			}
 
 			this.renewCurrentId();
-			trackEvent('External Order Price Calculated', {
+			Tracking.event('External Order Price Calculated', {
 				total,
 				externalOrderSession: this.currentId
 			});

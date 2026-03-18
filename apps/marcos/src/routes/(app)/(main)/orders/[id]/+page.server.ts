@@ -24,7 +24,7 @@ import {
 	promoteOrderSchema,
 	statusOrderSchema
 } from '$lib/shared/form-schema/order.form-schema';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 import { OrderActionNames } from '@/shared/mappings/order.mapping';
 
 async function setOrderStatus(
@@ -55,15 +55,12 @@ async function setOrderStatus(
 	}
 
 	await orderService.setOrderStatus(order, status, location);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_status_changed',
-			properties: { status, location },
-			orderId: order.id
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_status_changed', {
+		user: locals.user!,
+		context: locals.posthog,
+		properties: { status, location },
+		orderId: order.id
+	});
 	return order;
 }
 
@@ -82,15 +79,12 @@ async function setInvoiced(
 	}
 
 	await orderService.setOrderInvoiced(order, invoiced);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_invoiced_changed',
-			properties: { invoiced },
-			orderId: order.id
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_invoiced_changed', {
+		user: locals.user!,
+		context: locals.posthog,
+		properties: { invoiced },
+		orderId: order.id
+	});
 	return order;
 }
 
@@ -159,15 +153,12 @@ export const actions = {
 		}
 
 		await orderService.moveOrderToQuote(order);
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_status_changed',
-				properties: { status: OrderStatus.QUOTE },
-				orderId: order.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_status_changed', {
+			user: locals.user!,
+			context: locals.posthog,
+			properties: { status: OrderStatus.QUOTE },
+			orderId: order.id
+		});
 	},
 	[OrderActionNames.PROMOTE]: async ({ request, locals, params }) => {
 		const { id } = params;
@@ -184,15 +175,12 @@ export const actions = {
 		}
 
 		await orderService.moveQuoteToOrder(order, form.data.deliveryDate);
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_status_changed',
-				properties: { status: OrderStatus.PENDING },
-				orderId: order.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_status_changed', {
+			user: locals.user!,
+			context: locals.posthog,
+			properties: { status: OrderStatus.PENDING },
+			orderId: order.id
+		});
 
 		return {
 			form
@@ -259,14 +247,11 @@ export const actions = {
 			await orderService.setOrderPartiallyPaid(order, amountNumber);
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_payment_status_changed',
-				properties: { status: newStatus },
-				orderId: order.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_payment_status_changed', {
+			user: locals.user!,
+			context: locals.posthog,
+			properties: { status: newStatus },
+			orderId: order.id
+		});
 	}
 };

@@ -2,7 +2,7 @@
 	import { type Snippet, onMount } from 'svelte';
 	import '../../app.css';
 	import type { LayoutData } from './$types';
-	import { initPosthog } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 
 	interface Props {
@@ -14,7 +14,7 @@
 
 	injectSpeedInsights();
 	onMount(() => {
-		initPosthog(data.envName);
+		Tracking.init(data.envName);
 	});
 </script>
 

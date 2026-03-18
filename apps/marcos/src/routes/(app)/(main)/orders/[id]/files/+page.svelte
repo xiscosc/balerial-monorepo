@@ -18,7 +18,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { Input } from '@/components/ui/input';
 	import Photos from '@/components/business-related/file/Photos.svelte';
-	import { trackEvent, isFeatureEnabled } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 
@@ -36,6 +36,11 @@
 	let profiledFiles: Promise<MMSSFile[]> = getGlobalProfiler().measure(
 		data.files ?? new Promise(() => [])
 	);
+
+	let optimizeImages = $state(false);
+	Tracking.runWhenFeatureIsEnabled('optimize-images', () => {
+		optimizeImages = true;
+	});
 
 	let loadingFiles = $state(true);
 	let files: MMSSFile[] = $state([]);
@@ -121,7 +126,6 @@
 		loadingText = 'Preparando archivos';
 		const filesToUpload = [...inputFiles];
 		const total = filesToUpload.length;
-		const optimizeImages = isFeatureEnabled('optimize-images');
 		let hasErrors = false;
 
 		for (let i = 0; i < total; i++) {
@@ -247,7 +251,7 @@
 							<MarcosButton
 								onclick={() => {
 									createNoArtFile();
-									trackEvent('No art file created', { orderId: data.order?.id });
+									Tracking.event('No art file created', { orderId: data.order?.id });
 								}}
 								icon={IconType.ADD}
 							>

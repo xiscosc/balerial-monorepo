@@ -7,7 +7,7 @@ import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
@@ -53,28 +53,22 @@ export const actions = {
 		customer = await customerService.getCustomerByPhone(form.data.phone);
 		if (customer != null) {
 			await orderService.addCustomerToTemporaryOrder(customer, order);
-			trackServerEvent(
-				locals.user!,
-				{
-					event: 'order_customer_linked_from_phone',
-					orderId: order.id,
-					customerId: customer.id
-				},
-				locals.posthog
-			);
+			ServerTracking.event('order_customer_linked_from_phone', {
+				user: locals.user!,
+				context: locals.posthog,
+				orderId: order.id,
+				customerId: customer.id
+			});
 		} else {
 			if (form.data.name != null && (form.data.name as unknown as string).length >= 3) {
 				customer = await customerService.createCustomer(form.data.name!, form.data.phone);
 				await orderService.addCustomerToTemporaryOrder(customer, order);
-				trackServerEvent(
-					locals.user!,
-					{
-						event: 'order_customer_linked_from_new_customer',
-						orderId: order.id,
-						customerId: customer.id
-					},
-					locals.posthog
-				);
+				ServerTracking.event('order_customer_linked_from_new_customer', {
+					user: locals.user!,
+					context: locals.posthog,
+					orderId: order.id,
+					customerId: customer.id
+				});
 			} else {
 				return setError(
 					form,

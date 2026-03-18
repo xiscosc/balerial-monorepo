@@ -5,7 +5,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = async ({ url }) => {
 	const phone = url.searchParams.get('phone');
@@ -33,14 +33,11 @@ export const actions = {
 			return error(500, 'Error creating customer');
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'customer_created',
-				customerId: customer.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('customer_created', {
+			user: locals.user!,
+			context: locals.posthog,
+			customerId: customer.id
+		});
 		redirect(302, `/customers/${customer.id}`);
 	}
 };

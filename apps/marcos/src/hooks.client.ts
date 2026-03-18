@@ -1,3 +1,3 @@
-import { handleClientErrorWithPostHog } from '@/shared/fronted-analytics/posthog-client.error-handle';
+import { Tracking } from '@/shared/tracking';
 
-export const handleError = handleClientErrorWithPostHog;
+export const handleError = Tracking.handleClientError;

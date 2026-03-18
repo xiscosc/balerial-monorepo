@@ -1,5 +1,5 @@
 import { AuthService } from '@/server/service/auth.service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
@@ -15,17 +15,14 @@ export async function DELETE({ locals, params }) {
 
 	await fileService.deleteFile(id, fileId);
 
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_file_deleted',
-			properties: {
-				fileId: fileId
-			},
-			orderId: id
+	await ServerTracking.event('order_file_deleted', {
+		user: locals.user!,
+		context: locals.posthog,
+		properties: {
+			fileId: fileId
 		},
-		locals.posthog
-	);
+		orderId: id
+	});
 
 	return json({ result: 'Deleted' }, { status: 200 });
 }

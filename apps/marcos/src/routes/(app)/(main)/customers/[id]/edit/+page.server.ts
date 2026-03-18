@@ -6,7 +6,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { AuthService } from '$lib/server/service/auth.service';
 import { CustomerService } from '@marcsimolduressonsardina/core/service';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
@@ -46,14 +46,11 @@ export const actions = {
 			throw fail(500);
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'customer_updated',
-				customerId: existingCustomer.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('customer_updated', {
+			user: locals.user!,
+			context: locals.posthog,
+			customerId: existingCustomer.id
+		});
 		redirect(302, `/customers/${existingCustomer.id}`);
 	}
 };

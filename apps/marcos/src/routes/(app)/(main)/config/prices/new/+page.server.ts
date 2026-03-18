@@ -13,7 +13,7 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = async () => {
 	const form = await superValidate(zod4(listPriceSchemaNew));
@@ -63,17 +63,14 @@ export const actions = {
 			return setError(form, '', 'Error creando el item. Intente de nuevo.');
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'price_created',
-				properties: {
-					type: form.data.type,
-					id: form.data.id
-				}
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('price_created', {
+			user: locals.user!,
+			context: locals.posthog,
+			properties: {
+				type: form.data.type,
+				id: form.data.id
+			}
+		});
 
 		redirect(302, `/config/prices/list?type=${form.data.type}`);
 	}
