@@ -24,16 +24,16 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 ## Commands
 
 ```bash
-pnpm install          # Install dependencies
-pnpm dev              # Start dev server
-pnpm build            # Build all packages
-pnpm lint             # Lint all packages
-pnpm format           # Format with Prettier
+bun install           # Install dependencies
+bun dev               # Start dev server
+bun build             # Build all packages
+bun lint              # Lint all packages
+bun format            # Format with Prettier
 ```
 
 ## Conventions
 
-- Package manager: pnpm 10+ (do not use npm or yarn)
+- Package manager: bun (do not use npm, yarn, or pnpm)
 - Node.js 22+
 - Use `$env/static/private` and `$env/static/public` for env vars in SvelteKit (not process.env)
 - Path alias `@/` maps to `src/lib/` in the marcos app

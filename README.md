@@ -37,7 +37,7 @@ A comprehensive **Order Management and Back-Office Administration System** for a
 **Build Tools**
 
 - [Turborepo](https://turbo.build/) - Monorepo task runner
-- [pnpm](https://pnpm.io/) - Package manager
+- [Bun](https://bun.sh/) - Package manager
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 
 ## Project Structure
@@ -74,7 +74,7 @@ balerial/
 │   └── typescript-config/      # Shared TypeScript config
 │
 ├── turbo.json                  # Turborepo configuration
-└── pnpm-workspace.yaml         # Workspace configuration
+└── package.json                # Workspace configuration
 ```
 
 ## Apps
@@ -99,33 +99,32 @@ balerial/
 
 ### Prerequisites
 
-- Node.js 22+
-- pnpm 10+
+- [Bun](https://bun.sh/) 1.x+
 - AWS CLI configured (for deployment)
 
 ### Installation
 
 ```bash
 # Install dependencies
-pnpm install
+bun install
 
 # Start development server
-pnpm dev
+bun dev
 
 # Build all packages
-pnpm build
+bun build
 ```
 
 ### Available Scripts
 
-| Command              | Description                        |
-| -------------------- | ---------------------------------- |
-| `pnpm dev`           | Start development mode             |
-| `pnpm build`         | Build all packages and apps        |
-| `pnpm lint`          | Lint all packages                  |
-| `pnpm format`        | Format code with Prettier          |
-| `pnpm syncpack:list` | List dependency version mismatches |
-| `pnpm syncpack:fix`  | Fix dependency version mismatches  |
+| Command             | Description                        |
+| ------------------- | ---------------------------------- |
+| `bun dev`           | Start development mode             |
+| `bun build`         | Build all packages and apps        |
+| `bun lint`          | Lint all packages                  |
+| `bun format`        | Format code with Prettier          |
+| `bun syncpack:list` | List dependency version mismatches |
+| `bun syncpack:fix`  | Fix dependency version mismatches  |
 
 ## Environment Variables
 
