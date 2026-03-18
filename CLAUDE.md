@@ -39,3 +39,21 @@ pnpm format           # Format with Prettier
 - Path alias `@/` maps to `src/lib/` in the marcos app
 - Changelog entries in `apps/marcos/src/lib/data/changelog.ts` should be user-friendly and in Spanish
 - UI text is in Spanish
+
+## Server-side architecture (SvelteKit)
+
+Services and config are injected via SvelteKit `locals` — do not instantiate them directly in server files.
+
+- `locals.services` — `ServiceFactory` instance (lazy-initialized; access services via getters e.g. `locals.services.orderService`)
+- `locals.config` — `ICoreConfiguration` with AWS/DB config
+- `locals.user` — authenticated `AppUser` (may be undefined for public routes)
+- `locals.trackingContext` — server-side tracking context
+
+`ServiceFactory` lives in `packages/marcos-core/src/service/service-factory.ts`. It lazily creates service instances and handles dependency injection between them (e.g. `orderService` depends on `customerService`, `pricingService`, etc.).
+
+## Tracking
+
+Two separate tracking systems exist:
+
+- **Client-side**: `Tracking` singleton from `@/shared/tracking` (`src/lib/shared/tracking/`). Uses `PostHogTracking` in production and `NoOpTracking` in dev/disabled mode. `NoOpTracking` only logs in the browser (guarded by `browser` from `$app/environment`).
+- **Server-side**: `locals.trackingContext` injected via hooks, backed by `src/lib/server/shared/tracking/`.
