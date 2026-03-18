@@ -19,7 +19,7 @@
 	}
 
 	let { order, counters, hasFiles }: Props = $props();
-	let whatsAppNotified = false;
+	let whatsAppNotified = $state(false);
 
 	function handleAfterNotify() {
 		whatsAppNotified = true;

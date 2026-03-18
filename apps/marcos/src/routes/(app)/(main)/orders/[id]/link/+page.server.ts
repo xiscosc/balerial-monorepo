@@ -1,17 +1,15 @@
 import { superValidate, setError } from 'sveltekit-superforms';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 import { linkCustomerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
-import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const config = locals.config!;
-	const orderService = new OrderService(config);
+	const { orderService } = locals.services!;
 
 	const fullOrder = await orderService.getFullOrderById(id);
 	if (fullOrder == null) {
@@ -33,9 +31,7 @@ export const load = (async ({ params, locals }) => {
 export const actions = {
 	async default({ request, locals, params }) {
 		const { id } = params;
-		const config = locals.config!;
-		const customerService = new CustomerService(config);
-		const orderService = new OrderService(config, customerService);
+		const { customerService, orderService } = locals.services!;
 
 		const order = await orderService.getOrderById(id);
 		if (!order || !OrderUtilities.isOrderTemp(order)) {
@@ -79,4 +75,4 @@ export const actions = {
 
 		redirect(302, `/orders/${id}/files`);
 	}
-};
+} satisfies Actions;

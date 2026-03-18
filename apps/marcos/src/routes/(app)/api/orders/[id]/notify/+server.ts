@@ -1,10 +1,10 @@
+import type { RequestHandler } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
-import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
-export async function GET({ locals, params }) {
+export const GET: RequestHandler = async ({ locals, params }) => {
 	const { id } = params;
-	const orderService = new OrderService(locals.config!);
+	const { orderService } = locals.services!;
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -19,4 +19,4 @@ export async function GET({ locals, params }) {
 	});
 
 	return json({ success: true });
-}
+};

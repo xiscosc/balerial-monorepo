@@ -1,13 +1,11 @@
+import type { RequestHandler } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
-import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { FileType, ImageVariant } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
 
-export async function POST({ request, locals, params }) {
+export const POST: RequestHandler = async ({ request, locals, params }) => {
 	const { id } = params;
-	const config = locals.config!;
-	const fileService = new FileService(config);
-	const orderService = new OrderService(config);
+	const { fileService, orderService } = locals.services!;
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -38,4 +36,4 @@ export async function POST({ request, locals, params }) {
 	});
 
 	return json(file, { status: 201 });
-}
+};

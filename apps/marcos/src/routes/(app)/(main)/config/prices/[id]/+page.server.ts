@@ -3,7 +3,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaEdit } from '@/shared/form-schema/pricing.form-schema';
-import { PricingService } from '@marcsimolduressonsardina/core/service';
+import type { PricingService } from '@marcsimolduressonsardina/core/service';
 import { PricingUtilites, type EditablePricingTypes } from '@marcsimolduressonsardina/core/util';
 import type {
 	ListPrice,
@@ -13,6 +13,7 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
+import type { PageServerLoad, Actions } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
 
 async function getListPrice(id: string, pricingService: PricingService): Promise<ListPrice> {
@@ -24,12 +25,10 @@ async function getListPrice(id: string, pricingService: PricingService): Promise
 	return pricing;
 }
 
-export const load = async ({ locals, params }) => {
+export const load = (async ({ locals, params }) => {
 	const { id } = params;
-	const listPrice = await getListPrice(
-		id,
-		new PricingService(locals.config!)
-	);
+	const { pricingService } = locals.services!;
+	const listPrice = await getListPrice(id, pricingService);
 	const form = await superValidate(zod4(listPriceSchemaEdit));
 	form.data.id = listPrice.id;
 	form.data.price = listPrice.price;
@@ -44,7 +43,7 @@ export const load = async ({ locals, params }) => {
 	form.data.priority = listPrice.priority;
 	form.data.discountAllowed = listPrice.discountAllowed;
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	async createOrEdit({ request, locals, params }) {
@@ -54,7 +53,7 @@ export const actions = {
 		}
 
 		const { id } = params;
-		const pricingService = new PricingService(locals.config!);
+		const { pricingService } = locals.services!;
 		const listPrice = await getListPrice(id, pricingService);
 
 		const { price, maxD1, maxD2, areas, areasM2 } = PricingUtilites.cleanFormValues(
@@ -102,9 +101,9 @@ export const actions = {
 	},
 	async deletePrice({ locals, params }) {
 		const { id } = params;
-		const pricingService = new PricingService(locals.config!);
+		const { pricingService } = locals.services!;
 		const listPrice = await getListPrice(id, pricingService);
 		await pricingService.deleteListPrices([listPrice]);
 		redirect(302, `/config/prices/list?type=${listPrice.type}`);
 	}
-};
+} satisfies Actions;

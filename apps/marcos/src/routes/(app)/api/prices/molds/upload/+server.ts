@@ -1,9 +1,10 @@
+import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { AuthService } from '@/server/service/auth.service';
 import { MoldPriceLoader } from '@marcsimolduressonsardina/core/data';
 import { ServerTracking } from '@/server/shared/tracking';
 
-export async function GET({ locals }) {
+export const GET: RequestHandler = async ({ locals }) => {
 	if (!AuthService.isAdmin(locals.user)) {
 		return json({ error: 'Unauthorized' }, { status: 403 });
 	}
@@ -17,9 +18,9 @@ export async function GET({ locals }) {
 	});
 
 	return json({ filename, url });
-}
+};
 
-export async function POST({ request, locals }) {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	const { filename } = (await request.json()) as { filename: string };
 	if (filename == null) {
 		return json({ error: 'Filename is required' }, { status: 400 });
@@ -39,4 +40,4 @@ export async function POST({ request, locals }) {
 	});
 
 	return json({ success: true });
-}
+};

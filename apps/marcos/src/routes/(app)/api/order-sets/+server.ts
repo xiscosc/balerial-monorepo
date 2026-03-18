@@ -1,9 +1,9 @@
+import type { RequestHandler } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
-import { OrderSetService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
-export async function POST({ request, locals }) {
-	const orderSetService = new OrderSetService(locals.config!);
+export const POST: RequestHandler = async ({ request, locals }) => {
+	const { orderSetService } = locals.services!;
 	const { orderIds } = (await request.json()) as {
 		orderIds: string[];
 	};
@@ -21,4 +21,4 @@ export async function POST({ request, locals }) {
 		}
 	});
 	return json({ orderSet });
-}
+};

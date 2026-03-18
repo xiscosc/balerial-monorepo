@@ -3,7 +3,6 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaNew } from '@/shared/form-schema/pricing.form-schema';
-import { PricingService } from '@marcsimolduressonsardina/core/service';
 import { PricingUtilites } from '@marcsimolduressonsardina/core/util';
 import type {
 	MaxArea,
@@ -12,12 +11,13 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
+import type { PageServerLoad, Actions } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
 
-export const load = async () => {
+export const load = (async () => {
 	const form = await superValidate(zod4(listPriceSchemaNew));
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	async createOrEdit({ request, locals }) {
@@ -26,7 +26,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const pricingService = new PricingService(locals.config!);
+		const { pricingService } = locals.services!;
 		try {
 			const { price, maxD1, maxD2, areas, areasM2 } = PricingUtilites.cleanFormValues(
 				form as unknown as {
@@ -73,4 +73,4 @@ export const actions = {
 
 		redirect(302, `/config/prices/list?type=${form.data.type}`);
 	}
-};
+} satisfies Actions;

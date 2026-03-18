@@ -18,7 +18,6 @@ import type {
 	OrderCreationDto,
 	OrderCreationDtoBase
 } from '@marcsimolduressonsardina/core/dto';
-import { OrderService, PricingService } from '@marcsimolduressonsardina/core/service';
 import { InvalidSizeError } from '@marcsimolduressonsardina/core/error';
 import { cornersId, otherExtraId, quoteDeliveryDate } from '@marcsimolduressonsardina/core/util';
 import { ServerTracking } from '../tracking';
@@ -74,10 +73,8 @@ export class OrderCreationUtilities {
 		editing = false
 	): Promise<OrderCreationFormData> {
 		const form = await superValidate(zod4(orderSchema));
-		const config = locals.config!;
-		const pricingService = new PricingService(config);
+		const { pricingService, orderService } = locals.services!;
 		const pricing = PricingHelper.getPricing(pricingService);
-		const orderService = new OrderService(config, undefined, undefined, pricingService);
 		const fullOrder = orderId != null ? await orderService.getFullOrderById(orderId) : undefined;
 		if (fullOrder != null) {
 			const order = fullOrder.order;
@@ -117,7 +114,7 @@ export class OrderCreationUtilities {
 	}
 
 	static async handleEditOrder(request: Request, locals: App.Locals, orderId: string) {
-		const orderService = new OrderService(locals.config!);
+		const { orderService } = locals.services!;
 		const order = await orderService.getOrderById(orderId);
 		if (order == null) {
 			return fail(404, {});
@@ -176,9 +173,8 @@ export class OrderCreationUtilities {
 		}
 
 		const markup = form.data.markup ?? 0;
-		const config = locals.config!;
-		const pricingService = new PricingService(config, markup);
-		const orderService = new OrderService(config, undefined, undefined, pricingService);
+		const { createOrderServiceWithMarkup } = locals.services!;
+		const orderService = createOrderServiceWithMarkup(markup);
 		let orderId = '';
 		let fullOrder: ExternalFullOrder | undefined;
 
@@ -227,7 +223,7 @@ export class OrderCreationUtilities {
 			return fail(400, { form });
 		}
 
-		const orderService = new OrderService(locals.config!);
+		const { orderService } = locals.services!;
 		let orderId = '';
 
 		try {

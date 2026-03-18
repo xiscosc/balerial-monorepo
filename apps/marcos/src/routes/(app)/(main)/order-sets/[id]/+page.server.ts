@@ -1,10 +1,8 @@
 import type { PageServerLoad } from './$types';
-import { OrderSetService } from '@marcsimolduressonsardina/core/service';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const config = locals.config!;
-	const orderSetService = new OrderSetService(config);
+	const { orderSetService } = locals.services!;
 	const orderSet = await orderSetService.getOrderSetById(id);
 
 	return { orderSet };

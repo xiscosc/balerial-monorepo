@@ -37,13 +37,16 @@ export class FileService {
 		Value: 'true'
 	};
 	private repository: FileRepositoryDynamoDb;
-	private orderAuditTrailServiceOrder: OrderAuditTrailService;
+	private orderAuditTrailService: OrderAuditTrailService;
 	private balerialFileCloudService: BalerialCloudFileService;
 	private readonly logger: Logger;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(
+		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
+		orderAuditTrailService: OrderAuditTrailService
+	) {
 		this.repository = new FileRepositoryDynamoDb(config);
-		this.orderAuditTrailServiceOrder = new OrderAuditTrailService(config);
+		this.orderAuditTrailService = orderAuditTrailService;
 		this.balerialFileCloudService = new BalerialCloudFileService(
 			this.config.filesBucket!,
 			getClientConfiguration(config)
@@ -72,8 +75,7 @@ export class FileService {
 			originalFilename: fileName
 		};
 		const baseStorageKey = FileService.generateStorageKey(file, fileName);
-		const storageKey =
-			type === FileType.PHOTO ? `${variant}/${baseStorageKey}` : baseStorageKey;
+		const storageKey = type === FileType.PHOTO ? `${variant}/${baseStorageKey}` : baseStorageKey;
 		const fileDto = FileService.toDto(file, storageKey);
 		if (type === FileType.PHOTO && variant === ImageVariant.OPTIMIZED) {
 			fileDto.optimizedKey = storageKey;
@@ -93,7 +95,7 @@ export class FileService {
 		);
 		await Promise.all([
 			this.repository.createFile(fileDto),
-			this.orderAuditTrailServiceOrder.logOrderFileCreated(orderId, `${fileName} || ${id}`)
+			this.orderAuditTrailService.logOrderFileCreated(orderId, `${fileName} || ${id}`)
 		]);
 		return file;
 	}
@@ -109,10 +111,7 @@ export class FileService {
 		const fileDto = FileService.toDto(file, 'no_key');
 		await Promise.all([
 			this.repository.createFile(fileDto),
-			this.orderAuditTrailServiceOrder.logOrderFileCreated(
-				orderId,
-				`${file.originalFilename} || ${id}`
-			)
+			this.orderAuditTrailService.logOrderFileCreated(orderId, `${file.originalFilename} || ${id}`)
 		]);
 		return file;
 	}
@@ -251,7 +250,7 @@ export class FileService {
 		if (dto == null) return;
 		const promises = [
 			this.repository.deleteFile(orderId, id),
-			this.orderAuditTrailServiceOrder.logOrderFileDeleted(
+			this.orderAuditTrailService.logOrderFileDeleted(
 				orderId,
 				`${dto.originalFilename} || ${dto.fileUuid}`
 			)

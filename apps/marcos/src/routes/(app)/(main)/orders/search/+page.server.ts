@@ -2,14 +2,14 @@ import { fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
+import type { PageServerLoad, Actions } from './$types';
 import { orderPublicIdSchema } from '@/shared/form-schema/order.form-schema';
-import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { ServerTracking } from '@/server/shared/tracking';
 
-export const load = async () => {
+export const load = (async () => {
 	const form = await superValidate(zod4(orderPublicIdSchema));
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	async default({ request, locals }) {
@@ -19,7 +19,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const orderService = new OrderService(locals.config!);
+		const { orderService } = locals.services!;
 		const orderId = await orderService.getOrderIdByPublicId(form.data.id);
 		if (orderId == null) {
 			return setError(form, 'id', 'No se ha encontrado el pedido');
@@ -32,4 +32,4 @@ export const actions = {
 		});
 		redirect(303, `/orders/${orderId}`);
 	}
-};
+} satisfies Actions;

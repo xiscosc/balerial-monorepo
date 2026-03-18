@@ -16,10 +16,10 @@ export class OrderSetService {
 
 	constructor(
 		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
-		orderService?: OrderService
+		orderService: OrderService
 	) {
 		this.repository = new OrderSetRepositoryDynamoDb(config);
-		this.orderService = orderService ?? new OrderService(config);
+		this.orderService = orderService;
 	}
 
 	public async getOrderSetById(orderSetId: string): Promise<OrderSet | null> {

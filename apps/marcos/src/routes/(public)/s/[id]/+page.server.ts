@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { PublicReceiptService } from '@marcsimolduressonsardina/core/service';
+import { ServiceFactory } from '@marcsimolduressonsardina/core/service';
 import { AuthService } from '$lib/server/service/auth.service';
 import { ServerTracking } from '@/server/shared/tracking';
 
@@ -12,7 +12,8 @@ export const load = (async ({ params, locals }) => {
 	}
 
 	try {
-		const receiptService = new PublicReceiptService(AuthService.generatePublicConfiguration());
+		const publicServices = ServiceFactory.createPublic(AuthService.generatePublicConfiguration());
+		const receiptService = publicServices.publicReceiptService;
 		const fullOrder = await receiptService.getPublicOrder(id);
 		if (fullOrder == null) {
 			redirect(303, 'https://marcsimoldures.com/');

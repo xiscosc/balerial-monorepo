@@ -3,6 +3,7 @@
 import type { TrackingContext } from '@/server/shared/tracking';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import type { ICoreConfiguration } from '@marcsimolduressonsardina/core/config';
+import type { ServiceFactory } from '@marcsimolduressonsardina/core/service';
 declare global {
 	namespace App {
 		// interface Error {}
@@ -14,6 +15,7 @@ declare global {
 			trackingContext: TrackingContext;
 			user?: AppUser;
 			config?: ICoreConfiguration;
+			services?: ServiceFactory;
 		}
 	}
 }

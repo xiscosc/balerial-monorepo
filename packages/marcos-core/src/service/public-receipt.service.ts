@@ -8,17 +8,19 @@ import { FullOrder } from '../types';
 import { CalculatedItemService } from './calculated-item.service';
 import { CustomerService } from './customer.service';
 import { OrderService } from './order.service';
-import { PricingService } from './pricing.service';
 
 export class PublicReceiptService {
 	private readonly publicOrderRepository: PublicOrderRepositoryDynamoDb;
 	private readonly publicCustomerRepository: PublicCustomerRepositoryDynamoDb;
 	private readonly calculatedItemService: CalculatedItemService;
 
-	constructor(config: ICorePublicConfiguration | ICorePublicConfigurationForAWSLambda) {
+	constructor(
+		config: ICorePublicConfiguration | ICorePublicConfigurationForAWSLambda,
+		calculatedItemService: CalculatedItemService
+	) {
 		this.publicCustomerRepository = new PublicCustomerRepositoryDynamoDb(config);
 		this.publicOrderRepository = new PublicOrderRepositoryDynamoDb(config);
-		this.calculatedItemService = new CalculatedItemService(config, new PricingService(config));
+		this.calculatedItemService = calculatedItemService;
 	}
 
 	public async getPublicOrder(shortId: string): Promise<FullOrder | null> {

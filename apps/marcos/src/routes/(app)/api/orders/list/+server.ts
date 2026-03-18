@@ -1,14 +1,14 @@
+import type { RequestHandler } from './$types';
 import { AuthService } from '@/server/service/auth.service';
-import { OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
 
-export async function POST({ request, locals }) {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	if (!AuthService.isAdmin(locals.user)) {
 		return json({ error: 'Unauthorized' }, { status: 403 });
 	}
 
-	const orderService = new OrderService(locals.config!);
+	const { orderService } = locals.services!;
 	const { lastKey, status } = (await request.json()) as {
 		lastKey?: Record<string, string | number>;
 		status: OrderStatus;
@@ -21,4 +21,4 @@ export async function POST({ request, locals }) {
 
 	const paginatedOrders = await orderService.getOrdersByStatusPaginated(status, lastKey);
 	return json({ orders: paginatedOrders.orders, nextKey: paginatedOrders.nextKey });
-}
+};

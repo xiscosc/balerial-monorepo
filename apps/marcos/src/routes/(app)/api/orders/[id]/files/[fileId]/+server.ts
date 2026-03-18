@@ -1,12 +1,10 @@
+import type { RequestHandler } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
-import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { json } from '@sveltejs/kit';
 
-export async function DELETE({ locals, params }) {
+export const DELETE: RequestHandler = async ({ locals, params }) => {
 	const { id, fileId } = params;
-	const config = locals.config!;
-	const fileService = new FileService(config);
-	const orderService = new OrderService(config);
+	const { fileService, orderService } = locals.services!;
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -24,13 +22,11 @@ export async function DELETE({ locals, params }) {
 	});
 
 	return json({ result: 'Deleted' }, { status: 200 });
-}
+};
 
-export async function GET({ locals, params }) {
+export const GET: RequestHandler = async ({ locals, params }) => {
 	const { id, fileId } = params;
-	const config = locals.config!;
-	const fileService = new FileService(config);
-	const orderService = new OrderService(config);
+	const { fileService, orderService } = locals.services!;
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -42,4 +38,4 @@ export async function GET({ locals, params }) {
 	}
 
 	return json(file);
-}
+};

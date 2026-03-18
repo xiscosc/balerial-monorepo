@@ -1,10 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, RouteParams } from './$types';
+import type { PageServerLoad, RouteParams, Actions } from './$types';
 import {
-	ConfigService,
-	FileService,
-	OrderAuditTrailService,
-	OrderService,
+	type ServiceFactory,
 	type ISameDayOrderCounters
 } from '@marcsimolduressonsardina/core/service';
 import {
@@ -16,7 +13,6 @@ import {
 	type OrderAuditTrailEntry
 } from '@marcsimolduressonsardina/core/type';
 import { AuthService } from '$lib/server/service/auth.service';
-import type { ICoreConfiguration } from '@marcsimolduressonsardina/core/config';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import {
@@ -39,7 +35,7 @@ async function setOrderStatus(
 		throw fail(403, {});
 	}
 
-	const orderService = new OrderService(locals.config!);
+	const { orderService } = locals.services!;
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
@@ -71,7 +67,7 @@ async function setInvoiced(
 ): Promise<Order> {
 	const { id } = params;
 
-	const orderService = new OrderService(locals.config!);
+	const { orderService } = locals.services!;
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
@@ -89,7 +85,7 @@ async function setInvoiced(
 }
 
 async function loadData(
-	config: ICoreConfiguration,
+	services: ServiceFactory,
 	orderId: string
 ): Promise<{
 	fullOrder: FullOrder | null;
@@ -98,10 +94,7 @@ async function loadData(
 	locations: string[];
 	notificationEntries: OrderAuditTrailEntry[];
 }> {
-	const orderService = new OrderService(config);
-	const configService = new ConfigService(config);
-	const auditTrailService = new OrderAuditTrailService(config);
-	const fileService = new FileService(config);
+	const { orderService, configService, orderAuditTrailService: auditTrailService, fileService } = services;
 	const fullOrder = await orderService.getFullOrderById(orderId);
 	const files = await fileService.getFilesByOrder(orderId);
 	const locations = await configService.getLocationsList();
@@ -128,7 +121,7 @@ export const load = (async ({ params, locals }) => {
 
 	const { id } = params;
 	return {
-		info: loadData(locals.config!, id),
+		info: loadData(locals.services!, id),
 		orderId: id,
 		isPriceManager: AuthService.isAdmin(locals.user),
 		promoteForm,
@@ -144,7 +137,7 @@ export const actions = {
 	},
 	[OrderActionNames.DENOTE]: async ({ locals, params }) => {
 		const { id } = params;
-		const orderService = new OrderService(locals.config!);
+		const { orderService } = locals.services!;
 
 		const order = await orderService.getOrderById(id);
 		if (!order || order.status === OrderStatus.QUOTE) {
@@ -161,7 +154,7 @@ export const actions = {
 	},
 	[OrderActionNames.PROMOTE]: async ({ request, locals, params }) => {
 		const { id } = params;
-		const orderService = new OrderService(locals.config!);
+		const { orderService } = locals.services!;
 		const order = await orderService.getOrderById(id);
 		if (!order || order.status !== OrderStatus.QUOTE) {
 			return fail(404, { missing: true });
@@ -220,7 +213,7 @@ export const actions = {
 		const amount = formData.get('amount')?.toString();
 
 		const { id } = params;
-		const orderService = new OrderService(locals.config!);
+		const { orderService } = locals.services!;
 		const order = await orderService.getOrderById(id);
 		if (!order) {
 			return fail(500, { missing: true });
@@ -253,4 +246,4 @@ export const actions = {
 			orderId: order.id
 		});
 	}
-};
+} satisfies Actions;

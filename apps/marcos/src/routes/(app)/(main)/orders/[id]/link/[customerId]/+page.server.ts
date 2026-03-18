@@ -1,14 +1,11 @@
 import type { PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
-import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id, customerId } = params;
-	const config = locals.config!;
-	const customerService = new CustomerService(config);
-	const orderService = new OrderService(config, customerService);
+	const { customerService, orderService } = locals.services!;
 
 	const customer = await customerService.getCustomerById(customerId);
 

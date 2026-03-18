@@ -1,5 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
 import { QrUtilities } from '@/shared/order/qr.utilities';
 import { type QrOrderInfo, type QrOrderSetInfo, QrType } from '@/type/qr.type';
@@ -44,4 +44,4 @@ export const actions = {
 
 		return fail(400, { scannedText, incorrect: true });
 	}
-};
+} satisfies Actions;
