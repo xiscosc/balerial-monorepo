@@ -139,7 +139,7 @@ export class MoldPriceLoader {
 			const arrayBuffer = await response.arrayBuffer();
 			return arrayBuffer;
 		} catch (error) {
-			throw new Error(`Failed to retrieve file from S3: ${error}`);
+			throw new Error(`Failed to retrieve file from S3: ${error}`, { cause: error });
 		}
 	}
 }

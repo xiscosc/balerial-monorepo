@@ -444,8 +444,7 @@ export class BalerialDynamoRepository<T> {
 
 	private logError(functionName: string, error: unknown, otherInfo?: object) {
 		this.logger.error(
-			`PartitionKey ${this.table.getPrimaryIndex().partitionKeyName}, sortkey ${
-				this.table.getPrimaryIndex().sortKeyName
+			`PartitionKey ${this.table.getPrimaryIndex().partitionKeyName}, sortkey ${this.table.getPrimaryIndex().sortKeyName
 			}, and function ${functionName}: ${(error as Error).toString()}`
 		);
 
@@ -501,8 +500,8 @@ export class BalerialDynamoRepository<T> {
 				);
 			}
 
-			let sortKeyCondition = '';
-			let sortKeyValues = {};
+			let sortKeyCondition;
+			let sortKeyValues;
 			if (sortQuery.expression === DynamoQueryExpression.BETWEEN) {
 				if (typeof sortQuery.value !== 'object' || !sortQuery.value.start || !sortQuery.value.end) {
 					throw Error('Sort query value must be an object with start and end properties');

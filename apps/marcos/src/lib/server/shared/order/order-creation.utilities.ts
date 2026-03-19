@@ -175,7 +175,7 @@ export class OrderCreationUtilities {
 		const markup = form.data.markup ?? 0;
 		const { createOrderServiceWithMarkup } = locals.services!;
 		const orderService = createOrderServiceWithMarkup(markup);
-		let orderId = '';
+		let orderId;
 		let fullOrder: ExternalFullOrder | undefined;
 
 		try {
@@ -224,7 +224,7 @@ export class OrderCreationUtilities {
 		}
 
 		const { orderService } = locals.services!;
-		let orderId = '';
+		let orderId;
 
 		try {
 			const orderDto = await OrderCreationUtilities.createOrderDtoFromForm(

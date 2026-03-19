@@ -6,13 +6,19 @@ import type {
 } from './tracking.interface';
 
 export class NoOpServerTracking implements IServerTracking {
-	event(_name: string, _options: ServerEventOptions) {}
+	event(_name: string, _options: ServerEventOptions) {
+		console.log('[tracking:noop] server event', _name, _options);
+	}
 
-	anonymousEvent(_name: string, _options: AnonymousEventOptions) {}
+	anonymousEvent(_name: string, _options: AnonymousEventOptions) {
+		console.log('[tracking:noop] server anonymous event', _name, _options);
+	}
 
-	error(_error: Error | unknown) {}
+	error(_error: Error | unknown) {
+		console.log('[tracking:noop] server error', _error);
+	}
 
-	readonly handleError: HandleServerError = () => {};
+	readonly handleError: HandleServerError = () => { };
 
 	readonly contextHandle: Handle = async ({ event, resolve }) => {
 		event.locals.trackingContext = {

@@ -44,8 +44,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		let customer = undefined;
-		customer = await customerService.getCustomerByPhone(form.data.phone);
+		let customer = await customerService.getCustomerByPhone(form.data.phone)
 		if (customer != null) {
 			await orderService.addCustomerToTemporaryOrder(customer, order);
 			ServerTracking.event('order_customer_linked_from_phone', {

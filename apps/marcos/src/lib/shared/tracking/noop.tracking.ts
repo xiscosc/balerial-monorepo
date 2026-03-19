@@ -25,9 +25,11 @@ export class NoOpTracking implements IClientTracking {
 		callback();
 	}
 
-	queueError(_error: Error, _source?: string) {}
+	queueError(_error: Error, _source?: string) {
+		if (browser) console.log('[tracking:noop] queueError', _error, _source);
+	}
 
-	flushErrorQueue() {}
+	flushErrorQueue() { }
 
 	handleFormError(
 		result: { error: Error | { message: string } | unknown },
@@ -47,5 +49,5 @@ export class NoOpTracking implements IClientTracking {
 		);
 	}
 
-	readonly handleClientError: HandleClientError = async () => {};
+	readonly handleClientError: HandleClientError = async () => { };
 }

@@ -134,7 +134,7 @@ export class BalerialCloudFileService {
 				}
 			}
 
-			throw new Error(`Failed to get file from S3: ${error}`);
+			throw new Error(`Failed to get file from S3: ${error}`, { cause: error });
 		}
 	}
 
@@ -155,7 +155,7 @@ export class BalerialCloudFileService {
 		try {
 			await this.s3Client.send(command);
 		} catch (error) {
-			throw new Error(`Failed to upload file to S3: ${error}`);
+			throw new Error(`Failed to upload file to S3: ${error}`, { cause: error });
 		}
 	}
 
@@ -171,7 +171,7 @@ export class BalerialCloudFileService {
 		try {
 			await this.s3Client.send(command);
 		} catch (error) {
-			throw new Error(`Failed to tag file ${key} with tags ${JSON.stringify(tags)}: ${error}`);
+			throw new Error(`Failed to tag file ${key} with tags ${JSON.stringify(tags)}: ${error}`, { cause: error });
 		}
 	}
 }
