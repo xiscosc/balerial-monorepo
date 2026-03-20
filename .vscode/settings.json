@@ -4,6 +4,12 @@
 			"mode": "auto"
 		}
 	],
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[svelte]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
 	"eslint.runtime": "node",
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "svelte"],
 	"editor.formatOnSave": true,

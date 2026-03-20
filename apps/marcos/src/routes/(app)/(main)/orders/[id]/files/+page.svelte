@@ -21,6 +21,7 @@
 	import { Tracking } from '@/shared/tracking';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import { ClientFeature } from '@/shared/tracking/client.features';
 
 	interface Props {
 		data: PageData;
@@ -38,7 +39,7 @@
 	);
 
 	let optimizeImages = $state(false);
-	Tracking.runWhenFeatureIsEnabled('optimize-images', () => {
+	Tracking.runWhenFeatureIsEnabled(ClientFeature.OPTIMIZE_IMAGES, () => {
 		optimizeImages = true;
 	});
 

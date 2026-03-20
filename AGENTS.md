@@ -57,3 +57,28 @@ Two separate tracking systems exist:
 
 - **Client-side**: `Tracking` singleton from `@/shared/tracking` (`src/lib/shared/tracking/`). Uses `PostHogTracking` in production and `NoOpTracking` in dev/disabled mode. `NoOpTracking` only logs in the browser (guarded by `browser` from `$app/environment`).
 - **Server-side**: `locals.trackingContext` injected via hooks, backed by `src/lib/server/shared/tracking/`.
+
+## Feature flags
+
+Feature flags are managed via PostHog. Two enums define them:
+
+- **Server-side**: `ServerFeature` in `src/lib/server/shared/tracking/server.features.ts`
+- **Client-side**: `ClientFeature` in `src/lib/shared/tracking/client.features.ts`
+
+Feature flag checks should happen in SvelteKit hooks or load functions — not inside services like `AuthService`.
+
+## Maintenance mode
+
+Maintenance mode is controlled by the `ServerFeature.MAINTENANCE_MODE` feature flag in PostHog. It is enforced via a dedicated SvelteKit handle (`maintenanceHandle` in `src/lib/server/shared/maintenance/`) that runs early in the hook sequence. When enabled, all requests (except `/maintenance` itself) are redirected to `/maintenance`. The maintenance page auto-refreshes every 30s via `invalidateAll()` so users are redirected back once the flag is disabled.
+
+## Hooks architecture
+
+Request handling is composed via `sequence()` in `hooks.server.ts`. Each concern lives in its own module:
+
+1. `ServerTracking.contextHandle` — injects `locals.trackingContext`
+2. `maintenanceHandle` — feature-flag-gated redirect to `/maintenance`
+3. `authHandle` — Auth0 session handling
+4. `getUserHandle` — populates `locals.user`, `locals.config`, `locals.services`
+5. `apiAuthHandle` — API route authentication
+
+New cross-cutting concerns should follow this pattern: create a handle in `src/lib/server/shared/` and add it to the sequence.

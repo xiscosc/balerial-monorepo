@@ -4,6 +4,7 @@ import { browser } from '$app/environment';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import type { HandleClientError } from '@sveltejs/kit';
 import type { IClientTracking } from './tracking.interface';
+import type { ClientFeature } from './client.features';
 
 const QUEUE_KEY = 'posthog_error_queue';
 const MAX_QUEUE_SIZE = 50;
@@ -58,7 +59,7 @@ export class PostHogTracking implements IClientTracking {
 		return result !== undefined;
 	}
 
-	runWhenFeatureIsEnabled(feature: string, callback: () => void) {
+	runWhenFeatureIsEnabled(feature: ClientFeature, callback: () => void) {
 		if (!browser) return;
 
 		posthog.reloadFeatureFlags();
@@ -111,17 +112,14 @@ export class PostHogTracking implements IClientTracking {
 		source: string,
 		onError: (message: string) => void
 	) {
-		const error =
-			result.error instanceof Error ? result.error : new Error(String(result.error));
+		const error = result.error instanceof Error ? result.error : new Error(String(result.error));
 		const isNetworkError =
 			error.message.includes('fetch') ||
 			error.message.includes('network') ||
 			error.message.includes('timeout');
 		this.queueError(error, source);
 		onError(
-			isNetworkError
-				? 'Error de conexión. Comprueba tu internet.'
-				: 'Error: ' + error.message
+			isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message
 		);
 	}
 

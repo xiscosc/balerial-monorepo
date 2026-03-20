@@ -9,6 +9,7 @@ import type {
 	ServerEventOptions,
 	AnonymousEventOptions
 } from './tracking.interface';
+import type { ServerFeature } from './server.features';
 
 export class PostHogServerTracking implements IServerTracking {
 	private buildClient() {
@@ -56,7 +57,7 @@ export class PostHogServerTracking implements IServerTracking {
 
 		const { context, properties, orderId, customerId } = options;
 		const client = this.buildClient();
-		const distinctId = `${context.ip}-${context.user_agent || 'no-agent'}`;
+		const distinctId = this.buildAnonymousId(options);
 
 		client.capture({
 			distinctId,
@@ -87,6 +88,28 @@ export class PostHogServerTracking implements IServerTracking {
 		}
 	}
 
+	async isFeatureEnabled(
+		feature: ServerFeature,
+		options: ServerEventOptions | AnonymousEventOptions
+	): Promise<boolean> {
+		const distinctId = 'user' in options ? options.user.id : this.buildAnonymousId(options);
+		const client = this.buildClient();
+		try {
+			return (
+				(await client.isFeatureEnabled(feature, distinctId, {
+					personProperties: { env: ENV_NAME }
+				})) ?? false
+			);
+		} catch (e) {
+			console.error(`Failed to check if feature is enabled in PostHog: ${feature}`, e);
+			return false;
+		} finally {
+			client.shutdown().catch((e) => {
+				console.error('Failed to shutdown PostHog client:', e);
+			});
+		}
+	}
+
 	readonly handleError: HandleServerError = ({ error, event, status }) => {
 		if (isRedirect(error) || status < 500) return;
 
@@ -112,4 +135,8 @@ export class PostHogServerTracking implements IServerTracking {
 
 		return resolve(event);
 	};
+
+	private buildAnonymousId(options: AnonymousEventOptions): string {
+		return `anon-${options.context.ip}-${options.context.user_agent || 'no-agent'}`;
+	}
 }

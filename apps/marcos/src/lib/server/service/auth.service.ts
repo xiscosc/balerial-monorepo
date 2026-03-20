@@ -9,7 +9,6 @@ import {
 	FILES_BUCKET,
 	LIST_PRICING_TABLE,
 	MAIN_STORE_ID,
-	MAINTENANCE_MODE,
 	MOLD_PRICES_BUCKET,
 	ORDER_AUDIT_TRAIL_TABLE,
 	ORDER_TABLE,
@@ -26,7 +25,6 @@ import {
 } from '@marcsimolduressonsardina/core/config';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import { redirect } from '@sveltejs/kit';
-
 export class AuthService {
 	public static generateConfiguration(user: AppUser): ICoreConfiguration {
 		return {
@@ -92,12 +90,7 @@ export class AuthService {
 		};
 	}
 
-	public static async checkAuth(locals: App.Locals): Promise<void> {
-		const inMaintenance = MAINTENANCE_MODE === 'yes';
-		if (inMaintenance) {
-			redirect(307, '/maintenance');
-		}
-
+	public static checkAuth(locals: App.Locals): void {
 		const appUser = locals.user;
 		if (!appUser) redirect(303, '/auth/signin?callbackUrl=/');
 	}

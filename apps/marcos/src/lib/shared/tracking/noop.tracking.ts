@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import type { HandleClientError } from '@sveltejs/kit';
 import type { IClientTracking } from './tracking.interface';
+import type { ClientFeature } from './client.features';
 
 export class NoOpTracking implements IClientTracking {
 	init(envName: string, appUser?: AppUser) {
@@ -21,7 +22,7 @@ export class NoOpTracking implements IClientTracking {
 		return true;
 	}
 
-	runWhenFeatureIsEnabled(_feature: string, callback: () => void) {
+	runWhenFeatureIsEnabled(_feature: ClientFeature, callback: () => void) {
 		callback();
 	}
 
@@ -29,25 +30,22 @@ export class NoOpTracking implements IClientTracking {
 		if (browser) console.log('[tracking:noop] queueError', _error, _source);
 	}
 
-	flushErrorQueue() { }
+	flushErrorQueue() {}
 
 	handleFormError(
 		result: { error: Error | { message: string } | unknown },
 		_source: string,
 		onError: (message: string) => void
 	) {
-		const error =
-			result.error instanceof Error ? result.error : new Error(String(result.error));
+		const error = result.error instanceof Error ? result.error : new Error(String(result.error));
 		const isNetworkError =
 			error.message.includes('fetch') ||
 			error.message.includes('network') ||
 			error.message.includes('timeout');
 		onError(
-			isNetworkError
-				? 'Error de conexión. Comprueba tu internet.'
-				: 'Error: ' + error.message
+			isNetworkError ? 'Error de conexión. Comprueba tu internet.' : 'Error: ' + error.message
 		);
 	}
 
-	readonly handleClientError: HandleClientError = async () => { };
+	readonly handleClientError: HandleClientError = async () => {};
 }

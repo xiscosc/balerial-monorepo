@@ -4,6 +4,7 @@ import type {
 	ServerEventOptions,
 	AnonymousEventOptions
 } from './tracking.interface';
+import type { ServerFeature } from './server.features';
 
 export class NoOpServerTracking implements IServerTracking {
 	event(_name: string, _options: ServerEventOptions) {
@@ -18,7 +19,15 @@ export class NoOpServerTracking implements IServerTracking {
 		console.log('[tracking:noop] server error', _error);
 	}
 
-	readonly handleError: HandleServerError = () => { };
+	async isFeatureEnabled(
+		_feature: ServerFeature,
+		_options: ServerEventOptions | AnonymousEventOptions
+	): Promise<boolean> {
+		console.log(`[tracking:noop] check if feature is enabled: ${_feature} with options`, _options);
+		return false;
+	}
+
+	readonly handleError: HandleServerError = () => {};
 
 	readonly contextHandle: Handle = async ({ event, resolve }) => {
 		event.locals.trackingContext = {

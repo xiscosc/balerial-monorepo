@@ -168,13 +168,19 @@ The application requires the following environment variables:
 - `POSTHOG_KEY` - PostHog server key
 - `ENV_NAME` - Environment name (preview/production)
 - `MAIN_STORE_ID` - Primary store identifier
-- `MAINTENANCE_MODE` - Set to "yes" to enable maintenance mode
 - `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel)
 
 ### Profiler
 
 - `PUBLIC_PROFILER_CONFIG` - Base64-encoded profiler configuration
 - `PUBLIC_PROFILER_KEY` - Base64-encoded profiler function key
+
+## Feature Flags
+
+Feature flags are managed via [PostHog](https://posthog.com/) and split into server-side and client-side enums:
+
+- **Server-side**: `ServerFeature` in `apps/marcos/src/lib/server/shared/tracking/server.features.ts`
+- **Client-side**: `ClientFeature` in `apps/marcos/src/lib/shared/tracking/client.features.ts`
 
 ## Deployment
 

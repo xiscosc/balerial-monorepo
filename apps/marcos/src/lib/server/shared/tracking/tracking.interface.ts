@@ -1,5 +1,6 @@
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
+import type { ServerFeature } from './server.features';
 
 export interface TrackingContext {
 	ip: string;
@@ -28,6 +29,10 @@ export interface IServerTracking {
 	event(name: string, options: ServerEventOptions): void;
 	anonymousEvent(name: string, options: AnonymousEventOptions): void;
 	error(error: Error | unknown): void;
+	isFeatureEnabled(
+		feature: ServerFeature,
+		options: ServerEventOptions | AnonymousEventOptions
+	): Promise<boolean>;
 	readonly handleError: HandleServerError;
 	readonly contextHandle: Handle;
 }
