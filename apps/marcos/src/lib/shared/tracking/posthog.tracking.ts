@@ -1,5 +1,5 @@
 import posthog, { type Properties } from 'posthog-js';
-import { PUBLIC_POSTHOG_KEY } from '$env/static/public';
+import { PUBLIC_POSTHOG_KEY, PUBLIC_POSTHOG_PROXY } from '$env/static/public';
 import { browser } from '$app/environment';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import type { HandleClientError } from '@sveltejs/kit';
@@ -20,7 +20,8 @@ export class PostHogTracking implements IClientTracking {
 		if (!browser) return;
 
 		posthog.init(PUBLIC_POSTHOG_KEY, {
-			api_host: 'https://eu.i.posthog.com',
+			api_host: PUBLIC_POSTHOG_PROXY,
+			defaults: '2026-01-30',
 			person_profiles: 'identified_only',
 			autocapture: false,
 			loaded: (ph) => {

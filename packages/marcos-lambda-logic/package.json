@@ -26,6 +26,6 @@
 		"@balerial/s3": "workspace:*",
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"luxon": "3.7.2",
-		"posthog-node": "5.28.4"
+		"posthog-node": "5.28.5"
 	}
 }

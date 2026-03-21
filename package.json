@@ -5,6 +5,7 @@
 		"build": "turbo build",
 		"dev": "turbo dev",
 		"lint": "turbo lint",
+		"update-packages": "bunx npm-check-updates -u --workspaces && bun i",
 		"skills": "bunx skills experimental_install",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"syncpack:list": "syncpack list-mismatches",
@@ -22,7 +23,7 @@
 	},
 	"devDependencies": {
 		"@tsconfig/node24": "24.0.4",
-		"eslint": "10.0.3",
+		"eslint": "10.1.0",
 		"prettier": "3.8.1",
 		"prettier-plugin-svelte": "3.5.1",
 		"prettier-plugin-tailwindcss": "0.7.2",
