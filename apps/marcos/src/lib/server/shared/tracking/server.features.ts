@@ -1,3 +1,3 @@
 export enum ServerFeature {
-    MAINTENANCE_MODE = 'maintenance'
+	DEFAULT = 'default'
 }

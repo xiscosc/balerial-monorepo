@@ -168,6 +168,7 @@ The application requires the following environment variables:
 - `POSTHOG_KEY` - PostHog server key
 - `ENV_NAME` - Environment name (preview/production)
 - `MAIN_STORE_ID` - Primary store identifier
+- `MAINTENANCE_MODE` - Set to `true` to enable maintenance mode (redirects all traffic to `/maintenance`)
 - `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel)
 
 ### Profiler

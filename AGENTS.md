@@ -40,6 +40,10 @@ bun format            # Format with Prettier
 - Changelog entries in `apps/marcos/src/lib/data/changelog.ts` should be user-friendly and in Spanish
 - UI text is in Spanish
 
+## UI components
+
+When building or editing UI, always reuse existing components from `src/lib/components/`. Never invent ad-hoc styles for borders, cards, or containers — use the `Box` component (`src/lib/components/generic/Box.svelte`) for card-like containers. Follow the patterns established in existing pages like `ErrorBox.svelte` for full-page centered layouts. Check existing components before writing custom markup.
+
 ## Server-side architecture (SvelteKit)
 
 Services and config are injected via SvelteKit `locals` — do not instantiate them directly in server files.
@@ -69,7 +73,7 @@ Feature flag checks should happen in SvelteKit hooks or load functions — not i
 
 ## Maintenance mode
 
-Maintenance mode is controlled by the `ServerFeature.MAINTENANCE_MODE` feature flag in PostHog. It is enforced via a dedicated SvelteKit handle (`maintenanceHandle` in `src/lib/server/shared/maintenance/`) that runs early in the hook sequence. When enabled, all requests (except `/maintenance` itself) are redirected to `/maintenance`. The maintenance page auto-refreshes every 30s via `invalidateAll()` so users are redirected back once the flag is disabled.
+Maintenance mode is controlled by the `MAINTENANCE_MODE` env var (set to `true` to enable). It is enforced via a dedicated SvelteKit handle (`maintenanceHandle` in `src/lib/server/shared/maintenance/`) that runs early in the hook sequence. When enabled, all requests (except `/maintenance` itself) are redirected to `/maintenance`. The maintenance page auto-refreshes every 30s via `invalidateAll()` so users are redirected back once the flag is disabled (requires redeployment to toggle).
 
 ## Hooks architecture
 

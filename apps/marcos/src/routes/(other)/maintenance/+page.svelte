@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Box from '@/components/generic/Box.svelte';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import { asset } from '$app/paths';
@@ -13,21 +14,24 @@
 	});
 </script>
 
-<div class="flex min-h-screen w-full items-center justify-center px-4">
-	<div class="flex w-full max-w-md flex-col items-center gap-8 rounded-xl border border-gray-200 bg-white p-10 shadow-sm">
-		<img class="w-28" src={asset('/mmlogo.png')} alt="Marcos App" />
-
-		<div class="flex flex-col items-center gap-3 text-center">
-			<div class="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50">
-				<Icon type={IconType.TOOL} size={IconSize.XL} />
+<div class="flex min-h-screen w-full items-center justify-center">
+	<div class="w-full px-3 md:w-1/2 md:px-0 lg:w-1/3">
+		<Box>
+			<div class="flex flex-col items-center gap-6">
+				<img class="w-52" src={asset('/mmlogo.png')} alt="Marcos App" />
+				<div
+					class="flex h-14 w-14 animate-[spin_3s_linear_infinite] items-center justify-center rounded-full border border-gray-700 bg-amber-200"
+				>
+					<Icon type={IconType.SETTINGS} size={IconSize.XL} />
+				</div>
+				<div class="flex flex-col gap-2">
+					<span class="text-center font-semibold">Fuera de servicio</span>
+					<span class="text-center text-sm text-gray-500">
+						La aplicación se encuentra en mantenimiento. Se reestablecerá el servicio lo antes
+						posible.
+					</span>
+				</div>
 			</div>
-			<h1 class="text-2xl font-semibold text-gray-900">Fuera de servicio</h1>
-			<p class="text-gray-500">
-				La aplicación se encuentra en mantenimiento. Se reestablecerá el servicio lo antes
-				posible.
-			</p>
-		</div>
-
-		<span class="text-sm text-gray-400">Marcos App</span>
+		</Box>
 	</div>
 </div>

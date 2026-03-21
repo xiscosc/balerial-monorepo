@@ -1,34 +1,34 @@
 {
-  "name": "mmss-app",
-  "private": true,
-  "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "skills": "bunx skills experimental_install",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "syncpack:list": "syncpack list-mismatches",
-    "syncpack:fix": "syncpack fix-mismatches",
-    "syncpack:format": "syncpack format"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "bun": {
-    "overrides": {
-      "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
-    }
-  },
-  "devDependencies": {
-    "@tsconfig/node24": "24.0.4",
-    "eslint": "10.0.3",
-    "prettier": "3.8.1",
-    "prettier-plugin-svelte": "3.5.1",
-    "prettier-plugin-tailwindcss": "0.7.2",
-    "syncpack": "14.2.0",
-    "turbo": "^2.8.19",
-    "typescript": "5.9.3"
-  },
-  "packageManager": "bun@1.3.11"
+	"name": "mmss-app",
+	"private": true,
+	"scripts": {
+		"build": "turbo build",
+		"dev": "turbo dev",
+		"lint": "turbo lint",
+		"skills": "bunx skills experimental_install",
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"syncpack:list": "syncpack list-mismatches",
+		"syncpack:fix": "syncpack fix-mismatches",
+		"syncpack:format": "syncpack format"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"bun": {
+		"overrides": {
+			"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+		}
+	},
+	"devDependencies": {
+		"@tsconfig/node24": "24.0.4",
+		"eslint": "10.0.3",
+		"prettier": "3.8.1",
+		"prettier-plugin-svelte": "3.5.1",
+		"prettier-plugin-tailwindcss": "0.7.2",
+		"syncpack": "14.2.0",
+		"turbo": "^2.8.20",
+		"typescript": "5.9.3"
+	},
+	"packageManager": "bun@1.3.11"
 }

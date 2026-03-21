@@ -92,13 +92,17 @@ export class PostHogServerTracking implements IServerTracking {
 		feature: ServerFeature,
 		options: ServerEventOptions | AnonymousEventOptions
 	): Promise<boolean> {
-		const distinctId = 'user' in options ? options.user.id : this.buildAnonymousId(options);
+		const isUserEvent = 'user' in options;
+		const distinctId = isUserEvent ? options.user.id : this.buildAnonymousId(options);
+		const personProperties: Record<string, string> = { env: ENV_NAME };
+		if (isUserEvent) {
+			personProperties.name = options.user.name;
+			personProperties.storeId = options.user.storeId;
+		}
 		const client = this.buildClient();
 		try {
 			return (
-				(await client.isFeatureEnabled(feature, distinctId, {
-					personProperties: { env: ENV_NAME }
-				})) ?? false
+				(await client.isFeatureEnabled(feature, distinctId, { personProperties })) ?? false
 			);
 		} catch (e) {
 			console.error(`Failed to check if feature is enabled in PostHog: ${feature}`, e);
