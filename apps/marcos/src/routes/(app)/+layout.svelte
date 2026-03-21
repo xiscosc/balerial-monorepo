@@ -14,6 +14,8 @@
 	import ActionBar from '@/components/business-related/action-bar/ActionBar.svelte';
 	import { injectSpeedInsights } from '@vercel/speed-insights/sveltekit';
 	import { Toaster } from 'svelte-sonner';
+	import { authClient } from '@/client/auth-client';
+	import { goto } from '$app/navigation';
 
 	interface Props {
 		data: LayoutData;
@@ -90,9 +92,15 @@
 						<Icon type={IconType.SETTINGS} />
 					</a>
 				{/if}
-				<a href={resolve('/auth/signout?callbackUrl=/')} class="text-black">
+				<button
+					class="text-black"
+					onclick={async () => {
+						await authClient.signOut();
+						await goto('/auth/signin');
+					}}
+				>
 					<Icon type={IconType.LOGOUT} />
-				</a>
+				</button>
 			</div>
 		</div>
 	</header>

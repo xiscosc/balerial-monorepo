@@ -17,7 +17,7 @@ import {
 	TRACK_AWS_ACCESS_KEY_ID,
 	TRACK_AWS_SECRET_ACCESS_KEY
 } from '$env/static/private';
-import type { CustomSession } from '$lib/type/api.type';
+import type { BetterAuthSession } from '../../../auth';
 import {
 	PUBLIC_REPOSITORY,
 	type ICoreConfiguration,
@@ -72,27 +72,30 @@ export class AuthService {
 		};
 	}
 
-	public static generateUserFromAuth(session?: CustomSession): AppUser | undefined {
+	public static generateUserFromAuth(
+		session?: BetterAuthSession | null
+	): AppUser | undefined {
 		if (
 			session == null ||
 			session.user == null ||
-			session.userMetadata == null ||
-			session.userMetadata.storeId == null
+			session.user.email == null ||
+			(session.user as Record<string, unknown>).storeId == null
 		) {
 			return undefined;
 		}
 
+		const user = session.user as Record<string, unknown>;
 		return {
-			id: session.user.email!,
-			name: session.user.name!,
-			storeId: session.userMetadata.storeId,
-			priceManager: session.userMetadata.priceManager ?? false
+			id: session.user.email,
+			name: session.user.name,
+			storeId: user.storeId as string,
+			priceManager: (user.priceManager as boolean) ?? false
 		};
 	}
 
 	public static checkAuth(locals: App.Locals): void {
 		const appUser = locals.user;
-		if (!appUser) redirect(303, '/auth/signin?callbackUrl=/');
+		if (!appUser) redirect(303, '/auth/signin');
 	}
 
 	public static isAdmin(user?: AppUser): boolean {
