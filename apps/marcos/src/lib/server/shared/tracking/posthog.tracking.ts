@@ -119,7 +119,18 @@ export class PostHogServerTracking implements IServerTracking {
 
 		try {
 			const client = this.buildClient();
-			client.captureException(error, undefined, event);
+			const context = event.locals.trackingContext;
+			const distinctId = event.locals.user?.id ?? 'unknown';
+			client.captureException(error, {
+				distinctId,
+				properties: {
+					path: context?.path,
+					$current_url: context?.current_url,
+					$ip: context?.ip,
+					$user_agent: context?.user_agent,
+					env: ENV_NAME
+				}
+			});
 			client.shutdown().catch((e) => {
 				console.error('Failed to shutdown PostHog client:', e);
 			});

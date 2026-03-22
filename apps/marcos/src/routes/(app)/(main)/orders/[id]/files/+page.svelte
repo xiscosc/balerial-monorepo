@@ -123,6 +123,12 @@
 			return;
 		}
 
+		const heicFiles = [...inputFiles].filter((f) => ImageConverter.isHeic(f));
+		if (heicFiles.length > 0) {
+			toast.error('Los archivos HEIC no están soportados. Convierte las imágenes a JPG o PNG antes de subirlas.');
+			return;
+		}
+
 		uploading = true;
 		loadingText = 'Preparando archivos';
 		const filesToUpload = [...inputFiles];

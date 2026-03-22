@@ -9,10 +9,10 @@ export class ImageConverter {
 	private static readonly HEIC_EXTENSIONS = ['.heic', '.heif'];
 
 	static isImageFile(file: File): boolean {
-		return file.type.startsWith('image/') || ImageConverter.isHeic(file);
+		return file.type.startsWith('image/') && !ImageConverter.isHeic(file);
 	}
 
-	private static isHeic(file: File): boolean {
+	static isHeic(file: File): boolean {
 		if (ImageConverter.HEIC_TYPES.includes(file.type)) return true;
 		const name = file.name.toLowerCase();
 		return ImageConverter.HEIC_EXTENSIONS.some((ext) => name.endsWith(ext));
@@ -33,18 +33,7 @@ export class ImageConverter {
 	static async convertImage(file: File): Promise<File> {
 		const { mime, ext } = ImageConverter.outputFormat;
 
-		let imageFile = file;
-		if (ImageConverter.isHeic(file)) {
-			const { default: heic2any } = await import('heic2any');
-			const blob = await heic2any({ blob: file, toType: 'image/jpeg' });
-			imageFile = new File(
-				[Array.isArray(blob) ? blob[0] : blob],
-				ImageConverter.changeExtension(file.name, 'jpg'),
-				{ type: 'image/jpeg' }
-			);
-		}
-
-		const bitmap = await createImageBitmap(imageFile);
+		const bitmap = await createImageBitmap(file);
 		const scale =
 			bitmap.width > ImageConverter.MAX_IMAGE_WIDTH
 				? ImageConverter.MAX_IMAGE_WIDTH / bitmap.width
@@ -67,7 +56,6 @@ export class ImageConverter {
 
 		Tracking.event('Image converted', {
 			format: ext,
-			originalFormat: file.type || 'unknown',
 			originalSize: file.size,
 			convertedSize: convertedFile.size,
 			compressionRate: ((1 - convertedFile.size / file.size) * 100).toFixed(2)
