@@ -3,16 +3,15 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
-import { AuthService } from '$lib/server/service/auth.service';
-import { CustomerService } from '@marcsimolduressonsardina/core/service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import type { PageServerLoad, Actions } from './$types';
+import { ServerTracking } from '@/server/shared/tracking';
 
-export const load = async ({ url }) => {
+export const load = (async ({ url }) => {
 	const phone = url.searchParams.get('phone');
 	const form = await superValidate(zod4(customerSchema));
 	if (phone) form.data.phone = phone;
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	async default({ request, locals }) {
@@ -22,7 +21,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const customerService = new CustomerService(AuthService.generateConfiguration(locals.user!));
+		const { customerService } = locals.services!;
 		const existingCustomer = await customerService.getCustomerByPhone(form.data.phone);
 		if (existingCustomer) {
 			redirect(302, `/customers/${existingCustomer.id}`);
@@ -33,14 +32,11 @@ export const actions = {
 			return error(500, 'Error creating customer');
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'customer_created',
-				customerId: customer.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('customer_created', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			customerId: customer.id
+		});
 		redirect(302, `/customers/${customer.id}`);
 	}
-};
+} satisfies Actions;

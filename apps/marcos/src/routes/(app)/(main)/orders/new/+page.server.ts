@@ -1,6 +1,6 @@
 import { OrderCreationUtilities } from '@/server/shared/order/order-creation.utilities';
 import { OrderActionNames } from '@/shared/mappings/order.mapping';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 
 export const load = (async ({ locals, url }) => {
 	const orderId = url.searchParams.get('originId');
@@ -21,4 +21,4 @@ export const actions = {
 	[OrderActionNames.CREATE_QUOTE]: async ({ request, locals }) => {
 		return await OrderCreationUtilities.handleCreateQuote(request, locals);
 	}
-};
+} satisfies Actions;

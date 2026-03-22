@@ -60,15 +60,16 @@ export class OrderService {
 
 	constructor(
 		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
-		customerService?: CustomerService,
-		orderAuditTrailService?: OrderAuditTrailService,
-		pricingService?: PricingService
+		customerService: CustomerService,
+		orderAuditTrailService: OrderAuditTrailService,
+		calculatedItemService: CalculatedItemService,
+		pricingService: PricingService
 	) {
 		this.repository = new OrderRepositoryDynamoDb(config);
-		this.customerService = customerService ?? new CustomerService(config);
-		this.orderAuditTrailService = orderAuditTrailService ?? new OrderAuditTrailService(config);
-		this.pricingService = pricingService ?? new PricingService(config);
-		this.calculatedItemService = new CalculatedItemService(config, this.pricingService);
+		this.customerService = customerService;
+		this.orderAuditTrailService = orderAuditTrailService;
+		this.calculatedItemService = calculatedItemService;
+		this.pricingService = pricingService;
 	}
 
 	async getOrderById(orderId: string): Promise<Order | null> {

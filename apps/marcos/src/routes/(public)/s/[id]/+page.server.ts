@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { PublicReceiptService } from '@marcsimolduressonsardina/core/service';
+import { ServiceFactory } from '@marcsimolduressonsardina/core/service';
 import { AuthService } from '$lib/server/service/auth.service';
-import { trackAnonymousServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params as { id: string };
@@ -12,24 +12,22 @@ export const load = (async ({ params, locals }) => {
 	}
 
 	try {
-		const receiptService = new PublicReceiptService(AuthService.generatePublicConfig());
+		const publicServices = ServiceFactory.createPublic(AuthService.generatePublicConfiguration());
+		const receiptService = publicServices.publicReceiptService;
 		const fullOrder = await receiptService.getPublicOrder(id);
 		if (fullOrder == null) {
 			redirect(303, 'https://marcsimoldures.com/');
 		}
 
-		trackAnonymousServerEvent(
-			{
-				event: 'public_order_viewed',
-				orderId: fullOrder.order.id,
-				customerId: fullOrder.order.customer.id,
-				properties: {
-					trackingVersion: 1,
-					shortId: fullOrder.order.shortId
-				}
-			},
-			locals.posthog
-		);
+		ServerTracking.anonymousEvent('public_order_viewed', {
+			context: locals.trackingContext,
+			orderId: fullOrder.order.id,
+			customerId: fullOrder.order.customer.id,
+			properties: {
+				trackingVersion: 1,
+				shortId: fullOrder.order.shortId
+			}
+		});
 
 		return {
 			fullOrder

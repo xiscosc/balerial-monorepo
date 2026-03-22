@@ -1,7 +1,12 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { toast } from 'svelte-sonner';
-	import { FileType, type File as MMSSFile } from '@marcsimolduressonsardina/core/type';
+	import {
+		FileType,
+		ImageVariant,
+		type File as MMSSFile
+	} from '@marcsimolduressonsardina/core/type';
+	import { ImageConverter } from '@/images/image-converter';
 	import Loading from '@/components/generic/Loading.svelte';
 	import UploadedFile from '@/components/business-related/file/UploadedFile.svelte';
 	import { goto } from '$app/navigation';
@@ -13,9 +18,10 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { Input } from '@/components/ui/input';
 	import Photos from '@/components/business-related/file/Photos.svelte';
-	import { trackEvent } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
+	import { ClientFeature } from '@/shared/tracking/client.features';
 
 	interface Props {
 		data: PageData;
@@ -26,12 +32,16 @@
 	let inputFiles: FileList | undefined = $state();
 	let loading = $state(false);
 	let uploading = $state(false);
-	let loadingProgress = $state(0);
 	let loadingText = $state('');
 
 	let profiledFiles: Promise<MMSSFile[]> = getGlobalProfiler().measure(
 		data.files ?? new Promise(() => [])
 	);
+
+	let optimizeImages = $state(false);
+	Tracking.runWhenFeatureIsEnabled(ClientFeature.OPTIMIZE_IMAGES, () => {
+		optimizeImages = true;
+	});
 
 	let loadingFiles = $state(true);
 	let files: MMSSFile[] = $state([]);
@@ -81,9 +91,17 @@
 		loading = false;
 	}
 
-	async function createFile(filename: string): Promise<MMSSFile | undefined> {
+	async function createFile(
+		filename: string,
+		imageVariant?: ImageVariant
+	): Promise<MMSSFile | undefined> {
 		try {
-			const file = await OrderApiGateway.createOrderFile(data!.order!.id, filename);
+			const file = await OrderApiGateway.createOrderFile(
+				data!.order!.id,
+				filename,
+				undefined,
+				imageVariant
+			);
 			return file;
 		} catch {
 			toast.error('Error al procesar el fichero');
@@ -105,34 +123,54 @@
 			return;
 		}
 
-		loadingText = 'Cargando archivo, por favor no cierre la ventana';
 		uploading = true;
+		loadingText = 'Preparando archivos';
 		const filesToUpload = [...inputFiles];
-		let progresses = Array(filesToUpload.length).fill(0);
+		const total = filesToUpload.length;
+		let hasErrors = false;
 
-		const uploads = filesToUpload.map((f, i) =>
-			uploadIndividualFile(f, (p) => {
-				progresses[i] = p;
-				loadingProgress = Math.round(progresses.reduce((a, b) => a + b, 0) / progresses.length);
-			})
-		);
-		const results = await Promise.all(uploads);
-		const uploadedFiles = results.filter((f) => f != null);
-		files = [...files, ...uploadedFiles];
+		for (let i = 0; i < total; i++) {
+			const current = i + 1;
+			const f = filesToUpload[i];
+			const isHeic = ImageConverter.isHeic(f);
+			const shouldOptimize = (optimizeImages && ImageConverter.isImageFile(f)) || isHeic;
+
+			let fileToUpload: File = f;
+			let imageVariant: ImageVariant | undefined;
+			const label = ImageConverter.isImageFile(f) ? 'imagen' : 'archivo';
+
+			if (shouldOptimize) {
+				loadingText = `Optimizando imagen ${current} de ${total}`;
+				fileToUpload = await ImageConverter.convertImage(f);
+				imageVariant = ImageVariant.OPTIMIZED;
+			}
+
+			loadingText = `Cargando ${label} ${current} de ${total}`;
+			const result = await uploadIndividualFile(fileToUpload, imageVariant, (p) => {
+				loadingText = `Cargando ${label} ${current} de ${total} (${p}%)`;
+			});
+
+			if (result != null) {
+				files = [...files, result];
+			} else {
+				hasErrors = true;
+			}
+		}
+
 		inputFiles = undefined;
 		uploading = false;
-		loadingProgress = 0;
 
-		if (results.filter((f) => f == null).length > 0) {
+		if (hasErrors) {
 			toast.error('Algunos archivos no pudieron cargarse');
 		}
 	}
 
 	async function uploadIndividualFile(
 		fileToUpload: File,
+		imageVariant: ImageVariant | undefined,
 		onProgress: (p: number) => void
 	): Promise<MMSSFile | undefined> {
-		const file = await createFile(fileToUpload.name);
+		const file = await createFile(fileToUpload.name, imageVariant);
 		if (file == null) return;
 		await uploadToS3(file.uploadUrl!, fileToUpload, onProgress);
 		return getFile(file.id);
@@ -192,11 +230,7 @@
 	{/if}
 	{#if uploading}
 		<Box>
-			<div class="flex flex-col items-center gap-3 text-center">
-				<span class="text-md font-medium">Cargando archivos...</span>
-				<Loading text=""></Loading>
-				<p>{loadingProgress}%</p>
-			</div>
+			<Loading text={loadingText} />
 		</Box>
 	{/if}
 
@@ -219,7 +253,7 @@
 							<MarcosButton
 								onclick={() => {
 									createNoArtFile();
-									trackEvent('No art file created', { orderId: data.order?.id });
+									Tracking.event('No art file created', { orderId: data.order?.id });
 								}}
 								icon={IconType.ADD}
 							>

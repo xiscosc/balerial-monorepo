@@ -1,7 +1,9 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
-import type { PostHogContext } from '@/server/shared/server-analytics/posthog';
+import type { TrackingContext } from '@/server/shared/tracking';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { ICoreConfiguration } from '@marcsimolduressonsardina/core/config';
+import type { ServiceFactory } from '@marcsimolduressonsardina/core/service';
 declare global {
 	namespace App {
 		// interface Error {}
@@ -10,8 +12,10 @@ declare global {
 		// interface PageState {}
 		// interface Platform {}
 		interface Locals {
-			posthog: PostHogContext;
+			trackingContext: TrackingContext;
 			user?: AppUser;
+			config?: ICoreConfiguration;
+			services?: ServiceFactory;
 		}
 	}
 }

@@ -15,6 +15,7 @@ A comprehensive **Order Management and Back-Office Administration System** for a
 ## Tech Stack
 
 **Frontend**
+
 - [SvelteKit](https://kit.svelte.dev/) - Full-stack framework
 - [Svelte 5](https://svelte.dev/) - Reactive UI components
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS
@@ -22,6 +23,7 @@ A comprehensive **Order Management and Back-Office Administration System** for a
 - [Chart.js](https://www.chartjs.org/) - Data visualization
 
 **Backend & Infrastructure**
+
 - [AWS CDK](https://aws.amazon.com/cdk/) - Infrastructure as Code
 - [DynamoDB](https://aws.amazon.com/dynamodb/) - NoSQL database
 - [AWS Lambda](https://aws.amazon.com/lambda/) - Serverless functions
@@ -29,11 +31,13 @@ A comprehensive **Order Management and Back-Office Administration System** for a
 - [Auth0](https://auth0.com/) - Authentication
 
 **Analytics**
+
 - [PostHog](https://posthog.com/) - Product analytics and user behavior tracking
 
 **Build Tools**
+
 - [Turborepo](https://turbo.build/) - Monorepo task runner
-- [pnpm](https://pnpm.io/) - Package manager
+- [Bun](https://bun.sh/) - Package manager
 - [TypeScript](https://www.typescriptlang.org/) - Type safety
 
 ## Project Structure
@@ -70,69 +74,72 @@ balerial/
 │   └── typescript-config/      # Shared TypeScript config
 │
 ├── turbo.json                  # Turborepo configuration
-└── pnpm-workspace.yaml         # Workspace configuration
+└── package.json                # Workspace configuration
 ```
 
 ## Apps
 
-| App | Description |
-|-----|-------------|
-| `marcos` | SvelteKit backoffice application for order management |
-| `marcos-aws` | AWS CDK app for infrastructure deployment |
+| App          | Description                                           |
+| ------------ | ----------------------------------------------------- |
+| `marcos`     | SvelteKit backoffice application for order management |
+| `marcos-aws` | AWS CDK app for infrastructure deployment             |
 
 ## Packages
 
-| Package | Description |
-|---------|-------------|
-| `@marcsimolduressonsardina/core` | Core business logic, types, and services |
+| Package                            | Description                                      |
+| ---------------------------------- | ------------------------------------------------ |
+| `@marcsimolduressonsardina/core`   | Core business logic, types, and services         |
 | `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing |
-| `@balerial/s3` | S3 utilities (presigned URLs, uploads, tagging) |
-| `@balerial/dynamo` | DynamoDB repository and table abstractions |
-| `@repo/eslint-config` | Shared ESLint configuration |
-| `@repo/typescript-config` | Shared TypeScript configuration |
+| `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)  |
+| `@balerial/dynamo`                 | DynamoDB repository and table abstractions       |
+| `@repo/eslint-config`              | Shared ESLint configuration                      |
+| `@repo/typescript-config`          | Shared TypeScript configuration                  |
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js 22+
-- pnpm 10+
+- [Bun](https://bun.sh/) 1.x+
 - AWS CLI configured (for deployment)
 
 ### Installation
 
 ```bash
 # Install dependencies
-pnpm install
+bun install
 
 # Start development server
-pnpm dev
+bun dev
 
 # Build all packages
-pnpm build
+bun build
 ```
 
 ### Available Scripts
 
-| Command | Description |
-|---------|-------------|
-| `pnpm dev` | Start development mode |
-| `pnpm build` | Build all packages and apps |
-| `pnpm lint` | Lint all packages |
-| `pnpm format` | Format code with Prettier |
-| `pnpm syncpack:list` | List dependency version mismatches |
-| `pnpm syncpack:fix` | Fix dependency version mismatches |
+| Command             | Description                        |
+| ------------------- | ---------------------------------- |
+| `bun dev`           | Start development mode             |
+| `bun build`         | Build all packages and apps        |
+| `bun lint`          | Lint all packages                  |
+| `bun format`        | Format code with Prettier          |
+| `bun syncpack:list` | List dependency version mismatches |
+| `bun syncpack:fix`  | Fix dependency version mismatches  |
 
 ## Environment Variables
 
 The application requires the following environment variables:
 
 ### AWS Configuration
+
 - `AWS_ACCESS_KEY_ID` - AWS access key
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key
 - `AWS_REGION` - AWS region
+- `TRACK_AWS_ACCESS_KEY_ID` - AWS access key for public tracking
+- `TRACK_AWS_SECRET_ACCESS_KEY` - AWS secret key for public tracking
 
 ### Database Tables
+
 - `ORDER_TABLE` - Orders table name
 - `CUSTOMER_TABLE` - Customers table name
 - `FILE_TABLE` - Files table name
@@ -143,22 +150,38 @@ The application requires the following environment variables:
 - `CALCULATED_ITEM_ORDER_TABLE` - Calculated items table name
 
 ### S3 Buckets
+
 - `MOLD_PRICES_BUCKET` - Mold prices storage
 - `FILES_BUCKET` - File uploads storage
 - `REPORTS_BUCKET` - Reports storage
 
 ### Authentication
+
 - `AUTH_SECRET` - Auth.js secret
 - `AUTH_AUTH0_ID` - Auth0 client ID
 - `AUTH_AUTH0_SECRET` - Auth0 client secret
 - `AUTH_AUTH0_ISSUER` - Auth0 issuer URL
 
 ### Application
-- `PUBLIC_DOMAIN_URL` - Public domain URL
+
 - `PUBLIC_POSTHOG_KEY` - PostHog public key
 - `POSTHOG_KEY` - PostHog server key
 - `ENV_NAME` - Environment name (preview/production)
 - `MAIN_STORE_ID` - Primary store identifier
+- `MAINTENANCE_MODE` - Set to `true` to enable maintenance mode (redirects all traffic to `/maintenance`)
+- `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel)
+
+### Profiler
+
+- `PUBLIC_PROFILER_CONFIG` - Base64-encoded profiler configuration
+- `PUBLIC_PROFILER_KEY` - Base64-encoded profiler function key
+
+## Feature Flags
+
+Feature flags are managed via [PostHog](https://posthog.com/) and split into server-side and client-side enums:
+
+- **Server-side**: `ServerFeature` in `apps/marcos/src/lib/server/shared/tracking/server.features.ts`
+- **Client-side**: `ClientFeature` in `apps/marcos/src/lib/shared/tracking/client.features.ts`
 
 ## Deployment
 

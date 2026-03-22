@@ -3,8 +3,6 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaNew } from '@/shared/form-schema/pricing.form-schema';
-import { AuthService } from '$lib/server/service/auth.service.js';
-import { PricingService } from '@marcsimolduressonsardina/core/service';
 import { PricingUtilites } from '@marcsimolduressonsardina/core/util';
 import type {
 	MaxArea,
@@ -13,12 +11,13 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import type { PageServerLoad, Actions } from './$types';
+import { ServerTracking } from '@/server/shared/tracking';
 
-export const load = async () => {
+export const load = (async () => {
 	const form = await superValidate(zod4(listPriceSchemaNew));
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	async createOrEdit({ request, locals }) {
@@ -27,7 +26,7 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const pricingService = new PricingService(AuthService.generateConfiguration(locals.user!));
+		const { pricingService } = locals.services!;
 		try {
 			const { price, maxD1, maxD2, areas, areasM2 } = PricingUtilites.cleanFormValues(
 				form as unknown as {
@@ -63,18 +62,15 @@ export const actions = {
 			return setError(form, '', 'Error creando el item. Intente de nuevo.');
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'price_created',
-				properties: {
-					type: form.data.type,
-					id: form.data.id
-				}
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('price_created', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			properties: {
+				type: form.data.type,
+				id: form.data.id
+			}
+		});
 
 		redirect(302, `/config/prices/list?type=${form.data.type}`);
 	}
-};
+} satisfies Actions;

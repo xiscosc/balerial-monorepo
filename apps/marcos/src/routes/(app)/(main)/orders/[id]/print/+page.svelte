@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { identifyUser } from '@/shared/fronted-analytics/posthog';
+	import { Tracking } from '@/shared/tracking';
 	import OrderPrint from '@/components/business-related/order-detail/OrderPrint.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
@@ -15,7 +15,7 @@
 
 	let { data }: Props = $props();
 	const fullOrderPromise = getGlobalProfiler().measure(data.fullOrder);
-	identifyUser(data.user, data.envName);
+	Tracking.identify(data.user, data.envName);
 </script>
 
 {#await fullOrderPromise}

@@ -1,5 +1,5 @@
 {
-	"$schema": "https://turbo.build/schema.json",
+	"$schema": "https://turborepo.dev/schema.json",
 	"ui": "tui",
 	"tasks": {
 		"build": {
@@ -26,18 +26,22 @@
 				"CUSTOMER_TABLE",
 				"CALCULATED_ITEM_ORDER_TABLE",
 				"AUTH_DEBUG",
-				"PUBLIC_DOMAIN_URL",
 				"PUBLIC_POSTHOG_KEY",
 				"AUTH_SECRET",
 				"AUTH_AUTH0_ID",
 				"AUTH_AUTH0_SECRET",
 				"AUTH_AUTH0_ISSUER",
-				"MAINTENANCE_MODE",
 				"ENV_NAME",
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY"
+				"POSTHOG_KEY",
+				"VERCEL_GIT_COMMIT_REF",
+				"TRACKING_DISABLED",
+				"PUBLIC_TRACKING_DISABLED",
+				"MAINTENANCE_MODE",
+				"AUTH_TRUST_HOST",
+				"PUBLIC_POSTHOG_PROXY"
 			]
 		},
 		"lint": {
@@ -62,18 +66,22 @@
 				"CUSTOMER_TABLE",
 				"CALCULATED_ITEM_ORDER_TABLE",
 				"AUTH_DEBUG",
-				"PUBLIC_DOMAIN_URL",
 				"PUBLIC_POSTHOG_KEY",
 				"AUTH_SECRET",
 				"AUTH_AUTH0_ID",
 				"AUTH_AUTH0_SECRET",
 				"AUTH_AUTH0_ISSUER",
-				"MAINTENANCE_MODE",
 				"ENV_NAME",
 				"MAIN_STORE_ID",
 				"PUBLIC_PROFILER_CONFIG",
 				"STORE_ID",
-				"POSTHOG_KEY"
+				"POSTHOG_KEY",
+				"VERCEL_GIT_COMMIT_REF",
+				"TRACKING_DISABLED",
+				"PUBLIC_TRACKING_DISABLED",
+				"MAINTENANCE_MODE",
+				"AUTH_TRUST_HOST",
+				"PUBLIC_POSTHOG_PROXY"
 			]
 		},
 		"check-types": {

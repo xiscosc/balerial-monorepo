@@ -29,9 +29,9 @@ export class PricingSelectorSectionStateClass implements PricingSelectorSectionS
 	);
 	private canBeAdded: boolean = $derived(
 		this.selectedId != null &&
-			this.selectedId.length > 0 &&
-			(!this.extraInfoRequired ||
-				(this.extraInfoRequired && this.extraInfo != null && this.extraInfo.length > 0))
+		this.selectedId.length > 0 &&
+		(!this.extraInfoRequired ||
+			(this.extraInfoRequired && this.extraInfo != null && this.extraInfo.length > 0))
 	);
 	private tooltipText: string | undefined = $derived(
 		this.canBeAdded ? undefined : this.selectedId != null ? 'Falta número' : 'Seleccione elemento'
@@ -142,7 +142,7 @@ export class PricingSelectorSectionStateClass implements PricingSelectorSectionS
 		const pricesWithoutPriority = prices.filter((p) => p.priority === 0);
 		const extraPricesWithoutPriority = extraPrices.filter((p) => p.priority === 0);
 
-		let result = [];
+		let result;
 		if (!locationIdForExtraPricesFound) {
 			const allPriorityPrices = [...pricesWithPriority, ...extraPricesWithPriority].sort(
 				(a, b) => b.priority - a.priority

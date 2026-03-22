@@ -2,7 +2,8 @@ import { ICoreConfigurationForAWSLambda } from '@marcsimolduressonsardina/core/c
 import { getLogger } from '@marcsimolduressonsardina/core/logger';
 import {
 	FileService,
-	OptimizationAndThumbnailTypeInfo
+	ServiceFactory,
+	type OptimizationAndThumbnailTypeInfo
 } from '@marcsimolduressonsardina/core/service';
 import { AppUser } from '@marcsimolduressonsardina/core/type';
 import { S3EventRecord } from 'aws-lambda';
@@ -46,7 +47,7 @@ export async function lambdaOptimizeImages({
 
 	const logger = getLogger('lambdaOptimizeImages', configuration.runInAWSLambda);
 	const postHogClient = postHogKey ? createPostHogClient(postHogKey) : undefined;
-	const fileService = new FileService(configuration);
+	const fileService = ServiceFactory.createForLambda(configuration).fileService;
 	const promises = s3Records.map((record) =>
 		processImage(record, fileService, envName, logger, postHogClient)
 	);

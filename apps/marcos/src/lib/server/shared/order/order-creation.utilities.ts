@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
 import { PricingHelper } from '../pricing/pricing.helper';
-import { AuthService } from '$lib/server/service/auth.service';
 import {
 	DimensionsType,
 	OrderStatus,
@@ -19,10 +18,9 @@ import type {
 	OrderCreationDto,
 	OrderCreationDtoBase
 } from '@marcsimolduressonsardina/core/dto';
-import { OrderService, PricingService } from '@marcsimolduressonsardina/core/service';
 import { InvalidSizeError } from '@marcsimolduressonsardina/core/error';
 import { cornersId, otherExtraId, quoteDeliveryDate } from '@marcsimolduressonsardina/core/util';
-import { trackServerEvent } from '../server-analytics/posthog';
+import { ServerTracking } from '../tracking';
 
 type OrderTypeForm = z.infer<typeof orderSchema>;
 type QuoteTypeForm = z.infer<typeof quoteSchema>;
@@ -75,10 +73,8 @@ export class OrderCreationUtilities {
 		editing = false
 	): Promise<OrderCreationFormData> {
 		const form = await superValidate(zod4(orderSchema));
-		const config = AuthService.generateConfiguration(locals.user!);
-		const pricingService = new PricingService(config);
+		const { pricingService, orderService } = locals.services!;
 		const pricing = PricingHelper.getPricing(pricingService);
-		const orderService = new OrderService(config, undefined, undefined, pricingService);
 		const fullOrder = orderId != null ? await orderService.getFullOrderById(orderId) : undefined;
 		if (fullOrder != null) {
 			const order = fullOrder.order;
@@ -118,7 +114,7 @@ export class OrderCreationUtilities {
 	}
 
 	static async handleEditOrder(request: Request, locals: App.Locals, orderId: string) {
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const { orderService } = locals.services!;
 		const order = await orderService.getOrderById(orderId);
 		if (order == null) {
 			return fail(404, {});
@@ -148,14 +144,11 @@ export class OrderCreationUtilities {
 			return setError(form, '', 'Error actualizando el pedido / presupuesto. Intente de nuevo.');
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_updated',
-				orderId
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_updated', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			orderId
+		});
 		redirect(302, `/orders/${orderId}`);
 	}
 
@@ -180,10 +173,9 @@ export class OrderCreationUtilities {
 		}
 
 		const markup = form.data.markup ?? 0;
-		const config = AuthService.generateConfiguration(locals.user!);
-		const pricingService = new PricingService(config, markup);
-		const orderService = new OrderService(config, undefined, undefined, pricingService);
-		let orderId = '';
+		const { createOrderServiceWithMarkup } = locals.services!;
+		const orderService = createOrderServiceWithMarkup(markup);
+		let orderId;
 		let fullOrder: ExternalFullOrder | undefined;
 
 		try {
@@ -195,19 +187,16 @@ export class OrderCreationUtilities {
 
 			orderId = fullOrder.order.id;
 
-			await trackServerEvent(
-				locals.user!,
-				{
-					event: 'external_order_created',
-					orderId,
-					properties: {
-						reference: fullOrder.order.reference,
-						orderPublicId: fullOrder.order.publicId,
-						amount: fullOrder.totals
-					}
-				},
-				locals.posthog
-			);
+			await ServerTracking.event('external_order_created', {
+				user: locals.user!,
+				context: locals.trackingContext,
+				orderId,
+				properties: {
+					reference: fullOrder.order.reference,
+					orderPublicId: fullOrder.order.publicId,
+					amount: fullOrder.totals
+				}
+			});
 
 			// Note: This cookie will be included in the redirect response
 		} catch (error: unknown) {
@@ -234,8 +223,8 @@ export class OrderCreationUtilities {
 			return fail(400, { form });
 		}
 
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
-		let orderId = '';
+		const { orderService } = locals.services!;
+		let orderId;
 
 		try {
 			const orderDto = await OrderCreationUtilities.createOrderDtoFromForm(
@@ -251,18 +240,15 @@ export class OrderCreationUtilities {
 
 			orderId = fullOrder.order.id;
 
-			await trackServerEvent(
-				locals.user!,
-				{
-					event: 'order_created',
-					orderId,
-					properties: {
-						status: isQuote ? OrderStatus.QUOTE : OrderStatus.PENDING,
-						amount: fullOrder.totals.total
-					}
-				},
-				locals.posthog
-			);
+			await ServerTracking.event('order_created', {
+				user: locals.user!,
+				context: locals.trackingContext,
+				orderId,
+				properties: {
+					status: isQuote ? OrderStatus.QUOTE : OrderStatus.PENDING,
+					amount: fullOrder.totals.total
+				}
+			});
 		} catch (error: unknown) {
 			if (error instanceof InvalidSizeError) {
 				return setError(form, '', error.message);

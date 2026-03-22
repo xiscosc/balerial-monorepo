@@ -1,18 +1,15 @@
 import { superValidate, setError } from 'sveltekit-superforms';
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad, Actions } from './$types';
 import { linkCustomerSchema } from '$lib/shared/form-schema/customer.form-schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
-import { AuthService } from '$lib/server/service/auth.service';
-import { CustomerService, OrderService } from '@marcsimolduressonsardina/core/service';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
-	const orderService = new OrderService(config);
+	const { orderService } = locals.services!;
 
 	const fullOrder = await orderService.getFullOrderById(id);
 	if (fullOrder == null) {
@@ -34,9 +31,7 @@ export const load = (async ({ params, locals }) => {
 export const actions = {
 	async default({ request, locals, params }) {
 		const { id } = params;
-		const config = AuthService.generateConfiguration(locals.user!);
-		const customerService = new CustomerService(config);
-		const orderService = new OrderService(config, customerService);
+		const { customerService, orderService } = locals.services!;
 
 		const order = await orderService.getOrderById(id);
 		if (!order || !OrderUtilities.isOrderTemp(order)) {
@@ -49,32 +44,25 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		let customer = undefined;
-		customer = await customerService.getCustomerByPhone(form.data.phone);
+		let customer = await customerService.getCustomerByPhone(form.data.phone)
 		if (customer != null) {
 			await orderService.addCustomerToTemporaryOrder(customer, order);
-			trackServerEvent(
-				locals.user!,
-				{
-					event: 'order_customer_linked_from_phone',
-					orderId: order.id,
-					customerId: customer.id
-				},
-				locals.posthog
-			);
+			ServerTracking.event('order_customer_linked_from_phone', {
+				user: locals.user!,
+				context: locals.trackingContext,
+				orderId: order.id,
+				customerId: customer.id
+			});
 		} else {
 			if (form.data.name != null && (form.data.name as unknown as string).length >= 3) {
 				customer = await customerService.createCustomer(form.data.name!, form.data.phone);
 				await orderService.addCustomerToTemporaryOrder(customer, order);
-				trackServerEvent(
-					locals.user!,
-					{
-						event: 'order_customer_linked_from_new_customer',
-						orderId: order.id,
-						customerId: customer.id
-					},
-					locals.posthog
-				);
+				ServerTracking.event('order_customer_linked_from_new_customer', {
+					user: locals.user!,
+					context: locals.trackingContext,
+					orderId: order.id,
+					customerId: customer.id
+				});
 			} else {
 				return setError(
 					form,
@@ -86,4 +74,4 @@ export const actions = {
 
 		redirect(302, `/orders/${id}/files`);
 	}
-};
+} satisfies Actions;

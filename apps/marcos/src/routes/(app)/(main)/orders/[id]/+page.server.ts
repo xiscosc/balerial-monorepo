@@ -1,17 +1,13 @@
 import { fail, redirect } from '@sveltejs/kit';
-import type { PageServerLoad, RouteParams } from './$types';
+import type { PageServerLoad, RouteParams, Actions } from './$types';
 import {
-	ConfigService,
-	FileService,
-	OrderAuditTrailService,
-	OrderService,
+	type ServiceFactory,
 	type ISameDayOrderCounters
 } from '@marcsimolduressonsardina/core/service';
 import {
 	OrderAuditTrailType,
 	OrderStatus,
 	PaymentStatus,
-	type AppUser,
 	type FullOrder,
 	type Order,
 	type OrderAuditTrailEntry
@@ -24,7 +20,7 @@ import {
 	promoteOrderSchema,
 	statusOrderSchema
 } from '$lib/shared/form-schema/order.form-schema';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
 import { OrderActionNames } from '@/shared/mappings/order.mapping';
 
 async function setOrderStatus(
@@ -39,7 +35,7 @@ async function setOrderStatus(
 		throw fail(403, {});
 	}
 
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const { orderService } = locals.services!;
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
@@ -55,15 +51,12 @@ async function setOrderStatus(
 	}
 
 	await orderService.setOrderStatus(order, status, location);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_status_changed',
-			properties: { status, location },
-			orderId: order.id
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_status_changed', {
+		user: locals.user!,
+		context: locals.trackingContext,
+		properties: { status, location },
+		orderId: order.id
+	});
 	return order;
 }
 
@@ -74,7 +67,7 @@ async function setInvoiced(
 ): Promise<Order> {
 	const { id } = params;
 
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+	const { orderService } = locals.services!;
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
@@ -82,20 +75,17 @@ async function setInvoiced(
 	}
 
 	await orderService.setOrderInvoiced(order, invoiced);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_invoiced_changed',
-			properties: { invoiced },
-			orderId: order.id
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_invoiced_changed', {
+		user: locals.user!,
+		context: locals.trackingContext,
+		properties: { invoiced },
+		orderId: order.id
+	});
 	return order;
 }
 
 async function loadData(
-	user: AppUser,
+	services: ServiceFactory,
 	orderId: string
 ): Promise<{
 	fullOrder: FullOrder | null;
@@ -104,11 +94,7 @@ async function loadData(
 	locations: string[];
 	notificationEntries: OrderAuditTrailEntry[];
 }> {
-	const config = AuthService.generateConfiguration(user);
-	const orderService = new OrderService(config);
-	const configService = new ConfigService(config);
-	const auditTrailService = new OrderAuditTrailService(config);
-	const fileService = new FileService(config);
+	const { orderService, configService, orderAuditTrailService: auditTrailService, fileService } = services;
 	const fullOrder = await orderService.getFullOrderById(orderId);
 	const files = await fileService.getFilesByOrder(orderId);
 	const locations = await configService.getLocationsList();
@@ -135,7 +121,7 @@ export const load = (async ({ params, locals }) => {
 
 	const { id } = params;
 	return {
-		info: loadData(locals.user!, id),
+		info: loadData(locals.services!, id),
 		orderId: id,
 		isPriceManager: AuthService.isAdmin(locals.user),
 		promoteForm,
@@ -151,7 +137,7 @@ export const actions = {
 	},
 	[OrderActionNames.DENOTE]: async ({ locals, params }) => {
 		const { id } = params;
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const { orderService } = locals.services!;
 
 		const order = await orderService.getOrderById(id);
 		if (!order || order.status === OrderStatus.QUOTE) {
@@ -159,19 +145,16 @@ export const actions = {
 		}
 
 		await orderService.moveOrderToQuote(order);
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_status_changed',
-				properties: { status: OrderStatus.QUOTE },
-				orderId: order.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_status_changed', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			properties: { status: OrderStatus.QUOTE },
+			orderId: order.id
+		});
 	},
 	[OrderActionNames.PROMOTE]: async ({ request, locals, params }) => {
 		const { id } = params;
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const { orderService } = locals.services!;
 		const order = await orderService.getOrderById(id);
 		if (!order || order.status !== OrderStatus.QUOTE) {
 			return fail(404, { missing: true });
@@ -184,15 +167,12 @@ export const actions = {
 		}
 
 		await orderService.moveQuoteToOrder(order, form.data.deliveryDate);
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_status_changed',
-				properties: { status: OrderStatus.PENDING },
-				orderId: order.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_status_changed', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			properties: { status: OrderStatus.PENDING },
+			orderId: order.id
+		});
 
 		return {
 			form
@@ -233,7 +213,7 @@ export const actions = {
 		const amount = formData.get('amount')?.toString();
 
 		const { id } = params;
-		const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+		const { orderService } = locals.services!;
 		const order = await orderService.getOrderById(id);
 		if (!order) {
 			return fail(500, { missing: true });
@@ -259,14 +239,11 @@ export const actions = {
 			await orderService.setOrderPartiallyPaid(order, amountNumber);
 		}
 
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'order_payment_status_changed',
-				properties: { status: newStatus },
-				orderId: order.id
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('order_payment_status_changed', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			properties: { status: newStatus },
+			orderId: order.id
+		});
 	}
-};
+} satisfies Actions;

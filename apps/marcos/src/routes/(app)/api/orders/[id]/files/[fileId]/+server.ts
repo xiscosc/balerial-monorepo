@@ -1,13 +1,10 @@
-import { AuthService } from '@/server/service/auth.service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
-import { FileService, OrderService } from '@marcsimolduressonsardina/core/service';
+import type { RequestHandler } from './$types';
+import { ServerTracking } from '@/server/shared/tracking';
 import { json } from '@sveltejs/kit';
 
-export async function DELETE({ locals, params }) {
+export const DELETE: RequestHandler = async ({ locals, params }) => {
 	const { id, fileId } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
-	const fileService = new FileService(config);
-	const orderService = new OrderService(config);
+	const { fileService, orderService } = locals.services!;
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -15,26 +12,21 @@ export async function DELETE({ locals, params }) {
 
 	await fileService.deleteFile(id, fileId);
 
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_file_deleted',
-			properties: {
-				fileId: fileId
-			},
-			orderId: id
+	await ServerTracking.event('order_file_deleted', {
+		user: locals.user!,
+		context: locals.trackingContext,
+		properties: {
+			fileId: fileId
 		},
-		locals.posthog
-	);
+		orderId: id
+	});
 
 	return json({ result: 'Deleted' }, { status: 200 });
-}
+};
 
-export async function GET({ locals, params }) {
+export const GET: RequestHandler = async ({ locals, params }) => {
 	const { id, fileId } = params;
-	const config = AuthService.generateConfiguration(locals.user!);
-	const fileService = new FileService(config);
-	const orderService = new OrderService(config);
+	const { fileService, orderService } = locals.services!;
 	const order = await orderService.getOrderById(id);
 	if (order == null) {
 		return json({ error: 'Order not found' }, { status: 404 });
@@ -46,4 +38,4 @@ export async function GET({ locals, params }) {
 	}
 
 	return json(file);
-}
+};

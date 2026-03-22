@@ -9,6 +9,7 @@ import { Construct } from 'constructs';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
 import { LambdaDestination } from 'aws-cdk-lib/aws-s3-notifications';
+import { ImageVariant } from '@marcsimolduressonsardina/core/type';
 
 export function createLambdas(
 	scope: Construct,
@@ -107,5 +108,7 @@ export function createLambdas(
 	buckets.filesBucket.grantReadWrite(imageOptimizationLambda);
 
 	// Trigger lambda when an object is stored on the bucket
-	buckets.filesBucket.addObjectCreatedNotification(new LambdaDestination(imageOptimizationLambda));
+	buckets.filesBucket.addObjectCreatedNotification(new LambdaDestination(imageOptimizationLambda), {
+		prefix: ImageVariant.ORIGINAL
+	});
 }

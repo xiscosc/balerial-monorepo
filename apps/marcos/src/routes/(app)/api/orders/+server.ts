@@ -1,9 +1,9 @@
-import { AuthService } from '@/server/service/auth.service';
-import { OrderService } from '@marcsimolduressonsardina/core/service';
+import type { RequestHandler } from './$types';
 import { type Order, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { json } from '@sveltejs/kit';
 import { BatchOperation } from '@/type/api.type';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import { ServerTracking } from '@/server/shared/tracking';
+import type { OrderService } from '@marcsimolduressonsardina/core/service';
 
 async function setOrdersPaid(orders: Order[], orderService: OrderService) {
 	const promises = orders.map((order) => orderService.setOrderFullyPaid(order));
@@ -26,11 +26,11 @@ async function notifyOrders(orders: Order[], orderService: OrderService) {
 }
 
 function trackBulkOperation(event: string, orderIds: string[], locals: App.Locals) {
-	return trackServerEvent(locals.user!, { event, properties: { orderIds } }, locals.posthog);
+	return ServerTracking.event(event, { user: locals.user!, context: locals.trackingContext, properties: { orderIds } });
 }
 
-export async function PATCH({ request, locals }) {
-	const orderService = new OrderService(AuthService.generateConfiguration(locals.user!));
+export const PATCH: RequestHandler = async ({ request, locals }) => {
+	const { orderService } = locals.services!;
 	const { orderIds, operations } = (await request.json()) as {
 		orderIds: string[];
 		operations: BatchOperation[];
@@ -70,4 +70,4 @@ export async function PATCH({ request, locals }) {
 
 	await Promise.all(promises);
 	return json({ status: 'ok' });
-}
+};

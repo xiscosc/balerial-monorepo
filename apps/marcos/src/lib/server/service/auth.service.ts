@@ -9,7 +9,6 @@ import {
 	FILES_BUCKET,
 	LIST_PRICING_TABLE,
 	MAIN_STORE_ID,
-	MAINTENANCE_MODE,
 	MOLD_PRICES_BUCKET,
 	ORDER_AUDIT_TRAIL_TABLE,
 	ORDER_TABLE,
@@ -26,10 +25,8 @@ import {
 } from '@marcsimolduressonsardina/core/config';
 import type { AppUser } from '@marcsimolduressonsardina/core/type';
 import { redirect } from '@sveltejs/kit';
-
 export class AuthService {
-	public static generateConfiguration(user?: AppUser): ICoreConfiguration {
-		if (user == null) redirect(303, '/auth/signin?callbackUrl=/');
+	public static generateConfiguration(user: AppUser): ICoreConfiguration {
 		return {
 			runInAWSLambda: false,
 			user,
@@ -53,10 +50,15 @@ export class AuthService {
 		};
 	}
 
-	public static generatePublicConfiguration(user: AppUser): ICorePublicConfiguration {
+	public static generatePublicConfiguration(): ICorePublicConfiguration {
 		return {
 			runInAWSLambda: false,
-			user,
+			user: {
+				id: 'public',
+				name: 'public',
+				storeId: PUBLIC_REPOSITORY,
+				priceManager: false
+			},
 			region: AWS_REGION,
 			calculatedItemTable: CALCULATED_ITEM_ORDER_TABLE,
 			customerTable: CUSTOMER_TABLE,
@@ -68,17 +70,6 @@ export class AuthService {
 				secretAccessKey: TRACK_AWS_SECRET_ACCESS_KEY
 			}
 		};
-	}
-
-	public static generatePublicConfig(): ICorePublicConfiguration {
-		const user = {
-			id: 'public',
-			name: 'public',
-			storeId: PUBLIC_REPOSITORY,
-			priceManager: false
-		};
-
-		return AuthService.generatePublicConfiguration(user);
 	}
 
 	public static generateUserFromAuth(session?: CustomSession): AppUser | undefined {
@@ -99,12 +90,7 @@ export class AuthService {
 		};
 	}
 
-	public static async checkAuth(locals: App.Locals): Promise<void> {
-		const inMaintenance = MAINTENANCE_MODE === 'yes';
-		if (inMaintenance) {
-			redirect(307, '/maintenance');
-		}
-
+	public static checkAuth(locals: App.Locals): void {
 		const appUser = locals.user;
 		if (!appUser) redirect(303, '/auth/signin?callbackUrl=/');
 	}

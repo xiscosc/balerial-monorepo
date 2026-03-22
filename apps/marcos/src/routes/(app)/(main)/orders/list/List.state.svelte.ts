@@ -52,7 +52,6 @@ export class ListStateClass implements ListState {
 		}
 
 		this.isAdmin = userIsAdmin;
-		this.orders = this.getList(this.status, this.lastKey);
 
 		$effect(() => {
 			if (!this.isSearchMode) {

@@ -9,6 +9,7 @@
 		scannedText?: string;
 	}
 
+	// eslint-disable-next-line no-useless-assignment
 	let { scannedText = $bindable(undefined) }: Props = $props();
 
 	onMount(() => {

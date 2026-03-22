@@ -14,7 +14,7 @@
 		type CustomerSchema,
 		type LinkCustomerSchema
 	} from '@/shared/form-schema/customer.form-schema';
-	import { handleFormError } from '@/shared/fronted-analytics/offline-error-queue';
+	import { Tracking } from '@/shared/tracking';
 	import { toast } from 'svelte-sonner';
 
 	interface Props {
@@ -31,7 +31,7 @@
 	const form = superForm(data.form, {
 		validators: zod4Client(link ? linkCustomerSchema : customerSchema),
 		timeoutMs: 5000,
-		onError: ({ result }) => handleFormError(result, 'CustomerForm', toast.error)
+		onError: ({ result }) => Tracking.handleFormError(result, 'CustomerForm', toast.error)
 	});
 	const { form: formData, enhance, submitting } = form;
 </script>

@@ -1,10 +1,9 @@
-import { MAINTENANCE_MODE } from '$env/static/private';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { maintenanceEnabled } from '@/server/shared/maintenance';
 
-export const load = (async () => {
-	const inMaintenance = MAINTENANCE_MODE === 'yes';
-	if (!inMaintenance) {
+export const load = (() => {
+	if (!maintenanceEnabled) {
 		redirect(307, '/');
 	}
 }) satisfies PageServerLoad;

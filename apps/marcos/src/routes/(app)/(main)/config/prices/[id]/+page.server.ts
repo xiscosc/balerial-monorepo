@@ -3,8 +3,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 import { listPriceSchemaEdit } from '@/shared/form-schema/pricing.form-schema';
-import { AuthService } from '$lib/server/service/auth.service.js';
-import { PricingService } from '@marcsimolduressonsardina/core/service';
+import type { PricingService } from '@marcsimolduressonsardina/core/service';
 import { PricingUtilites, type EditablePricingTypes } from '@marcsimolduressonsardina/core/util';
 import type {
 	ListPrice,
@@ -14,7 +13,8 @@ import type {
 	PricingType
 } from '@marcsimolduressonsardina/core/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
+import type { PageServerLoad, Actions } from './$types';
+import { ServerTracking } from '@/server/shared/tracking';
 
 async function getListPrice(id: string, pricingService: PricingService): Promise<ListPrice> {
 	if (id == null) throw fail(400);
@@ -25,12 +25,10 @@ async function getListPrice(id: string, pricingService: PricingService): Promise
 	return pricing;
 }
 
-export const load = async ({ locals, params }) => {
+export const load = (async ({ locals, params }) => {
 	const { id } = params;
-	const listPrice = await getListPrice(
-		id,
-		new PricingService(AuthService.generateConfiguration(locals.user!))
-	);
+	const { pricingService } = locals.services!;
+	const listPrice = await getListPrice(id, pricingService);
 	const form = await superValidate(zod4(listPriceSchemaEdit));
 	form.data.id = listPrice.id;
 	form.data.price = listPrice.price;
@@ -45,7 +43,7 @@ export const load = async ({ locals, params }) => {
 	form.data.priority = listPrice.priority;
 	form.data.discountAllowed = listPrice.discountAllowed;
 	return { form };
-};
+}) satisfies PageServerLoad;
 
 export const actions = {
 	async createOrEdit({ request, locals, params }) {
@@ -55,7 +53,7 @@ export const actions = {
 		}
 
 		const { id } = params;
-		const pricingService = new PricingService(AuthService.generateConfiguration(locals.user!));
+		const { pricingService } = locals.services!;
 		const listPrice = await getListPrice(id, pricingService);
 
 		const { price, maxD1, maxD2, areas, areasM2 } = PricingUtilites.cleanFormValues(
@@ -90,25 +88,22 @@ export const actions = {
 			}
 			return setError(form, '', 'Error actualizando el item. Intente de nuevo.');
 		}
-		await trackServerEvent(
-			locals.user!,
-			{
-				event: 'price_updated',
-				properties: {
-					type: listPrice.type,
-					id: listPrice.id
-				}
-			},
-			locals.posthog
-		);
+		await ServerTracking.event('price_updated', {
+			user: locals.user!,
+			context: locals.trackingContext,
+			properties: {
+				type: listPrice.type,
+				id: listPrice.id
+			}
+		});
 
 		redirect(302, `/config/prices/list?type=${listPrice.type}`);
 	},
 	async deletePrice({ locals, params }) {
 		const { id } = params;
-		const pricingService = new PricingService(AuthService.generateConfiguration(locals.user!));
+		const { pricingService } = locals.services!;
 		const listPrice = await getListPrice(id, pricingService);
 		await pricingService.deleteListPrices([listPrice]);
 		redirect(302, `/config/prices/list?type=${listPrice.type}`);
 	}
-};
+} satisfies Actions;

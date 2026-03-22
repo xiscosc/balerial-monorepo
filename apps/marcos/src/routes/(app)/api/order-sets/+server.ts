@@ -1,10 +1,9 @@
-import { AuthService } from '@/server/service/auth.service';
-import { trackServerEvent } from '@/server/shared/server-analytics/posthog';
-import { OrderSetService } from '@marcsimolduressonsardina/core/service';
+import type { RequestHandler } from './$types';
+import { ServerTracking } from '@/server/shared/tracking';
 import { json } from '@sveltejs/kit';
 
-export async function POST({ request, locals }) {
-	const orderSetService = new OrderSetService(AuthService.generateConfiguration(locals.user!));
+export const POST: RequestHandler = async ({ request, locals }) => {
+	const { orderSetService } = locals.services!;
 	const { orderIds } = (await request.json()) as {
 		orderIds: string[];
 	};
@@ -14,15 +13,12 @@ export async function POST({ request, locals }) {
 	}
 
 	const orderSet = await orderSetService.createOrderSet(orderIds);
-	await trackServerEvent(
-		locals.user!,
-		{
-			event: 'order_set_created',
-			properties: {
-				orderSetId: orderSet.id
-			}
-		},
-		locals.posthog
-	);
+	await ServerTracking.event('order_set_created', {
+		user: locals.user!,
+		context: locals.trackingContext,
+		properties: {
+			orderSetId: orderSet.id
+		}
+	});
 	return json({ orderSet });
-}
+};

@@ -1,10 +1,5 @@
 import { ICoreConfigurationForAWSLambda } from '@marcsimolduressonsardina/core/config';
-import {
-	OrderAuditTrailService,
-	CustomerService,
-	OrderService,
-	ReportService
-} from '@marcsimolduressonsardina/core/service';
+import { ServiceFactory } from '@marcsimolduressonsardina/core/service';
 import { AppUser } from '@marcsimolduressonsardina/core/type';
 import { DateTime } from 'luxon';
 
@@ -35,15 +30,8 @@ export async function lambdaGenerateReports(
 		user
 	};
 
-	const orderAuditTrailService = new OrderAuditTrailService(configuration);
-	const customerService = new CustomerService(configuration);
-	const orderService = new OrderService(configuration, customerService, orderAuditTrailService);
-	const reportService = new ReportService(
-		configuration,
-		orderAuditTrailService,
-		customerService,
-		orderService
-	);
+	const services = ServiceFactory.createForLambda(configuration);
+	const reportService = services.reportService;
 
 	const dailyReport = await reportService.generateAndStoreDailyReport({
 		year: DateTime.now().get('year'),

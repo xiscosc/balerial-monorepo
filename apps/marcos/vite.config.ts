@@ -3,12 +3,5 @@ import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit()],
-	optimizeDeps: {
-		esbuildOptions: {
-			supported: {
-				bigint: true
-			}
-		}
-	}
+	plugins: [tailwindcss(), sveltekit()]
 });

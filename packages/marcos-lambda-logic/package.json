@@ -3,8 +3,7 @@
 	"version": "1.0.0",
 	"exports": {
 		"./reports": "./src/reports.ts",
-		"./images": "./src/images.ts",
-		"./optimize-storage": "./src/optimize-storage.ts"
+		"./images": "./src/images.ts"
 	},
 	"scripts": {
 		"lint": "eslint .",
@@ -16,10 +15,10 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
-		"@types/aws-lambda": "8.10.160",
+		"@types/aws-lambda": "8.10.161",
 		"@types/luxon": "3.7.1",
 		"aws-lambda": "1.0.7",
-		"pino": "10.3.0",
+		"pino": "10.3.1",
 		"sharp": "0.34.5",
 		"typescript": "5.9.3"
 	},
@@ -27,6 +26,6 @@
 		"@balerial/s3": "workspace:*",
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"luxon": "3.7.2",
-		"posthog-node": "5.24.11"
+		"posthog-node": "5.28.5"
 	}
 }

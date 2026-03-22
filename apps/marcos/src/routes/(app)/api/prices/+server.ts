@@ -1,23 +1,20 @@
+import type { RequestHandler } from './$types';
 import type { PreCalculatedItemPartRequest } from '@/type/api.type';
 import { json } from '@sveltejs/kit';
-import { AuthService } from '@/server/service/auth.service';
 import { InvalidSizeError } from '@marcsimolduressonsardina/core/error';
-import { CalculatedItemService, PricingService } from '@marcsimolduressonsardina/core/service';
+import type { CalculatedItemService } from '@marcsimolduressonsardina/core/service';
 import type {
 	PreCalculatedItemPart,
 	CalculatedItemPart,
 	OrderDimensions
 } from '@marcsimolduressonsardina/core/type';
 
-export async function POST({ request, locals }) {
+export const POST: RequestHandler = async ({ request, locals }) => {
 	const pricingRequest = (await request.json()) as PreCalculatedItemPartRequest;
 
 	try {
-		const config = AuthService.generateConfiguration(locals.user!);
-		const calculatedItemService = new CalculatedItemService(
-			config,
-			new PricingService(config, pricingRequest.markup)
-		);
+		const { createCalculatedItemServiceWithMarkup } = locals.services!;
+		const calculatedItemService = createCalculatedItemServiceWithMarkup(pricingRequest.markup ?? 0);
 		const parts = await Promise.all(
 			pricingRequest.partsToCalculateWithKey.map(({ key, part }) =>
 				calculatePart(part, key, pricingRequest.orderDimensions, calculatedItemService)
@@ -31,7 +28,7 @@ export async function POST({ request, locals }) {
 
 		return json({ error: 'Error computing the price' }, { status: 500 });
 	}
-}
+};
 
 async function calculatePart(
 	partToCalculate: PreCalculatedItemPart,

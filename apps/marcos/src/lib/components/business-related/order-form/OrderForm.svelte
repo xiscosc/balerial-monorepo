@@ -48,7 +48,7 @@
 		type OrderItem
 	} from '@/components/business-related/order-form/OrderFormItems.state.svelte';
 	import { ExternalOrderPriceTrackerState } from '@/components/business-related/order-form/ExternalOrderPriceTracker.state.svelte';
-	import { handleFormError } from '@/shared/fronted-analytics/offline-error-queue';
+	import { Tracking } from '@/shared/tracking';
 
 	interface Props {
 		data: OrderCreationFormData;
@@ -65,7 +65,7 @@
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json',
 		timeoutMs: 5000,
-		onError: ({ result }) => handleFormError(result, 'OrderForm', toast.error)
+		onError: ({ result }) => Tracking.handleFormError(result, 'OrderForm', toast.error)
 	});
 	const proxyDate = dateProxy(form, 'deliveryDate', { format: 'date' });
 

@@ -12,10 +12,14 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 
-	export let order: Order;
-	export let counters: ISameDayOrderCounters;
-	export let hasFiles: boolean;
-	let whatsAppNotified = false;
+	interface Props {
+		order: Order;
+		counters: ISameDayOrderCounters;
+		hasFiles: boolean;
+	}
+
+	let { order, counters, hasFiles }: Props = $props();
+	let whatsAppNotified = $state(false);
 
 	function handleAfterNotify() {
 		whatsAppNotified = true;
