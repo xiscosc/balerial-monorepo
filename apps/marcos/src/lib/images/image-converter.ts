@@ -1,5 +1,4 @@
 import { Tracking } from '@/shared/tracking';
-import heic2any from 'heic2any';
 import { UAParser } from 'ua-parser-js';
 import { BrowserName } from 'ua-parser-js/enums';
 
@@ -36,6 +35,7 @@ export class ImageConverter {
 
 		let imageFile = file;
 		if (ImageConverter.isHeic(file)) {
+			const { default: heic2any } = await import('heic2any');
 			const blob = await heic2any({ blob: file, toType: 'image/jpeg' });
 			imageFile = new File(
 				[Array.isArray(blob) ? blob[0] : blob],
