@@ -91,8 +91,7 @@ export class AuthService {
 	}
 
 	public static checkAuth(locals: App.Locals): void {
-		const appUser = locals.user;
-		if (!appUser) redirect(303, '/auth/signin?callbackUrl=/');
+		if (!locals.user || !locals.services) redirect(303, '/auth/signin?callbackUrl=/');
 	}
 
 	public static isAdmin(user?: AppUser): boolean {
