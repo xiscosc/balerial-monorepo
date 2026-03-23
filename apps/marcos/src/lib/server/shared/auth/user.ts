@@ -12,15 +12,16 @@ export const getUserHandle: Handle = async ({ event, resolve }) => {
 		const config = AuthService.generateConfiguration(user);
 		event.locals.config = config;
 		event.locals.services = ServiceFactory.create(config);
-	} else if (session) {
+	} else if (event.route.id?.startsWith('/(app)')) {
 		ServerTracking.anonymousEvent('invalid_session', {
 			context: event.locals.trackingContext,
 			properties: {
 				url: event.url.pathname,
-				hasUser: session.user != null,
-				hasEmail: session.user?.email != null,
-				hasMetadata: (session as CustomSession).userMetadata != null,
-				hasStoreId: (session as CustomSession).userMetadata?.storeId != null
+				hasSession: session != null,
+				hasUser: session?.user != null,
+				hasEmail: session?.user?.email != null,
+				hasMetadata: (session as CustomSession)?.userMetadata != null,
+				hasStoreId: (session as CustomSession)?.userMetadata?.storeId != null
 			}
 		});
 	}
