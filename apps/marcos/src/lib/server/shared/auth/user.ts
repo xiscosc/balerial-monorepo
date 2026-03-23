@@ -15,7 +15,13 @@ export const getUserHandle: Handle = async ({ event, resolve }) => {
 	} else if (session) {
 		ServerTracking.anonymousEvent('invalid_session', {
 			context: event.locals.trackingContext,
-			properties: { url: event.url.pathname }
+			properties: {
+				url: event.url.pathname,
+				hasUser: session.user != null,
+				hasEmail: session.user?.email != null,
+				hasMetadata: (session as CustomSession).userMetadata != null,
+				hasStoreId: (session as CustomSession).userMetadata?.storeId != null
+			}
 		});
 	}
 	return resolve(event);
