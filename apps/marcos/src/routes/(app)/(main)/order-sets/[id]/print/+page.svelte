@@ -2,7 +2,6 @@
 	import type { PageData } from './$types';
 
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import OrderSetPrint from '@/components/business-related/order-set/OrderSetPrint.svelte';
 	import Loading from '@/components/generic/Loading.svelte';
 	import Box from '@/components/generic/Box.svelte';
@@ -13,7 +12,7 @@
 	}
 
 	let { data }: Props = $props();
-	let measuredOrderSet = $derived(getGlobalProfiler().measure(data.orderSet));
+	let measuredOrderSet = $derived(data.orderSet);
 </script>
 
 {#await measuredOrderSet}

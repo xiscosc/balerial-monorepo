@@ -171,11 +171,6 @@ The application requires the following environment variables:
 - `MAINTENANCE_MODE` - Set to `true` to enable maintenance mode (redirects all traffic to `/maintenance`)
 - `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel)
 
-### Profiler
-
-- `PUBLIC_PROFILER_CONFIG` - Base64-encoded profiler configuration
-- `PUBLIC_PROFILER_KEY` - Base64-encoded profiler function key
-
 ## Feature Flags
 
 Feature flags are managed via [PostHog](https://posthog.com/) and split into server-side and client-side enums:

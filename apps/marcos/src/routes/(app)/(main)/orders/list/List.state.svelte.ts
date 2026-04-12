@@ -2,7 +2,6 @@ import { Debounced, watch } from 'runed';
 import { browser } from '$app/environment';
 import { OrderApiGateway } from '@/gateway/order-api.gateway';
 import { orderStatusMap } from '@/shared/mappings/order.mapping';
-import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import type { FullOrder } from '@marcsimolduressonsardina/core/type';
 import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
@@ -148,9 +147,7 @@ export class ListStateClass implements ListState {
 		}
 
 		if (this.isAdmin) {
-			const response = await getGlobalProfiler().measure(
-				OrderApiGateway.getOrderList(status, lastKey)
-			);
+			const response = await OrderApiGateway.getOrderList(status, lastKey);
 			const body = response;
 			this.lastKey = body.nextKey;
 			return body.orders;
@@ -169,7 +166,7 @@ export class ListStateClass implements ListState {
 			return [];
 		}
 
-		const response = await getGlobalProfiler().measure(OrderApiGateway.searchOrders(query, status));
+		const response = await OrderApiGateway.searchOrders(query, status);
 		return response;
 	}
 }

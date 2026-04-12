@@ -28,7 +28,6 @@
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 
 	import WhatsAppOrderButtons from '@/components/business-related/order-detail/WhatsAppOrderButtons.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { Tracking } from '@/shared/tracking';
 	import { BreakpointStateClass } from '@/state/breakpoint/breakpoint.state.svelte';
 	import { onDestroy } from 'svelte';
@@ -42,7 +41,7 @@
 
 	let { data }: Props = $props();
 
-	let derivedInfo = $derived(getGlobalProfiler().measure(data.info));
+	let derivedInfo = $derived(data.info);
 	const breakpointState = new BreakpointStateClass();
 
 	$effect(() => {

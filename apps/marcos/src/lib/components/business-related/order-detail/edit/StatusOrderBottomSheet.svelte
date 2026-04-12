@@ -12,8 +12,6 @@
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import type { StatusOrderSchema } from '@/shared/form-schema/order.form-schema';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-
 	interface Props {
 		data: SuperValidated<Infer<StatusOrderSchema>>;
 		locations: string[];
@@ -23,7 +21,6 @@
 	let { data, locations, fullOrder }: Props = $props();
 	const form = superForm(data, {
 		onSubmit: async ({ formData }) => {
-			await getGlobalProfiler().measureStandalone();
 			formData.set('status', newStatus ?? '');
 		}
 	});

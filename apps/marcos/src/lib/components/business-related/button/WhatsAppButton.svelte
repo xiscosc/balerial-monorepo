@@ -5,7 +5,6 @@
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import Loading from '@/components/generic/Loading.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
 	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
@@ -44,11 +43,9 @@
 			return;
 		}
 
-		await getGlobalProfiler().measure(
-			OrderApiGateway.patchOrders(
-				orders.map((order) => order.id),
-				[BatchOperation.NOTIFY_ORDERS]
-			)
+		await OrderApiGateway.patchOrders(
+			orders.map((order) => order.id),
+			[BatchOperation.NOTIFY_ORDERS]
 		);
 
 		orders.forEach((order) => {
