@@ -1,6 +1,16 @@
 import { Tracking } from '@/shared/tracking';
+import { ClientFeature } from '@/shared/tracking/client.features';
 import { UAParser } from 'ua-parser-js';
 import { BrowserName } from 'ua-parser-js/enums';
+
+type OutputFormat = {
+	mime: 'image/webp' | 'image/jpeg';
+	ext: string;
+	magickFormat: 'WebP' | 'Jpeg';
+};
+
+const WEBP_FORMAT: OutputFormat = { mime: 'image/webp', ext: 'webp', magickFormat: 'WebP' };
+const JPEG_FORMAT: OutputFormat = { mime: 'image/jpeg', ext: 'jpg', magickFormat: 'Jpeg' };
 
 export class ImageConverter {
 	private static readonly MAX_IMAGE_WIDTH = 2160;
@@ -24,17 +34,7 @@ export class ImageConverter {
 		return browser.is(BrowserName.SAFARI) || browser.is(BrowserName.SAFARI_MOBILE);
 	}
 
-	private static get outputFormat(): {
-		mime: 'image/webp' | 'image/jpeg';
-		ext: string;
-		magickFormat: 'WebP' | 'Jpeg';
-	} {
-		return ImageConverter.isSafari
-			? { mime: 'image/jpeg', ext: 'jpg', magickFormat: 'Jpeg' }
-			: { mime: 'image/webp', ext: 'webp', magickFormat: 'WebP' };
-	}
-
-	private static async convertHeic(file: File): Promise<File> {
+	private static async convertWithWasm(file: File, format: OutputFormat): Promise<File> {
 		const { initializeImageMagick, ImageMagick, MagickFormat, MagickGeometry } = await import(
 			'@imagemagick/magick-wasm'
 		);
@@ -43,12 +43,11 @@ export class ImageConverter {
 		const wasmBytes = new Uint8Array(await wasmResponse.arrayBuffer());
 		await initializeImageMagick(wasmBytes);
 
-		const { mime, ext, magickFormat } = ImageConverter.outputFormat;
-		const heicBytes = new Uint8Array(await file.arrayBuffer());
+		const imageBytes = new Uint8Array(await file.arrayBuffer());
 
 		const convertedBlob = await new Promise<Blob>((resolve, reject) => {
 			try {
-				ImageMagick.read(heicBytes, (image) => {
+				ImageMagick.read(imageBytes, (image) => {
 					if (image.width > ImageConverter.MAX_IMAGE_WIDTH) {
 						const scale = ImageConverter.MAX_IMAGE_WIDTH / image.width;
 						const geometry = new MagickGeometry(
@@ -58,8 +57,8 @@ export class ImageConverter {
 						image.resize(geometry);
 					}
 					image.quality = Math.round(ImageConverter.QUALITY * 100);
-					image.write(MagickFormat[magickFormat], (data) => {
-						resolve(new Blob([new Uint8Array(data)], { type: mime }));
+					image.write(MagickFormat[format.magickFormat], (data) => {
+						resolve(new Blob([new Uint8Array(data)], { type: format.mime }));
 					});
 				});
 			} catch (e) {
@@ -67,24 +66,12 @@ export class ImageConverter {
 			}
 		});
 
-		return new File([convertedBlob], ImageConverter.changeExtension(file.name, ext), {
-			type: mime
+		return new File([convertedBlob], ImageConverter.changeExtension(file.name, format.ext), {
+			type: format.mime
 		});
 	}
 
-	static async convertImage(file: File): Promise<File> {
-		if (ImageConverter.isHeic(file)) {
-			const convertedFile = await ImageConverter.convertHeic(file);
-			Tracking.event('Image converted', {
-				format: ImageConverter.outputFormat.ext,
-				originalSize: file.size,
-				convertedSize: convertedFile.size,
-				compressionRate: ((1 - convertedFile.size / file.size) * 100).toFixed(2)
-			});
-			return convertedFile;
-		}
-
-		const { mime, ext } = ImageConverter.outputFormat;
+	private static async convertWithCanvas(file: File, format: OutputFormat): Promise<File> {
 		const bitmap = await createImageBitmap(file);
 
 		const scale =
@@ -100,19 +87,52 @@ export class ImageConverter {
 		bitmap.close();
 
 		const blob = await canvas.convertToBlob({
-			type: mime,
+			type: format.mime,
 			quality: ImageConverter.QUALITY
 		});
-		const convertedFile = new File([blob], ImageConverter.changeExtension(file.name, ext), {
-			type: mime
+
+		return new File([blob], ImageConverter.changeExtension(file.name, format.ext), {
+			type: format.mime
 		});
+	}
+
+	private static safariOptimize = false;
+
+	static init() {
+		Tracking.runWhenFeatureIsEnabled(ClientFeature.OPTIMIZE_IMAGES, () => {
+			ImageConverter.safariOptimize = true;
+		});
+	}
+
+	/**
+	 * Not Safari: canvas → webp, HEIC → wasm → webp
+	 * Safari + FF enabled: all images → wasm → webp
+	 * Safari + FF disabled: canvas → jpeg, HEIC → wasm → jpeg
+	 */
+	static async convertImage(file: File): Promise<File> {
+		let convertedFile: File;
+
+		if (!ImageConverter.isSafari) {
+			convertedFile = ImageConverter.isHeic(file)
+				? await ImageConverter.convertWithWasm(file, WEBP_FORMAT)
+				: await ImageConverter.convertWithCanvas(file, WEBP_FORMAT);
+		} else if (ImageConverter.safariOptimize) {
+			convertedFile = await ImageConverter.convertWithWasm(file, WEBP_FORMAT);
+		} else {
+			convertedFile = ImageConverter.isHeic(file)
+				? await ImageConverter.convertWithWasm(file, WEBP_FORMAT)
+				: await ImageConverter.convertWithCanvas(file, JPEG_FORMAT);
+		}
 
 		Tracking.event('Image converted', {
-			format: ext,
+			format: convertedFile.type,
+			safari: ImageConverter.isSafari,
+			safariOptimize: ImageConverter.safariOptimize,
 			originalSize: file.size,
 			convertedSize: convertedFile.size,
 			compressionRate: ((1 - convertedFile.size / file.size) * 100).toFixed(2)
 		});
+
 		return convertedFile;
 	}
 

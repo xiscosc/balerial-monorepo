@@ -21,7 +21,6 @@
 	import { Tracking } from '@/shared/tracking';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
 	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-	import { ClientFeature } from '@/shared/tracking/client.features';
 
 	interface Props {
 		data: PageData;
@@ -38,10 +37,7 @@
 		data.files ?? new Promise(() => [])
 	);
 
-	let optimizeImages = $state(false);
-	Tracking.runWhenFeatureIsEnabled(ClientFeature.OPTIMIZE_IMAGES, () => {
-		optimizeImages = true;
-	});
+	ImageConverter.init();
 
 	let loadingFiles = $state(true);
 	let files: MMSSFile[] = $state([]);
@@ -132,8 +128,7 @@
 		for (let i = 0; i < total; i++) {
 			const current = i + 1;
 			const f = filesToUpload[i];
-			const isHeic = ImageConverter.isHeic(f);
-			const shouldOptimize = (optimizeImages && ImageConverter.isImageFile(f)) || isHeic;
+			const shouldOptimize = ImageConverter.isImageFile(f);
 
 			let fileToUpload: File = f;
 			let imageVariant: ImageVariant | undefined;
