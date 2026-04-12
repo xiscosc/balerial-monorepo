@@ -32,6 +32,11 @@ export class PostHogTracking implements IClientTracking {
 			}
 		});
 
+		posthog.setPersonPropertiesForFlags({
+			env: envName,
+			store: appUser ? appUser.storeId : 'not_available'
+		});
+
 		if (appUser) {
 			this.identify(appUser, envName);
 		}
@@ -44,6 +49,11 @@ export class PostHogTracking implements IClientTracking {
 			email: appUser.id,
 			name: appUser.name,
 			userEnv: envName
+		});
+
+		posthog.setPersonPropertiesForFlags({
+			env: envName,
+			store: appUser.storeId
 		});
 	}
 

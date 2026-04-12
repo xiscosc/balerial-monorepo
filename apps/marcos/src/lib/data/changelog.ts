@@ -122,7 +122,7 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20260316,
+		version: 20260323,
 		title: 'Marzo 2026',
 		items: [
 			{ text: 'Mejoras de rendimiento', type: ChangelogItemType.TECHNICAL },

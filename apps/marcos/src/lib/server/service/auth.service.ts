@@ -72,9 +72,7 @@ export class AuthService {
 		};
 	}
 
-	public static generateUserFromAuth(
-		session?: BetterAuthSession | null
-	): AppUser | undefined {
+	public static generateUserFromAuth(session?: BetterAuthSession | null): AppUser | undefined {
 		if (
 			session == null ||
 			session.user == null ||

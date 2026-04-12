@@ -132,7 +132,8 @@
 		for (let i = 0; i < total; i++) {
 			const current = i + 1;
 			const f = filesToUpload[i];
-			const shouldOptimize = optimizeImages && ImageConverter.isImageFile(f);
+			const isHeic = ImageConverter.isHeic(f);
+			const shouldOptimize = (optimizeImages && ImageConverter.isImageFile(f)) || isHeic;
 
 			let fileToUpload: File = f;
 			let imageVariant: ImageVariant | undefined;
