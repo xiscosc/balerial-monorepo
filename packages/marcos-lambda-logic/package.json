@@ -19,7 +19,6 @@
 		"@types/luxon": "3.7.1",
 		"aws-lambda": "1.0.7",
 		"pino": "10.3.1",
-		"sharp": "0.34.5",
 		"typescript": "6.0.2"
 	},
 	"dependencies": {

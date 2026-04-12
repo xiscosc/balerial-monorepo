@@ -116,61 +116,6 @@ export class FileService {
 		return file;
 	}
 
-	public async storeOptimizations(
-		orderId: string,
-		id: string,
-		optimizedImage: Buffer,
-		thumbnailImage: Buffer,
-		optimizationAndThumbnailTypeInfo?: OptimizationAndThumbnailTypeInfo
-	) {
-		const fileDto = await this.repository.getFile(orderId, id);
-		if (fileDto == null) return;
-		const file = FileService.fromDto(fileDto);
-
-		if (file.type !== FileType.PHOTO) {
-			return;
-		}
-
-		if (fileDto.optimizedKey != null && fileDto.thumbnailKey != null) {
-			return;
-		}
-
-		const originalFileHeaders = await this.balerialFileCloudService.getObjectHeaders(fileDto.key);
-
-		if (originalFileHeaders == null) {
-			return;
-		}
-
-		const originalFileContentType = originalFileHeaders.contentType;
-
-		const baseKey = FileService.stripVariantPrefix(fileDto.key);
-
-		if (fileDto.optimizedKey == null) {
-			fileDto.optimizedKey = `${ImageVariant.OPTIMIZED}/${baseKey}${optimizationAndThumbnailTypeInfo?.optimizedExtension ?? ''}`;
-			await this.balerialFileCloudService.upload(
-				fileDto.optimizedKey,
-				optimizedImage,
-				optimizationAndThumbnailTypeInfo?.optimizedContentType ?? originalFileContentType,
-				true
-			);
-		}
-
-		if (fileDto.thumbnailKey == null) {
-			fileDto.thumbnailKey = `${ImageVariant.THUMBNAIL}/${baseKey}${optimizationAndThumbnailTypeInfo?.thumbnailExtension ?? ''}`;
-			await this.balerialFileCloudService.upload(
-				fileDto.thumbnailKey,
-				thumbnailImage,
-				optimizationAndThumbnailTypeInfo?.thumbnailContentType ?? originalFileContentType
-			);
-		}
-
-		await this.repository.createFile(fileDto);
-
-		if (fileDto.optimizedKey != null) {
-			await this.balerialFileCloudService.tagFile(fileDto.key, [FileService.expiryTag]);
-		}
-	}
-
 	public async getFile(orderId: string, id: string): Promise<File | undefined> {
 		const fileDto = await this.repository.getFile(orderId, id);
 		if (fileDto == null) return undefined;
@@ -203,40 +148,6 @@ export class FileService {
 			});
 			await new Promise((resolve) => setTimeout(resolve, 1000));
 		}
-	}
-
-	public async getPhotoAndMetadataFromStorage({
-		bucketName,
-		key
-	}: {
-		bucketName: string;
-		key: string;
-	}): Promise<
-		{ content: Uint8Array<ArrayBufferLike>; orderId: string; fileId: string } | undefined
-	> {
-		if (bucketName !== this.config.filesBucket) {
-			throw Error('Incorrect bucket');
-		}
-
-		const headers = await this.balerialFileCloudService.getObjectHeaders(key);
-		const metadata = headers?.metadata as IFileMetadata | undefined;
-
-		if (
-			metadata == null ||
-			metadata.store_id !== this.config.storeId ||
-			metadata.type !== FileType.PHOTO
-		) {
-			return undefined;
-		}
-
-		const result = await this.balerialFileCloudService.getFile(key);
-		return result
-			? {
-					content: result.file,
-					orderId: metadata.order_id,
-					fileId: metadata.file_id
-				}
-			: undefined;
 	}
 
 	public async getFilesByOrder(orderId: string): Promise<File[]> {
