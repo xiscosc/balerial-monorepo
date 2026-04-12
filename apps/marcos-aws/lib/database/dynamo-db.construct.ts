@@ -15,7 +15,13 @@ import {
 import { IPrimaryDynamoDbIndex, ISecondaryDynamoDbIndex } from '@balerial/dynamo/type';
 import { generateCdkIndexParams } from '@balerial/dynamo/tools';
 
-export function createDynamoTables(scope: Construct, envName: string): DynamoTableSet {
+export function createDynamoTables({
+	scope,
+	envName
+}: {
+	scope: Construct;
+	envName: string;
+}): DynamoTableSet {
 	return {
 		storeTables: {
 			customerTable: createCustomerTable(scope, envName),

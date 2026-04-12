@@ -129,5 +129,13 @@ export const Changelogs: Changelog[] = [
 			{ text: 'Actualización de dependencias del sistema', type: ChangelogItemType.SECURITY },
 			{ text: 'Correcciones de seguridad', type: ChangelogItemType.SECURITY }
 		]
+	},
+	{
+		version: 20260413,
+		title: 'Abril 2026',
+		items: [
+			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY }
+		]
 	}
 ];

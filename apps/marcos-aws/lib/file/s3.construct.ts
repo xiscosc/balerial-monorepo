@@ -10,11 +10,15 @@ import {
 import { Construct } from 'constructs';
 import type { BucketSet } from '../types.js';
 
-export function createBuckets(
-	scope: Construct,
-	allowedUploadOrigins: string[],
-	envName: string
-): BucketSet {
+export function createBuckets({
+	scope,
+	allowedUploadOrigins,
+	envName
+}: {
+	scope: Construct;
+	allowedUploadOrigins: string[];
+	envName: string;
+}): BucketSet {
 	const corsRule: CorsRule = {
 		allowedMethods: [HttpMethods.PUT, HttpMethods.POST],
 		allowedOrigins: allowedUploadOrigins,

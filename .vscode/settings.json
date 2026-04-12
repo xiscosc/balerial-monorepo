@@ -16,5 +16,7 @@
 	"prettier.configPath": ".prettierrc",
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"typescript.preferences.importModuleSpecifier": "non-relative",
-	"javascript.preferences.importModuleSpecifier": "non-relative"
+	"javascript.preferences.importModuleSpecifier": "non-relative",
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.experimental.useTsgo": false
 }
