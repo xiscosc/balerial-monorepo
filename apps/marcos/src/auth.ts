@@ -1,33 +1,67 @@
-import { SvelteKitAuth } from '@auth/sveltekit';
-import Auth0 from '@auth/sveltekit/providers/auth0';
+import { betterAuth } from 'better-auth';
+import { genericOAuth } from 'better-auth/plugins';
+import {
+	AUTH_SECRET,
+	AUTH_AUTH0_ID,
+	AUTH_AUTH0_SECRET,
+	AUTH_AUTH0_ISSUER
+} from '$env/static/private';
+import { dev } from '$app/environment';
 
-import type { Provider } from '@auth/sveltekit/providers';
-import { AUTH_DEBUG } from '$env/static/private';
-import type { WithMetadata, UserMetadata } from '$lib/type/api.type';
+const auth0Issuer = AUTH_AUTH0_ISSUER.replace(/\/$/, '');
 
-const providers: Provider[] = [Auth0];
-
-const { handle } = SvelteKitAuth({
-	providers,
-	theme: {
-		colorScheme: 'light',
-		logo: '/mmlogo.png'
-	},
-	callbacks: {
-		async jwt({ token, profile }) {
-			if (profile) {
-				token.app_metadata = profile.app_metadata as UserMetadata;
+export const auth = betterAuth({
+	secret: AUTH_SECRET,
+	logger: dev ? { level: 'debug' } : undefined,
+	plugins: [
+		genericOAuth({
+			config: [
+				{
+					providerId: 'auth0',
+					clientId: AUTH_AUTH0_ID,
+					clientSecret: AUTH_AUTH0_SECRET,
+					discoveryUrl: `${auth0Issuer}/.well-known/openid-configuration`,
+					scopes: ['openid', 'profile', 'email'],
+					mapProfileToUser: (profile) => {
+						const metadata = profile.app_metadata as
+							| Record<string, unknown>
+							| undefined;
+						return {
+							storeId: (metadata?.storeId as string) ?? '',
+							priceManager: (metadata?.priceManager as boolean) ?? false
+						} as Record<string, unknown>;
+					}
+				}
+			]
+		})
+	],
+	user: {
+		additionalFields: {
+			storeId: {
+				type: 'string',
+				required: false,
+				defaultValue: '',
+				input: false
+			},
+			priceManager: {
+				type: 'boolean',
+				required: false,
+				defaultValue: false,
+				input: false
 			}
-			return token;
-		},
-		async session({ session, token }) {
-			type CustomSessionCallback = typeof session & WithMetadata;
-			(session as CustomSessionCallback).userMetadata = token.app_metadata as UserMetadata;
-			return session;
 		}
 	},
-	trustHost: true,
-	debug: AUTH_DEBUG === 'debug'
+	session: {
+		cookieCache: {
+			enabled: true,
+			maxAge: 7 * 24 * 60 * 60,
+			strategy: 'jwe'
+		}
+	},
+	account: {
+		storeStateStrategy: 'cookie',
+		storeAccountCookie: true
+	}
 });
 
-export const authHandle = handle;
+export type BetterAuthSession = typeof auth.$Infer.Session;
