@@ -12,16 +12,19 @@ export class MmSsStack extends Stack {
 		super(scope, id, props);
 		this.props = props;
 
-		const tables = createDynamoTables(this, this.props.envName);
-		const buckets = createBuckets(this, this.props.allowedUploadOrigins, this.props.envName);
-		createLambdas(
-			this,
-			this.props.envName,
-			this.props.mainStoreId,
-			this.props.postHogKey,
+		const tables = createDynamoTables({ scope: this, envName: this.props.envName });
+		const buckets = createBuckets({
+			scope: this,
+			allowedUploadOrigins: this.props.allowedUploadOrigins,
+			envName: this.props.envName
+		});
+		createLambdas({
+			scope: this,
+			envName: this.props.envName,
+			mainStoreId: this.props.mainStoreId,
 			tables,
 			buckets
-		);
+		});
 
 		// Create Main store policies
 		const bucketObjectArns = Object.entries(buckets)

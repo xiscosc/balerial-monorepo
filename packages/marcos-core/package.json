@@ -22,11 +22,11 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
-		"@smithy/types": "4.13.1",
+		"@smithy/types": "4.14.0",
 		"@types/luxon": "3.7.1",
 		"@types/mime-types": "3.0.1",
-		"@types/node": "25.5.0",
-		"typescript": "5.9.3"
+		"@types/node": "25.6.0",
+		"typescript": "6.0.2"
 	},
 	"dependencies": {
 		"@balerial/dynamo": "workspace:*",

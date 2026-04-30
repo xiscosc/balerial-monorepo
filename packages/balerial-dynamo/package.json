@@ -17,15 +17,15 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
-		"@smithy/types": "4.13.1",
+		"@smithy/types": "4.14.0",
 		"@types/lodash": "4.17.24",
-		"typescript": "5.9.3"
+		"typescript": "6.0.2"
 	},
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "3.1014.0",
-		"@aws-sdk/lib-dynamodb": "3.1014.0",
-		"aws-cdk-lib": "2.244.0",
-		"lodash": "4.17.23",
+		"@aws-sdk/client-dynamodb": "3.1029.0",
+		"@aws-sdk/lib-dynamodb": "3.1029.0",
+		"aws-cdk-lib": "2.248.0",
+		"lodash": "4.18.1",
 		"pino": "10.3.1",
 		"pino-pretty": "13.1.3"
 	}
