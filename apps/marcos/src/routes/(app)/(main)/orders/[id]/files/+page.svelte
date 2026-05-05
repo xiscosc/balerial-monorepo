@@ -33,8 +33,6 @@
 
 	let profiledFiles: Promise<MMSSFile[]> = data.files ?? new Promise(() => []);
 
-	ImageConverter.init();
-
 	let loadingFiles = $state(true);
 	let files: MMSSFile[] = $state([]);
 

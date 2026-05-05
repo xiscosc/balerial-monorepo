@@ -1,5 +1,4 @@
 import { Tracking } from '@/shared/tracking';
-import { ClientFeature } from '@/shared/tracking/client.features';
 import { UAParser } from 'ua-parser-js';
 import { BrowserName } from 'ua-parser-js/enums';
 
@@ -10,7 +9,6 @@ type OutputFormat = {
 };
 
 const WEBP_FORMAT: OutputFormat = { mime: 'image/webp', ext: 'webp', magickFormat: 'WebP' };
-const JPEG_FORMAT: OutputFormat = { mime: 'image/jpeg', ext: 'jpg', magickFormat: 'Jpeg' };
 
 export class ImageConverter {
 	private static readonly MAX_IMAGE_WIDTH = 2160;
@@ -96,38 +94,16 @@ export class ImageConverter {
 		});
 	}
 
-	private static safariOptimize = false;
-
-	static init() {
-		Tracking.runWhenFeatureIsEnabled(ClientFeature.OPTIMIZE_IMAGES, () => {
-			ImageConverter.safariOptimize = true;
-		});
-	}
-
-	/**
-	 * Not Safari: canvas → webp, HEIC → wasm → webp
-	 * Safari + FF enabled: all images → wasm → webp
-	 * Safari + FF disabled: canvas → jpeg, HEIC → wasm → jpeg
-	 */
 	static async convertImage(file: File): Promise<File> {
-		let convertedFile: File;
-
-		if (!ImageConverter.isSafari) {
-			convertedFile = ImageConverter.isHeic(file)
-				? await ImageConverter.convertWithWasm(file, WEBP_FORMAT)
-				: await ImageConverter.convertWithCanvas(file, WEBP_FORMAT);
-		} else if (ImageConverter.safariOptimize) {
-			convertedFile = await ImageConverter.convertWithWasm(file, WEBP_FORMAT);
-		} else {
-			convertedFile = ImageConverter.isHeic(file)
-				? await ImageConverter.convertWithWasm(file, WEBP_FORMAT)
-				: await ImageConverter.convertWithCanvas(file, JPEG_FORMAT);
-		}
+		const useWasm = ImageConverter.isHeic(file) || ImageConverter.isSafari;
+		const convertedFile = useWasm
+			? await ImageConverter.convertWithWasm(file, WEBP_FORMAT)
+			: await ImageConverter.convertWithCanvas(file, WEBP_FORMAT);
 
 		Tracking.event('Image converted', {
 			format: convertedFile.type,
 			safari: ImageConverter.isSafari,
-			safariOptimize: ImageConverter.safariOptimize,
+			useWasm,
 			originalSize: file.size,
 			convertedSize: convertedFile.size,
 			compressionRate: ((1 - convertedFile.size / file.size) * 100).toFixed(2)
