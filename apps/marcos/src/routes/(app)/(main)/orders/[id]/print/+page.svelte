@@ -3,7 +3,6 @@
 	import { Tracking } from '@/shared/tracking';
 	import OrderPrint from '@/components/business-related/order-detail/OrderPrint.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import Box from '@/components/generic/Box.svelte';
 	import Loading from '@/components/generic/Loading.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
@@ -14,7 +13,7 @@
 	}
 
 	let { data }: Props = $props();
-	const fullOrderPromise = getGlobalProfiler().measure(data.fullOrder);
+	const fullOrderPromise = data.fullOrder;
 	Tracking.identify(data.user, data.envName);
 </script>
 

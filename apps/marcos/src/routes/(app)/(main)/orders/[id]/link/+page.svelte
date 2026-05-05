@@ -15,7 +15,6 @@
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import Loading from '@/components/generic/Loading.svelte';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
 
 	interface Props {
@@ -36,9 +35,7 @@
 			return;
 		}
 
-		const responseCustomers = await getGlobalProfiler().measure(
-			CustomerApiGateway.searchCustomers(searchQuery)
-		);
+		const responseCustomers = await CustomerApiGateway.searchCustomers(searchQuery);
 		customers = [...responseCustomers];
 		loading = false;
 		firstTimeSearch = false;

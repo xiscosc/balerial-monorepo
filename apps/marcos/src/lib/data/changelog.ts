@@ -137,5 +137,14 @@ export const Changelogs: Changelog[] = [
 			{ text: 'Actualización del sistema', type: ChangelogItemType.SECURITY },
 			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY }
 		]
+	},
+	{
+		version: 20260515,
+		title: 'Mayo 2026 - PREVIEW',
+		items: [
+			{ text: 'Mejoras de rendimiento y velocidad', type: ChangelogItemType.TECHNICAL },
+			{ text: 'Cambios de seguridad', type: ChangelogItemType.SECURITY },
+			{ text: 'Actualización de librerías', type: ChangelogItemType.SECURITY }
+		]
 	}
 ];

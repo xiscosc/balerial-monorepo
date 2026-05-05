@@ -20,8 +20,6 @@
 	import Photos from '@/components/business-related/file/Photos.svelte';
 	import { Tracking } from '@/shared/tracking';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-
 	interface Props {
 		data: PageData;
 	}
@@ -33,9 +31,7 @@
 	let uploading = $state(false);
 	let loadingText = $state('');
 
-	let profiledFiles: Promise<MMSSFile[]> = getGlobalProfiler().measure(
-		data.files ?? new Promise(() => [])
-	);
+	let profiledFiles: Promise<MMSSFile[]> = data.files ?? new Promise(() => []);
 
 	ImageConverter.init();
 

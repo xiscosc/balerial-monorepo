@@ -4,7 +4,6 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import OrderList from '@/components/business-related/order-list/OrderList.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import type { FullOrder } from '@marcsimolduressonsardina/core/type';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -24,7 +23,7 @@
 			resolve(OrderRepresentationUtilities.getSortedOrdersFromOrderSet(data.orderSet));
 		}
 	});
-	let measuredOrders = $derived(getGlobalProfiler().measure(ordersPromise));
+	let measuredOrders = $derived(ordersPromise);
 
 	async function handlePrint() {
 		await goto(resolve('/(app)/(main)/order-sets/[id]/print', { id: data.orderSet!.id }));

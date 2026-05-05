@@ -41,7 +41,6 @@
 	} from '@marcsimolduressonsardina/core/util';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { GenericTools } from '@/shared/generic/generic.tools';
 	import {
 		OrderFormItemsState,
@@ -60,7 +59,7 @@
 
 	let { data, title, isNew = true, children = undefined, isExternal = false }: Props = $props();
 	const orderFormItemsState = new OrderFormItemsState();
-	let profiledPrices = $derived(getGlobalProfiler().measure(data.pricing));
+	let profiledPrices = $derived(data.pricing);
 
 	const { form, errors, enhance, submitting } = superForm(data.form, {
 		dataType: 'json',

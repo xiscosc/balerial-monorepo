@@ -4,15 +4,13 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import OrderList from '@/components/business-related/order-list/OrderList.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-
 	interface Props {
 		data: PageData;
 	}
 
 	let { data }: Props = $props();
 	const orderTypeName = data.showQuotes ? 'Presupuestos' : 'Pedidos';
-	let measuredOrders = $derived(getGlobalProfiler().measure(data.orders));
+	let measuredOrders = $derived(data.orders);
 </script>
 
 <div class="flex flex-col gap-4">
