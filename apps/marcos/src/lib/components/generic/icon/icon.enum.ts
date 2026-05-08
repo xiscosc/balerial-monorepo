@@ -41,6 +41,7 @@ export enum IconType {
 	DONE = 'done',
 	VIDEO = 'video',
 	DOWNLOAD = 'download',
+	UPLOAD = 'upload',
 	RULER = 'ruler',
 	QUESTION = 'question',
 	FORM = 'form',
