@@ -16,6 +16,7 @@
 	import { Toaster } from 'svelte-sonner';
 	import { authClient } from '@/client/auth-client';
 	import { goto } from '$app/navigation';
+	import * as DropdownMenu from '@/components/ui/dropdown-menu';
 
 	interface Props {
 		data: LayoutData;
@@ -92,15 +93,38 @@
 						<Icon type={IconType.SETTINGS} />
 					</a>
 				{/if}
-				<button
-					class="text-black"
-					onclick={async () => {
-						await authClient.signOut();
-						await goto('/auth/signin');
-					}}
-				>
-					<Icon type={IconType.LOGOUT} />
-				</button>
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger
+						class="flex cursor-pointer items-center rounded-full text-black focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+						aria-label="Menú de usuario"
+					>
+						<Icon type={IconType.USER} />
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content align="end" class="w-64">
+						<DropdownMenu.Label class="flex items-start gap-2 font-normal">
+							<Icon type={IconType.USER} />
+							<div class="flex min-w-0 flex-col">
+								<span class="truncate text-sm font-medium">{data.user.name}</span>
+								<span class="truncate text-xs text-gray-500">{data.user.id}</span>
+							</div>
+						</DropdownMenu.Label>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Label class="flex items-center gap-2 font-normal">
+							<Icon type={IconType.LOCATION} />
+							<span class="truncate text-sm">{data.user.storeId}</span>
+						</DropdownMenu.Label>
+						<DropdownMenu.Separator />
+						<DropdownMenu.Item
+							onSelect={async () => {
+								await authClient.signOut();
+								await goto(resolve('/(other)/auth/signin'));
+							}}
+						>
+							<Icon type={IconType.LOGOUT} />
+							Cerrar sesión
+						</DropdownMenu.Item>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
 			</div>
 		</div>
 	</header>
