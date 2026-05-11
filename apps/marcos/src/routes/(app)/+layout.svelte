@@ -37,8 +37,8 @@
 
 	const headerColors: Record<string, string> = {
 		prod: 'bg-[#e9eae3]/70 border-gray-300',
-		pre: 'bg-red-500/80 border-red-500',
-		dev: 'bg-indigo-500/50 border-indigo-500'
+		pre: 'bg-red-600/80 border-red-600',
+		dev: 'bg-amber-700/50 border-amber-700'
 	};
 
 	const emojis: Record<string, string> = {
@@ -51,13 +51,41 @@
 	let headerBackgroundClasses = $derived(headerColors[data.envName]);
 	let headerEmoji = $derived(emojis[data.envName]);
 
-	let expanded = $state(false);
+	const ribbonLabel = $derived.by(() => {
+		if (data.envName === 'prod') return null;
+		if (data.envName === 'pre') return 'preview';
+		if (data.featureBranch === 'local-branch') return 'local';
+		return 'feature';
+	});
+
+	const ribbonColors: Record<string, string> = {
+		preview: 'bg-red-600',
+		feature: 'bg-amber-600',
+		local: 'bg-sky-600'
+	};
 </script>
 
 <svelte:head>
 	<title>Marcs i Moldures Son Sardina</title>
 </svelte:head>
 <div class="flex min-h-screen flex-col bg-[#eeefe9] print:block print:min-h-0 print:bg-white">
+	{#if ribbonLabel}
+		<div
+			class="pointer-events-none fixed top-1/2 right-0 z-50 -translate-y-1/2 print:hidden"
+		>
+			<div
+				class="flex h-24 w-7 items-center justify-center rounded-l-md shadow-md {ribbonColors[
+					ribbonLabel
+				]}"
+			>
+				<span
+					class="-rotate-90 text-[11px] font-bold tracking-widest whitespace-nowrap text-white uppercase"
+				>
+					{ribbonLabel}
+				</span>
+			</div>
+		</div>
+	{/if}
 	<header
 		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses} print:hidden`}
 	>
@@ -71,20 +99,7 @@
 			<div
 				class="pointer-events-none absolute inset-0 flex w-full items-center justify-center gap-3"
 			>
-				{#if onTesting}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<!-- svelte-ignore a11y_no_static_element_interactions -->
-					<span
-						class="text-md pointer-events-auto max-w-[70%] cursor-pointer font-semibold {expanded
-							? 'whitespace-normal text-center'
-							: 'truncate'}"
-						onclick={() => (expanded = !expanded)}
-					>
-						ENTORNO DE PRUEBAS ({data.featureBranch}) {headerEmoji}
-					</span>
-				{:else}
-					<Icon type={IconType.LOGO} />
-				{/if}
+				<Icon type={IconType.LOGO} />
 			</div>
 
 			<div class="flex items-center gap-3">
@@ -113,6 +128,16 @@
 							<Icon type={IconType.LOCATION} />
 							<span class="truncate text-sm">{data.user.storeId}</span>
 						</DropdownMenu.Label>
+						{#if onTesting}
+							<DropdownMenu.Separator />
+							<DropdownMenu.Label class="flex items-center gap-2 font-normal">
+								<span class="text-base leading-none">{headerEmoji}</span>
+								<div class="flex min-w-0 flex-col">
+									<span class="truncate text-sm font-medium">Entorno de pruebas</span>
+									<span class="truncate text-xs text-gray-500">{data.featureBranch}</span>
+								</div>
+							</DropdownMenu.Label>
+						{/if}
 						<DropdownMenu.Separator />
 						<DropdownMenu.Item
 							onSelect={async () => {
