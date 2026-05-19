@@ -139,9 +139,10 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20260515,
+		version: 20260520,
 		title: 'Mayo 2026',
 		items: [
+			{ text: 'Mejoras en la carga de archivos', type: ChangelogItemType.MINOR_CHANGE },
 			{ text: 'Mejoras de rendimiento y velocidad', type: ChangelogItemType.TECHNICAL },
 			{ text: 'Cambios de seguridad', type: ChangelogItemType.SECURITY },
 			{ text: 'Actualización de librerías', type: ChangelogItemType.SECURITY }

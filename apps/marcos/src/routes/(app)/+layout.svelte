@@ -37,8 +37,8 @@
 
 	const headerColors: Record<string, string> = {
 		prod: 'bg-[#e9eae3]/70 border-gray-300',
-		pre: 'bg-red-600/80 border-red-600',
-		dev: 'bg-amber-700/50 border-amber-700'
+		pre: 'bg-red-600/80 border-gray-700',
+		dev: 'bg-amber-700/50 border-gray-700'
 	};
 
 	const emojis: Record<string, string> = {
@@ -70,9 +70,7 @@
 </svelte:head>
 <div class="flex min-h-screen flex-col bg-[#eeefe9] print:block print:min-h-0 print:bg-white">
 	{#if ribbonLabel}
-		<div
-			class="pointer-events-none fixed top-1/2 right-0 z-50 -translate-y-1/2 print:hidden"
-		>
+		<div class="pointer-events-none fixed top-1/2 right-0 z-50 -translate-y-1/2 print:hidden">
 			<div
 				class="flex h-24 w-7 items-center justify-center rounded-l-md shadow-md {ribbonColors[
 					ribbonLabel
