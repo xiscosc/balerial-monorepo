@@ -2,30 +2,35 @@
 	import { toast } from 'svelte-sonner';
 	import Box from '@/components/generic/Box.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import Banner from '@/components/generic/Banner.svelte';
-	import { Input } from '@/components/ui/input';
+	import FilePicker from '@/components/generic/FilePicker.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { PriceApiGateway } from '@/gateway/price-api.gateway';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import Loading from '@/components/generic/Loading.svelte';
+	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 
-	let files: FileList | undefined = $state();
+	const phaseTexts: Record<number, string> = {
+		20: 'Procesando archivo...',
+		85: 'Extrayendo precios...',
+		100: 'Carga completa'
+	};
+
+	let files: File[] = $state([]);
 	let loadingText = $state('');
 	let loading = $state(false);
-	let loadingProgress = $state(0);
+	let progressTarget = $state(0);
 
 	async function loadFile() {
-		if (validFile() && files != null) {
+		if (validFile()) {
 			const { filename, url } = await PriceApiGateway.getUploadMoldParams();
-			const file = files![0];
+			const file = files[0];
 			loading = true;
 			loadingText = 'Cargando archivo...';
-			animateToFull(0, 20, 'Procesando archivo...');
+			progressTarget = 20;
 			const uploadResult = await uploadToS3(url, file);
 			if (uploadResult) {
-				animateToFull(20, 85, 'Extrayendo precios...');
+				progressTarget = 85;
 				const processingResult = await startProcessing(filename);
-				animateToFull(85, 100, 'Carga completa', true);
+				progressTarget = 100;
 				if (processingResult) {
 					toast.success('Precios actualizados correctamente');
 				}
@@ -35,33 +40,20 @@
 		}
 	}
 
-	function animateToFull(
-		start: number,
-		end: number,
-		finishText: string,
-		finishLoading: boolean = false
-	) {
-		loadingProgress = start; // Reset progress
-		const interval = setInterval(() => {
-			loadingProgress += 1; // Increment progress
-			if (loadingProgress >= end) {
-				clearInterval(interval); // Stop animation at 100%
-				loadingText = finishText;
-				if (finishLoading) {
-					cleanUpload();
-				}
-			}
-		}, 85); // Adjust the speed (20ms for smoother animation)
+	function handleProgressComplete(value: number) {
+		if (phaseTexts[value]) loadingText = phaseTexts[value];
+		if (value === 100) setTimeout(cleanUpload, 1500);
 	}
 
 	function cleanUpload() {
-		files = undefined;
+		files = [];
 		loadingText = '';
 		loading = false;
+		progressTarget = 0;
 	}
 
 	function validFile(): boolean {
-		if (files == null || files.length !== 1) {
+		if (files.length !== 1) {
 			toast.error('Por favor, seleccione un archivo');
 			return false;
 		} else {
@@ -119,26 +111,17 @@
 <div class="flex flex-col gap-4">
 	<SimpleHeading icon={IconType.MOLD}>Carga de precios de Marcos/Molduras</SimpleHeading>
 	<Box>
-		<div class="flex flex-col gap-2">
-			<Banner
-				title="Formato del archivo"
-				icon={IconType.QUESTION}
-				text="Columna A: Casillero, Columna B: Referencia, Columna C: Precio, Columna D: Flotante (casilla igual a S)"
-				color="indigo"
-			/>
-			<div
-				class="flex w-full flex-col place-content-center items-center justify-center space-y-4 px-2 py-4"
-			>
-				{#if loading}
-					<div class="flex w-full flex-col items-center gap-2">
-						<span class="font-medium">{loadingText}</span>
-						<Loading text="" />
-					</div>
-				{:else}
-					<Input id="moldFile" type="file" bind:files />
-					<MarcosButton icon={IconType.EXCEL} onclick={loadFile}>Cargar archivo excel</MarcosButton>
-				{/if}
-			</div>
+		<div class="flex flex-col gap-4">
+			{#if loading}
+				<ProgressBar text={loadingText} value={progressTarget} oncomplete={handleProgressComplete} />
+			{:else}
+				<FilePicker
+					bind:files
+					accept=".xls,.xlsx"
+					helperText="Formato .xls o .xlsx — Columnas: A Casillero · B Referencia · C Precio · D Flotante (S si flota)"
+				/>
+				<MarcosButton icon={IconType.EXCEL} onclick={loadFile}>Cargar archivo excel</MarcosButton>
+			{/if}
 		</div>
 	</Box>
 </div>

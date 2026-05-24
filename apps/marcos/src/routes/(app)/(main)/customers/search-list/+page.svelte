@@ -5,7 +5,6 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 	import { SearchCustomerState } from '@/state/search/search-customer.state.svelte';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
 	import type { Customer } from '@marcsimolduressonsardina/core/type';
@@ -21,9 +20,7 @@
 			goto(resolve('/(app)/(main)/customers/search'));
 		}
 
-		measuredCustomers = getGlobalProfiler().measure(
-			CustomerApiGateway.searchCustomers(searchValue)
-		);
+		measuredCustomers = CustomerApiGateway.searchCustomers(searchValue);
 	});
 </script>
 

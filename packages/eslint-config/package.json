@@ -9,15 +9,15 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "10.0.1",
-		"@typescript-eslint/eslint-plugin": "8.58.1",
-		"@typescript-eslint/parser": "8.58.1",
-		"eslint": "10.2.0",
+		"@typescript-eslint/eslint-plugin": "8.59.4",
+		"@typescript-eslint/parser": "8.59.4",
+		"eslint": "10.4.0",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-plugin-only-warn": "1.2.1",
-		"eslint-plugin-svelte": "3.17.0",
-		"eslint-plugin-turbo": "2.9.6",
-		"globals": "17.5.0",
-		"typescript": "6.0.2",
-		"typescript-eslint": "8.58.1"
+		"eslint-plugin-svelte": "3.17.1",
+		"eslint-plugin-turbo": "2.9.14",
+		"globals": "17.6.0",
+		"typescript": "6.0.3",
+		"typescript-eslint": "8.59.4"
 	}
 }

@@ -4,7 +4,6 @@ import {
 	orderBatchOperationTitleMap
 } from '@/shared/mappings/order.mapping';
 import { OrderApiGateway } from '@/gateway/order-api.gateway';
-import { getGlobalProfiler } from '@/state/profiler/profiler.state';
 import type { OrderListState } from '@/components/business-related/order-list/OrderListState.svelte';
 import { OrderSetApiGateway } from '@/gateway/order-set-api.gateway';
 import { goto } from '$app/navigation';
@@ -56,7 +55,7 @@ export class OrderListBulkOperationState {
 		this.loading = true;
 		this.active = true;
 		const promise = OrderSetApiGateway.createOrderSet(this.orderListState.getSelectedOrdersIds());
-		const { id } = await getGlobalProfiler().measure(promise);
+		const { id } = await promise;
 		await goto(resolve('/(app)/(main)/order-sets/[id]/print', { id }));
 	}
 
@@ -119,9 +118,7 @@ export class OrderListBulkOperationState {
 				? this.orderListState.getSelectedFinishedOrdersIds()
 				: this.orderListState.getSelectedOrdersIds();
 
-		await getGlobalProfiler().measure(
-			OrderApiGateway.patchOrders(orderIds, [this.orderSetCurrentOperation])
-		);
+		await OrderApiGateway.patchOrders(orderIds, [this.orderSetCurrentOperation]);
 		this.orderListState.runBulkOperation(this.orderSetCurrentOperation);
 		this.loading = false;
 		if (this.orderSetCurrentOperation === BatchOperation.NOTIFY_ORDERS) {

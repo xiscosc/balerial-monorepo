@@ -6,13 +6,23 @@ import {
 	AUTH_AUTH0_SECRET,
 	AUTH_AUTH0_ISSUER
 } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 import { dev } from '$app/environment';
 
 const auth0Issuer = AUTH_AUTH0_ISSUER.replace(/\/$/, '');
 
+const vercelTrustedOrigins = [
+	env.VERCEL_URL,
+	env.VERCEL_BRANCH_URL,
+	env.VERCEL_PROJECT_PRODUCTION_URL
+]
+	.filter((u): u is string => Boolean(u))
+	.map((u) => `https://${u}`);
+
 export const auth = betterAuth({
 	secret: AUTH_SECRET,
 	logger: dev ? { level: 'debug' } : undefined,
+	trustedOrigins: vercelTrustedOrigins,
 	plugins: [
 		genericOAuth({
 			config: [

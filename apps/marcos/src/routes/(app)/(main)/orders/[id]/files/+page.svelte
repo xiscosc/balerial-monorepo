@@ -16,28 +16,24 @@
 	import { ButtonSize } from '@/components/generic/button/button.enum';
 	import Box from '@/components/generic/Box.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import { Input } from '@/components/ui/input';
+	import FilePicker from '@/components/generic/FilePicker.svelte';
+	import ProgressBar from '@/components/generic/ProgressBar.svelte';
 	import Photos from '@/components/business-related/file/Photos.svelte';
 	import { Tracking } from '@/shared/tracking';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-
 	interface Props {
 		data: PageData;
 	}
 
 	let { data }: Props = $props();
 
-	let inputFiles: FileList | undefined = $state();
+	let inputFiles: File[] = $state([]);
 	let loading = $state(false);
 	let uploading = $state(false);
 	let loadingText = $state('');
+	let uploadProgress = $state(0);
 
-	let profiledFiles: Promise<MMSSFile[]> = getGlobalProfiler().measure(
-		data.files ?? new Promise(() => [])
-	);
-
-	ImageConverter.init();
+	let profiledFiles: Promise<MMSSFile[]> = data.files ?? new Promise(() => []);
 
 	let loadingFiles = $state(true);
 	let files: MMSSFile[] = $state([]);
@@ -114,12 +110,13 @@
 	}
 
 	async function loadFile() {
-		if (inputFiles == null || inputFiles.length === 0) {
+		if (inputFiles.length === 0) {
 			toast.error('Debes seleccionar un archivo');
 			return;
 		}
 
 		uploading = true;
+		uploadProgress = 0;
 		loadingText = 'Preparando archivos';
 		const filesToUpload = [...inputFiles];
 		const total = filesToUpload.length;
@@ -142,7 +139,7 @@
 
 			loadingText = `Cargando ${label} ${current} de ${total}`;
 			const result = await uploadIndividualFile(fileToUpload, imageVariant, (p) => {
-				loadingText = `Cargando ${label} ${current} de ${total} (${p}%)`;
+				uploadProgress = Math.round(((i + p / 100) / total) * 100);
 			});
 
 			if (result != null) {
@@ -152,7 +149,8 @@
 			}
 		}
 
-		inputFiles = undefined;
+		uploadProgress = 100;
+		inputFiles = [];
 		uploading = false;
 
 		if (hasErrors) {
@@ -225,16 +223,14 @@
 	{/if}
 	{#if uploading}
 		<Box>
-			<Loading text={loadingText} />
+			<ProgressBar text={loadingText} value={uploadProgress} animated={false} />
 		</Box>
 	{/if}
 
 	{#if !loading && !uploading}
 		<div class="flex flex-col gap-2">
 			<Box title="Carga de archivos">
-				<div class="flex flex-col gap-2 md:flex-row">
-					<Input type="file" bind:files={inputFiles} onchange={loadFile} multiple />
-				</div>
+				<FilePicker bind:files={inputFiles} multiple onchange={loadFile} />
 			</Box>
 
 			{#if loadingFiles}

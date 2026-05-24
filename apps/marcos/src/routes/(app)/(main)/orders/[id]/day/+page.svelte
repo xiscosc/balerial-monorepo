@@ -8,14 +8,11 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import OrderList from '@/components/business-related/order-list/OrderList.svelte';
-	import { getGlobalProfiler } from '@/state/profiler/profiler.state';
-
 	interface Props {
 		data: PageData;
 	}
 
 	let { data }: Props = $props();
-	let measuredOrders = $derived(getGlobalProfiler().measure(data.orders));
 	let whatsappDisabled = $state(true);
 	let whatsAppOrders: Order[] = $state([]);
 	let whatsAppText = $state('');
@@ -26,13 +23,13 @@
 	}
 
 	$effect(() => {
-		if (measuredOrders == null) {
+		if (data.orders == null) {
 			whatsappDisabled = true;
 			whatsAppText = '';
 			whatsAppOrders = [];
 			return;
 		}
-		measuredOrders.then((fullOrders) => {
+		data.orders.then((fullOrders) => {
 			whatsAppOrders = fullOrders
 				.map((fullOrder) => fullOrder.order)
 				.filter((order) => order.status === OrderStatus.FINISHED);
@@ -86,5 +83,5 @@
 		></Banner>
 	{/if}
 
-	<OrderList promiseOrders={measuredOrders} />
+	<OrderList promiseOrders={data.orders} />
 </div>
