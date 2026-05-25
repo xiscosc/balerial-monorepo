@@ -19,9 +19,13 @@
 	}
 
 	let { data, locations, fullOrder }: Props = $props();
+	let closeSheet = $state(() => {});
 	const form = superForm(data, {
 		onSubmit: async ({ formData }) => {
 			formData.set('status', newStatus ?? '');
+		},
+		onUpdated: ({ form }) => {
+			if (form.valid) closeSheet();
 		}
 	});
 
@@ -33,14 +37,17 @@
 	}
 
 	let newStatus = $state<OrderStatus>();
-	const statuses = OrderRepresentationUtilities.getPossibleNextStatuses(fullOrder.order.status);
-	const order = fullOrder.order;
+	const statuses = $derived(
+		OrderRepresentationUtilities.getPossibleNextStatuses(fullOrder.order.status)
+	);
+	const order = $derived(fullOrder.order);
 </script>
 
 <BottomSheet
 	title="Cambiar estado"
 	description="Seleccione el nuevo estado del pedido"
 	iconType={getStatusUIInfo(order.status).statusIcon}
+	bind:close={closeSheet}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		<MarcosButton

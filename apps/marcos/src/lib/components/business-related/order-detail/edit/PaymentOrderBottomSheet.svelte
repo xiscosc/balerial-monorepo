@@ -15,16 +15,18 @@
 	}
 
 	let { fullOrder }: Props = $props();
-	const order = fullOrder.order;
-	const totals = fullOrder.totals;
+	const order = $derived(fullOrder.order);
+	const totals = $derived(fullOrder.totals);
 
 	let loading = $state(false);
+	let closeSheet = $state(() => {});
 </script>
 
 <BottomSheet
 	title="Gestionar pago"
 	description="Seleccione el nuevo estado del pago para el pedido"
 	iconType={IconType.COINS}
+	bind:close={closeSheet}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		{#if totals.payed}
@@ -90,9 +92,10 @@
 							action={`?/${OrderActionNames.CHANGE_PAYMENT}`}
 							use:enhance={() => {
 								loading = true;
-								return async ({ update }) => {
+								return async ({ update, result }) => {
 									await update();
 									loading = false;
+									if (result.type === 'success') closeSheet();
 								};
 							}}
 						>
@@ -114,9 +117,10 @@
 							action={`?/${OrderActionNames.CHANGE_PAYMENT}`}
 							use:enhance={() => {
 								loading = true;
-								return async ({ update }) => {
+								return async ({ update, result }) => {
 									await update();
 									loading = false;
+									if (result.type === 'success') closeSheet();
 								};
 							}}
 						>
@@ -140,9 +144,10 @@
 						action={`?/${OrderActionNames.CHANGE_PAYMENT}`}
 						use:enhance={() => {
 							loading = true;
-							return async ({ update }) => {
+							return async ({ update, result }) => {
 								await update();
 								loading = false;
+								if (result.type === 'success') closeSheet();
 							};
 						}}
 					>

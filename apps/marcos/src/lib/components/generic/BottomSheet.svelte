@@ -11,6 +11,7 @@
 		description?: string;
 		trigger: Snippet<[{ props: Record<string, unknown> }]>;
 		action: Snippet;
+		close?: () => void;
 	}
 
 	let {
@@ -18,11 +19,20 @@
 		description = undefined,
 		trigger,
 		action,
-		iconType = undefined
+		iconType = undefined,
+		close = $bindable(() => {})
 	}: Props = $props();
+
+	let sheetOpen = $state(false);
+	let dialogOpen = $state(false);
+
+	close = () => {
+		sheetOpen = false;
+		dialogOpen = false;
+	};
 </script>
 
-<Sheet.Root>
+<Sheet.Root bind:open={sheetOpen}>
 	<Sheet.Trigger>
 		{#snippet child({ props })}
 			<span class="flex-1 lg:hidden w-full">
@@ -59,7 +69,7 @@
 	</Sheet.Content>
 </Sheet.Root>
 
-<Dialog.Root>
+<Dialog.Root bind:open={dialogOpen}>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
 			<span class="hidden w-full flex-1 lg:block">

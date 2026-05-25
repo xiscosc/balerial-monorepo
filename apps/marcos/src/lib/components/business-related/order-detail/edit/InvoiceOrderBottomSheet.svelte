@@ -13,15 +13,17 @@
 	}
 
 	let { fullOrder }: Props = $props();
-	const order = fullOrder.order;
+	const order = $derived(fullOrder.order);
 
 	let loading = $state(false);
+	let closeSheet = $state(() => {});
 </script>
 
 <BottomSheet
 	title="Gestionar factura pedido"
 	description="Cambiar el estado de facturación del pedido"
 	iconType={IconType.INVOICED}
+	bind:close={closeSheet}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		{#if order.invoiced}
@@ -56,9 +58,10 @@
 					action={`?/${OrderActionNames.SET_NOT_INVOICED}`}
 					use:enhance={() => {
 						loading = true;
-						return async ({ update }) => {
+						return async ({ update, result }) => {
 							await update();
 							loading = false;
+							if (result.type === 'success') closeSheet();
 						};
 					}}
 				>
@@ -78,9 +81,10 @@
 					action={`?/${OrderActionNames.SET_INVOICED}`}
 					use:enhance={() => {
 						loading = true;
-						return async ({ update }) => {
+						return async ({ update, result }) => {
 							await update();
 							loading = false;
+							if (result.type === 'success') closeSheet();
 						};
 					}}
 				>

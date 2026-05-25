@@ -22,7 +22,13 @@
 	}
 
 	let { data, locations, order }: Props = $props();
-	const form = superForm(data, { validators: zod4Client(locationOrderSchema) });
+	let closeSheet = $state(() => {});
+	const form = superForm(data, {
+		validators: zod4Client(locationOrderSchema),
+		onUpdated: ({ form }) => {
+			if (form.valid) closeSheet();
+		}
+	});
 
 	const { form: formData, enhance, submitting } = form;
 </script>
@@ -31,6 +37,7 @@
 	title="Cambiar ubicación"
 	description="Seleccione donde se ha dejado el pedido después de finalizarse"
 	iconType={IconType.LOCATION}
+	bind:close={closeSheet}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		<MarcosButton

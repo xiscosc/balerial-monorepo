@@ -33,7 +33,7 @@
 		handleSelectOrder
 	}: Props = $props();
 	let order = $derived(fullOrder.order);
-	const calculatedItem = fullOrder.calculatedItem;
+	let calculatedItem = $derived(fullOrder.calculatedItem);
 	let internalSelected = $state(false);
 	let measures = $derived(`${order.item.height}x${order.item.width} cm`);
 	let mold = $derived(

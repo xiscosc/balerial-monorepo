@@ -139,7 +139,7 @@ export const Changelogs: Changelog[] = [
 		]
 	},
 	{
-		version: 20260520,
+		version: 20260525,
 		title: 'Mayo 2026',
 		items: [
 			{ text: 'Mejoras en la carga de archivos', type: ChangelogItemType.MINOR_CHANGE },

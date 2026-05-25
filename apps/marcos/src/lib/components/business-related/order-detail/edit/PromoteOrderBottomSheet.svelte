@@ -18,9 +18,13 @@
 	}
 
 	let { data }: Props = $props();
+	let closeSheet = $state(() => {});
 	const form = superForm(data, {
 		validators: zod4Client(promoteOrderSchema),
-		id: 'promote-order-form'
+		id: 'promote-order-form',
+		onUpdated: ({ form }) => {
+			if (form.valid) closeSheet();
+		}
 	});
 
 	const { enhance, submitting } = form;
@@ -32,6 +36,7 @@
 	description="Rellene la fecha de entrega para el pedido. Esta acción no se puede deshacer. El nuevo
 pedido conservará todos los elementos, precios y fotos del presupuesto."
 	iconType={IconType.ORDER_DEFAULT}
+	bind:close={closeSheet}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		<MarcosButton
