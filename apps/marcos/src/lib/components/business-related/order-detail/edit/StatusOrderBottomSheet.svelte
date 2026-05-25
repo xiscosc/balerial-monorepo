@@ -19,9 +19,13 @@
 	}
 
 	let { data, locations, fullOrder }: Props = $props();
+	let closeSheet = $state(() => {});
 	const form = superForm(data, {
 		onSubmit: async ({ formData }) => {
 			formData.set('status', newStatus ?? '');
+		},
+		onUpdated: ({ form }) => {
+			if (form.valid) closeSheet();
 		}
 	});
 
@@ -43,6 +47,7 @@
 	title="Cambiar estado"
 	description="Seleccione el nuevo estado del pedido"
 	iconType={getStatusUIInfo(order.status).statusIcon}
+	bind:close={closeSheet}
 >
 	{#snippet trigger({ props }: { props: Record<string, unknown> })}
 		<MarcosButton
