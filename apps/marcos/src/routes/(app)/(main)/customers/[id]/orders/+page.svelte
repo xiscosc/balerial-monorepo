@@ -9,7 +9,7 @@
 	}
 
 	let { data }: Props = $props();
-	const orderTypeName = data.showQuotes ? 'Presupuestos' : 'Pedidos';
+	const orderTypeName = $derived(data.showQuotes ? 'Presupuestos' : 'Pedidos');
 	let measuredOrders = $derived(data.orders);
 </script>
 

@@ -33,8 +33,10 @@
 	}
 
 	let newStatus = $state<OrderStatus>();
-	const statuses = OrderRepresentationUtilities.getPossibleNextStatuses(fullOrder.order.status);
-	const order = fullOrder.order;
+	const statuses = $derived(
+		OrderRepresentationUtilities.getPossibleNextStatuses(fullOrder.order.status)
+	);
+	const order = $derived(fullOrder.order);
 </script>
 
 <BottomSheet

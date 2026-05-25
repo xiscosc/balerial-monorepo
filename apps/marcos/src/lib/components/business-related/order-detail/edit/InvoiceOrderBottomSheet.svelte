@@ -13,7 +13,7 @@
 	}
 
 	let { fullOrder }: Props = $props();
-	const order = fullOrder.order;
+	const order = $derived(fullOrder.order);
 
 	let loading = $state(false);
 </script>

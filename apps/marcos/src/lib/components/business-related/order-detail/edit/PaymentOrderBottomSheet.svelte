@@ -15,8 +15,8 @@
 	}
 
 	let { fullOrder }: Props = $props();
-	const order = fullOrder.order;
-	const totals = fullOrder.totals;
+	const order = $derived(fullOrder.order);
+	const totals = $derived(fullOrder.totals);
 
 	let loading = $state(false);
 </script>
