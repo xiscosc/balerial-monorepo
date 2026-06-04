@@ -88,12 +88,23 @@ balerial/
 
 | Package                            | Description                                      |
 | ---------------------------------- | ------------------------------------------------ |
-| `@marcsimolduressonsardina/core`   | Core business logic, types, and services         |
+| `@marcsimolduressonsardina/core`   | Core business logic, types, and services ([docs](packages/marcos-core/README.md)) |
 | `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing |
 | `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)  |
 | `@balerial/dynamo`                 | DynamoDB repository and table abstractions       |
 | `@repo/eslint-config`              | Shared ESLint configuration                      |
 | `@repo/typescript-config`          | Shared TypeScript configuration                  |
+
+## Documentation
+
+In-depth documentation for the core business logic (pricing, orders, services) lives in the `@marcsimolduressonsardina/core` package:
+
+| Document | Description |
+| -------- | ----------- |
+| [Core overview](packages/marcos-core/README.md) | Package architecture, structure, public entry points, and the `ServiceFactory` dependency injection |
+| [Pricing engine](packages/marcos-core/docs/pricing.md) | Price types and formulas, the mold matrix, fabric/crossbar pricing, markup, dimension handling, and validation |
+| [Orders & totals](packages/marcos-core/docs/orders.md) | Order/quote/external lifecycle, calculated items, discounts, totals, payments, and audit trail |
+| [Supporting services](packages/marcos-core/docs/services.md) | Customers, files, reports, config, public receipts, the persistence layer, errors, and logging |
 
 ## Getting Started
 
