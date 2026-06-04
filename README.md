@@ -211,6 +211,43 @@ bun run dev
 bun run dev --filter=mmss-marcos-app
 ```
 
+The dev server is served by Vite (`vite dev --host`) and listens on `http://localhost:5173` by default. Because it runs with `--host` it is also reachable from other devices on your network.
+
+> **Auth0:** add the dev URL (e.g. `http://localhost:5173`) to your Auth0 application's allowed callback / logout / web origin URLs, otherwise login will fail locally.
+
+### Working in a single workspace
+
+Turborepo runs every workspace by default. To target one, use `--filter` (by package name) or run the script directly in the package with `--cwd`:
+
+```bash
+# Run a root task for one workspace only
+bun run build --filter=mmss-marcos-app
+
+# Run a script defined inside a specific package
+bun run --cwd apps/marcos check        # svelte-check type checking
+bun run --cwd apps/marcos check:watch  # type checking in watch mode
+bun run --cwd apps/marcos preview      # preview a production build
+```
+
+### Before committing
+
+There are no automated tests in CI; quality is enforced by linting, formatting, and type checks. Run these before pushing:
+
+```bash
+bun run lint      # ESLint across all packages
+bun run format    # Prettier
+bun run --cwd apps/marcos check   # Svelte/TypeScript type checking
+```
+
+### Disabling analytics locally
+
+PostHog tracking can be turned off so local activity doesn't pollute analytics. Set these in `apps/marcos/.env`:
+
+```bash
+TRACKING_DISABLED=true         # server-side tracking → NoOp
+PUBLIC_TRACKING_DISABLED=true  # client-side tracking → NoOp
+```
+
 ## Environment Variables
 
 The application requires the following environment variables:
