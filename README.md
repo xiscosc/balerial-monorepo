@@ -354,7 +354,7 @@ bun run cdk deploy --all --require-approval never
 
 ### Infrastructure Resources
 
-- **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder
+- **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder — schemas documented in [DynamoDB schemas](packages/marcos-core/docs/database.md)
 - **S3 Buckets**: MoldPrices, Files, Reports
 - **Lambda Functions**: Daily report generation, image optimization
 - **EventBridge Rules**: Scheduled report generation (21:50 daily)
