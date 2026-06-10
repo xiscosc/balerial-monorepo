@@ -86,25 +86,40 @@ balerial/
 
 ## Packages
 
-| Package                            | Description                                      |
-| ---------------------------------- | ------------------------------------------------ |
+| Package                            | Description                                                                       |
+| ---------------------------------- | --------------------------------------------------------------------------------- |
 | `@marcsimolduressonsardina/core`   | Core business logic, types, and services ([docs](packages/marcos-core/README.md)) |
-| `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing |
-| `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)  |
-| `@balerial/dynamo`                 | DynamoDB repository and table abstractions       |
-| `@repo/eslint-config`              | Shared ESLint configuration                      |
-| `@repo/typescript-config`          | Shared TypeScript configuration                  |
+| `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing                                  |
+| `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)                                   |
+| `@balerial/dynamo`                 | DynamoDB repository and table abstractions                                        |
+| `@repo/eslint-config`              | Shared ESLint configuration                                                       |
+| `@repo/typescript-config`          | Shared TypeScript configuration                                                   |
+
+## Naming Glossary
+
+The repo mixes several names and scopes; this is what they mean:
+
+| Name                                      | Meaning                                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **marcos**                                | Spanish for "frames" — the backoffice app and its business-logic packages.                                                                                                                                                                                                                                                                                     |
+| **MMSS / marcsimolduressonsardina**       | _Marcs i Moldures Son Sardina_, the framing shop the system is built for. `mmss` is its acronym, used to prefix AWS resources (`mmss-{env}-files`, `{env}-mmss-stack`) and workspace names (`mmss-marcos-app`, `mmss-aws`). The full name is the npm scope for business-logic packages (`@marcsimolduressonsardina/core`, `@marcsimolduressonsardina/lambda`). |
+| **balerial**                              | Codename for the reusable, business-agnostic layer (a nod to the Balearic Islands, where the shop is located). The `@balerial/dynamo` and `@balerial/s3` packages contain no shop-specific logic and could be reused in other projects. The monorepo itself is also named after it.                                                                            |
+| **@repo/\***                              | Conventional Turborepo placeholder scope for internal tooling configs (ESLint, TypeScript). Never published.                                                                                                                                                                                                                                                   |
+| **`CDK_ENV_NAME`**                        | Infrastructure environment prefix (`dev`, `prod`) — every AWS resource name starts with it.                                                                                                                                                                                                                                                                    |
+| **`ENV_NAME`**                            | Runtime environment label inside the app (`pre`, `prod`, or anything for local dev) — used for tracking and feature-flag scoping, independent of `CDK_ENV_NAME`.                                                                                                                                                                                               |
+| **Table version suffixes** (`-v2`, `-v3`) | Historical schema migrations — DynamoDB primary keys are immutable, so key changes required new tables. See [DynamoDB schemas](packages/marcos-core/docs/database.md).                                                                                                                                                                                         |
 
 ## Documentation
 
 In-depth documentation for the core business logic (pricing, orders, services) lives in the `@marcsimolduressonsardina/core` package:
 
-| Document | Description |
-| -------- | ----------- |
-| [Core overview](packages/marcos-core/README.md) | Package architecture, structure, public entry points, and the `ServiceFactory` dependency injection |
-| [Pricing engine](packages/marcos-core/docs/pricing.md) | Price types and formulas, the mold matrix, fabric/crossbar pricing, markup, dimension handling, and validation |
-| [Orders & totals](packages/marcos-core/docs/orders.md) | Order/quote/external lifecycle, calculated items, discounts, totals, payments, and audit trail |
-| [Supporting services](packages/marcos-core/docs/services.md) | Customers, files, reports, config, public receipts, the persistence layer, errors, and logging |
+| Document                                                     | Description                                                                                                    |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| [Core overview](packages/marcos-core/README.md)              | Package architecture, structure, public entry points, and the `ServiceFactory` dependency injection            |
+| [Pricing engine](packages/marcos-core/docs/pricing.md)       | Price types and formulas, the mold matrix, fabric/crossbar pricing, markup, dimension handling, and validation |
+| [Orders & totals](packages/marcos-core/docs/orders.md)       | Order/quote/external lifecycle, calculated items, discounts, totals, payments, and audit trail                 |
+| [Supporting services](packages/marcos-core/docs/services.md) | Customers, files, reports, config, public receipts, the persistence layer, errors, and logging                 |
+| [DynamoDB schemas](packages/marcos-core/docs/database.md)    | Every table's keys, GSIs, stored attributes, and which indexes are public                                      |
 
 ## Getting Started
 
@@ -133,15 +148,15 @@ bun run build
 
 These scripts are defined at the repo root and run across the workspace via Turborepo:
 
-| Command                  | Description                                          |
-| ------------------------ | ---------------------------------------------------- |
-| `bun install`            | Install all workspace dependencies                   |
-| `bun run dev`            | Start development mode for all apps                  |
-| `bun run build`          | Build all packages and apps                          |
-| `bun run lint`           | Lint all packages                                    |
-| `bun run format`         | Format code with Prettier                            |
-| `bun run update-packages`| Update dependencies across the workspace and reinstall |
-| `bun run skills`         | Install Claude Code skills                           |
+| Command                   | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| `bun install`             | Install all workspace dependencies                     |
+| `bun run dev`             | Start development mode for all apps                    |
+| `bun run build`           | Build all packages and apps                            |
+| `bun run lint`            | Lint all packages                                      |
+| `bun run format`          | Format code with Prettier                              |
+| `bun run update-packages` | Update dependencies across the workspace and reinstall |
+| `bun run skills`          | Install Claude Code skills                             |
 
 ## How to Develop
 
@@ -166,12 +181,12 @@ export AWS_REGION=eu-central-1
 
 The CDK app reads its configuration from environment variables (see `apps/marcos-aws/lib/mmss.app.ts`). All four are **required** or the synth will throw:
 
-| Variable                | Description                                                            |
-| ----------------------- | ---------------------------------------------------------------------- |
-| `CDK_ENV_NAME`          | Environment name, used as a prefix for all resources (e.g. `preview`)  |
-| `ALLOWED_UPLOAD_ORIGINS`| Comma-separated list of origins allowed to upload to S3 (CORS)         |
-| `MAIN_STORE_ID`         | Primary store identifier                                               |
-| `POSTHOG_KEY`           | PostHog server key                                                     |
+| Variable                 | Description                                                           |
+| ------------------------ | --------------------------------------------------------------------- |
+| `CDK_ENV_NAME`           | Environment name, used as a prefix for all resources (e.g. `preview`) |
+| `ALLOWED_UPLOAD_ORIGINS` | Comma-separated list of origins allowed to upload to S3 (CORS)        |
+| `MAIN_STORE_ID`          | Primary store identifier                                              |
+| `POSTHOG_KEY`            | PostHog server key                                                    |
 
 Then, from `apps/marcos-aws`, run the CDK commands through Bun:
 
@@ -208,7 +223,7 @@ The public tracking feature uses a **separate, narrower** credential pair (`TRAC
 
 ### 3. Configure the app environment
 
-Create `apps/marcos/.env` and fill in the values produced by the deployment plus the third-party credentials (Auth0, PostHog). The table/bucket names must match those created by CDK for your `CDK_ENV_NAME`. See the [Environment Variables](#environment-variables) section below for the full list.
+Copy [`apps/marcos/.env.example`](apps/marcos/.env.example) to `apps/marcos/.env` and fill in the values produced by the deployment plus the third-party credentials (Auth0, PostHog). The table/bucket names must match those created by CDK for your `CDK_ENV_NAME`. The example file documents every variable; see also the [Environment Variables](#environment-variables) section below.
 
 > SvelteKit reads these via `$env/static/private` and `$env/static/public`, so changes to `.env` require restarting the dev server.
 
@@ -290,19 +305,26 @@ The application requires the following environment variables:
 
 ### Authentication
 
-- `AUTH_SECRET` - Auth.js secret
+- `AUTH_SECRET` - Better Auth session secret
 - `AUTH_AUTH0_ID` - Auth0 client ID
 - `AUTH_AUTH0_SECRET` - Auth0 client secret
 - `AUTH_AUTH0_ISSUER` - Auth0 issuer URL
 
+### Analytics
+
+- `PUBLIC_POSTHOG_KEY` - PostHog project API key (used by both client- and server-side tracking)
+- `PUBLIC_POSTHOG_PROXY` - Optional reverse-proxy host for client-side PostHog
+- `TRACKING_DISABLED` - Set to `true` to disable server-side tracking
+- `PUBLIC_TRACKING_DISABLED` - Set to `true` to disable client-side tracking
+
 ### Application
 
-- `PUBLIC_POSTHOG_KEY` - PostHog public key
-- `POSTHOG_KEY` - PostHog server key
-- `ENV_NAME` - Environment name (preview/production)
+- `ENV_NAME` - Environment name (`pre`/`prod`; anything else for local dev)
 - `MAIN_STORE_ID` - Primary store identifier
 - `MAINTENANCE_MODE` - Set to `true` to enable maintenance mode (redirects all traffic to `/maintenance`)
-- `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel)
+- `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel; set manually for local dev)
+
+The full annotated list lives in [`apps/marcos/.env.example`](apps/marcos/.env.example).
 
 ## Feature Flags
 
@@ -332,7 +354,7 @@ bun run cdk deploy --all --require-approval never
 
 ### Infrastructure Resources
 
-- **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder
+- **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder — schemas documented in [DynamoDB schemas](packages/marcos-core/docs/database.md)
 - **S3 Buckets**: MoldPrices, Files, Reports
 - **Lambda Functions**: Daily report generation, image optimization
 - **EventBridge Rules**: Scheduled report generation (21:50 daily)
