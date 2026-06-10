@@ -76,17 +76,17 @@ src/
 
 ### Public entry points (`package.json` → `exports`)
 
-| Import path | Resolves to | Contains |
-|---|---|---|
-| `.../core/service` | `src/service/index.ts` | All services + `ServiceFactory` |
-| `.../core/type`    | `src/types/index.ts` | All domain types & enums |
-| `.../core/dto`     | `src/service/dto/order-creation.dto.ts` | Order creation DTOs |
-| `.../core/util`    | `src/utilities/index.ts` | Pricing/calculated-item/order/search utilities |
-| `.../core/db`      | `src/repository/dynamodb/table/table.builders.dynamodb.ts` | Table builders for infra |
-| `.../core/config`  | `src/configuration/core-configuration.interface.ts` | Config interfaces |
-| `.../core/data`    | `src/data/mold-price.loader.ts` | Excel mold-price loader |
-| `.../core/error`   | `src/error/index.ts` | Domain errors |
-| `.../core/logger`  | `src/logger/logger.ts` | Logger factory |
+| Import path        | Resolves to                                                | Contains                                       |
+| ------------------ | ---------------------------------------------------------- | ---------------------------------------------- |
+| `.../core/service` | `src/service/index.ts`                                     | All services + `ServiceFactory`                |
+| `.../core/type`    | `src/types/index.ts`                                       | All domain types & enums                       |
+| `.../core/dto`     | `src/service/dto/order-creation.dto.ts`                    | Order creation DTOs                            |
+| `.../core/util`    | `src/utilities/index.ts`                                   | Pricing/calculated-item/order/search utilities |
+| `.../core/db`      | `src/repository/dynamodb/table/table.builders.dynamodb.ts` | Table builders for infra                       |
+| `.../core/config`  | `src/configuration/core-configuration.interface.ts`        | Config interfaces                              |
+| `.../core/data`    | `src/data/mold-price.loader.ts`                            | Excel mold-price loader                        |
+| `.../core/error`   | `src/error/index.ts`                                       | Domain errors                                  |
+| `.../core/logger`  | `src/logger/logger.ts`                                     | Logger factory                                 |
 
 ---
 
@@ -136,7 +136,7 @@ dependency graph on first access — e.g. `orderService` pulls in
 `orderAuditTrailService`.
 
 There are also **markup-aware factories** (`createOrderServiceWithMarkup`,
-`createPricingServiceWithMarkup`, …) used for *external* orders where a
+`createPricingServiceWithMarkup`, …) used for _external_ orders where a
 percentage markup is layered on top of the base catalog prices. See the markup
 section in [`docs/pricing.md`](docs/pricing.md).
 
@@ -163,9 +163,11 @@ only the read-only services needed for the public receipt page.
 
 ## Further reading
 
-| Doc | Covers |
-|---|---|
-| [`docs/pricing.md`](docs/pricing.md) | Price types, formulas, the mold matrix, fabric/crossbar, markup, dimension handling, validation |
-| [`docs/orders.md`](docs/orders.md)   | Order/quote/external-order lifecycle, calculated items, discounts, totals, payments, audit trail |
-| [`docs/services.md`](docs/services.md) | Customers, files, reports, order sets, config, public receipts, repositories, errors |
+| Doc                                    | Covers                                                                                           |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [`docs/pricing.md`](docs/pricing.md)   | Price types, formulas, the mold matrix, fabric/crossbar, markup, dimension handling, validation  |
+| [`docs/orders.md`](docs/orders.md)     | Order/quote/external-order lifecycle, calculated items, discounts, totals, payments, audit trail |
+| [`docs/services.md`](docs/services.md) | Customers, files, reports, order sets, config, public receipts, repositories, errors             |
+| [`docs/database.md`](docs/database.md) | DynamoDB table schemas: keys, GSIs, stored attributes, public-access indexes                     |
+
 </content>
