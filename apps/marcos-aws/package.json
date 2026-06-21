@@ -10,11 +10,11 @@
 	"devDependencies": {
 		"@aws-sdk/client-dynamodb": "3.1053.0",
 		"@repo/eslint-config": "workspace:*",
-		"@types/aws-lambda": "8.10.161",
+		"@types/aws-lambda": "8.10.162",
 		"@types/eslint": "9.6.1",
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.4",
 		"aws-cdk": "2.1124.1",
-		"esbuild": "0.28.0",
+		"esbuild": "0.28.1",
 		"typescript": "6.0.3"
 	},
 	"type": "module",
