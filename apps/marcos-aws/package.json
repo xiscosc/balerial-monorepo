@@ -12,7 +12,7 @@
 		"@repo/eslint-config": "workspace:*",
 		"@types/aws-lambda": "8.10.162",
 		"@types/eslint": "9.6.1",
-		"@types/node": "25.9.4",
+		"@types/node": "26.0.0",
 		"aws-cdk": "2.1124.1",
 		"esbuild": "0.28.1",
 		"typescript": "6.0.3"
