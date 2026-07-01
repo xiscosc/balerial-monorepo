@@ -25,11 +25,13 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 
 ```bash
 bun install           # Install dependencies
-bun dev               # Start dev server
-bun build             # Build all packages
-bun lint              # Lint all packages
-bun format            # Format with Prettier
+bun run dev           # Start dev server
+bun run build         # Build all packages
+bun run lint          # Lint all packages
+bun run format        # Format with Prettier
 ```
+
+Use `bun run <script>` for package scripts. `bun build` (without `run`) invokes Bun's built-in bundler, not the Turborepo `build` task. `bun install` is the exception — it's a built-in Bun command.
 
 ## Conventions
 

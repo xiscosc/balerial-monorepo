@@ -15,8 +15,8 @@
 	"devDependencies": {
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
-		"@types/aws-lambda": "8.10.161",
-		"@types/luxon": "3.7.1",
+		"@types/aws-lambda": "8.10.162",
+		"@types/luxon": "3.7.2",
 		"aws-lambda": "1.0.7",
 		"pino": "10.3.1",
 		"typescript": "6.0.3"
@@ -25,6 +25,6 @@
 		"@balerial/s3": "workspace:*",
 		"@marcsimolduressonsardina/core": "workspace:*",
 		"luxon": "3.7.2",
-		"posthog-node": "5.35.1"
+		"posthog-node": "5.38.4"
 	}
 }

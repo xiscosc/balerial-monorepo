@@ -6,6 +6,8 @@
 		"dev": "turbo dev",
 		"lint": "turbo lint",
 		"update-packages": "bunx npm-check-updates -u --workspaces && bun i",
+		"update-packages-patch": "bunx npm-check-updates -u --target patch --workspaces && bun i",
+		"update-packages-support": "bunx npm-check-updates -u --filter turbo,vite,posthog-js,posthog-node,typescript,eslint,prettier,@types/node,esbuild --workspaces && bun i",
 		"skills": "bunx skills experimental_install",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\""
 	},
@@ -20,11 +22,11 @@
 	},
 	"devDependencies": {
 		"@tsconfig/node24": "24.0.4",
-		"eslint": "10.4.0",
-		"prettier": "3.8.3",
+		"eslint": "10.5.0",
+		"prettier": "3.8.4",
 		"prettier-plugin-svelte": "4.0.1",
 		"prettier-plugin-tailwindcss": "0.8.0",
-		"turbo": "^2.9.14",
+		"turbo": "^2.10.0",
 		"typescript": "6.0.3"
 	},
 	"packageManager": "bun@1.3.14"

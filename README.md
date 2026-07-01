@@ -86,21 +86,48 @@ balerial/
 
 ## Packages
 
-| Package                            | Description                                      |
-| ---------------------------------- | ------------------------------------------------ |
-| `@marcsimolduressonsardina/core`   | Core business logic, types, and services         |
-| `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing |
-| `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)  |
-| `@balerial/dynamo`                 | DynamoDB repository and table abstractions       |
-| `@repo/eslint-config`              | Shared ESLint configuration                      |
-| `@repo/typescript-config`          | Shared TypeScript configuration                  |
+| Package                            | Description                                                                       |
+| ---------------------------------- | --------------------------------------------------------------------------------- |
+| `@marcsimolduressonsardina/core`   | Core business logic, types, and services ([docs](packages/marcos-core/README.md)) |
+| `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing                                  |
+| `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)                                   |
+| `@balerial/dynamo`                 | DynamoDB repository and table abstractions                                        |
+| `@repo/eslint-config`              | Shared ESLint configuration                                                       |
+| `@repo/typescript-config`          | Shared TypeScript configuration                                                   |
+
+## Naming Glossary
+
+The repo mixes several names and scopes; this is what they mean:
+
+| Name                                      | Meaning                                                                                                                                                                                                                                                                                                                                                        |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **marcos**                                | Spanish for "frames" — the backoffice app and its business-logic packages.                                                                                                                                                                                                                                                                                     |
+| **MMSS / marcsimolduressonsardina**       | _Marcs i Moldures Son Sardina_, the framing shop the system is built for. `mmss` is its acronym, used to prefix AWS resources (`mmss-{env}-files`, `{env}-mmss-stack`) and workspace names (`mmss-marcos-app`, `mmss-aws`). The full name is the npm scope for business-logic packages (`@marcsimolduressonsardina/core`, `@marcsimolduressonsardina/lambda`). |
+| **balerial**                              | Codename for the reusable, business-agnostic layer (a nod to the Balearic Islands, where the shop is located). The `@balerial/dynamo` and `@balerial/s3` packages contain no shop-specific logic and could be reused in other projects. The monorepo itself is also named after it.                                                                            |
+| **@repo/\***                              | Conventional Turborepo placeholder scope for internal tooling configs (ESLint, TypeScript). Never published.                                                                                                                                                                                                                                                   |
+| **`CDK_ENV_NAME`**                        | Infrastructure environment prefix (`dev`, `prod`) — every AWS resource name starts with it.                                                                                                                                                                                                                                                                    |
+| **`ENV_NAME`**                            | Runtime environment label inside the app (`pre`, `prod`, or anything for local dev) — used for tracking and feature-flag scoping, independent of `CDK_ENV_NAME`.                                                                                                                                                                                               |
+| **Table version suffixes** (`-v2`, `-v3`) | Historical schema migrations — DynamoDB primary keys are immutable, so key changes required new tables. See [DynamoDB schemas](packages/marcos-core/docs/database.md).                                                                                                                                                                                         |
+
+## Documentation
+
+In-depth documentation for the core business logic (pricing, orders, services) lives in the `@marcsimolduressonsardina/core` package:
+
+| Document                                                     | Description                                                                                                    |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| [Core overview](packages/marcos-core/README.md)              | Package architecture, structure, public entry points, and the `ServiceFactory` dependency injection            |
+| [Pricing engine](packages/marcos-core/docs/pricing.md)       | Price types and formulas, the mold matrix, fabric/crossbar pricing, markup, dimension handling, and validation |
+| [Orders & totals](packages/marcos-core/docs/orders.md)       | Order/quote/external lifecycle, calculated items, discounts, totals, payments, and audit trail                 |
+| [Supporting services](packages/marcos-core/docs/services.md) | Customers, files, reports, config, public receipts, the persistence layer, errors, and logging                 |
+| [DynamoDB schemas](packages/marcos-core/docs/database.md)    | Every table's keys, GSIs, stored attributes, and which indexes are public                                      |
 
 ## Getting Started
 
 ### Prerequisites
 
-- [Bun](https://bun.sh/) 1.x+
-- AWS CLI configured (for deployment)
+- [Node.js](https://nodejs.org/) 22+
+- [Bun](https://bun.sh/) 1.x+ (package manager — do not use npm/yarn/pnpm)
+- AWS CLI configured with credentials (for infrastructure deployment)
 
 ### Installation
 
@@ -108,23 +135,144 @@ balerial/
 # Install dependencies
 bun install
 
-# Start development server
-bun dev
+# Start the dev server
+bun run dev
 
 # Build all packages
-bun build
+bun run build
 ```
+
+> **Note:** Use `bun run <script>` for package scripts. `bun build` (without `run`) invokes Bun's built-in bundler instead of the Turborepo `build` task, so it will not do what you expect. `bun install` is the one exception — it's a built-in Bun command.
 
 ### Available Scripts
 
-| Command             | Description                        |
-| ------------------- | ---------------------------------- |
-| `bun dev`           | Start development mode             |
-| `bun build`         | Build all packages and apps        |
-| `bun lint`          | Lint all packages                  |
-| `bun format`        | Format code with Prettier          |
-| `bun syncpack:list` | List dependency version mismatches |
-| `bun syncpack:fix`  | Fix dependency version mismatches  |
+These scripts are defined at the repo root and run across the workspace via Turborepo:
+
+| Command                   | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| `bun install`             | Install all workspace dependencies                     |
+| `bun run dev`             | Start development mode for all apps                    |
+| `bun run build`           | Build all packages and apps                            |
+| `bun run lint`            | Lint all packages                                      |
+| `bun run format`          | Format code with Prettier                              |
+| `bun run update-packages` | Update dependencies across the workspace and reinstall |
+| `bun run skills`          | Install Claude Code skills                             |
+
+## How to Develop
+
+The backoffice app (`apps/marcos`) talks to **real AWS resources** (DynamoDB tables and S3 buckets) — there is no local emulator. To develop locally you therefore need those resources to exist in an AWS account and a set of credentials that are allowed to use them. The high-level flow is:
+
+1. Deploy the CDK infrastructure to an AWS account (creates the tables, buckets, and IAM policies).
+2. Create an AWS access key for a user/role that holds those policies.
+3. Put that key plus the rest of the configuration into `apps/marcos/.env`.
+4. Run the dev server.
+
+### 1. Deploy the CDK environment
+
+The infrastructure lives in `apps/marcos-aws` and is deployed with the AWS CDK. In CI this is automated (see `.github/workflows/aws-deploy-*.yml`), but you can deploy an environment manually.
+
+First, configure AWS credentials for an account/identity that has permission to create the infrastructure (CDK bootstrap, CloudFormation, DynamoDB, S3, IAM, Lambda, EventBridge, SQS). The pipeline deploys to **`eu-central-1`**, so use the same region unless you intend to run a separate environment:
+
+```bash
+export AWS_ACCESS_KEY_ID=...
+export AWS_SECRET_ACCESS_KEY=...
+export AWS_REGION=eu-central-1
+```
+
+The CDK app reads its configuration from environment variables (see `apps/marcos-aws/lib/mmss.app.ts`). All four are **required** or the synth will throw:
+
+| Variable                 | Description                                                           |
+| ------------------------ | --------------------------------------------------------------------- |
+| `CDK_ENV_NAME`           | Environment name, used as a prefix for all resources (e.g. `preview`) |
+| `ALLOWED_UPLOAD_ORIGINS` | Comma-separated list of origins allowed to upload to S3 (CORS)        |
+| `MAIN_STORE_ID`          | Primary store identifier                                              |
+| `POSTHOG_KEY`            | PostHog server key                                                    |
+
+Then, from `apps/marcos-aws`, run the CDK commands through Bun:
+
+```bash
+cd apps/marcos-aws
+
+# Bootstrap the target account/region (first time only)
+bun run cdk bootstrap
+
+# Preview the changes
+bun run cdk diff
+
+# Deploy the stack
+bun run cdk deploy --all --require-approval never
+```
+
+This creates the DynamoDB tables, S3 buckets, Lambda functions, and — importantly — three IAM **managed policies** that scope access to those resources:
+
+- `${CDK_ENV_NAME}-main-store-read-policy`
+- `${CDK_ENV_NAME}-main-store-write-policy`
+- `${CDK_ENV_NAME}-public-track-orders-policy`
+
+Their ARNs are exported as CloudFormation outputs.
+
+### 2. Get an AWS key with the deployment's role to develop locally
+
+The local app does **not** reuse your deployment credentials. Instead, you need an AWS access key for an IAM user (or role) that has the managed policies created by the CDK deployment attached to it. Without those policies the app cannot read or write the tables/buckets and will fail at runtime.
+
+1. In IAM, create (or pick) a user for local development.
+2. Attach the `${CDK_ENV_NAME}-main-store-read-policy` and `${CDK_ENV_NAME}-main-store-write-policy` managed policies (and `${CDK_ENV_NAME}-public-track-orders-policy` if you are working on the public order tracking flow).
+3. Create an access key for that user — this is the `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` pair the app uses.
+
+The public tracking feature uses a **separate, narrower** credential pair (`TRACK_AWS_ACCESS_KEY_ID` / `TRACK_AWS_SECRET_ACCESS_KEY`) that should only carry the `public-track-orders-policy`.
+
+### 3. Configure the app environment
+
+Copy [`apps/marcos/.env.example`](apps/marcos/.env.example) to `apps/marcos/.env` and fill in the values produced by the deployment plus the third-party credentials (Auth0, PostHog). The table/bucket names must match those created by CDK for your `CDK_ENV_NAME`. The example file documents every variable; see also the [Environment Variables](#environment-variables) section below.
+
+> SvelteKit reads these via `$env/static/private` and `$env/static/public`, so changes to `.env` require restarting the dev server.
+
+### 4. Run the app
+
+```bash
+# From the repo root
+bun run dev
+
+# …or scope it to just the backoffice app
+bun run dev --filter=mmss-marcos-app
+```
+
+The dev server is served by Vite (`vite dev --host`) and listens on `http://localhost:5173` by default. Because it runs with `--host` it is also reachable from other devices on your network.
+
+> **Auth0:** add the dev URL (e.g. `http://localhost:5173`) to your Auth0 application's allowed callback / logout / web origin URLs, otherwise login will fail locally.
+
+### Working in a single workspace
+
+Turborepo runs every workspace by default. To target one, use `--filter` (by package name) or run the script directly in the package with `--cwd`:
+
+```bash
+# Run a root task for one workspace only
+bun run build --filter=mmss-marcos-app
+
+# Run a script defined inside a specific package
+bun run --cwd apps/marcos check        # svelte-check type checking
+bun run --cwd apps/marcos check:watch  # type checking in watch mode
+bun run --cwd apps/marcos preview      # preview a production build
+```
+
+### Before committing
+
+There are no automated tests in CI; quality is enforced by linting, formatting, and type checks. Run these before pushing:
+
+```bash
+bun run lint      # ESLint across all packages
+bun run format    # Prettier
+bun run --cwd apps/marcos check   # Svelte/TypeScript type checking
+```
+
+### Disabling analytics locally
+
+PostHog tracking can be turned off so local activity doesn't pollute analytics. Set these in `apps/marcos/.env`:
+
+```bash
+TRACKING_DISABLED=true         # server-side tracking → NoOp
+PUBLIC_TRACKING_DISABLED=true  # client-side tracking → NoOp
+```
 
 ## Environment Variables
 
@@ -157,19 +305,26 @@ The application requires the following environment variables:
 
 ### Authentication
 
-- `AUTH_SECRET` - Auth.js secret
+- `AUTH_SECRET` - Better Auth session secret
 - `AUTH_AUTH0_ID` - Auth0 client ID
 - `AUTH_AUTH0_SECRET` - Auth0 client secret
 - `AUTH_AUTH0_ISSUER` - Auth0 issuer URL
 
+### Analytics
+
+- `PUBLIC_POSTHOG_KEY` - PostHog project API key (used by both client- and server-side tracking)
+- `PUBLIC_POSTHOG_PROXY` - Optional reverse-proxy host for client-side PostHog
+- `TRACKING_DISABLED` - Set to `true` to disable server-side tracking
+- `PUBLIC_TRACKING_DISABLED` - Set to `true` to disable client-side tracking
+
 ### Application
 
-- `PUBLIC_POSTHOG_KEY` - PostHog public key
-- `POSTHOG_KEY` - PostHog server key
-- `ENV_NAME` - Environment name (preview/production)
+- `ENV_NAME` - Environment name (`pre`/`prod`; anything else for local dev)
 - `MAIN_STORE_ID` - Primary store identifier
 - `MAINTENANCE_MODE` - Set to `true` to enable maintenance mode (redirects all traffic to `/maintenance`)
-- `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel)
+- `VERCEL_GIT_COMMIT_REF` - Git branch reference (provided by Vercel; set manually for local dev)
+
+The full annotated list lives in [`apps/marcos/.env.example`](apps/marcos/.env.example).
 
 ## Feature Flags
 
@@ -182,24 +337,24 @@ Feature flags are managed via [PostHog](https://posthog.com/) and split into ser
 
 ### AWS Infrastructure (CDK)
 
-Infrastructure deployment is automated via GitHub Actions. To deploy manually:
+Infrastructure deployment is automated via GitHub Actions (`.github/workflows/aws-deploy-*.yml`, deploying to `eu-central-1`). To deploy manually, set the required CDK env vars (`CDK_ENV_NAME`, `ALLOWED_UPLOAD_ORIGINS`, `MAIN_STORE_ID`, `POSTHOG_KEY` — see [How to Develop](#how-to-develop)) and run:
 
 ```bash
 cd apps/marcos-aws
 
 # Bootstrap CDK (first time only)
-cdk bootstrap
+bun run cdk bootstrap
 
 # Preview changes
-cdk diff
+bun run cdk diff
 
 # Deploy infrastructure
-cdk deploy
+bun run cdk deploy --all --require-approval never
 ```
 
 ### Infrastructure Resources
 
-- **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder
+- **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder — schemas documented in [DynamoDB schemas](packages/marcos-core/docs/database.md)
 - **S3 Buckets**: MoldPrices, Files, Reports
 - **Lambda Functions**: Daily report generation, image optimization
 - **EventBridge Rules**: Scheduled report generation (21:50 daily)

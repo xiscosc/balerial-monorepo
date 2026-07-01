@@ -40,7 +40,7 @@ export function createLambdas({
 		memorySize: 512,
 		timeout: Duration.seconds(10),
 		logGroup: reportsLogGroup,
-		runtime: Runtime.NODEJS_22_X,
+		runtime: Runtime.NODEJS_24_X,
 		architecture: Architecture.ARM_64,
 		bundling: {
 			minify: true,
