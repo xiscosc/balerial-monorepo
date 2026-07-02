@@ -37,7 +37,6 @@ import { CalculatedItemUtilities } from '../utilities/calculated-item.utilites';
 import { PricingType } from '../types/pricing.type';
 import { UserService } from './user.service';
 import { tempCustomerUuid, OrderUtilities, quoteDeliveryDate } from '../utilities/order.utilities';
-import { StaticUser } from '../types';
 import { PricingService } from './pricing.service';
 
 export interface ISameDayOrderCounters {
@@ -442,15 +441,7 @@ export class OrderService {
 	): Promise<Order> {
 		const { order, calculatedItem } = await this.generateOrderAndCalculatedItemFromDto(
 			dto,
-			originalOrder.id,
-			originalOrder.shortId,
-			originalOrder.createdAt,
-			originalOrder.status,
-			originalOrder.location,
-			originalOrder.amountPayed,
-			originalOrder.notified,
-			originalOrder.user,
-			originalOrder.publicId
+			originalOrder
 		);
 
 		await Promise.all([
@@ -510,30 +501,22 @@ export class OrderService {
 
 	private async generateOrderAndCalculatedItemFromDto(
 		dto: OrderCreationWithCustomerDto,
-		originalId?: string,
-		originalShortId?: string,
-		originalCreationDate?: Date,
-		originalOrderStatus?: OrderStatus,
-		originalLocation?: string,
-		originalAmountPayed?: number,
-		originalNotified?: boolean,
-		originalUser?: StaticUser,
-		originalPublicId?: string
+		originalOrder?: Order
 	): Promise<{ order: Order; calculatedItem: CalculatedItem }> {
 		const order: Order = {
-			id: originalId ?? uuidv4(),
-			shortId: originalShortId ?? '',
-			publicId: originalPublicId ?? '',
+			id: originalOrder?.id ?? uuidv4(),
+			shortId: originalOrder?.shortId ?? '',
+			publicId: originalOrder?.publicId ?? '',
 			customer: dto.customer,
-			createdAt: originalCreationDate ?? new Date(),
+			createdAt: originalOrder?.createdAt ?? new Date(),
 			storeId: this.config.storeId,
-			user: originalUser ?? this.config.user,
-			amountPayed: originalAmountPayed ?? 0,
-			status: originalOrderStatus ?? (dto.isQuote ? OrderStatus.QUOTE : OrderStatus.PENDING),
+			user: originalOrder?.user ?? this.config.user,
+			amountPayed: originalOrder?.amountPayed ?? 0,
+			status: originalOrder?.status ?? (dto.isQuote ? OrderStatus.QUOTE : OrderStatus.PENDING),
 			hasArrow: dto.hasArrow,
-			invoiced: false,
-			notified: originalNotified ?? false,
-			location: originalLocation ?? '',
+			invoiced: originalOrder?.invoiced ?? false,
+			notified: originalOrder?.notified ?? false,
+			location: originalOrder?.location ?? '',
 			item: {
 				width: dto.width,
 				height: dto.height,
