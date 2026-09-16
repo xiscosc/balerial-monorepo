@@ -11,6 +11,12 @@ import type {
 } from '@marcsimolduressonsardina/core/type';
 import type { BatchOperation } from '@/type/api.type';
 
+export type OrderListRequest = {
+	status: OrderStatus;
+	descendent: boolean;
+	unlinkedOnly: boolean;
+};
+
 export class OrderApiGateway extends BaseApiGateway {
 	public static async notifyOrder(orderId: string): Promise<void> {
 		await fetch(`/api/orders/${orderId}/notify`, {
@@ -28,24 +34,24 @@ export class OrderApiGateway extends BaseApiGateway {
 		});
 	}
 
-	public static async searchOrders(query: string, status: OrderStatus): Promise<FullOrder[]> {
+	public static async searchOrders(query: string, filters: OrderListRequest): Promise<FullOrder[]> {
 		const response = await this.requestWithErrorHandling<{ results: FullOrder[] }>(
 			'POST',
 			'/api/orders/search',
-			{ query, status }
+			{ query, ...filters }
 		);
 
 		return OrderRepresentationUtilities.hydrateFullOrderDates(response.results);
 	}
 
 	public static async getOrderList(
-		status: OrderStatus,
+		filters: OrderListRequest,
 		lastKey: Record<string, string | number> | undefined
 	): Promise<{ orders: FullOrder[]; nextKey?: Record<string, string | number> }> {
 		const listResponse = await this.requestWithErrorHandling<{
 			orders: FullOrder[];
 			nextKey?: Record<string, string | number>;
-		}>('POST', '/api/orders/list', { lastKey, status });
+		}>('POST', '/api/orders/list', { lastKey, ...filters });
 
 		return {
 			orders: OrderRepresentationUtilities.hydrateFullOrderDates(listResponse.orders),

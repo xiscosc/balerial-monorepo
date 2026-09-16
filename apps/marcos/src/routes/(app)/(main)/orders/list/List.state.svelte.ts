@@ -1,10 +1,11 @@
 import { Debounced, watch } from 'runed';
 import { browser } from '$app/environment';
 import { OrderApiGateway } from '@/gateway/order-api.gateway';
-import { orderStatusMap } from '@/shared/mappings/order.mapping';
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import type { FullOrder } from '@marcsimolduressonsardina/core/type';
 import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
+
+export type OrderListSort = 'newest' | 'oldest';
 
 interface ListState {
 	getSearchValue: () => string;
@@ -12,8 +13,11 @@ interface ListState {
 	getOrders: () => Promise<FullOrder[]> | undefined;
 	getPaginatedOrders: () => Promise<FullOrder[]> | undefined;
 	getPaginationAvailable: () => boolean;
-	setStatus: (value: OrderStatus) => void;
+	setFilter: (status: OrderStatus, unlinkedOnly?: boolean) => void;
 	getStatus: () => OrderStatus;
+	getUnlinkedOnly: () => boolean;
+	setSort: (value: OrderListSort) => void;
+	getSort: () => OrderListSort;
 	triggerPagination: () => void;
 	getShowMinCharsAlert: () => boolean;
 	getIsSearchMode: () => boolean;
@@ -24,6 +28,8 @@ export class ListStateClass implements ListState {
 	private isLoading: boolean = $state(false);
 	private isAdmin: boolean = $state(false);
 	private status: OrderStatus = $state(OrderStatus.PENDING);
+	private unlinkedOnly: boolean = $state(false);
+	private sort: OrderListSort = $state('newest');
 	private searchValue: string = $state('');
 	private searchValueDebounced: Debounced<string> = new Debounced(() => this.searchValue, 400);
 	private orders: Promise<FullOrder[]> | undefined = $state(undefined);
@@ -38,14 +44,14 @@ export class ListStateClass implements ListState {
 	private isSearchMode: boolean = $derived(
 		this.searchValueDebounced.current.length > 0 || !this.isAdmin
 	);
-	private listTitle: string = $derived(
-		this.status === OrderStatus.QUOTE
-			? `Listado de ${orderStatusMap[this.status]}s`
-			: `Pedidos ${orderStatusMap[this.status]}s`
-	);
 
 	constructor(initialStatus: OrderStatus, userIsAdmin: boolean) {
-		const allowedStatus = [OrderStatus.QUOTE, OrderStatus.PENDING, OrderStatus.FINISHED];
+		const allowedStatus = [
+			OrderStatus.QUOTE,
+			OrderStatus.PENDING,
+			OrderStatus.FINISHED,
+			OrderStatus.PICKED_UP
+		];
 		if (allowedStatus.includes(initialStatus)) {
 			this.status = initialStatus;
 		}
@@ -53,16 +59,23 @@ export class ListStateClass implements ListState {
 		this.isAdmin = userIsAdmin;
 
 		$effect(() => {
+			const status = this.status;
+			const unlinkedOnly = this.unlinkedOnly;
+			const descendent = this.sort === 'newest';
 			if (!this.isSearchMode) {
-				this.orders = this.getList(this.status, undefined);
+				this.orders = this.getList(status, unlinkedOnly, descendent, undefined);
 			} else {
 				this.paginatedOrders = undefined;
 			}
 		});
 
 		$effect(() => {
-			if (this.isSearchMode && this.searchValueDebounced.current.length >= 3) {
-				this.orders = this.search(this.searchValueDebounced.current, this.status);
+			const query = this.searchValueDebounced.current;
+			const status = this.status;
+			const unlinkedOnly = this.unlinkedOnly;
+			const descendent = this.sort === 'newest';
+			if (this.isSearchMode && query.length >= 3) {
+				this.orders = this.search(query, status, unlinkedOnly, descendent);
 			}
 		});
 
@@ -86,7 +99,7 @@ export class ListStateClass implements ListState {
 	}
 
 	public getListTitle() {
-		return this.listTitle;
+		return 'Pedidos';
 	}
 
 	public getSearchValue() {
@@ -109,13 +122,14 @@ export class ListStateClass implements ListState {
 		return this.paginationAvailable;
 	}
 
-	public setStatus(value: OrderStatus) {
-		ActionBarState.destroy();
-		this.status = value;
+	public setFilter(status: OrderStatus, unlinkedOnly: boolean = false) {
+		if (this.status === status && this.unlinkedOnly === unlinkedOnly) return;
 
-		if (this.searchValueDebounced.current.length >= 3) {
-			this.orders = this.search(this.searchValueDebounced.current, this.status);
-		}
+		ActionBarState.destroy();
+		this.status = status;
+		this.unlinkedOnly = unlinkedOnly;
+		this.lastKey = undefined;
+		this.paginatedOrders = undefined;
 	}
 
 	public getIsLoading() {
@@ -126,9 +140,31 @@ export class ListStateClass implements ListState {
 		return this.status;
 	}
 
+	public getUnlinkedOnly() {
+		return this.unlinkedOnly;
+	}
+
+	public setSort(value: OrderListSort) {
+		if (this.sort === value) return;
+
+		ActionBarState.destroy();
+		this.sort = value;
+		this.lastKey = undefined;
+		this.paginatedOrders = undefined;
+	}
+
+	public getSort() {
+		return this.sort;
+	}
+
 	public triggerPagination() {
 		if (this.paginationAvailable) {
-			this.paginatedOrders = this.getList(this.status, this.lastKey);
+			this.paginatedOrders = this.getList(
+				this.status,
+				this.unlinkedOnly,
+				this.sort === 'newest',
+				this.lastKey
+			);
 		}
 	}
 
@@ -140,6 +176,8 @@ export class ListStateClass implements ListState {
 
 	private async getList(
 		status: OrderStatus,
+		unlinkedOnly: boolean,
+		descendent: boolean,
 		lastKey: Record<string, string | number> | undefined
 	): Promise<FullOrder[]> {
 		if (!browser) {
@@ -147,9 +185,18 @@ export class ListStateClass implements ListState {
 		}
 
 		if (this.isAdmin) {
-			const response = await OrderApiGateway.getOrderList(status, lastKey);
+			const response = await OrderApiGateway.getOrderList(
+				{ status, unlinkedOnly, descendent },
+				lastKey
+			);
 			const body = response;
-			this.lastKey = body.nextKey;
+			if (
+				this.status === status &&
+				this.unlinkedOnly === unlinkedOnly &&
+				(this.sort === 'newest') === descendent
+			) {
+				this.lastKey = body.nextKey;
+			}
 			return body.orders;
 		} else {
 			this.lastKey = undefined;
@@ -157,7 +204,12 @@ export class ListStateClass implements ListState {
 		}
 	}
 
-	private async search(query: string, status: OrderStatus): Promise<FullOrder[]> {
+	private async search(
+		query: string,
+		status: OrderStatus,
+		unlinkedOnly: boolean,
+		descendent: boolean
+	): Promise<FullOrder[]> {
 		if (!browser) {
 			return [];
 		}
@@ -166,7 +218,11 @@ export class ListStateClass implements ListState {
 			return [];
 		}
 
-		const response = await OrderApiGateway.searchOrders(query, status);
+		const response = await OrderApiGateway.searchOrders(query, {
+			status,
+			unlinkedOnly,
+			descendent
+		});
 		return response;
 	}
 }

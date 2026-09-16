@@ -392,15 +392,26 @@ export class BalerialDynamoRepository<T> {
 		params: QueryCommandInput,
 		startKey?: Record<string, string | number>
 	): Promise<IDynamoPaginatedResult<T>> {
+		const elements: T[] = [];
+		let lastEvaluatedKey = startKey;
+
 		try {
-			params.ExclusiveStartKey = startKey;
-			params.Limit = this.defaultLimit;
-			const command = new QueryCommand(params);
-			const response = await this.client.send(command);
+			do {
+				params.ExclusiveStartKey = lastEvaluatedKey;
+				params.Limit = this.defaultLimit - elements.length;
+				const command = new QueryCommand(params);
+				const response = await this.client.send(command);
+
+				if (response.Items) {
+					elements.push(...(response.Items as T[]));
+				}
+
+				lastEvaluatedKey = response.LastEvaluatedKey as Record<string, string | number> | undefined;
+			} while (params.FilterExpression && elements.length < this.defaultLimit && lastEvaluatedKey);
 
 			return {
-				elements: response.Items as T[],
-				endKey: response.LastEvaluatedKey
+				elements,
+				endKey: lastEvaluatedKey
 			};
 		} catch (error: unknown) {
 			this.logError('execute paginated query command', error);

@@ -10,7 +10,6 @@
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
-	import { fade } from 'svelte/transition';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
@@ -95,31 +94,33 @@
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2 space-x-1 rounded-lg px-3 py-1 pr-2 text-sm">
 				<Icon type={getStatusUIInfo(order.status).statusIcon} />
-				<span class="font-semibold">{orderStatusMap[order.status]}</span>
+				{#if !isSelectMode}
+					<span class="font-semibold">{orderStatusMap[order.status]}</span>
+				{/if}
 			</div>
 
-			{#if !isSelectMode}
+			<div class="flex items-center gap-2">
 				<button
 					onclick={handlePublicIdClick}
-					class="cursor-pointer overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none"
+					disabled={isSelectMode}
+					class="cursor-pointer overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap select-none disabled:cursor-default"
 					id="order-public-id"
-					in:fade={{ duration: 200 }}
-					out:fade={{ duration: 150 }}
 				>
 					<span class="rounded-lg bg-white px-2 py-1 font-mono text-gray-800">
 						{order.publicId}
 					</span>
 				</button>
-			{:else}
-				<div in:fade={{ duration: 200 }} out:fade={{ duration: 150 }}>
-					<Checkbox
-						checked={isSelected}
-						onCheckedChange={(checked: boolean) => {
-							internalSelected = checked;
-						}}
-					/>
-				</div>
-			{/if}
+				{#if isSelectMode}
+					<div class="shrink-0">
+						<Checkbox
+							checked={isSelected}
+							onCheckedChange={(checked: boolean) => {
+								internalSelected = checked;
+							}}
+						/>
+					</div>
+				{/if}
+			</div>
 		</div>
 	</div>
 
