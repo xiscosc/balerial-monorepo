@@ -15,42 +15,13 @@
 	import { untrack } from 'svelte';
 
 	const initialStatus = page.url.searchParams.get('status') as OrderStatus;
+	const isQuoteList = initialStatus === OrderStatus.QUOTE;
 	let { data }: { data: PageData } = $props();
 	let searchValue = $state('');
 	const listState = new ListStateClass(
 		initialStatus,
 		untrack(() => data.priceManager)
 	);
-
-	function statusScrollHint(node: HTMLDivElement): void | (() => void) {
-		const isMobile = window.matchMedia('(max-width: 767px)').matches;
-		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-		if (!isMobile || reduceMotion) return;
-
-		let returnTimer: number | undefined;
-		const startTimer = window.setTimeout(() => {
-			if (node.scrollWidth <= node.clientWidth || node.scrollLeft !== 0) return;
-
-			const distance = Math.min(40, node.scrollWidth - node.clientWidth);
-			node.scrollTo({ left: distance, behavior: 'smooth' });
-			returnTimer = window.setTimeout(() => {
-				node.scrollTo({ left: 0, behavior: 'smooth' });
-			}, 450);
-		}, 400);
-
-		const stopHint = () => {
-			window.clearTimeout(startTimer);
-			window.clearTimeout(returnTimer);
-		};
-
-		node.addEventListener('pointerdown', stopHint, { once: true });
-
-		return () => {
-			stopHint();
-			node.removeEventListener('pointerdown', stopHint);
-		};
-	}
 </script>
 
 {#snippet statusButton(status: OrderStatus, label: string)}
@@ -117,21 +88,25 @@
 	<SimpleHeading icon={IconType.ORDER_DEFAULT}>{listState.getListTitle()}</SimpleHeading>
 	<Box>
 		<div class="flex flex-col gap-3">
-			<div
-				{@attach statusScrollHint}
-				class="-mx-1 flex [scrollbar-width:none] gap-1 overflow-x-auto px-1 pb-1 md:mx-0 md:gap-2 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
-			>
-				{@render statusButton(OrderStatus.PENDING, 'Pendientes')}
-				{@render statusButton(OrderStatus.FINISHED, 'Finalizados')}
-				{@render statusButton(OrderStatus.PICKED_UP, 'Recogidos')}
-				{@render statusButton(OrderStatus.QUOTE, 'Presupuestos')}
+			{#if !isQuoteList}
+				<div
+					class="-mx-1 flex [scrollbar-width:none] gap-1 overflow-x-auto px-1 pb-1 md:mx-0 md:gap-2 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
+				>
+					{@render statusButton(OrderStatus.PENDING, 'Pendientes')}
+					{@render statusButton(OrderStatus.FINISHED, 'Finalizados')}
+					{@render statusButton(OrderStatus.PICKED_UP, 'Recogidos')}
 
-				{#if [OrderStatus.PENDING, OrderStatus.QUOTE].includes(listState.getStatus())}
-					<div class="ml-2 hidden md:block">
-						{@render unlinkedButton()}
-					</div>
-				{/if}
-			</div>
+					{#if listState.getStatus() === OrderStatus.PENDING}
+						<div class="ml-2 hidden md:block">
+							{@render unlinkedButton()}
+						</div>
+					{/if}
+				</div>
+			{:else}
+				<div class="hidden md:block">
+					{@render unlinkedButton()}
+				</div>
+			{/if}
 
 			<div class="hidden items-center gap-3 md:flex">
 				<div class="min-w-0 flex-1">
