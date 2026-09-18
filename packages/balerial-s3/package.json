@@ -16,9 +16,9 @@
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@smithy/types": "4.14.4",
-		"@types/aws-lambda": "8.10.162",
-		"@types/node": "26.4.0",
-		"eslint": "10.9.1",
+		"@types/aws-lambda": "8.10.163",
+		"@types/node": "26.6.1",
+		"eslint": "10.10.0",
 		"typescript": "7.0.2"
 	},
 	"dependencies": {

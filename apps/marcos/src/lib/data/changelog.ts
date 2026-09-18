@@ -174,5 +174,19 @@ export const Changelogs: Changelog[] = [
 			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY },
 			{ text: 'Mejoras de rendimiento', type: ChangelogItemType.TECHNICAL }
 		]
+	},
+	{
+		version: 20260918,
+		title: 'Septiembre 2026',
+		items: [
+			{ text: 'Nuevos filtros para listados de pedidos', type: ChangelogItemType.NEW },
+			{
+				text: 'El id del pedido se muestra durante la selección múltiple',
+				type: ChangelogItemType.MINOR_CHANGE
+			},
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY },
+			{ text: 'Actualización de librerías del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Optimizaciones internas', type: ChangelogItemType.TECHNICAL }
+		]
 	}
 ];
