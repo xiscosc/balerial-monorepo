@@ -99,7 +99,16 @@ export class ListStateClass implements ListState {
 	}
 
 	public getListTitle() {
-		return 'Pedidos';
+		switch (this.status) {
+			case OrderStatus.QUOTE:
+				return 'Presupuestos';
+			case OrderStatus.FINISHED:
+				return 'Pedidos finalizados';
+			case OrderStatus.PICKED_UP:
+				return 'Pedidos recogidos';
+			default:
+				return 'Pedidos pendientes';
+		}
 	}
 
 	public getSearchValue() {

@@ -33,6 +33,7 @@
 		icon={statusUI.statusIcon}
 		color={statusUI.bannerColor}
 		selected={active}
+		selectedTint
 	>
 		{label}
 	</FilterButton>
@@ -85,7 +86,11 @@
 {/snippet}
 
 <div class="space flex w-full flex-col gap-4">
-	<SimpleHeading icon={IconType.ORDER_DEFAULT}>{listState.getListTitle()}</SimpleHeading>
+	<SimpleHeading
+		icon={listState.getStatus() === OrderStatus.QUOTE
+			? IconType.ORDER_QUOTE
+			: IconType.ORDER_DEFAULT}>{listState.getListTitle()}</SimpleHeading
+	>
 	<Box>
 		<div class="flex flex-col gap-3">
 			{#if !isQuoteList}
