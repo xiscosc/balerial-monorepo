@@ -36,9 +36,9 @@
 	});
 
 	const headerStyles: Record<string, { classes: string; themeColor: string }> = {
-		prod: { classes: 'bg-[#e9eae3]/70 border-gray-300', themeColor: '#e9eae3' },
-		pre: { classes: 'bg-red-600/80 border-gray-700', themeColor: '#e7000b' },
-		dev: { classes: 'bg-amber-700/50 border-gray-700', themeColor: '#bb4d00' }
+		prod: { classes: 'bg-[#e9eae3] border-gray-300', themeColor: '#e9eae3' },
+		pre: { classes: 'bg-red-600 border-gray-700', themeColor: '#e7000b' },
+		dev: { classes: 'bg-amber-700 border-gray-700', themeColor: '#bb4d00' }
 	};
 
 	const emojis: Record<string, string> = {
@@ -86,7 +86,7 @@
 		</div>
 	{/if}
 	<header
-		class={`sticky top-0 z-20 flex items-center justify-center border-b px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3 backdrop-blur-sm ${headerStyle.classes} print:hidden`}
+		class={`sticky top-0 z-20 flex items-center justify-center border-b px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3 ${headerStyle.classes} print:hidden`}
 	>
 		<div
 			class="flex w-full flex-row items-center justify-between px-1 md:px-2 lg:max-w-[1650px] lg:px-3"
