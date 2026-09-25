@@ -35,10 +35,10 @@
 		}
 	});
 
-	const headerColors: Record<string, string> = {
-		prod: 'bg-[#e9eae3]/70 border-gray-300',
-		pre: 'bg-red-600/80 border-gray-700',
-		dev: 'bg-amber-700/50 border-gray-700'
+	const headerStyles: Record<string, { classes: string; color: string }> = {
+		prod: { classes: 'bg-[#e9eae3]/70 border-gray-300', color: '#e9eae3' },
+		pre: { classes: 'bg-red-600/80 border-gray-700', color: '#e7000b' },
+		dev: { classes: 'bg-amber-700/50 border-gray-700', color: '#bb4d00' }
 	};
 
 	const emojis: Record<string, string> = {
@@ -48,7 +48,7 @@
 	};
 
 	const onTesting = $derived(data.envName !== 'prod');
-	let headerBackgroundClasses = $derived(headerColors[data.envName]);
+	let headerStyle = $derived(headerStyles[data.envName]);
 	let headerEmoji = $derived(emojis[data.envName]);
 
 	const ribbonLabel = $derived.by(() => {
@@ -67,6 +67,7 @@
 
 <svelte:head>
 	<title>Marcs i Moldures Son Sardina</title>
+	<meta name="theme-color" content={headerStyle.color} />
 </svelte:head>
 <div class="flex min-h-screen flex-col bg-[#eeefe9] print:block print:min-h-0 print:bg-white">
 	{#if ribbonLabel}
@@ -85,7 +86,7 @@
 		</div>
 	{/if}
 	<header
-		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses} print:hidden`}
+		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerStyle.classes} print:hidden`}
 	>
 		<div
 			class="flex w-full flex-row items-center justify-between px-1 md:px-2 lg:max-w-[1650px] lg:px-3"
