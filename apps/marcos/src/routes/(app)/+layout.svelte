@@ -86,7 +86,7 @@
 		</div>
 	{/if}
 	<header
-		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerStyle.classes} print:hidden`}
+		class={`sticky top-0 z-20 flex items-center justify-center border-b px-3 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-3 backdrop-blur-sm ${headerStyle.classes} print:hidden`}
 	>
 		<div
 			class="flex w-full flex-row items-center justify-between px-1 md:px-2 lg:max-w-[1650px] lg:px-3"
