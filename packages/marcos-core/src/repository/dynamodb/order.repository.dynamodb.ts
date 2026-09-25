@@ -84,16 +84,34 @@ export class OrderRepositoryDynamoDb {
 
 	public async getOrdersByStatusPaginated(
 		status: string,
-		lastOrderPaginationKey?: Record<string, string | number>
+		lastOrderPaginationKey?: Record<string, string | number>,
+		descendent: boolean = true,
+		customerUuid?: string
 	): Promise<IDynamoPaginatedResult<OrderDto>> {
+		const filters: DynamoFilterElement[] = [];
+		if (customerUuid != null) {
+			filters.push({
+				attribute: 'customerUuid',
+				expression: DynamoFilterExpression.EQUAL,
+				value: customerUuid
+			});
+		}
+
 		return this.repository.getByIndexPaginated({
 			indexName: OrderSecondaryIndexNames.Status,
 			partitionKeyValue: status,
-			startKey: lastOrderPaginationKey
+			startKey: lastOrderPaginationKey,
+			descendent,
+			filters
 		});
 	}
 
-	public async findOrdersByStatus(status: string, query: string): Promise<OrderDto[]> {
+	public async findOrdersByStatus(
+		status: string,
+		query: string,
+		descendent: boolean = true,
+		customerUuid?: string
+	): Promise<OrderDto[]> {
 		const filterAttributes: DynamoFilterElement[] = [
 			{
 				attribute: 'item.normalizedDescription',
@@ -101,10 +119,18 @@ export class OrderRepositoryDynamoDb {
 				value: query
 			}
 		];
+		if (customerUuid != null) {
+			filterAttributes.push({
+				attribute: 'customerUuid',
+				expression: DynamoFilterExpression.EQUAL,
+				value: customerUuid
+			});
+		}
 		return this.repository.getByIndex({
 			indexName: OrderSecondaryIndexNames.Status,
 			partitionKeyValue: status,
-			filters: filterAttributes
+			filters: filterAttributes,
+			descendent
 		});
 	}
 

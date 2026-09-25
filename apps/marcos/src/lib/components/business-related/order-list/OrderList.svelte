@@ -136,62 +136,78 @@
 {#snippet actionButtons()}
 	{#if orderListState.getSelectedOrdersCount() > 0}
 		<div class="flex w-full flex-row gap-2 text-xs">
-			<TooltipButtonWrapper
-				text="Hay pedidos de diferentes clientes seleccionados"
-				enabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
-			>
+			{#if orderListState.getAllSelectedOrdersAreUnlinked()}
 				<MarcosButton
-					disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
-					onclick={orderListBulkOperationState.generateOrderSet}
 					iconSize={IconSize.SMALL}
 					size={ButtonSize.SMALL}
-					icon={IconType.PRINTER}
+					variant={ButtonVariant.DELETE}
+					onclick={() => {
+						orderListBulkOperationState.prepareBulkOperation(BatchOperation.DELETE);
+					}}
+					icon={IconType.TRASH}
 				></MarcosButton>
-			</TooltipButtonWrapper>
+			{:else if !orderListState.getSomeSelectedOrdersAreUnlinked()}
+				<TooltipButtonWrapper
+					text="Hay pedidos de diferentes clientes seleccionados"
+					enabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
+				>
+					<MarcosButton
+						disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
+						onclick={orderListBulkOperationState.generateOrderSet}
+						iconSize={IconSize.SMALL}
+						size={ButtonSize.SMALL}
+						icon={IconType.PRINTER}
+					></MarcosButton>
+				</TooltipButtonWrapper>
 
-			{#if !orderListState.getSelectedQuotesExist()}
-				{#if !whatsAppButtonDisabled}
+				{#if !orderListState.getSelectedQuotesExist()}
+					{#if !whatsAppButtonDisabled}
+						<MarcosButton
+							size={ButtonSize.SMALL}
+							iconSize={IconSize.SMALL}
+							onclick={() => {
+								orderListBulkOperationState.prepareBulkOperation(BatchOperation.NOTIFY_ORDERS);
+							}}
+							variant={ButtonVariant.WHATSAPP}
+							icon={IconType.WHATSAPP}
+						></MarcosButton>
+					{/if}
 					<MarcosButton
 						size={ButtonSize.SMALL}
 						iconSize={IconSize.SMALL}
 						onclick={() => {
-							orderListBulkOperationState.prepareBulkOperation(BatchOperation.NOTIFY_ORDERS);
+							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PAID);
 						}}
-						variant={ButtonVariant.WHATSAPP}
-						icon={IconType.WHATSAPP}
+						variant={ButtonVariant.ORDER_PICKED_UP_VARIANT}
+						textVariant={ButtonTextVariant.NO_COLOR}
+						icon={IconType.COINS}
 					></MarcosButton>
-				{/if}
-				<MarcosButton
-					size={ButtonSize.SMALL}
-					iconSize={IconSize.SMALL}
-					onclick={() => {
-						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PAID);
-					}}
-					variant={ButtonVariant.ORDER_PICKED_UP_VARIANT}
-					textVariant={ButtonTextVariant.NO_COLOR}
-					icon={IconType.COINS}
-				></MarcosButton>
-				{#if orderListState.getSelectedOrdersAreFinished()}
+					{#if orderListState.getSelectedOrdersAreFinished()}
+						<MarcosButton
+							size={ButtonSize.SMALL}
+							iconSize={IconSize.SMALL}
+							variant={ButtonVariant.ORDER_PENDING}
+							onclick={() => {
+								orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PICKED_UP);
+							}}
+							icon={IconType.TRUCK}
+						></MarcosButton>
+					{/if}
 					<MarcosButton
 						size={ButtonSize.SMALL}
 						iconSize={IconSize.SMALL}
-						variant={ButtonVariant.ORDER_PENDING}
+						variant={ButtonVariant.ORDER_GENERIC_VARIANT}
 						onclick={() => {
-							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PICKED_UP);
+							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_INVOICED);
 						}}
-						icon={IconType.TRUCK}
+						textVariant={ButtonTextVariant.NO_COLOR}
+						icon={IconType.INVOICED}
 					></MarcosButton>
 				{/if}
-				<MarcosButton
-					size={ButtonSize.SMALL}
-					iconSize={IconSize.SMALL}
-					variant={ButtonVariant.ORDER_GENERIC_VARIANT}
-					onclick={() => {
-						orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_INVOICED);
-					}}
-					textVariant={ButtonTextVariant.NO_COLOR}
-					icon={IconType.INVOICED}
-				></MarcosButton>
+			{:else}
+				<span class="w-full text-center font-semibold text-red-700">
+					No se pueden combinar pedidos vinculados y sin vincular
+				</span>
 			{/if}
 		</div>
 	{/if}

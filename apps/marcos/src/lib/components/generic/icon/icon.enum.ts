@@ -36,6 +36,7 @@ export enum IconType {
 	SENT = 'sent',
 	LIST = 'list',
 	DOWN = 'down',
+	SORT = 'sort',
 	PRINTER = 'printer',
 	NOT_DONE = 'not-done',
 	DONE = 'done',

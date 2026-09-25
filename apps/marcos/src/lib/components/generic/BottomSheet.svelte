@@ -20,12 +20,14 @@
 		trigger,
 		action,
 		iconType = undefined,
+		// eslint-disable-next-line no-useless-assignment
 		close = $bindable(() => {})
 	}: Props = $props();
 
 	let sheetOpen = $state(false);
 	let dialogOpen = $state(false);
 
+	// eslint-disable-next-line no-useless-assignment
 	close = () => {
 		sheetOpen = false;
 		dialogOpen = false;
@@ -35,7 +37,7 @@
 <Sheet.Root bind:open={sheetOpen}>
 	<Sheet.Trigger>
 		{#snippet child({ props })}
-			<span class="flex-1 lg:hidden w-full">
+			<span class="w-full flex-1 lg:hidden">
 				{@render trigger({ props })}
 			</span>
 		{/snippet}

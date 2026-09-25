@@ -1,6 +1,7 @@
 import { type Customer, type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 import { BatchOperation } from '@/type/api.type';
+import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
 
 export class OrderListState {
 	private selectedOrders: Map<string, FullOrder>;
@@ -10,6 +11,8 @@ export class OrderListState {
 	private selectedSomeOrdersFinished: boolean;
 	private selectedQuotes: boolean;
 	private selectedOrdersAreFromSameCustomer: boolean;
+	private someSelectedOrdersAreUnlinked: boolean;
+	private allSelectedOrdersAreUnlinked: boolean;
 
 	constructor() {
 		this.selectedOrders = new SvelteMap();
@@ -26,6 +29,13 @@ export class OrderListState {
 		);
 		this.selectedOrdersAreFromSameCustomer = $derived(
 			new SvelteSet(this.selectedOrders.values().map((fo) => fo.order.customer.id)).size === 1
+		);
+		this.someSelectedOrdersAreUnlinked = $derived(
+			this.selectedOrders.values().some((fo) => OrderUtilities.isOrderTemp(fo.order))
+		);
+		this.allSelectedOrdersAreUnlinked = $derived(
+			this.selectedOrders.size > 0 &&
+				!this.selectedOrders.values().some((fo) => !OrderUtilities.isOrderTemp(fo.order))
 		);
 	}
 
@@ -77,6 +87,9 @@ export class OrderListState {
 				break;
 			case BatchOperation.SET_INVOICED:
 				this.setSelectedOrdersAsInvoiced();
+				break;
+			case BatchOperation.DELETE:
+				this.deleteSelectedOrders();
 				break;
 			default:
 				return;
@@ -138,6 +151,14 @@ export class OrderListState {
 		return this.selectedOrdersAreFromSameCustomer;
 	}
 
+	public getSomeSelectedOrdersAreUnlinked(): boolean {
+		return this.someSelectedOrdersAreUnlinked;
+	}
+
+	public getAllSelectedOrdersAreUnlinked(): boolean {
+		return this.allSelectedOrdersAreUnlinked;
+	}
+
 	public clearState(): void {
 		this.selectedOrders.clear();
 		this.allOrders.clear();
@@ -194,6 +215,13 @@ export class OrderListState {
 			};
 			this.updateOrderInMaps(updatedFullOrder);
 		});
+	}
+
+	private deleteSelectedOrders(): void {
+		this.selectedOrders.forEach((_, orderId) => {
+			this.allOrders.delete(orderId);
+		});
+		this.selectedOrders.clear();
 	}
 
 	private updateOrderInMaps(updatedOrder: FullOrder): void {

@@ -147,9 +147,16 @@ export class OrderService {
 
 	async getOrdersByStatusPaginated(
 		status: OrderStatus,
-		nextKey?: Record<string, string | number>
+		nextKey?: Record<string, string | number>,
+		descendent: boolean = true,
+		customerUuid?: string
 	): Promise<PaginatedOrders> {
-		const paginatedDtoResult = await this.repository.getOrdersByStatusPaginated(status, nextKey);
+		const paginatedDtoResult = await this.repository.getOrdersByStatusPaginated(
+			status,
+			nextKey,
+			descendent,
+			customerUuid
+		);
 		const customerIds = paginatedDtoResult.elements.map((dto) => dto.customerUuid);
 		const customers = await this.customerService.getCustomersByIds(customerIds);
 		customers[tempCustomerUuid] = OrderService.getTempCustomer(this.config.storeId);
@@ -163,10 +170,20 @@ export class OrderService {
 		return { orders: fullOrders, nextKey: paginatedDtoResult.endKey };
 	}
 
-	async findOrdersByStatus(status: OrderStatus, query: string): Promise<FullOrder[]> {
+	async findOrdersByStatus(
+		status: OrderStatus,
+		query: string,
+		descendent: boolean = true,
+		customerUuid?: string
+	): Promise<FullOrder[]> {
+		const normalizedQuery = SearchUtilities.normalizeString(query);
+		if (normalizedQuery.length === 0) return [];
+
 		const orderDtos = await this.repository.findOrdersByStatus(
 			status,
-			SearchUtilities.normalizeString(query)
+			normalizedQuery,
+			descendent,
+			customerUuid
 		);
 		const customerIds = orderDtos.map((dto) => dto.customerUuid);
 		const customers = await this.customerService.getCustomersByIds(customerIds);
