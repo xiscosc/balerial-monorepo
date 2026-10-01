@@ -15,7 +15,7 @@
 <!-- Action Bar -->
 {#if ActionBarState.isVisible()}
 	<div
-		class="fixed right-0 bottom-0 left-0 z-20 flex items-center justify-center px-2 py-5 print:hidden"
+		class="action-bar fixed right-0 bottom-0 left-0 z-20 flex items-center justify-center px-2 py-5 print:hidden"
 		in:slide={{ duration: 300, easing: cubicOut }}
 		out:slide={{ duration: 250, easing: cubicOut }}
 	>
@@ -53,3 +53,13 @@
 		</div>
 	</div>
 {/if}
+
+<style>
+	@media screen {
+		.action-bar {
+			padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+			padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
+			padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+		}
+	}
+</style>

@@ -85,10 +85,10 @@
 		</div>
 	{/if}
 	<header
-		class={`sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses} print:hidden`}
+		class={`app-header sticky top-0 z-20 flex items-center justify-center border-b p-3 backdrop-blur-sm ${headerBackgroundClasses} print:hidden`}
 	>
 		<div
-			class="flex w-full flex-row items-center justify-between px-1 md:px-2 lg:max-w-[1650px] lg:px-3"
+			class="relative flex w-full flex-row items-center justify-between px-1 md:px-2 lg:max-w-[1650px] lg:px-3"
 		>
 			<a href={resolve('/')} class="text-black">
 				<Icon type={IconType.HOME} />
@@ -153,7 +153,7 @@
 	</header>
 
 	<!-- Scrollable Content Block filling remaining space -->
-	<main class="flex-1 overflow-y-auto p-2 print:block print:overflow-visible print:p-0">
+	<main class="app-content flex-1 overflow-y-auto p-2 print:block print:overflow-visible print:p-0">
 		<div
 			class="mx-auto w-full px-1 pb-3 md:px-2 md:pt-2 md:pb-0 lg:max-w-[1650px] lg:px-4 print:mx-0 print:max-w-none print:p-0"
 		>
@@ -173,6 +173,21 @@
 <Toaster richColors />
 
 <style>
+	/* https://webkit.org/blog/7929/designing-websites-for-iphone-x/ */
+	@media screen {
+		.app-header {
+			padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+			padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+			padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+		}
+
+		.app-content {
+			padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+			padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
+			padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+		}
+	}
+
 	@media print {
 		:global(body),
 		:global(html) {
