@@ -13,6 +13,7 @@
 		"./logger": "./src/logger/logger.ts"
 	},
 	"scripts": {
+		"test": "bash tests/repository/run.sh",
 		"lint": "eslint .",
 		"format": "prettier --write ."
 	},
@@ -20,6 +21,7 @@
 	"license": "ISC",
 	"description": "",
 	"devDependencies": {
+		"@aws-sdk/client-dynamodb": "3.1053.0",
 		"@repo/eslint-config": "workspace:*",
 		"@repo/typescript-config": "workspace:*",
 		"@smithy/types": "4.14.4",
