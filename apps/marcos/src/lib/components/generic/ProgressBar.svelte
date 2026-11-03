@@ -50,7 +50,7 @@
 <div class="flex w-full flex-col gap-4 py-4">
 	<div class="flex items-center justify-between gap-3">
 		<span class="min-w-0 truncate text-base font-medium text-gray-900">{text}</span>
-		<span class="shrink-0 text-lg font-semibold tabular-nums text-gray-900">{current}%</span>
+		<span class="shrink-0 text-lg font-semibold text-gray-900 tabular-nums">{current}%</span>
 	</div>
 	<Progress value={current} class="h-3" />
 </div>

@@ -1,7 +1,7 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
 import type { CalculatedItemDto } from '../dto/calculated-item.dto';
 import { calculatedItemTableBuilder } from './table/table.builders.dynamodb';

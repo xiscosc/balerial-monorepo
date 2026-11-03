@@ -1,8 +1,8 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
-import { OrderSetDto } from '../dto/order-set.dto';
+import { type OrderSetDto } from '../dto/order-set.dto';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { OrderSetSecondaryIndexNames, orderSetTableBuilder } from './table/table.builders.dynamodb';

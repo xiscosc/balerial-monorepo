@@ -1,4 +1,4 @@
-import { DynamoFilterElement, DynamoSortQueryElement } from './filter.dynamodb.type';
+import { type DynamoFilterElement, type DynamoSortQueryElement } from './filter.dynamodb.type';
 
 export type DynamoGetRequest = {
 	indexName?: string;

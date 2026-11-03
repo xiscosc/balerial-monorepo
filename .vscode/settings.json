@@ -1,20 +1,13 @@
 {
-	"eslint.workingDirectories": [
-		{
-			"mode": "auto"
-		}
-	],
 	"[typescript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "oxc.oxc-vscode"
 	},
 	"[svelte]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "oxc.oxc-vscode"
 	},
-	"eslint.runtime": "node",
-	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "svelte"],
 	"editor.formatOnSave": true,
-	"prettier.configPath": ".prettierrc",
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.defaultFormatter": "oxc.oxc-vscode",
+	"oxc.fmt.configPath": ".oxfmtrc.json",
 	"typescript.preferences.importModuleSpecifier": "non-relative",
 	"javascript.preferences.importModuleSpecifier": "non-relative",
 	"js/ts.tsdk.path": "node_modules/typescript/lib",

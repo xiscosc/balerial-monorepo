@@ -113,7 +113,11 @@
 	<Box>
 		<div class="flex flex-col gap-4">
 			{#if loading}
-				<ProgressBar text={loadingText} value={progressTarget} oncomplete={handleProgressComplete} />
+				<ProgressBar
+					text={loadingText}
+					value={progressTarget}
+					oncomplete={handleProgressComplete}
+				/>
 			{:else}
 				<FilePicker
 					bind:files

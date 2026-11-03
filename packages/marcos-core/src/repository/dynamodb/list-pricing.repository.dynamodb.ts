@@ -1,6 +1,6 @@
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
 import { InvalidKeyError } from '../../error/invalid-key.error';
 import type { ListPriceDto } from '../dto/list-price.dto';

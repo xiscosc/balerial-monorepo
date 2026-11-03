@@ -1,7 +1,7 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
 
 import type { ConfigDto, ConfigValue } from '../dto/config.dto';

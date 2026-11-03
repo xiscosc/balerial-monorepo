@@ -2,15 +2,15 @@ import mime from 'mime-types';
 import { v4 as uuidv4 } from 'uuid';
 import { FileRepositoryDynamoDb } from '../repository/dynamodb/file.repository.dynamodb';
 
-import { Logger } from 'pino';
+import { type Logger } from 'pino';
 import type { FileDto } from '../repository/dto/file.dto';
 import { OrderAuditTrailService } from './order-audit-trail.service';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
-import { FileType, File, ImageVariant } from '../types/file.type';
+import { FileType, type File, ImageVariant } from '../types/file.type';
 import { getLogger } from '../logger/logger';
 import { BalerialCloudFileService } from '@balerial/s3/service';
 

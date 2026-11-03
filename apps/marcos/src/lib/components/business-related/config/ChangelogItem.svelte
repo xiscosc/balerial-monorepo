@@ -28,12 +28,12 @@
 		class="group overflow-hidden rounded-md border border-gray-300 bg-white transition-all duration-200 hover:border-gray-300"
 	>
 		<Collapsible.Trigger
-			class="flex w-full items-center justify-between px-6 py-4 text-left font-medium text-gray-900 transition-all duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white"
+			class="flex w-full items-center justify-between px-6 py-4 text-left font-medium text-gray-900 transition-all duration-200 hover:bg-gray-50 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white focus:outline-none"
 		>
 			<div class="flex items-center gap-3">
 				<span class="text-md font-semibold tracking-tight">{title}</span>
 				<span
-					class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 font-mono text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300"
+					class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 font-mono text-xs font-medium text-gray-700 ring-1 ring-gray-300 ring-inset"
 				>
 					v{version}
 				</span>
@@ -56,7 +56,7 @@
 								<div class="flex-shrink-0">
 									<Icon type={iconMap[item.type]} />
 								</div>
-								<span class="text-sm font-medium leading-relaxed tracking-wide text-gray-800">
+								<span class="text-sm leading-relaxed font-medium tracking-wide text-gray-800">
 									{item.text}
 								</span>
 							</div>

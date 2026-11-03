@@ -1,1 +1,1 @@
-export enum ClientFeature {}
+export type ClientFeature = never;

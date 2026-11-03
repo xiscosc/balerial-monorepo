@@ -2,19 +2,19 @@ import { DateTime } from 'luxon';
 import { OrderAuditTrailService } from './order-audit-trail.service';
 import { OrderService } from './order.service';
 import {
-	DailyReport,
-	DashboardReport,
-	MonthlyReport,
-	ReportDate,
-	WeeklyReport
+	type DailyReport,
+	type DashboardReport,
+	type MonthlyReport,
+	type ReportDate,
+	type WeeklyReport
 } from '../types/report.type';
 import { getClientConfiguration } from '../configuration/configuration.util';
 import { createHash } from 'crypto';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
-import { Customer, Order, OrderAuditTrailType, OrderStatus } from '../types';
+import { type Customer, type Order, OrderAuditTrailType, OrderStatus } from '../types';
 import { CustomerService } from './customer.service';
 import { BalerialCloudFileService } from '@balerial/s3/service';
 export class ReportService {
@@ -178,9 +178,9 @@ export class ReportService {
 		const totalOrders = dailyOrders.reduce((acc, report) => acc + report.total, 0);
 		const totalCash = dailyCash.reduce((acc, report) => acc + report.total, 0);
 
-		const totalCustomers = [
-			...new Set(dailyReports.flatMap((report) => report.orders.map((order) => order.customerId)))
-		].length;
+		const totalCustomers = new Set(
+			dailyReports.flatMap((report) => report.orders.map((order) => order.customerId))
+		).size;
 
 		const flatItems = dailyReports
 			.flatMap((report) => report.items)

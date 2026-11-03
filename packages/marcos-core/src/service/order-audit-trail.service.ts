@@ -3,15 +3,15 @@ import { OrderAuditTrailRepositoryDynamoDb } from '../repository/dynamodb/order-
 import { OrderService } from './order.service';
 import { v4 as uuidv4 } from 'uuid';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import {
-	Order,
-	OrderAuditTrailDataEditEntry,
-	OrderAuditTrailEntry,
+	type Order,
+	type OrderAuditTrailDataEditEntry,
+	type OrderAuditTrailEntry,
 	OrderAuditTrailType,
-	OrderAuditTrailValue,
+	type OrderAuditTrailValue,
 	OrderStatus
 } from '../types/order.type';
 import { DateTime } from 'luxon';

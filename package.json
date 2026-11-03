@@ -4,12 +4,12 @@
 	"scripts": {
 		"build": "turbo build",
 		"dev": "turbo dev",
-		"lint": "turbo lint",
+		"lint": "oxlint",
 		"update-packages": "bunx npm-check-updates -u --workspaces && bun i",
 		"update-packages-patch": "bunx npm-check-updates -u --target patch --workspaces && bun i",
-		"update-packages-support": "bunx npm-check-updates -u --filter turbo,vite,posthog-js,posthog-node,typescript,eslint,prettier,@types/node,esbuild --workspaces && bun i",
+		"update-packages-support": "bunx npm-check-updates -u --filter turbo,vite,posthog-js,posthog-node,typescript,@typescript/native,svelte-check,oxlint,oxfmt,@types/node,esbuild --workspaces && bun i",
 		"skills": "bunx skills experimental_install",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+		"format": "oxfmt"
 	},
 	"workspaces": [
 		"apps/*",
@@ -22,11 +22,9 @@
 	},
 	"devDependencies": {
 		"@tsconfig/node24": "24.0.5",
-		"eslint": "10.10.0",
-		"prettier": "3.9.8",
-		"prettier-plugin-svelte": "4.0.1",
-		"prettier-plugin-tailwindcss": "0.8.1",
-		"turbo": "^2.10.13",
+		"oxfmt": "0.75.0",
+		"oxlint": "1.90.0",
+		"turbo": "^2.11.10",
 		"typescript": "7.0.2"
 	},
 	"packageManager": "bun@1.3.14"

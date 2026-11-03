@@ -119,7 +119,7 @@
 		<div class="flex flex-wrap gap-2">
 			{#each files as file, i (`${file.name}-${file.size}-${i}`)}
 				<div
-					class="flex items-center gap-2 rounded-full border border-gray-300 bg-white py-1 pl-3 pr-1 text-sm"
+					class="flex items-center gap-2 rounded-full border border-gray-300 bg-white py-1 pr-1 pl-3 text-sm"
 				>
 					<Icon type={IconType.DOCUMENT} size={IconSize.SMALL} />
 					<span class="font-medium text-gray-800">{file.name}</span>

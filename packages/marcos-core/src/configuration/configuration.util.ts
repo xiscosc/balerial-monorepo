@@ -1,4 +1,7 @@
-import { ICoreConfiguration, ICoreConfigurationForAWSLambda } from './core-configuration.interface';
+import {
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
+} from './core-configuration.interface';
 
 export function getClientConfiguration(
 	config: ICoreConfiguration | ICoreConfigurationForAWSLambda

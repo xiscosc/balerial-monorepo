@@ -1,6 +1,6 @@
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
 import type { OrderAuditTrailEntryDto } from '../dto/order-audit-trail-entry.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';

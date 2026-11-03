@@ -1,8 +1,8 @@
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
-import { CustomerDto } from '../dto/customer.dto';
+import { type CustomerDto } from '../dto/customer.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { customerTableBuilder } from './table/table.builders.dynamodb';

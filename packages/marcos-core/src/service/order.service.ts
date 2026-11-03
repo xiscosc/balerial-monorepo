@@ -13,26 +13,26 @@ import type { OrderCreationDto } from './dto/order-creation.dto';
 import { DateTime } from 'luxon';
 import { OrderAuditTrailService } from './order-audit-trail.service';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import {
-	CalculatedItem,
-	CalculatedItemWithPartTypes,
+	type CalculatedItem,
+	type CalculatedItemWithPartTypes,
 	DimensionsType,
-	ExternalFullOrder,
-	ExternalOrder,
-	ExternalOrderTotals,
-	FullOrder,
-	Item,
-	Order,
+	type ExternalFullOrder,
+	type ExternalOrder,
+	type ExternalOrderTotals,
+	type FullOrder,
+	type Item,
+	type Order,
 	OrderStatus,
-	OrderTotals,
-	OrderTotalsBase,
-	PreCalculatedItemPart
+	type OrderTotals,
+	type OrderTotalsBase,
+	type PreCalculatedItemPart
 } from '../types/order.type';
 import { SearchUtilities } from '../utilities/search.utilities';
-import { Customer } from '../types/customer.type';
+import { type Customer } from '../types/customer.type';
 import { CalculatedItemUtilities } from '../utilities/calculated-item.utilites';
 import { PricingType } from '../types/pricing.type';
 import { UserService } from './user.service';

@@ -1,11 +1,11 @@
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
-import { OrderDto } from '../dto/order.dto';
+import { type OrderDto } from '../dto/order.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
-import { DynamoFilterElement, DynamoFilterExpression } from '@balerial/dynamo/type';
+import { type DynamoFilterElement, DynamoFilterExpression } from '@balerial/dynamo/type';
 import { orderTableBuilder, OrderSecondaryIndexNames } from './table/table.builders.dynamodb';
 
 export class PublicOrderRepositoryDynamoDb {

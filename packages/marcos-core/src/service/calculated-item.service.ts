@@ -2,18 +2,18 @@ import { PricingService } from './pricing.service';
 import { CalculatedItemRepositoryDynamoDb } from '../repository/dynamodb/calculated-item.repository.dynamodb';
 import type { CalculatedItemDto } from '../repository/dto/calculated-item.dto';
 import {
-	CalculatedItem,
-	CalculatedItemPart,
-	Order,
-	OrderDimensions,
-	PreCalculatedItemPart,
-	ExternalOrder
+	type CalculatedItem,
+	type CalculatedItemPart,
+	type Order,
+	type OrderDimensions,
+	type PreCalculatedItemPart,
+	type ExternalOrder
 } from '../types/order.type';
 import { CalculatedItemUtilities } from '../utilities/calculated-item.utilites';
 import { PricingType } from '../types/pricing.type';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 
 export class CalculatedItemService {

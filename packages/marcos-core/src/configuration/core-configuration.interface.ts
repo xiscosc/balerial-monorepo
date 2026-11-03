@@ -1,5 +1,5 @@
-import { AwsCredentialIdentity } from '@smithy/types';
-import { AppUser } from '../types/user.type';
+import { type AwsCredentialIdentity } from '@smithy/types';
+import { type AppUser } from '../types/user.type';
 
 interface ICoreConfigurationBase {
 	storeId: string;
