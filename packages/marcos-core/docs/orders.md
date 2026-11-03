@@ -18,6 +18,7 @@ Key files:
 ## 1. The domain model
 
 ### `Item` — what is being framed
+
 The physical description an employee enters:
 
 ```ts
@@ -41,6 +42,7 @@ fabric crossbars (links to the mold whose price drives the crossbar);
 `extraInfo` is free text folded into the description (e.g. a passepartout note).
 
 ### `Order` — the business object
+
 Wraps an `Item` with customer, store, user, status, payment and identifiers:
 
 ```ts
@@ -56,11 +58,13 @@ Order {
 ```
 
 ### `OrderStatus`
+
 `PENDING` → `FINISHED` → `PICKED_UP`, plus `QUOTE` (a saved estimate, not a real
 order) and `DELETED`. Quotes use a sentinel delivery date `31/12/9999`
 (`quoteDeliveryDate`).
 
 ### `ExternalOrder`
+
 A leaner order for external/wholesale pricing. It has a `reference` instead of a
 customer and is **not persisted** the same way — `createExternalOrderFromDto`
 computes and returns it (with markup) but does not write an order row. Its
@@ -123,6 +127,7 @@ The `CalculatedItem` (`{ orderId, discount, parts[], quantity }`) is persisted
 separately from the order, keyed by `orderId`.
 
 ### Extra parts helper
+
 `CalculatedItemUtilities.getCornersPricing(userMarkup)` builds the "Cantoneras"
 (corner protectors) part at `2.5 €` (× markup if any), id `cantoneras_extra`.
 `otherExtraId = 'other_extra'` tags generic manual lines.
@@ -151,6 +156,7 @@ discountNotAllowedPresent = (some part has discountAllowed=false) && discount>0
 - **`item.quantity`** multiplies the per-unit price for identical units.
 
 `getTotalsForOrder` adds payment state:
+
 - `remainingAmount = total - amountPayed`
 - `payed = remainingAmount <= 0`
 
@@ -158,6 +164,7 @@ discountNotAllowedPresent = (some part has discountAllowed=false) && discount>0
 `totalWithoutMarkup = pricingService.calculatePriceWithoutMarkup(total)`.
 
 ### Payment operations
+
 - `setOrderFullyPaid(order)` → `amountPayed = total`, logs a payment entry.
 - `setOrderPartiallyPaid(order, amount)` → clamps `amount` to `[0, total]`
   (negative throws `InvalidDataError`), logs payment.
@@ -169,14 +176,14 @@ to from these numbers.
 
 ## 5. Status transitions
 
-| Method | Effect |
-|---|---|
-| `setOrderStatus(order, status, location?)` | Sets status + location; logs status and location changes. |
-| `setOrderAsNotified(order)` | Marks `notified = true`; logs a notification entry. |
-| `setOrderInvoiced(order, invoiced)` | Toggles `invoiced` (no audit entry). |
-| `moveQuoteToOrder(order, deliveryDate)` | `QUOTE → PENDING`: resets `createdAt`, sets user + delivery date; logs. |
-| `moveOrderToQuote(order)` | `* → QUOTE`: resets `createdAt`, delivery date → `31/12/9999`, clears `notified` and `amountPayed`; logs. |
-| `addCustomerToTemporaryOrder(customer, order)` | Replaces the temp customer on a walk-in order. Throws if the order isn't temp. |
+| Method                                         | Effect                                                                                                    |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `setOrderStatus(order, status, location?)`     | Sets status + location; logs status and location changes.                                                 |
+| `setOrderAsNotified(order)`                    | Marks `notified = true`; logs a notification entry.                                                       |
+| `setOrderInvoiced(order, invoiced)`            | Toggles `invoiced` (no audit entry).                                                                      |
+| `moveQuoteToOrder(order, deliveryDate)`        | `QUOTE → PENDING`: resets `createdAt`, sets user + delivery date; logs.                                   |
+| `moveOrderToQuote(order)`                      | `* → QUOTE`: resets `createdAt`, delivery date → `31/12/9999`, clears `notified` and `amountPayed`; logs. |
+| `addCustomerToTemporaryOrder(customer, order)` | Replaces the temp customer on a walk-in order. Throws if the order isn't temp.                            |
 
 `OrderService.validateOrderId(id)` validates a UUID before any lookup.
 

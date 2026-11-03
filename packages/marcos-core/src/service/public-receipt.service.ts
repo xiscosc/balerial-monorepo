@@ -1,10 +1,10 @@
 import {
-	ICorePublicConfiguration,
-	ICorePublicConfigurationForAWSLambda
+	type ICorePublicConfiguration,
+	type ICorePublicConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import { PublicCustomerRepositoryDynamoDb } from '../repository/dynamodb/public-customer.repository.dynamodb';
 import { PublicOrderRepositoryDynamoDb } from '../repository/dynamodb/public-order.repository.dynamodb';
-import { FullOrder } from '../types';
+import { type FullOrder } from '../types';
 import { CalculatedItemService } from './calculated-item.service';
 import { CustomerService } from './customer.service';
 import { OrderService } from './order.service';

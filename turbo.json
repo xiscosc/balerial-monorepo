@@ -42,44 +42,6 @@
 				"BETTER_AUTH_URL"
 			]
 		},
-		"lint": {
-			"dependsOn": ["^lint"],
-			"env": [
-				"AWS_ACCESS_KEY_ID",
-				"AWS_SECRET_ACCESS_KEY",
-				"TRACK_AWS_ACCESS_KEY_ID",
-				"TRACK_AWS_SECRET_ACCESS_KEY",
-				"AWS_DEFAULT_REGION",
-				"AWS_REGION",
-				"LIST_PRICING_TABLE",
-				"CONFIG_TABLE",
-				"MOLD_PRICES_BUCKET",
-				"FILES_BUCKET",
-				"REPORTS_BUCKET",
-				"ITEM_ORDER_TABLE",
-				"ORDER_TABLE",
-				"ORDER_SET_TABLE",
-				"FILE_TABLE",
-				"ORDER_AUDIT_TRAIL_TABLE",
-				"CUSTOMER_TABLE",
-				"CALCULATED_ITEM_ORDER_TABLE",
-				"PUBLIC_POSTHOG_KEY",
-				"AUTH_SECRET",
-				"AUTH_AUTH0_ID",
-				"AUTH_AUTH0_SECRET",
-				"AUTH_AUTH0_ISSUER",
-				"ENV_NAME",
-				"MAIN_STORE_ID",
-				"STORE_ID",
-				"POSTHOG_KEY",
-				"VERCEL_GIT_COMMIT_REF",
-				"TRACKING_DISABLED",
-				"PUBLIC_TRACKING_DISABLED",
-				"MAINTENANCE_MODE",
-				"PUBLIC_POSTHOG_PROXY",
-				"BETTER_AUTH_URL"
-			]
-		},
 		"check-types": {
 			"dependsOn": ["^check-types"]
 		},

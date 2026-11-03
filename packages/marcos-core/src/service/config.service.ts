@@ -2,8 +2,8 @@ import { ConfigRepositoryDynamoDb } from '../repository/dynamodb/config.reposito
 import type { ConfigDto } from '../repository/dto/config.dto';
 import { LOCATIONS_CONFIG_ID, type LocationsConfigType } from './constants/config.constants';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 
 export class ConfigService {

@@ -1,17 +1,7 @@
 <script lang="ts">
 	import { IconSize, type IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-
-	export type BannerColor =
-		| 'blue'
-		| 'red'
-		| 'green'
-		| 'purple'
-		| 'amber'
-		| 'violet'
-		| 'indigo'
-		| 'teal'
-		| 'sky';
+	import type { BannerColor } from './banner.type';
 
 	const colorVariants: Record<BannerColor, string> = {
 		blue: 'bg-blue-100 border-blue-500',

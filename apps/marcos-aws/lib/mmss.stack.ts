@@ -35,20 +35,20 @@ export class MmSsStack extends Stack {
 			(entry) => entry.bucketArn
 		);
 
-		const storeTableArns = [...Object.entries(tables.storeTables)]
+		const storeTableArns = Object.entries(tables.storeTables)
 			.map((entry) => entry[1])
 			.map((tableInfo) => tableInfo.table.tableArn);
 
-		const analyticsTableArns = [...Object.entries(tables.analyticsTables)]
+		const analyticsTableArns = Object.entries(tables.analyticsTables)
 			.map((entry) => entry[1])
 			.map((tableInfo) => tableInfo.table.tableArn);
 
-		const publicTableArns = [...Object.entries(tables.storeTables)]
+		const publicTableArns = Object.entries(tables.storeTables)
 			.map((entry) => entry[1])
 			.filter((tableInfo) => tableInfo.primaryIndexIsPublic)
 			.map((tableInfo) => tableInfo.table.tableArn);
 
-		const publicSecondaryIndexArns = [...Object.entries(tables.storeTables)]
+		const publicSecondaryIndexArns = Object.entries(tables.storeTables)
 			.map((entry) => entry[1])
 			.filter((tableInfo) => tableInfo.publicSecondaryIndexes.length > 0)
 			.map((tableInfo) =>

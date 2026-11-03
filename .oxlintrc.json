@@ -1,0 +1,13 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "unicorn", "oxc"],
+	"categories": { "correctness": "error" },
+	"jsPlugins": ["./apps/marcos/lint/marcos.plugin.js"],
+	"ignorePatterns": ["apps/marcos/src/lib/components/ui/**", ".agents/**", ".claude/**"],
+	"overrides": [
+		{
+			"files": ["apps/marcos/**/*.svelte", "apps/marcos/**/*.svelte.ts"],
+			"rules": { "marcos/enforce-breakpointstate-destroy": "error" }
+		}
+	]
+}

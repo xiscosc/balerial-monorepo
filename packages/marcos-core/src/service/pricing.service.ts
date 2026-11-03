@@ -22,16 +22,16 @@ import {
 	noDimensionCheckPricingTypes
 } from '../utilities';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import {
-	ListPrice,
-	MaxArea,
-	MaxAreaM2,
+	type ListPrice,
+	type MaxArea,
+	type MaxAreaM2,
 	PricingFormula,
 	PricingType,
-	OrderDimensions
+	type OrderDimensions
 } from '../types';
 
 export class PricingService {

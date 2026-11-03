@@ -1,5 +1,5 @@
-import { Customer } from './customer.type';
-import { Order } from './order.type';
+import { type Customer } from './customer.type';
+import { type Order } from './order.type';
 
 export type ReportDate = { day: number; month: number; year: number };
 

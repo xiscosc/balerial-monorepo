@@ -1,13 +1,13 @@
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../../configuration/core-configuration.interface';
 import type { FileDto } from '../dto/file.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { fileTableBuilder } from './table/table.builders.dynamodb';
 import {
-	DynamoFilterElement,
+	type DynamoFilterElement,
 	DynamoFilterExpression,
 	DynamoQueryExpression
 } from '@balerial/dynamo/type';

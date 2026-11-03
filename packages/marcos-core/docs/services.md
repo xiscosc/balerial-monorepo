@@ -69,6 +69,7 @@ Aggregates business activity into JSON reports stored in S3 (`reportsBucket`),
 keyed by store and granularity.
 
 ### Daily report — `generateAndStoreDailyReport(date)`
+
 Mines the **audit trail** for the day: keeps `STATUS` entries that represent an
 order **becoming `PENDING`** (from null/quote → pending) — i.e. "new orders
 booked today". For those orders it records `{ id, customerId, total }` and
@@ -77,11 +78,13 @@ aggregates part counts (`{ id, count }`). The report is content-hashed
 `<storeId>/daily/<y>/<m>/<d>/report.json`.
 
 ### Rollups
+
 `upadateWeeklyReport` / `upadateMonthlyReport` append a daily report into the
 week/month rollup (deduped by the daily report's hash). Stored at
 `<storeId>/weekly/<y>/<week>/report.json` and `.../monthly/<y>/<m>/...`.
 
 ### Reads & dashboard
+
 - `getDailyReport` / `getWeeklyReport` / `getMonthlyReport` return the stored
   JSON or an empty shell if absent.
 - `getDashboardReport(start, end)` builds a `DashboardReport` over a range:
@@ -138,16 +141,16 @@ DTO ⇄ domain translation. Table + index shapes are declared once in
 `.../core/db` entry point so the CDK app in `apps/marcos-aws` can provision
 matching tables).
 
-| Table (builder) | Primary key | Secondary indexes (GSI) |
-|---|---|---|
-| `orderTableBuilder` | `uuid` | `customer (customerUuid,timestamp)`, `shortId`, `status (status,timestamp)`, `store (storeId,timestamp)`, `publicId` — `shortId` exposed publicly |
-| `calculatedItemTableBuilder` | `orderUuid` | public primary index |
-| `customerTableBuilder` | `uuid` | `store (storeId,phone)` — public primary index |
-| `listPricingTableBuilder` | `uuid` | `type (type,id)` |
-| `orderAuditTrailTableBuilder` | `uuid` | `order (orderUuid,timestamp)`, `store (storeId,timestamp)` |
-| `orderSetTableBuilder` | `uuid` | `hash` |
-| `fileTableBuilder` | `(orderUuid, fileUuid)` | — |
-| `configTableBuilder` | `(storeId, id)` | — |
+| Table (builder)               | Primary key             | Secondary indexes (GSI)                                                                                                                           |
+| ----------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `orderTableBuilder`           | `uuid`                  | `customer (customerUuid,timestamp)`, `shortId`, `status (status,timestamp)`, `store (storeId,timestamp)`, `publicId` — `shortId` exposed publicly |
+| `calculatedItemTableBuilder`  | `orderUuid`             | public primary index                                                                                                                              |
+| `customerTableBuilder`        | `uuid`                  | `store (storeId,phone)` — public primary index                                                                                                    |
+| `listPricingTableBuilder`     | `uuid`                  | `type (type,id)`                                                                                                                                  |
+| `orderAuditTrailTableBuilder` | `uuid`                  | `order (orderUuid,timestamp)`, `store (storeId,timestamp)`                                                                                        |
+| `orderSetTableBuilder`        | `uuid`                  | `hash`                                                                                                                                            |
+| `fileTableBuilder`            | `(orderUuid, fileUuid)` | —                                                                                                                                                 |
+| `configTableBuilder`          | `(storeId, id)`         | —                                                                                                                                                 |
 
 The `timestamp` sort keys make the time-range queries possible
 (same-day orders, audit entries for a day, etc.). `setPublicPrimaryIndex` /
@@ -168,11 +171,11 @@ older records are filled in (e.g. `discountAllowed ?? true`,
 Typed `Error` subclasses (each restores its prototype chain so `instanceof`
 works across the transpile boundary):
 
-| Error | Thrown when |
-|---|---|
-| `InvalidDataError` | Invalid item/customer/payment input (bad quantity, phone, negative amount). |
+| Error              | Thrown when                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `InvalidDataError` | Invalid item/customer/payment input (bad quantity, phone, negative amount).                                        |
 | `InvalidSizeError` | Requested dimensions exceed an entry's max, or no `FIT_AREA` step matches. Carries a Spanish, user-facing message. |
-| `InvalidKeyError` | A price `id` already exists under a different uuid (uniqueness violation). |
+| `InvalidKeyError`  | A price `id` already exists under a different uuid (uniqueness violation).                                         |
 
 `InvalidSizeError` messages are surfaced directly to users, so they're written
 in Spanish.

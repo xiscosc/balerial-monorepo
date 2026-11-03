@@ -4,10 +4,10 @@ import { InvalidDataError } from '../error/invalid-data.error';
 import { CustomerRepositoryDynamoDb } from '../repository/dynamodb/customer.repository.dynamodb';
 import type { CustomerDto } from '../repository/dto/customer.dto';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
-import { Customer } from '../types/customer.type';
+import { type Customer } from '../types/customer.type';
 import { SearchUtilities } from '../utilities/search.utilities';
 
 interface PaginatedCustomers {

@@ -1,9 +1,9 @@
 import {
-	AllPrices,
-	ListPrice,
-	ListPriceWithMold,
-	MaxArea,
-	MaxAreaM2,
+	type AllPrices,
+	type ListPrice,
+	type ListPriceWithMold,
+	type MaxArea,
+	type MaxAreaM2,
 	PricingFormula,
 	PricingType
 } from '../types/pricing.type';

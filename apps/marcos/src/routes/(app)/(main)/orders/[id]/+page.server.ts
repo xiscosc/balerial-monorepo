@@ -94,7 +94,12 @@ async function loadData(
 	locations: string[];
 	notificationEntries: OrderAuditTrailEntry[];
 }> {
-	const { orderService, configService, orderAuditTrailService: auditTrailService, fileService } = services;
+	const {
+		orderService,
+		configService,
+		orderAuditTrailService: auditTrailService,
+		fileService
+	} = services;
 	const fullOrder = await orderService.getFullOrderById(orderId);
 	const files = await fileService.getFilesByOrder(orderId);
 	const locations = await configService.getLocationsList();

@@ -70,7 +70,6 @@ balerial/
 │   ├── marcos-lambda-logic/    # Lambda handlers
 │   ├── balerial-s3/            # S3 utilities
 │   ├── balerial-dynamo/        # DynamoDB utilities
-│   ├── eslint-config/          # Shared ESLint config
 │   └── typescript-config/      # Shared TypeScript config
 │
 ├── turbo.json                  # Turborepo configuration
@@ -92,7 +91,6 @@ balerial/
 | `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing                                  |
 | `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)                                   |
 | `@balerial/dynamo`                 | DynamoDB repository and table abstractions                                        |
-| `@repo/eslint-config`              | Shared ESLint configuration                                                       |
 | `@repo/typescript-config`          | Shared TypeScript configuration                                                   |
 
 ## Naming Glossary
@@ -104,7 +102,7 @@ The repo mixes several names and scopes; this is what they mean:
 | **marcos**                                | Spanish for "frames" — the backoffice app and its business-logic packages.                                                                                                                                                                                                                                                                                     |
 | **MMSS / marcsimolduressonsardina**       | _Marcs i Moldures Son Sardina_, the framing shop the system is built for. `mmss` is its acronym, used to prefix AWS resources (`mmss-{env}-files`, `{env}-mmss-stack`) and workspace names (`mmss-marcos-app`, `mmss-aws`). The full name is the npm scope for business-logic packages (`@marcsimolduressonsardina/core`, `@marcsimolduressonsardina/lambda`). |
 | **balerial**                              | Codename for the reusable, business-agnostic layer (a nod to the Balearic Islands, where the shop is located). The `@balerial/dynamo` and `@balerial/s3` packages contain no shop-specific logic and could be reused in other projects. The monorepo itself is also named after it.                                                                            |
-| **@repo/\***                              | Conventional Turborepo placeholder scope for internal tooling configs (ESLint, TypeScript). Never published.                                                                                                                                                                                                                                                   |
+| **@repo/\***                              | Conventional Turborepo placeholder scope for internal tooling configs (TypeScript). Never published.                                                                                                                                                                                                                                                           |
 | **`CDK_ENV_NAME`**                        | Infrastructure environment prefix (`dev`, `prod`) — every AWS resource name starts with it.                                                                                                                                                                                                                                                                    |
 | **`ENV_NAME`**                            | Runtime environment label inside the app (`pre`, `prod`, or anything for local dev) — used for tracking and feature-flag scoping, independent of `CDK_ENV_NAME`.                                                                                                                                                                                               |
 | **Table version suffixes** (`-v2`, `-v3`) | Historical schema migrations — DynamoDB primary keys are immutable, so key changes required new tables. See [DynamoDB schemas](packages/marcos-core/docs/database.md).                                                                                                                                                                                         |
@@ -153,8 +151,8 @@ These scripts are defined at the repo root and run across the workspace via Turb
 | `bun install`             | Install all workspace dependencies                     |
 | `bun run dev`             | Start development mode for all apps                    |
 | `bun run build`           | Build all packages and apps                            |
-| `bun run lint`            | Lint all packages                                      |
-| `bun run format`          | Format code with Prettier                              |
+| `bun run lint`            | Lint the whole repo with Oxlint                        |
+| `bun run format`          | Format the whole repo with Oxfmt                       |
 | `bun run update-packages` | Update dependencies across the workspace and reinstall |
 | `bun run skills`          | Install Claude Code skills                             |
 
@@ -260,8 +258,8 @@ bun run --cwd apps/marcos preview      # preview a production build
 There are no automated tests in CI; quality is enforced by linting, formatting, and type checks. Run these before pushing:
 
 ```bash
-bun run lint      # ESLint across all packages
-bun run format    # Prettier
+bun run lint      # Oxlint across the repo (incl. .svelte <script> blocks)
+bun run format    # Oxfmt (.svelte via its bundled Prettier)
 bun run --cwd apps/marcos check   # Svelte/TypeScript type checking
 ```
 

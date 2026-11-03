@@ -33,9 +33,8 @@ export class ImageConverter {
 	}
 
 	private static async convertWithWasm(file: File, format: OutputFormat): Promise<File> {
-		const { initializeImageMagick, ImageMagick, MagickFormat, MagickGeometry } = await import(
-			'@imagemagick/magick-wasm'
-		);
+		const { initializeImageMagick, ImageMagick, MagickFormat, MagickGeometry } =
+			await import('@imagemagick/magick-wasm');
 		const wasmModule = await import('@imagemagick/magick-wasm/magick.wasm?url');
 		const wasmResponse = await fetch(wasmModule.default);
 		const wasmBytes = new Uint8Array(await wasmResponse.arrayBuffer());

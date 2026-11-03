@@ -1,13 +1,13 @@
 import { createHash } from 'crypto';
 import { v4 as uuid } from 'uuid';
 import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
+	type ICoreConfiguration,
+	type ICoreConfigurationForAWSLambda
 } from '../configuration/core-configuration.interface';
 import { OrderSetRepositoryDynamoDb } from '../repository/dynamodb/order-set.repository.dynamodb';
 import { OrderService } from './order.service';
-import { FullOrder, OrderSet } from '../types';
-import { OrderSetDto } from '../repository/dto/order-set.dto';
+import { type FullOrder, type OrderSet } from '../types';
+import { type OrderSetDto } from '../repository/dto/order-set.dto';
 import { UserService } from './user.service';
 
 export class OrderSetService {

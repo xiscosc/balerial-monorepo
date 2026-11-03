@@ -1,4 +1,4 @@
-import pino, { Logger } from 'pino';
+import pino, { type Logger } from 'pino';
 import pretty from 'pino-pretty';
 
 export const getLogger = (name: string, forLambda: boolean = false): Logger => {
