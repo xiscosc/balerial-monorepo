@@ -1,7 +1,4 @@
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { InvalidKeyError } from '../../error/invalid-key.error';
 import type { ListPriceDto } from '../dto/list-price.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
@@ -14,7 +11,7 @@ import { DynamoQueryExpression } from '@balerial/dynamo/type';
 export class ListPricingRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<ListPriceDto>;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		if (config.listPricingTable == null) {
 			throw Error('Table name listPricingTable can not be empty');
 		}

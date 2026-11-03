@@ -1,8 +1,5 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 
 import type { ConfigDto, ConfigValue } from '../dto/config.dto';
 import { configTableBuilder } from './table/table.builders.dynamodb';
@@ -12,7 +9,7 @@ import { DynamoQueryExpression } from '@balerial/dynamo/type';
 export class ConfigRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<ConfigDto>;
 
-	constructor(public readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(public readonly config: ICoreConfiguration) {
 		if (config.configTable == null) {
 			throw Error('Table name configTable can not be empty');
 		}

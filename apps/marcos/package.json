@@ -42,7 +42,6 @@
 		"@tailwindcss/vite": "4.3.3",
 		"@vercel/speed-insights": "2.0.0",
 		"better-auth": "1.7.14",
-		"chart.js": "4.5.1",
 		"formsnap": "2.0.1",
 		"fuse.js": "7.3.0",
 		"html5-qrcode": "2.3.8",

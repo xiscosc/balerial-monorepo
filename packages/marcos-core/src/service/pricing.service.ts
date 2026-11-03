@@ -21,10 +21,7 @@ import {
 	fitFormulas,
 	noDimensionCheckPricingTypes
 } from '../utilities';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import {
 	type ListPrice,
 	type MaxArea,
@@ -38,7 +35,7 @@ export class PricingService {
 	private listPricingRepository: ListPricingRepositoryDynamoDb;
 	private markup: number;
 
-	constructor(config: ICoreConfiguration | ICoreConfigurationForAWSLambda, markup?: number) {
+	constructor(config: ICoreConfiguration, markup?: number) {
 		this.markup = markup ? markup / 100 : 0;
 		this.listPricingRepository = new ListPricingRepositoryDynamoDb(config);
 	}

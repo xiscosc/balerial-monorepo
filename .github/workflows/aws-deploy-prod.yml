@@ -11,4 +11,3 @@ jobs:
     secrets:
       AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
       AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-      POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}

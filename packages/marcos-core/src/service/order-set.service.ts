@@ -1,9 +1,6 @@
 import { createHash } from 'crypto';
 import { v4 as uuid } from 'uuid';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import { OrderSetRepositoryDynamoDb } from '../repository/dynamodb/order-set.repository.dynamodb';
 import { OrderService } from './order.service';
 import { type FullOrder, type OrderSet } from '../types';
@@ -15,7 +12,7 @@ export class OrderSetService {
 	private orderService: OrderService;
 
 	constructor(
-		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
+		private readonly config: ICoreConfiguration,
 		orderService: OrderService
 	) {
 		this.repository = new OrderSetRepositoryDynamoDb(config);

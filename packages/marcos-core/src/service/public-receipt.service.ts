@@ -1,7 +1,4 @@
-import {
-	type ICorePublicConfiguration,
-	type ICorePublicConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICorePublicConfiguration } from '../configuration/core-configuration.interface';
 import { PublicCustomerRepositoryDynamoDb } from '../repository/dynamodb/public-customer.repository.dynamodb';
 import { PublicOrderRepositoryDynamoDb } from '../repository/dynamodb/public-order.repository.dynamodb';
 import { type FullOrder } from '../types';
@@ -14,10 +11,7 @@ export class PublicReceiptService {
 	private readonly publicCustomerRepository: PublicCustomerRepositoryDynamoDb;
 	private readonly calculatedItemService: CalculatedItemService;
 
-	constructor(
-		config: ICorePublicConfiguration | ICorePublicConfigurationForAWSLambda,
-		calculatedItemService: CalculatedItemService
-	) {
+	constructor(config: ICorePublicConfiguration, calculatedItemService: CalculatedItemService) {
 		this.publicCustomerRepository = new PublicCustomerRepositoryDynamoDb(config);
 		this.publicOrderRepository = new PublicOrderRepositoryDynamoDb(config);
 		this.calculatedItemService = calculatedItemService;

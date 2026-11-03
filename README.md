@@ -1,14 +1,13 @@
 # Marcos MMSS - Order Management System
 
-A comprehensive **Order Management and Back-Office Administration System** for a print/mold shop business. Built as a monorepo using Turborepo, it provides a modern web interface for managing orders, customers, pricing, and reporting.
+A comprehensive **Order Management and Back-Office Administration System** for a print/mold shop business. Built as a monorepo using Turborepo, it provides a modern web interface for managing orders, customers, and pricing.
 
 ## Features
 
 - **Order Management**: Create, track, and manage orders with custom pricing calculations
 - **Dynamic Pricing**: Mold pricing, list pricing, discounts, and multi-dimensional calculations
 - **Customer Database**: Contact management and order history tracking
-- **File Management**: S3-integrated file uploads with automatic image optimization
-- **Reporting & Analytics**: Daily/monthly reports with audit trail tracking
+- **File Management**: S3-integrated file uploads, with images optimized in the browser before upload
 - **Public Order Tracking**: External interface with QR code support
 - **Multi-Store Support**: Manage multiple store locations
 
@@ -20,13 +19,11 @@ A comprehensive **Order Management and Back-Office Administration System** for a
 - [Svelte 5](https://svelte.dev/) - Reactive UI components
 - [TailwindCSS](https://tailwindcss.com/) - Utility-first CSS
 - [Bits UI](https://bits-ui.com/) - Component library
-- [Chart.js](https://www.chartjs.org/) - Data visualization
 
 **Backend & Infrastructure**
 
 - [AWS CDK](https://aws.amazon.com/cdk/) - Infrastructure as Code
 - [DynamoDB](https://aws.amazon.com/dynamodb/) - NoSQL database
-- [AWS Lambda](https://aws.amazon.com/lambda/) - Serverless functions
 - [S3](https://aws.amazon.com/s3/) - File storage
 - [Auth0](https://auth0.com/) - Authentication
 
@@ -55,9 +52,7 @@ balerial/
 │   └── marcos-aws/             # AWS CDK infrastructure
 │       ├── lib/                # Stack definitions
 │       │   ├── database/       # DynamoDB tables
-│       │   ├── file/           # S3 buckets
-│       │   └── function/       # Lambda functions
-│       └── src/lambda/         # Lambda implementations
+│       │   └── file/           # S3 buckets
 │
 ├── packages/
 │   ├── marcos-core/            # Core business logic
@@ -67,7 +62,6 @@ balerial/
 │   │       ├── types/          # TypeScript definitions
 │   │       └── utilities/      # Helpers and calculations
 │   │
-│   ├── marcos-lambda-logic/    # Lambda handlers
 │   ├── balerial-s3/            # S3 utilities
 │   ├── balerial-dynamo/        # DynamoDB utilities
 │   └── typescript-config/      # Shared TypeScript config
@@ -85,27 +79,26 @@ balerial/
 
 ## Packages
 
-| Package                            | Description                                                                       |
-| ---------------------------------- | --------------------------------------------------------------------------------- |
-| `@marcsimolduressonsardina/core`   | Core business logic, types, and services ([docs](packages/marcos-core/README.md)) |
-| `@marcsimolduressonsardina/lambda` | Lambda handlers for reports and image processing                                  |
-| `@balerial/s3`                     | S3 utilities (presigned URLs, uploads, tagging)                                   |
-| `@balerial/dynamo`                 | DynamoDB repository and table abstractions                                        |
-| `@repo/typescript-config`          | Shared TypeScript configuration                                                   |
+| Package                          | Description                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------- |
+| `@marcsimolduressonsardina/core` | Core business logic, types, and services ([docs](packages/marcos-core/README.md)) |
+| `@balerial/s3`                   | S3 utilities (presigned URLs, uploads, tagging)                                   |
+| `@balerial/dynamo`               | DynamoDB repository and table abstractions                                        |
+| `@repo/typescript-config`        | Shared TypeScript configuration                                                   |
 
 ## Naming Glossary
 
 The repo mixes several names and scopes; this is what they mean:
 
-| Name                                      | Meaning                                                                                                                                                                                                                                                                                                                                                        |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **marcos**                                | Spanish for "frames" — the backoffice app and its business-logic packages.                                                                                                                                                                                                                                                                                     |
-| **MMSS / marcsimolduressonsardina**       | _Marcs i Moldures Son Sardina_, the framing shop the system is built for. `mmss` is its acronym, used to prefix AWS resources (`mmss-{env}-files`, `{env}-mmss-stack`) and workspace names (`mmss-marcos-app`, `mmss-aws`). The full name is the npm scope for business-logic packages (`@marcsimolduressonsardina/core`, `@marcsimolduressonsardina/lambda`). |
-| **balerial**                              | Codename for the reusable, business-agnostic layer (a nod to the Balearic Islands, where the shop is located). The `@balerial/dynamo` and `@balerial/s3` packages contain no shop-specific logic and could be reused in other projects. The monorepo itself is also named after it.                                                                            |
-| **@repo/\***                              | Conventional Turborepo placeholder scope for internal tooling configs (TypeScript). Never published.                                                                                                                                                                                                                                                           |
-| **`CDK_ENV_NAME`**                        | Infrastructure environment prefix (`dev`, `prod`) — every AWS resource name starts with it.                                                                                                                                                                                                                                                                    |
-| **`ENV_NAME`**                            | Runtime environment label inside the app (`pre`, `prod`, or anything for local dev) — used for tracking and feature-flag scoping, independent of `CDK_ENV_NAME`.                                                                                                                                                                                               |
-| **Table version suffixes** (`-v2`, `-v3`) | Historical schema migrations — DynamoDB primary keys are immutable, so key changes required new tables. See [DynamoDB schemas](packages/marcos-core/docs/database.md).                                                                                                                                                                                         |
+| Name                                      | Meaning                                                                                                                                                                                                                                                                                                                    |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **marcos**                                | Spanish for "frames" — the backoffice app and its business-logic packages.                                                                                                                                                                                                                                                 |
+| **MMSS / marcsimolduressonsardina**       | _Marcs i Moldures Son Sardina_, the framing shop the system is built for. `mmss` is its acronym, used to prefix AWS resources (`mmss-{env}-files`, `{env}-mmss-stack`) and workspace names (`mmss-marcos-app`, `mmss-aws`). The full name is the npm scope for business-logic packages (`@marcsimolduressonsardina/core`). |
+| **balerial**                              | Codename for the reusable, business-agnostic layer (a nod to the Balearic Islands, where the shop is located). The `@balerial/dynamo` and `@balerial/s3` packages contain no shop-specific logic and could be reused in other projects. The monorepo itself is also named after it.                                        |
+| **@repo/\***                              | Conventional Turborepo placeholder scope for internal tooling configs (TypeScript). Never published.                                                                                                                                                                                                                       |
+| **`CDK_ENV_NAME`**                        | Infrastructure environment prefix (`dev`, `prod`) — every AWS resource name starts with it.                                                                                                                                                                                                                                |
+| **`ENV_NAME`**                            | Runtime environment label inside the app (`pre`, `prod`, or anything for local dev) — used for tracking and feature-flag scoping, independent of `CDK_ENV_NAME`.                                                                                                                                                           |
+| **Table version suffixes** (`-v2`, `-v3`) | Historical schema migrations — DynamoDB primary keys are immutable, so key changes required new tables. See [DynamoDB schemas](packages/marcos-core/docs/database.md).                                                                                                                                                     |
 
 ## Documentation
 
@@ -116,7 +109,7 @@ In-depth documentation for the core business logic (pricing, orders, services) l
 | [Core overview](packages/marcos-core/README.md)              | Package architecture, structure, public entry points, and the `ServiceFactory` dependency injection            |
 | [Pricing engine](packages/marcos-core/docs/pricing.md)       | Price types and formulas, the mold matrix, fabric/crossbar pricing, markup, dimension handling, and validation |
 | [Orders & totals](packages/marcos-core/docs/orders.md)       | Order/quote/external lifecycle, calculated items, discounts, totals, payments, and audit trail                 |
-| [Supporting services](packages/marcos-core/docs/services.md) | Customers, files, reports, config, public receipts, the persistence layer, errors, and logging                 |
+| [Supporting services](packages/marcos-core/docs/services.md) | Customers, files, config, public receipts, the persistence layer, errors, and logging                          |
 | [DynamoDB schemas](packages/marcos-core/docs/database.md)    | Every table's keys, GSIs, stored attributes, and which indexes are public                                      |
 
 ## Getting Started
@@ -169,7 +162,7 @@ The backoffice app (`apps/marcos`) talks to **real AWS resources** (DynamoDB tab
 
 The infrastructure lives in `apps/marcos-aws` and is deployed with the AWS CDK. In CI this is automated (see `.github/workflows/aws-deploy-*.yml`), but you can deploy an environment manually.
 
-First, configure AWS credentials for an account/identity that has permission to create the infrastructure (CDK bootstrap, CloudFormation, DynamoDB, S3, IAM, Lambda, EventBridge, SQS). The pipeline deploys to **`eu-central-1`**, so use the same region unless you intend to run a separate environment:
+First, configure AWS credentials for an account/identity that has permission to create the infrastructure (CDK bootstrap, CloudFormation, DynamoDB, S3, IAM, SQS). The pipeline deploys to **`eu-central-1`**, so use the same region unless you intend to run a separate environment:
 
 ```bash
 export AWS_ACCESS_KEY_ID=...
@@ -177,14 +170,12 @@ export AWS_SECRET_ACCESS_KEY=...
 export AWS_REGION=eu-central-1
 ```
 
-The CDK app reads its configuration from environment variables (see `apps/marcos-aws/lib/mmss.app.ts`). All four are **required** or the synth will throw:
+The CDK app reads its configuration from environment variables (see `apps/marcos-aws/lib/mmss.app.ts`). Both are **required** or the synth will throw:
 
 | Variable                 | Description                                                           |
 | ------------------------ | --------------------------------------------------------------------- |
 | `CDK_ENV_NAME`           | Environment name, used as a prefix for all resources (e.g. `preview`) |
 | `ALLOWED_UPLOAD_ORIGINS` | Comma-separated list of origins allowed to upload to S3 (CORS)        |
-| `MAIN_STORE_ID`          | Primary store identifier                                              |
-| `POSTHOG_KEY`            | PostHog server key                                                    |
 
 Then, from `apps/marcos-aws`, run the CDK commands through Bun:
 
@@ -201,7 +192,7 @@ bun run cdk diff
 bun run cdk deploy --all --require-approval never
 ```
 
-This creates the DynamoDB tables, S3 buckets, Lambda functions, and — importantly — three IAM **managed policies** that scope access to those resources:
+This creates the DynamoDB tables, S3 buckets, and — importantly — three IAM **managed policies** that scope access to those resources:
 
 - `${CDK_ENV_NAME}-main-store-read-policy`
 - `${CDK_ENV_NAME}-main-store-write-policy`
@@ -299,7 +290,6 @@ The application requires the following environment variables:
 
 - `MOLD_PRICES_BUCKET` - Mold prices storage
 - `FILES_BUCKET` - File uploads storage
-- `REPORTS_BUCKET` - Reports storage
 
 ### Authentication
 
@@ -335,7 +325,7 @@ Feature flags are managed via [PostHog](https://posthog.com/) and split into ser
 
 ### AWS Infrastructure (CDK)
 
-Infrastructure deployment is automated via GitHub Actions (`.github/workflows/aws-deploy-*.yml`, deploying to `eu-central-1`). To deploy manually, set the required CDK env vars (`CDK_ENV_NAME`, `ALLOWED_UPLOAD_ORIGINS`, `MAIN_STORE_ID`, `POSTHOG_KEY` — see [How to Develop](#how-to-develop)) and run:
+Infrastructure deployment is automated via GitHub Actions (`.github/workflows/aws-deploy-*.yml`, deploying to `eu-central-1`). To deploy manually, set the required CDK env vars (`CDK_ENV_NAME`, `ALLOWED_UPLOAD_ORIGINS` — see [How to Develop](#how-to-develop)) and run:
 
 ```bash
 cd apps/marcos-aws
@@ -353,9 +343,7 @@ bun run cdk deploy --all --require-approval never
 ### Infrastructure Resources
 
 - **DynamoDB Tables**: Customer, Order, File, Config, ListPricing, OrderSet, OrderAuditTrail, CalculatedItemOrder — schemas documented in [DynamoDB schemas](packages/marcos-core/docs/database.md)
-- **S3 Buckets**: MoldPrices, Files, Reports
-- **Lambda Functions**: Daily report generation, image optimization
-- **EventBridge Rules**: Scheduled report generation (21:50 daily)
+- **S3 Buckets**: MoldPrices, Files
 
 ## License
 

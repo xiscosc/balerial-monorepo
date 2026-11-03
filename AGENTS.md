@@ -5,7 +5,7 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 ## Tech
 
 - SvelteKit + Svelte 5 + TailwindCSS (frontend)
-- AWS DynamoDB + S3 + Lambda (backend)
+- AWS DynamoDB + S3 (backend)
 - Auth0 (authentication)
 - PostHog (analytics)
 - TypeScript throughout
@@ -15,7 +15,6 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 - `apps/marcos` — SvelteKit backoffice app (deployed on Vercel)
 - `apps/marcos-aws` — AWS CDK infrastructure
 - `packages/marcos-core` — Core business logic and services
-- `packages/marcos-lambda-logic` — Lambda handlers
 - `packages/balerial-s3` — S3 utilities
 - `packages/balerial-dynamo` — DynamoDB utilities
 - `packages/typescript-config` — Shared TypeScript config

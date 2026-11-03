@@ -1,7 +1,4 @@
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { type OrderDto } from '../dto/order.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
@@ -11,7 +8,7 @@ import { orderTableBuilder, OrderSecondaryIndexNames } from './table/table.build
 export class PublicOrderRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<OrderDto>;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		if (config.orderTable == null) {
 			throw Error('Table name orderTable can not be empty');
 		}

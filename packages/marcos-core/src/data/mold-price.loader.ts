@@ -3,10 +3,7 @@ import { read } from 'xlsx';
 
 import { PricingService } from '../service';
 import { type ListPrice, PricingFormula, PricingType } from '../types';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
 import { BalerialCloudFileService } from '@balerial/s3/service';
 
@@ -14,7 +11,7 @@ export class MoldPriceLoader {
 	private service: PricingService;
 	private balerialFileCloudService: BalerialCloudFileService;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		this.service = new PricingService(config);
 		this.balerialFileCloudService = new BalerialCloudFileService(
 			this.config.moldPricesBucket!,
