@@ -11,19 +11,13 @@ import {
 } from '../types/order.type';
 import { CalculatedItemUtilities } from '../utilities/calculated-item.utilites';
 import { PricingType } from '../types/pricing.type';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 
 export class CalculatedItemService {
 	private calculatedItemRepository: CalculatedItemRepositoryDynamoDb;
 	private pricingProvider: PricingService;
 
-	constructor(
-		config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
-		pricingService: PricingService
-	) {
+	constructor(config: ICoreConfiguration, pricingService: PricingService) {
 		this.calculatedItemRepository = new CalculatedItemRepositoryDynamoDb(config);
 		this.pricingProvider = pricingService;
 	}

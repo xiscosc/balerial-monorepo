@@ -241,12 +241,7 @@ The hash (sorted ids → `sha256`) is both the dedupe key and a stable identifie
   is unchanged (`JSON.stringify` equality) or the ids differ.
 - All writes are **suppressed** when `config.disableOrderAuditTrail === true`,
   or when `newValue === oldValue`.
-- `getEntriesForOrder(orderId, type?)` and
-  `getEntriesForDayWithoutDataType(date)` (used by reporting) are the reads. The
-  daily query intentionally excludes bulky `DATA` entries.
-
-These status entries are the raw material the **daily report** mines to detect
-"order became `PENDING` today" (see [`services.md`](services.md) → Reports).
+- `getEntriesForOrder(orderId, type?)` is the read.
 
 ---
 

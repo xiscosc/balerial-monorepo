@@ -1,21 +1,14 @@
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import type { FileDto } from '../dto/file.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { fileTableBuilder } from './table/table.builders.dynamodb';
-import {
-	type DynamoFilterElement,
-	DynamoFilterExpression,
-	DynamoQueryExpression
-} from '@balerial/dynamo/type';
+import { DynamoQueryExpression } from '@balerial/dynamo/type';
 
 export class FileRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<FileDto>;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		if (config.fileTable == null) {
 			throw Error('Table name fileTable can not be empty');
 		}
@@ -49,33 +42,6 @@ export class FileRepositoryDynamoDb {
 
 	public async deleteFile(orderUuid: string, fileUuid: string) {
 		await this.repository.batchDelete([{ partitionKey: orderUuid, sortKey: fileUuid }]);
-	}
-
-	public async getOptimizedPhotoFileOriginalKeys(): Promise<Partial<FileDto>[]> {
-		const filters: DynamoFilterElement[] = [
-			{
-				attribute: 'type',
-				expression: DynamoFilterExpression.EQUAL,
-				value: 'photo'
-			},
-			{
-				attribute: 'optimizedKey',
-				expression: DynamoFilterExpression.ATTRIBUTE_EXISTS,
-				value: true
-			},
-			{
-				attribute: 'thumbnailKey',
-				expression: DynamoFilterExpression.ATTRIBUTE_EXISTS,
-				value: true
-			}
-		];
-
-		const projections = ['key'];
-		const dtos = await this.repository.scan({
-			filterAttributes: filters,
-			projectionAttributes: projections
-		});
-		return dtos.elements;
 	}
 
 	public async deleteFiles(files: FileDto[]) {

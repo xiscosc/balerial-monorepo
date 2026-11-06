@@ -1,7 +1,4 @@
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { type CustomerDto } from '../dto/customer.dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
@@ -10,7 +7,7 @@ import { customerTableBuilder } from './table/table.builders.dynamodb';
 export class PublicCustomerRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<CustomerDto>;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		if (config.customerTable == null) {
 			throw Error('Table name customerTable can not be empty');
 		}

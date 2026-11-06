@@ -3,10 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { InvalidDataError } from '../error/invalid-data.error';
 import { CustomerRepositoryDynamoDb } from '../repository/dynamodb/customer.repository.dynamodb';
 import type { CustomerDto } from '../repository/dto/customer.dto';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import { type Customer } from '../types/customer.type';
 import { SearchUtilities } from '../utilities/search.utilities';
 
@@ -18,7 +15,7 @@ interface PaginatedCustomers {
 export class CustomerService {
 	private repository: CustomerRepositoryDynamoDb;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		this.repository = new CustomerRepositoryDynamoDb(config);
 	}
 

@@ -1,7 +1,7 @@
 import { type AwsCredentialIdentity } from '@smithy/types';
 import { type AppUser } from '../types/user.type';
 
-interface ICoreConfigurationBase {
+export interface ICoreConfiguration {
 	storeId: string;
 	orderTable?: string;
 	customerTable?: string;
@@ -11,30 +11,16 @@ interface ICoreConfigurationBase {
 	listPricingTable?: string;
 	orderAuditTrailTable?: string;
 	filesBucket?: string;
-	reportsBucket?: string;
 	moldPricesBucket?: string;
 	orderSetTable?: string;
-	runInAWSLambda: boolean;
 	user: AppUser;
 	disableOrderAuditTrail?: boolean;
-}
-
-export interface ICoreConfiguration extends ICoreConfigurationBase {
-	runInAWSLambda: false;
 	region: string;
 	credentials: AwsCredentialIdentity;
-}
-
-export interface ICoreConfigurationForAWSLambda extends ICoreConfigurationBase {
-	runInAWSLambda: true;
 }
 
 export const PUBLIC_REPOSITORY = 'public-repo';
 
 export interface ICorePublicConfiguration extends ICoreConfiguration {
-	storeId: 'public-repo';
-}
-
-export interface ICorePublicConfigurationForAWSLambda extends ICoreConfigurationForAWSLambda {
 	storeId: 'public-repo';
 }

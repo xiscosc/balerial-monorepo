@@ -2,7 +2,7 @@
 
 The pricing engine ([`pricing.md`](pricing.md)) and order lifecycle
 ([`orders.md`](orders.md)) are the core. This document covers everything around
-them: customers, files, reports, config, public receipts, the persistence
+them: customers, files, config, public receipts, the persistence
 layer, and the error/logging utilities.
 
 ---
@@ -49,10 +49,6 @@ marker) for an order, stored in S3 (`filesBucket`) via
 - **Delete**: `deleteFile` removes the DynamoDB record, logs an `ATTACHMENT`
   removal, and **tags every S3 key with `expiry=true`** (lifecycle-driven
   deletion) rather than deleting immediately. `NO_ART` files skip the S3 step.
-- **Optimization sweep**: `optimizePhotoStorage()` finds originals that already
-  have an optimized variant and tags the originals `expiry=true`, in batches of
-  50 with a 1 s pause between batches. Image targets:
-  optimized `width 2160 / quality 80`, thumbnail `80×80`.
 
 `ImageVariant` = `ORIGINAL | OPTIMIZED | THUMBNAIL`; `FileType` =
 `PHOTO | VIDEO | OTHER | NO_ART`. Failures during multi-key operations are
@@ -60,44 +56,6 @@ logged via the pino logger but don't abort the whole operation
 (`Promise.allSettled`).
 
 Persistence: composite primary key `(orderUuid, fileUuid)`.
-
----
-
-## Reports — `ReportService`
-
-Aggregates business activity into JSON reports stored in S3 (`reportsBucket`),
-keyed by store and granularity.
-
-### Daily report — `generateAndStoreDailyReport(date)`
-
-Mines the **audit trail** for the day: keeps `STATUS` entries that represent an
-order **becoming `PENDING`** (from null/quote → pending) — i.e. "new orders
-booked today". For those orders it records `{ id, customerId, total }` and
-aggregates part counts (`{ id, count }`). The report is content-hashed
-(`sha256` of its JSON) for dedupe, then stored at
-`<storeId>/daily/<y>/<m>/<d>/report.json`.
-
-### Rollups
-
-`upadateWeeklyReport` / `upadateMonthlyReport` append a daily report into the
-week/month rollup (deduped by the daily report's hash). Stored at
-`<storeId>/weekly/<y>/<week>/report.json` and `.../monthly/<y>/<m>/...`.
-
-### Reads & dashboard
-
-- `getDailyReport` / `getWeeklyReport` / `getMonthlyReport` return the stored
-  JSON or an empty shell if absent.
-- `getDashboardReport(start, end)` builds a `DashboardReport` over a range:
-  daily cash & order counts, totals (orders, cash, customers, items), and
-  **top 15 orders / top 15 customers / top 25 items** (items filtered by
-  `isExcludedItem` — ids containing `sin_`, `cliente`, `espacio_blanco`,
-  `fabric` are excluded as non-product lines). It picks the most efficient
-  source for the range via `getDailyReportsBetweenDates` (same-day → daily;
-  same-week → weekly; same-month → monthly; otherwise iterate months). The end
-  date is clamped to today.
-
-Report dates use the `ReportDate = { day, month, year }` shape; date maths is
-Luxon-based.
 
 ---
 
@@ -184,19 +142,16 @@ in Spanish.
 
 ## Logging — `src/logger/logger.ts`
 
-`getLogger(name, forLambda?)` returns a [pino](https://getpino.io) logger.
-Outside Lambda it pretty-prints (colorized) for local dev; inside Lambda it logs
-plain JSON (CloudWatch-friendly). `getLoggerForLambda(name)` is the Lambda
-shortcut. Currently used by `FileService` for the storage-optimization sweeps.
+`getLogger(name)` returns a colorized, pretty-printing
+[pino](https://getpino.io) logger. Currently used by `FileService` to log failed S3 tagging on delete.
 
 ---
 
 ## Configuration recap
 
 All services take an `ICoreConfiguration` (carries explicit AWS
-`region` + `credentials`) or `ICoreConfigurationForAWSLambda` (no credentials —
-uses the execution role). `getClientConfiguration(config)` returns `{}` for
-Lambda or `{ region, credentials }` otherwise, and is what every repository and
+`region` + `credentials`). `getClientConfiguration(config)` returns
+`{ region, credentials }` and is what every repository and
 S3 service is initialised with. The config also carries every table/bucket name,
 the current `user`, the `storeId`, and `disableOrderAuditTrail`. Missing a
 required table/bucket name throws at construction time (fail fast).

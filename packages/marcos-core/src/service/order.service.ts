@@ -12,10 +12,7 @@ import type {
 import type { OrderCreationDto } from './dto/order-creation.dto';
 import { DateTime } from 'luxon';
 import { OrderAuditTrailService } from './order-audit-trail.service';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import {
 	type CalculatedItem,
 	type CalculatedItemWithPartTypes,
@@ -58,7 +55,7 @@ export class OrderService {
 	private pricingService: PricingService;
 
 	constructor(
-		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
+		private readonly config: ICoreConfiguration,
 		customerService: CustomerService,
 		orderAuditTrailService: OrderAuditTrailService,
 		calculatedItemService: CalculatedItemService,

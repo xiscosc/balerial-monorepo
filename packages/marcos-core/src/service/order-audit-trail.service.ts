@@ -2,10 +2,7 @@ import type { OrderAuditTrailEntryDto } from '../repository/dto/order-audit-trai
 import { OrderAuditTrailRepositoryDynamoDb } from '../repository/dynamodb/order-audit-trail.repository.dynamodb';
 import { OrderService } from './order.service';
 import { v4 as uuidv4 } from 'uuid';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import {
 	type Order,
 	type OrderAuditTrailDataEditEntry,
@@ -19,7 +16,7 @@ import { DateTime } from 'luxon';
 export class OrderAuditTrailService {
 	private auditRepository: OrderAuditTrailRepositoryDynamoDb;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		this.auditRepository = new OrderAuditTrailRepositoryDynamoDb(config);
 	}
 
@@ -41,14 +38,6 @@ export class OrderAuditTrailService {
 
 	async logOrderFileCreated(orderId: string, fileId: string) {
 		await this.pushChanges(orderId, OrderAuditTrailType.ATTACHMENT, fileId, '');
-	}
-
-	async getEntriesForDayWithoutDataType(date: Date): Promise<OrderAuditTrailEntry[]> {
-		const startTs = DateTime.fromJSDate(date).startOf('day').toMillis();
-		const endTs = DateTime.fromJSDate(date).endOf('day').toMillis();
-		const dtos = await this.auditRepository.getOrderAuditTrailEntriesBetweenTs(startTs, endTs);
-		const filteredDtos = dtos.filter((dto) => dto.type !== OrderAuditTrailType.DATA.toString());
-		return filteredDtos.map((dto) => OrderAuditTrailService.fromDto(dto));
 	}
 
 	async getEntriesForOrder(

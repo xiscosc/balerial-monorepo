@@ -6,8 +6,6 @@ import { Queue } from 'aws-cdk-lib/aws-sqs';
 export interface MssStackProps extends StackProps {
 	envName: string;
 	allowedUploadOrigins: string[];
-	mainStoreId: string;
-	postHogKey: string;
 }
 
 export type TableInfo = {
@@ -38,7 +36,6 @@ export type DynamoTableSet = {
 export type BucketSet = {
 	moldPricesBucket: Bucket;
 	filesBucket: Bucket;
-	reportsBucket: Bucket;
 };
 
 export type QueueSet = {

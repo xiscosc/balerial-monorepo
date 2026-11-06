@@ -1,8 +1,5 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
-import {
-	type ICoreConfiguration,
-	type ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import type { CalculatedItemDto } from '../dto/calculated-item.dto';
 import { calculatedItemTableBuilder } from './table/table.builders.dynamodb';
 import { getClientConfiguration } from '../../configuration/configuration.util';
@@ -10,7 +7,7 @@ import { getClientConfiguration } from '../../configuration/configuration.util';
 export class CalculatedItemRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<CalculatedItemDto>;
 
-	constructor(config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(config: ICoreConfiguration) {
 		if (config.calculatedItemTable == null) {
 			throw Error('Table name calculatedItemTable can not be empty');
 		}

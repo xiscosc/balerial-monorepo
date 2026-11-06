@@ -1,6 +1,6 @@
 # marcos — backoffice app
 
-SvelteKit (Svelte 5) backoffice application for the Marcos MMSS order management system: orders, quotes, customers, pricing, file attachments, reports, and a public order-tracking interface. Deployed on Vercel.
+SvelteKit (Svelte 5) backoffice application for the Marcos MMSS order management system: orders, quotes, customers, pricing, file attachments, and a public order-tracking interface. Deployed on Vercel.
 
 UI text is in **Spanish** (the shop's working language).
 
