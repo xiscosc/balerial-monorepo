@@ -12,8 +12,6 @@ on:
         required: true
       AWS_SECRET_KEY:
         required: true
-      POSTHOG_KEY:
-        required: true
     outputs: {}
 
 jobs:
@@ -44,21 +42,15 @@ jobs:
         env:
           CDK_ENV_NAME: ${{ inputs.cdk_env_name }}
           ALLOWED_UPLOAD_ORIGINS: ${{ vars.ALLOWED_UPLOAD_ORIGINS }}
-          MAIN_STORE_ID: ${{ vars.MAIN_STORE_ID }}
-          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
 
       - name: Diff stack
         run: bun run --cwd apps/marcos-aws cdk diff
         env:
           CDK_ENV_NAME: ${{ inputs.cdk_env_name }}
           ALLOWED_UPLOAD_ORIGINS: ${{ vars.ALLOWED_UPLOAD_ORIGINS }}
-          MAIN_STORE_ID: ${{ vars.MAIN_STORE_ID }}
-          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
 
       - name: Deploy stack
         run: bun run --cwd apps/marcos-aws cdk deploy --all --require-approval never
         env:
           CDK_ENV_NAME: ${{ inputs.cdk_env_name }}
           ALLOWED_UPLOAD_ORIGINS: ${{ vars.ALLOWED_UPLOAD_ORIGINS }}
-          MAIN_STORE_ID: ${{ vars.MAIN_STORE_ID }}
-          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}

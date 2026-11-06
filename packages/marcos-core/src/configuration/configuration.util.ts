@@ -1,12 +1,8 @@
-import { ICoreConfiguration, ICoreConfigurationForAWSLambda } from './core-configuration.interface';
+import { type ICoreConfiguration } from './core-configuration.interface';
 
-export function getClientConfiguration(
-	config: ICoreConfiguration | ICoreConfigurationForAWSLambda
-) {
-	return config.runInAWSLambda
-		? {}
-		: {
-				region: config.region,
-				credentials: config.credentials
-			};
+export function getClientConfiguration(config: ICoreConfiguration) {
+	return {
+		region: config.region,
+		credentials: config.credentials
+	};
 }

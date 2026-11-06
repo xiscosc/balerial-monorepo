@@ -2,15 +2,12 @@ import mime from 'mime-types';
 import { v4 as uuidv4 } from 'uuid';
 import { FileRepositoryDynamoDb } from '../repository/dynamodb/file.repository.dynamodb';
 
-import { Logger } from 'pino';
+import { type Logger } from 'pino';
 import type { FileDto } from '../repository/dto/file.dto';
 import { OrderAuditTrailService } from './order-audit-trail.service';
-import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
-import { FileType, File, ImageVariant } from '../types/file.type';
+import { FileType, type File, ImageVariant } from '../types/file.type';
 import { getLogger } from '../logger/logger';
 import { BalerialCloudFileService } from '@balerial/s3/service';
 
@@ -21,17 +18,7 @@ interface IFileMetadata extends Record<string, string> {
 	type: FileType;
 }
 
-export type OptimizationAndThumbnailTypeInfo = {
-	optimizedContentType: string;
-	thumbnailContentType: string;
-	optimizedExtension: string;
-	thumbnailExtension: string;
-};
-
 export class FileService {
-	public static readonly optimizedImageSize = { width: 2160 };
-	public static readonly optimizedImageQuality = { quality: 80 };
-	public static readonly thumbnailImageSize = { width: 80, height: 80 };
 	private static readonly expiryTag = {
 		Key: 'expiry',
 		Value: 'true'
@@ -42,7 +29,7 @@ export class FileService {
 	private readonly logger: Logger;
 
 	constructor(
-		private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
+		private readonly config: ICoreConfiguration,
 		orderAuditTrailService: OrderAuditTrailService
 	) {
 		this.repository = new FileRepositoryDynamoDb(config);
@@ -56,7 +43,7 @@ export class FileService {
 			throw Error('files bucket is needed');
 		}
 
-		this.logger = getLogger('FileService', this.config.runInAWSLambda);
+		this.logger = getLogger('FileService');
 	}
 
 	public async createFile(
@@ -120,34 +107,6 @@ export class FileService {
 		const fileDto = await this.repository.getFile(orderId, id);
 		if (fileDto == null) return undefined;
 		return this.processFileToDownload(fileDto);
-	}
-
-	public async optimizePhotoStorage(): Promise<void> {
-		this.logger.info('Optimizing photo storage');
-		const fileDtos = await this.repository.getOptimizedPhotoFileOriginalKeys();
-		const originalKeys = fileDtos.map((dto) => dto.key!);
-		this.logger.info(`Found ${originalKeys.length} files to optimize`);
-
-		const batches = [];
-		for (let i = 0; i < originalKeys.length; i += 50) {
-			batches.push(originalKeys.slice(i, i + 50));
-		}
-
-		this.logger.info(`Processing ${batches.length} batches`);
-		for (let i = 0; i < batches.length; i++) {
-			const batch = batches[i];
-			this.logger.info(`Processing batch ${i + 1} of ${batches.length}`);
-			const promises = batch.map((key) =>
-				this.balerialFileCloudService.tagFile(key, [FileService.expiryTag])
-			);
-			const results = await Promise.allSettled(promises);
-			results.forEach((result) => {
-				if (result.status === 'rejected') {
-					this.logger.error({ err: result.reason }, 'tagFile promise failed');
-				}
-			});
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-		}
 	}
 
 	public async getFilesByOrder(orderId: string): Promise<File[]> {

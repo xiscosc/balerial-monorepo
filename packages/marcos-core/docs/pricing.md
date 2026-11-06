@@ -24,17 +24,17 @@ bulk-loaded from an Excel file (see [Mold prices](#mold-prices-the-matrix--excel
 Each part of an order belongs to exactly one pricing type. The type decides
 **which dimensions** are used and **which pricing path** runs.
 
-| Type | Meaning (Spanish UI) | Pricing path |
-|---|---|---|
-| `MOLD` | Moldura (frame) | Matrix lookup (`getMoldPrice`) |
-| `FABRIC` | Estirar tela / Travesaño (stretch fabric / crossbar) | Special fabric path |
-| `GLASS` | Cristal | Formula |
-| `BACK` | Trasera (backboard) | Formula |
-| `PP` | Passepartout (mat) | Formula |
-| `LABOUR` | Montaje (assembly) | Formula |
-| `TRANSPORT` | Transporte | Formula (usually `NONE`) |
-| `HANGER` | Colgador | Formula (usually `NONE`) |
-| `OTHER` | Otros | Formula (usually `NONE`) |
+| Type        | Meaning (Spanish UI)                                 | Pricing path                   |
+| ----------- | ---------------------------------------------------- | ------------------------------ |
+| `MOLD`      | Moldura (frame)                                      | Matrix lookup (`getMoldPrice`) |
+| `FABRIC`    | Estirar tela / Travesaño (stretch fabric / crossbar) | Special fabric path            |
+| `GLASS`     | Cristal                                              | Formula                        |
+| `BACK`      | Trasera (backboard)                                  | Formula                        |
+| `PP`        | Passepartout (mat)                                   | Formula                        |
+| `LABOUR`    | Montaje (assembly)                                   | Formula                        |
+| `TRANSPORT` | Transporte                                           | Formula (usually `NONE`)       |
+| `HANGER`    | Colgador                                             | Formula (usually `NONE`)       |
+| `OTHER`     | Otros                                                | Formula (usually `NONE`)       |
 
 ### Pricing formulas — `PricingFormula`
 
@@ -42,35 +42,35 @@ The formula tells the engine how to turn a base price + dimensions into a final
 price. Used by every type **except** `MOLD` and `FABRIC`, which have dedicated
 paths.
 
-| Formula | Function | Idea |
-|---|---|---|
-| `FORMULA_LINEAR` | `linearPricing` | Price per metre of **perimeter** |
-| `FORMULA_LINEAR_SHORT_SIDE` | `linearPricingShortSide` | Price per metre of the **short side** |
-| `FORMULA_AREA` | `areaPricing` | Price per **m²** (raw) |
-| `FORMULA_LEFTOVER` | `leftoverPricing` | m² price with waste factor **5** + tax |
-| `FORMULA_LEFTOVER_12` | `leftoverPricing12` | same with waste factor **12** |
-| `FORMULA_FIT_AREA` | `fitAreaPricing` | Step table: smallest `MaxArea` that fits |
-| `FORMULA_FIT_AREA_M2` | `fitAreaM2Pricing` | Step table by m² (`MaxAreaM2`) |
-| `NONE` | — | Flat price, returned as-is |
+| Formula                     | Function                 | Idea                                     |
+| --------------------------- | ------------------------ | ---------------------------------------- |
+| `FORMULA_LINEAR`            | `linearPricing`          | Price per metre of **perimeter**         |
+| `FORMULA_LINEAR_SHORT_SIDE` | `linearPricingShortSide` | Price per metre of the **short side**    |
+| `FORMULA_AREA`              | `areaPricing`            | Price per **m²** (raw)                   |
+| `FORMULA_LEFTOVER`          | `leftoverPricing`        | m² price with waste factor **5** + tax   |
+| `FORMULA_LEFTOVER_12`       | `leftoverPricing12`      | same with waste factor **12**            |
+| `FORMULA_FIT_AREA`          | `fitAreaPricing`         | Step table: smallest `MaxArea` that fits |
+| `FORMULA_FIT_AREA_M2`       | `fitAreaM2Pricing`       | Step table by m² (`MaxAreaM2`)           |
+| `NONE`                      | —                        | Flat price, returned as-is               |
 
 ### `ListPrice` — a catalog entry
 
 ```ts
 type ListPrice = {
-  id: string;            // business id (e.g. mold reference "1234_ABC")
-  internalId: string;    // UUID (persisted as `uuid`)
-  price: number;         // base price; meaning depends on the formula
-  minPrice: number;      // floor applied to the final computed price
-  discountAllowed: boolean;
-  description: string;   // Spanish, shown in UI
-  type: PricingType;
-  formula: PricingFormula;
-  areas: MaxArea[];       // for FORMULA_FIT_AREA  → { d1, d2, price }
-  areasM2: MaxAreaM2[];   // for FORMULA_FIT_AREA_M2 → { a, price }
-  priority: number;
-  floating: boolean;      // mold can be hung "floating"; informational flag
-  maxD1?: number;         // max long side (cm) allowed
-  maxD2?: number;         // max short side (cm) allowed
+	id: string; // business id (e.g. mold reference "1234_ABC")
+	internalId: string; // UUID (persisted as `uuid`)
+	price: number; // base price; meaning depends on the formula
+	minPrice: number; // floor applied to the final computed price
+	discountAllowed: boolean;
+	description: string; // Spanish, shown in UI
+	type: PricingType;
+	formula: PricingFormula;
+	areas: MaxArea[]; // for FORMULA_FIT_AREA  → { d1, d2, price }
+	areasM2: MaxAreaM2[]; // for FORMULA_FIT_AREA_M2 → { a, price }
+	priority: number;
+	floating: boolean; // mold can be hung "floating"; informational flag
+	maxD1?: number; // max long side (cm) allowed
+	maxD2?: number; // max short side (cm) allowed
 };
 ```
 
@@ -116,10 +116,10 @@ OrderDimensions {
 
 The mapping (`getDimensionsByType` / `getDimensionsByFormula`):
 
-| Path | Dimensions used |
-|---|---|
-| `MOLD`, `FABRIC` | **Working** (floored) |
-| `FORMULA_LEFTOVER`, `FORMULA_LEFTOVER_12` | **Working** (floored) |
+| Path                                                                                                             | Dimensions used         |
+| ---------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `MOLD`, `FABRIC`                                                                                                 | **Working** (floored)   |
+| `FORMULA_LEFTOVER`, `FORMULA_LEFTOVER_12`                                                                        | **Working** (floored)   |
 | `FORMULA_FIT_AREA`, `FORMULA_FIT_AREA_M2`, `FORMULA_AREA`, `FORMULA_LINEAR`, `FORMULA_LINEAR_SHORT_SIDE`, `NONE` | **Total** (not floored) |
 
 > Note: the fabric **crossbar** sub-case explicitly uses **total** dimensions
@@ -160,35 +160,45 @@ All maths is in pure functions. `defaultTax = 1.21` (21% IVA) is baked into the
 leftover formulas. Unless stated otherwise, `d1`/`d2` are in **cm**.
 
 ### `linearPricing(mPrice, d1, d2)` — `FORMULA_LINEAR`
+
 Perimeter in metres × price-per-metre, rounded up to cents.
+
 ```
 ((d1/100 + d2/100) * 2) * mPrice   → ceil to cents
 ```
 
 ### `linearPricingShortSide(mPrice, d1, d2)` — `FORMULA_LINEAR_SHORT_SIDE`
+
 Short side in metres × price-per-metre, rounded up to cents.
+
 ```
 (min(d1, d2) / 100) * mPrice        → ceil to cents
 ```
 
 ### `areaPricing(m2Price, d1, d2)` — `FORMULA_AREA`
+
 Plain area in m² × price-per-m², rounded up to cents.
+
 ```
 (d1/100) * (d2/100) * m2Price        → ceil to cents
 ```
 
 ### `leftoverPricing(m2Price, d1, d2)` / `leftoverPricing12(...)` — `FORMULA_LEFTOVER[_12]`
+
 Area-based but with a **waste multiplier** (`5` or `12`), the **21% tax**, a
 floor of 15 cm per side, and a flat **+2** handling charge. Rounded up to the
 nearest **10 cents**.
+
 ```
 d1m = max(15, d1);  d2m = max(15, d2)
 ((d1m/100) * (d2m/100) * m2Price * 1.21 * factor) + 2   → ceil to 0.1
 ```
+
 `leftoverPricing` uses `factor = 5`; `leftoverPricing12` uses `factor = 12`.
 These model materials sold in larger sheets where offcuts are wasted.
 
 ### `fitAreaPricing(listPrice, d1, d2)` — `FORMULA_FIT_AREA`
+
 A **step table** of `MaxArea { d1, d2, price }` rows. The rows are sorted by
 area, then perimeter (`sortByAreaAndPerimeter`); the engine returns the price of
 the **first row that fully contains** the requested size (`row.d1 >= d1 &&
@@ -196,12 +206,14 @@ row.d2 >= d2`). If none fits → `InvalidSizeError` (Spanish message). Empty tab
 → `InvalidSizeError`.
 
 ### `fitAreaM2Pricing(listPrice, d1, d2)` — `FORMULA_FIT_AREA_M2`
+
 A step table of `MaxAreaM2 { a, price }` keyed by **area in m²**. The requested
 area is `ceil((d1/100)*(d2/100) * 100)/100` (m², rounded up to cents). Rows are
 sorted ascending by `a`; returns the price of the **first row whose `a >=`
 requested area**. None fits / empty → `InvalidSizeError`.
 
 ### `NONE`
+
 Returns `listPrice.price` unchanged (a flat price). Common for transport,
 hangers and one-off "other" lines.
 
@@ -217,10 +229,11 @@ dimensions, while a **crossbar** (`'fabric_long'` / `'fabric_short'`,
 Fabric ids (`PricingUtilites.fabricIds`):
 
 ```ts
-fabricIds = { labour: 'fabric', short: 'fabric_short', long: 'fabric_long' }
+fabricIds = { labour: 'fabric', short: 'fabric_short', long: 'fabric_long' };
 ```
 
 ### Loading the price entry — `getFabricPriceList(id, dims, moldFabricId?)`
+
 - `id === 'fabric'` (labour) → returns the in-code `fabricDefaultPricing`
   entry ("Estirar tela", `NONE`, max 300×250). No DB lookup.
 - otherwise (a crossbar) → `moldFabricId` is **required**. It loads the
@@ -229,6 +242,7 @@ fabricIds = { labour: 'fabric', short: 'fabric_short', long: 'fabric_long' }
   `"Travesaño (<mold desc>) <dimension>cm"`. Markup is then applied.
 
 ### Computing the fabric price — `getFabricPrice(priceInfo, dims)`
+
 - **Labour** (`id === 'fabric'`) → `getFabricPrice(d1, d2)` on **working** dims:
   ```
   ceil((0.0308 * (d1 + d2) + 1.95) * 10) / 10   // linear in (width+height), to 10 cents
@@ -290,7 +304,7 @@ splits it back into `"<reference> - UBI: <location>"` for display.
 `PricingService` is constructed with an optional `markup` percentage:
 
 ```ts
-new PricingService(config, markup)   // markup stored internally as markup/100
+new PricingService(config, markup); // markup stored internally as markup/100
 ```
 
 When `markup > 0`, every price loaded from the catalog is inflated **before**
@@ -317,6 +331,7 @@ both `total` (with markup) and `totalWithoutMarkup` (back-computed via
 ## 8. Dimension limits & validation
 
 ### `checkMaxMinDimensions(orderDimensions, pricing)`
+
 Run before computing every price.
 
 - **Skipped** when `formula === NONE` **and** the type is in
@@ -331,6 +346,7 @@ Molds are clamped at **300×265** (set in `cleanAndVerifyEntity`); the in-code
 fabric labour entry caps at **300×250**.
 
 ### `cleanAndVerifyEntity(listPrice)` — write-time normalisation
+
 Runs on `createPricing` / `updatePricing` / `batchStoreListPrices` before
 persisting:
 

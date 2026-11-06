@@ -1,7 +1,7 @@
 import { OrderStatus } from '@marcsimolduressonsardina/core/type';
 import { ButtonVariant } from '@/components/generic/button/button.enum';
 import { IconType } from '@/components/generic/icon/icon.enum';
-import type { BannerColor } from '@/components/generic/Banner.svelte';
+import type { BannerColor } from '@/components/generic/banner.type';
 
 interface IUIInfo {
 	colors: ButtonVariant;

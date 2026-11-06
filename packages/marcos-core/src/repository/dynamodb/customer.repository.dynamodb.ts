@@ -1,23 +1,20 @@
-import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { InvalidKeyError } from '../../error/invalid-key.error';
 import type { CustomerDto } from '../dto/customer.dto';
 import { CustomerSecondaryIndexNames, customerTableBuilder } from './table/table.builders.dynamodb';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import {
-	DynamoFilterElement,
+	type DynamoFilterElement,
 	DynamoFilterExpression,
 	DynamoQueryExpression,
-	IDynamoPaginatedResult
+	type IDynamoPaginatedResult
 } from '@balerial/dynamo/type';
 
 export class CustomerRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<CustomerDto>;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		if (config.customerTable == null) {
 			throw Error('Table name customerTable can not be empty');
 		}

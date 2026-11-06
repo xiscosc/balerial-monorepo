@@ -7,6 +7,6 @@
 		"typeRoots": ["./node_modules/@types"],
 		"allowSyntheticDefaultImports": true
 	},
-	"include": ["lib/**/*", "bin/**/*", "test/**/*", "src/**/*"],
+	"include": ["lib/**/*", "bin/**/*"],
 	"exclude": ["node_modules", "cdk.out"]
 }

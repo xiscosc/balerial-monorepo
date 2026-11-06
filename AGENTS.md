@@ -5,7 +5,7 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 ## Tech
 
 - SvelteKit + Svelte 5 + TailwindCSS (frontend)
-- AWS DynamoDB + S3 + Lambda (backend)
+- AWS DynamoDB + S3 (backend)
 - Auth0 (authentication)
 - PostHog (analytics)
 - TypeScript throughout
@@ -15,10 +15,8 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 - `apps/marcos` — SvelteKit backoffice app (deployed on Vercel)
 - `apps/marcos-aws` — AWS CDK infrastructure
 - `packages/marcos-core` — Core business logic and services
-- `packages/marcos-lambda-logic` — Lambda handlers
 - `packages/balerial-s3` — S3 utilities
 - `packages/balerial-dynamo` — DynamoDB utilities
-- `packages/eslint-config` — Shared ESLint config
 - `packages/typescript-config` — Shared TypeScript config
 
 ## Commands
@@ -27,8 +25,8 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 bun install           # Install dependencies
 bun run dev           # Start dev server
 bun run build         # Build all packages
-bun run lint          # Lint all packages
-bun run format        # Format with Prettier
+bun run lint          # Lint with Oxlint (incl. .svelte <script> blocks)
+bun run format        # Format with Oxfmt (.svelte via its bundled Prettier)
 ```
 
 Use `bun run <script>` for package scripts. `bun build` (without `run`) invokes Bun's built-in bundler, not the Turborepo `build` task. `bun install` is the exception — it's a built-in Bun command.

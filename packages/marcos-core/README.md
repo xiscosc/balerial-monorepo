@@ -4,8 +4,7 @@ Core business logic for **Marcos MMSS**, the order-management and back-office
 system for a custom picture-framing / mold shop. This package is **backend
 framework-agnostic**: it contains the domain types, the pricing engine, the
 order lifecycle, and the persistence layer (DynamoDB + S3). It is consumed by
-the SvelteKit back-office app (`apps/marcos`) and by the Lambda handlers
-(`packages/marcos-lambda-logic`).
+the SvelteKit back-office app (`apps/marcos`).
 
 It holds **no UI and no HTTP**. Everything is expressed as services that take a
 configuration object and talk to AWS. The SvelteKit app injects these services
@@ -25,7 +24,7 @@ shop employee builds an **order** describing:
 
 The package's job is to turn that description into a **price**, persist the
 order, and support the back-office around it (customers, files/photos, audit
-trail, reports, public receipts).
+trail, public receipts).
 
 The two pieces worth understanding first are:
 
@@ -35,7 +34,7 @@ The two pieces worth understanding first are:
    "calculated item", and how totals/discounts/payments work.
    → [`docs/orders.md`](docs/orders.md)
 
-The remaining services (customers, files, reports, config, order sets, public
+The remaining services (customers, files, config, order sets, public
 receipts) and the persistence layer are described in
 [`docs/services.md`](docs/services.md).
 
@@ -53,7 +52,6 @@ src/
 │   ├── order-set.service.ts          ← grouping orders for a customer
 │   ├── customer.service.ts
 │   ├── file.service.ts               ← photos/attachments on S3
-│   ├── report.service.ts             ← daily/weekly/monthly/dashboard reports
 │   ├── order-audit-trail.service.ts  ← change log per order
 │   ├── config.service.ts             ← store config (locations list)
 │   ├── public-receipt.service.ts     ← read-only public order view
@@ -99,7 +97,7 @@ src/
                  │ creates & wires (singletons within a request)
      ┌───────────┼───────────────┬───────────────┬──────────────┐
      ▼           ▼               ▼               ▼              ▼
- OrderService  PricingService  CustomerService  FileService  ReportService …
+ OrderService  PricingService  CustomerService  FileService …
      │              ▲
      │ depends on   │
      ▼              │
@@ -121,15 +119,14 @@ src/
 
 ### Configuration
 
-Services are constructed from an `ICoreConfiguration` (browser/server, carries
-explicit AWS `region` + `credentials`) or `ICoreConfigurationForAWSLambda`
-(runs inside Lambda, credentials come from the execution role). The config also
+Services are constructed from an `ICoreConfiguration`, which carries explicit
+AWS `region` + `credentials`. The config also
 carries all table/bucket names, the current `user`, and feature switches like
 `disableOrderAuditTrail`. See `src/configuration/core-configuration.interface.ts`.
 
 ### The `ServiceFactory`
 
-`ServiceFactory.create(config)` (or `.createForLambda`) is the single
+`ServiceFactory.create(config)` is the single
 entry point. Each service is exposed via a lazy getter that builds the
 dependency graph on first access — e.g. `orderService` pulls in
 `customerService`, `calculatedItemService`, `pricingService` and
@@ -167,7 +164,7 @@ only the read-only services needed for the public receipt page.
 | -------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | [`docs/pricing.md`](docs/pricing.md)   | Price types, formulas, the mold matrix, fabric/crossbar, markup, dimension handling, validation  |
 | [`docs/orders.md`](docs/orders.md)     | Order/quote/external-order lifecycle, calculated items, discounts, totals, payments, audit trail |
-| [`docs/services.md`](docs/services.md) | Customers, files, reports, order sets, config, public receipts, repositories, errors             |
+| [`docs/services.md`](docs/services.md) | Customers, files, order sets, config, public receipts, repositories, errors                      |
 | [`docs/database.md`](docs/database.md) | DynamoDB table schemas: keys, GSIs, stored attributes, public-access indexes                     |
 
 </content>

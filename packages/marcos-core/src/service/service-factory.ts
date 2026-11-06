@@ -1,8 +1,6 @@
 import type {
 	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda,
-	ICorePublicConfiguration,
-	ICorePublicConfigurationForAWSLambda
+	ICorePublicConfiguration
 } from '../configuration/core-configuration.interface';
 import { CalculatedItemService } from './calculated-item.service';
 import { ConfigService } from './config.service';
@@ -13,9 +11,6 @@ import { OrderService } from './order.service';
 import { OrderSetService } from './order-set.service';
 import { PricingService } from './pricing.service';
 import { PublicReceiptService } from './public-receipt.service';
-import { ReportService } from './report.service';
-
-type AnyConfig = ICoreConfiguration | ICoreConfigurationForAWSLambda;
 
 export class ServiceFactory {
 	private _customerService?: CustomerService;
@@ -26,21 +21,14 @@ export class ServiceFactory {
 	private _fileService?: FileService;
 	private _configService?: ConfigService;
 	private _orderSetService?: OrderSetService;
-	private _reportService?: ReportService;
 
-	private constructor(private readonly config: AnyConfig) {}
+	private constructor(private readonly config: ICoreConfiguration) {}
 
 	static create(config: ICoreConfiguration): ServiceFactory {
 		return new ServiceFactory(config);
 	}
 
-	static createForLambda(config: ICoreConfigurationForAWSLambda): ServiceFactory {
-		return new ServiceFactory(config);
-	}
-
-	static createPublic(
-		config: ICorePublicConfiguration | ICorePublicConfigurationForAWSLambda
-	): PublicServiceFactory {
+	static createPublic(config: ICorePublicConfiguration): PublicServiceFactory {
 		return new PublicServiceFactory(config);
 	}
 
@@ -106,18 +94,6 @@ export class ServiceFactory {
 		return this._orderSetService;
 	}
 
-	get reportService(): ReportService {
-		if (!this._reportService) {
-			this._reportService = new ReportService(
-				this.config,
-				this.orderAuditTrailService,
-				this.customerService,
-				this.orderService
-			);
-		}
-		return this._reportService;
-	}
-
 	createPricingServiceWithMarkup = (markup: number): PricingService => {
 		return new PricingService(this.config, markup);
 	};
@@ -144,9 +120,7 @@ export class PublicServiceFactory {
 	private _pricingService?: PricingService;
 	private _calculatedItemService?: CalculatedItemService;
 
-	constructor(
-		private readonly config: ICorePublicConfiguration | ICorePublicConfigurationForAWSLambda
-	) {}
+	constructor(private readonly config: ICorePublicConfiguration) {}
 
 	get pricingService(): PricingService {
 		if (!this._pricingService) {
