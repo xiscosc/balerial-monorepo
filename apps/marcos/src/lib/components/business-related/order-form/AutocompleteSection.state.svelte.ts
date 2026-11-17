@@ -13,7 +13,7 @@ interface AutocompleteSectionState {
 export class AutocompleteSectionStateClass implements AutocompleteSectionState {
 	private added: boolean = $state(false);
 	private autocompleteInput: string = $state('');
-	private fuse: Fuse<ListPrice> | null = new Fuse([], {
+	private fuse: Fuse<ListPrice> | null = new Fuse<ListPrice>([], {
 		keys: ['id', 'description'],
 		isCaseSensitive: false,
 		threshold: 0.1

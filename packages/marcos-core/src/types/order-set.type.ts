@@ -1,5 +1,5 @@
-import { FullOrder } from './order.type';
-import { StaticUser } from './user.type';
+import { type FullOrder } from './order.type';
+import { type StaticUser } from './user.type';
 
 export type OrderSet = {
 	id: string;

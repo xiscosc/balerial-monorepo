@@ -188,5 +188,22 @@ export const Changelogs: Changelog[] = [
 			{ text: 'Actualización de librerías del sistema', type: ChangelogItemType.SECURITY },
 			{ text: 'Optimizaciones internas', type: ChangelogItemType.TECHNICAL }
 		]
+	},
+	{
+		version: 20261027,
+		title: 'Octubre 2026',
+		items: [
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY },
+			{ text: 'Actualización del sistema', type: ChangelogItemType.TECHNICAL }
+		]
+	},
+	{
+		version: 20261103,
+		title: 'Noviembre 2026',
+		items: [
+			{ text: 'Mejoras de seguridad', type: ChangelogItemType.SECURITY },
+			{ text: 'Actualización de librerías del sistema', type: ChangelogItemType.SECURITY },
+			{ text: 'Optimizaciones internas', type: ChangelogItemType.TECHNICAL }
+		]
 	}
 ];

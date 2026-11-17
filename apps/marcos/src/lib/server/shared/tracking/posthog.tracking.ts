@@ -101,9 +101,7 @@ export class PostHogServerTracking implements IServerTracking {
 		}
 		const client = this.buildClient();
 		try {
-			return (
-				(await client.isFeatureEnabled(feature, distinctId, { personProperties })) ?? false
-			);
+			return (await client.isFeatureEnabled(feature, distinctId, { personProperties })) ?? false;
 		} catch (e) {
 			console.error(`Failed to check if feature is enabled in PostHog: ${feature}`, e);
 			return false;

@@ -2,28 +2,22 @@ import { PricingService } from './pricing.service';
 import { CalculatedItemRepositoryDynamoDb } from '../repository/dynamodb/calculated-item.repository.dynamodb';
 import type { CalculatedItemDto } from '../repository/dto/calculated-item.dto';
 import {
-	CalculatedItem,
-	CalculatedItemPart,
-	Order,
-	OrderDimensions,
-	PreCalculatedItemPart,
-	ExternalOrder
+	type CalculatedItem,
+	type CalculatedItemPart,
+	type Order,
+	type OrderDimensions,
+	type PreCalculatedItemPart,
+	type ExternalOrder
 } from '../types/order.type';
 import { CalculatedItemUtilities } from '../utilities/calculated-item.utilites';
 import { PricingType } from '../types/pricing.type';
-import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 
 export class CalculatedItemService {
 	private calculatedItemRepository: CalculatedItemRepositoryDynamoDb;
 	private pricingProvider: PricingService;
 
-	constructor(
-		config: ICoreConfiguration | ICoreConfigurationForAWSLambda,
-		pricingService: PricingService
-	) {
+	constructor(config: ICoreConfiguration, pricingService: PricingService) {
 		this.calculatedItemRepository = new CalculatedItemRepositoryDynamoDb(config);
 		this.pricingProvider = pricingService;
 	}

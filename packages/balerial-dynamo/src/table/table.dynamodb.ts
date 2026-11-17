@@ -1,7 +1,7 @@
-import { DynamoFilterElement } from '../type/filter.dynamodb.type';
+import { type DynamoFilterElement } from '../type/filter.dynamodb.type';
 import {
-	ISecondaryDynamoDbIndex,
-	IPrimaryDynamoDbIndex,
+	type ISecondaryDynamoDbIndex,
+	type IPrimaryDynamoDbIndex,
 	DynamoDbIndexType,
 	DynamoDbIndexKeyType
 } from '../type/index.dynamodb.type';

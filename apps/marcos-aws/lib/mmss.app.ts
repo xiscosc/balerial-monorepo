@@ -7,9 +7,7 @@ export class MmSsApp extends App {
 
 		const props = {
 			envName: MmSsApp.getFromEnv('CDK_ENV_NAME'),
-			allowedUploadOrigins: MmSsApp.getFromEnv('ALLOWED_UPLOAD_ORIGINS').split(','),
-			mainStoreId: MmSsApp.getFromEnv('MAIN_STORE_ID'),
-			postHogKey: MmSsApp.getFromEnv('POSTHOG_KEY')
+			allowedUploadOrigins: MmSsApp.getFromEnv('ALLOWED_UPLOAD_ORIGINS').split(',')
 		};
 
 		const stack = new MmSsStack(this, `${props.envName}-mmss-stack`, props);

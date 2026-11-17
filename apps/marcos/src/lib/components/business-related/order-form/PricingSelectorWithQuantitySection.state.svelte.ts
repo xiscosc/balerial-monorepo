@@ -4,9 +4,7 @@ interface PricingSelectorWithQuantitySectionState {
 	add: (id: string | undefined, quantity: string | undefined) => boolean;
 }
 
-export class PricingSelectorWithQuantitySectionStateClass
-	implements PricingSelectorWithQuantitySectionState
-{
+export class PricingSelectorWithQuantitySectionStateClass implements PricingSelectorWithQuantitySectionState {
 	private added: boolean = $state(false);
 
 	constructor(private addCallback: (id: string, quantity: number) => void) {}

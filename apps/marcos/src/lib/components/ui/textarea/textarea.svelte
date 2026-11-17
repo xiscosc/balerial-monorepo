@@ -17,10 +17,9 @@
 <textarea
 	bind:this={ref}
 	class={cn(
-		`${successClass} flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50`,
+		`${successClass} border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring flex min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50`,
 		className
 	)}
 	data-success={success}
 	bind:value
-	{...restProps}
-></textarea>
+	{...restProps}></textarea>

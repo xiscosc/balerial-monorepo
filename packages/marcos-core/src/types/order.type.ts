@@ -1,6 +1,6 @@
-import { Customer } from './customer.type';
+import { type Customer } from './customer.type';
 import { PricingType } from './pricing.type';
-import { StaticUser } from './user.type';
+import { type StaticUser } from './user.type';
 
 export type CalculatedItemPart = {
 	priceId: string;

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { Button, type ButtonProps } from '@/components/ui/button/index.js';
-	import type { BannerColor } from '@/components/generic/Banner.svelte';
+	import type { BannerColor } from '@/components/generic/banner.type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconSize, type IconType } from '@/components/generic/icon/icon.enum';
 	import { cn } from '@/utils';

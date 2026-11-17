@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { IconSize, IconType } from "@/components/generic/icon/icon.enum";
-	import Icon from "@/components/generic/icon/Icon.svelte";
+	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
+	import Icon from '@/components/generic/icon/Icon.svelte';
 
 	interface Props {
 		text?: string | undefined;
@@ -13,7 +13,7 @@
 	<div class="animate-spin">
 		<Icon size={IconSize.XXL} type={IconType.LOADING_BALL} />
 	</div>
-	{#if text != ""}
+	{#if text != ''}
 		<span class="text-md">
 			{#if text != null}
 				{text}

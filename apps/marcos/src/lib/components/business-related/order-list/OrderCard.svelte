@@ -171,12 +171,12 @@
 		</div>
 
 		<div
-			class="text-1 m-1 rounded-md border border-gray-100 bg-gray-50 px-2 py-2 flex flex-row justify-between items-center"
+			class="text-1 m-1 flex flex-row items-center justify-between rounded-md border border-gray-100 bg-gray-50 px-2 py-2"
 		>
 			<p>{order.item.description}</p>
 			{#if order.item.quantity > 1}
 				<div
-					class="flex flex-row gap-1 rounded-full border border-slate-200 bg-white items-center px-2 py-0.5 text-slate-700"
+					class="flex flex-row items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-slate-700"
 				>
 					<Icon type={IconType.ORDER_DEFAULT} size={IconSize.SMALL} />
 					<p>{order.item.quantity}</p>

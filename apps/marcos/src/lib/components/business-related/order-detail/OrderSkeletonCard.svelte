@@ -21,7 +21,7 @@
 				<Icon type={IconType.LOADING} />
 			</div>
 
-			<div class="overflow-hidden text-ellipsis whitespace-nowrap text-[0.6rem]">
+			<div class="overflow-hidden text-[0.6rem] text-ellipsis whitespace-nowrap">
 				<Skeleton class="h-5 w-32 rounded-lg" />
 			</div>
 		</div>

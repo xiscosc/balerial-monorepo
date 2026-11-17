@@ -13,7 +13,6 @@ import {
 	ORDER_AUDIT_TRAIL_TABLE,
 	ORDER_TABLE,
 	ORDER_SET_TABLE,
-	REPORTS_BUCKET,
 	TRACK_AWS_ACCESS_KEY_ID,
 	TRACK_AWS_SECRET_ACCESS_KEY
 } from '$env/static/private';
@@ -28,7 +27,6 @@ import { redirect } from '@sveltejs/kit';
 export class AuthService {
 	public static generateConfiguration(user: AppUser): ICoreConfiguration {
 		return {
-			runInAWSLambda: false,
 			user,
 			region: AWS_REGION,
 			calculatedItemTable: CALCULATED_ITEM_ORDER_TABLE,
@@ -41,7 +39,6 @@ export class AuthService {
 			orderSetTable: ORDER_SET_TABLE,
 			listPricingTable: LIST_PRICING_TABLE,
 			orderAuditTrailTable: ORDER_AUDIT_TRAIL_TABLE,
-			reportsBucket: REPORTS_BUCKET,
 			orderTable: ORDER_TABLE,
 			credentials: {
 				accessKeyId: AWS_ACCESS_KEY_ID,
@@ -52,7 +49,6 @@ export class AuthService {
 
 	public static generatePublicConfiguration(): ICorePublicConfiguration {
 		return {
-			runInAWSLambda: false,
 			user: {
 				id: 'public',
 				name: 'public',

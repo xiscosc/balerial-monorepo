@@ -1,16 +1,13 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
-import { OrderSetDto } from '../dto/order-set.dto';
-import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
-} from '../../configuration/core-configuration.interface';
+import { type OrderSetDto } from '../dto/order-set.dto';
+import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { OrderSetSecondaryIndexNames, orderSetTableBuilder } from './table/table.builders.dynamodb';
 
 export class OrderSetRepositoryDynamoDb {
 	private repository: BalerialDynamoRepository<OrderSetDto>;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		if (config.orderSetTable == null) {
 			throw Error('Table name orderSetTable can not be empty');
 		}

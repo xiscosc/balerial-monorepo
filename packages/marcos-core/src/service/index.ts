@@ -7,6 +7,5 @@ export * from './order.service';
 export * from './public-receipt.service';
 export * from './pricing.service';
 export * from './order-audit-trail.service';
-export * from './report.service';
 export * from './order-set.service';
 export * from './service-factory';

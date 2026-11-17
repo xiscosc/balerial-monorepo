@@ -12,31 +12,31 @@ import {
 	TransactWriteCommand,
 	type TransactWriteCommandInput,
 	type NativeAttributeValue,
-	ScanCommandInput,
+	type ScanCommandInput,
 	BatchGetCommand
 } from '@aws-sdk/lib-dynamodb';
 import _ from 'lodash';
 import type { IDynamoPaginatedResult } from '../type/result.dynamodb.type';
 import {
 	DynamoDbIndexType,
-	IPrimaryDynamoDbIndex,
-	ISecondaryDynamoDbIndex
+	type IPrimaryDynamoDbIndex,
+	type ISecondaryDynamoDbIndex
 } from '../type/index.dynamodb.type';
 import {
-	DynamoFilterElement,
+	type DynamoFilterElement,
 	DynamoFilterExpression,
 	DynamoFilterExpressionWithValue,
 	DynamoQueryExpression,
-	DynamoSortQueryElement
+	type DynamoSortQueryElement
 } from '../type/filter.dynamodb.type';
 import { BalerialDynamoTable } from '../table/table.dynamodb';
-import { AwsCredentialIdentity } from '@smithy/types';
+import { type AwsCredentialIdentity } from '@smithy/types';
 import {
-	DynamoGetRequest,
-	DynamoGetRequestPaginated,
-	DynamoScanRequest
+	type DynamoGetRequest,
+	type DynamoGetRequestPaginated,
+	type DynamoScanRequest
 } from '../type/request.dynamodb.type';
-import pino, { Logger } from 'pino';
+import pino, { type Logger } from 'pino';
 import pretty from 'pino-pretty';
 
 export class BalerialDynamoRepository<T> {
@@ -455,7 +455,8 @@ export class BalerialDynamoRepository<T> {
 
 	private logError(functionName: string, error: unknown, otherInfo?: object) {
 		this.logger.error(
-			`PartitionKey ${this.table.getPrimaryIndex().partitionKeyName}, sortkey ${this.table.getPrimaryIndex().sortKeyName
+			`PartitionKey ${this.table.getPrimaryIndex().partitionKeyName}, sortkey ${
+				this.table.getPrimaryIndex().sortKeyName
 			}, and function ${functionName}: ${(error as Error).toString()}`
 		);
 
@@ -602,7 +603,7 @@ export class BalerialDynamoRepository<T> {
 		});
 
 		input.ExpressionAttributeNames = {
-			...(input.ExpressionAttributeNames ?? {}),
+			...input.ExpressionAttributeNames,
 			...BalerialDynamoRepository.genetrateAttributeNamesRecord(attributesNamesMap)
 		};
 
@@ -624,7 +625,7 @@ export class BalerialDynamoRepository<T> {
 				.join(' AND ');
 
 			input.ExpressionAttributeValues = {
-				...(input.ExpressionAttributeValues ?? {}),
+				...input.ExpressionAttributeValues,
 				...Object.fromEntries(
 					[...attributesValueNamesMap.entries()].map(([key, value]) => [
 						value,

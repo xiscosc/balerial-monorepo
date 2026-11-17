@@ -4,7 +4,6 @@ import { createDynamoTables } from './database/dynamo-db.construct.js';
 import type { MssStackProps } from './types.js';
 import { createBuckets } from './file/s3.construct.js';
 import { ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { createLambdas } from './function/lambda.construct.js';
 
 export class MmSsStack extends Stack {
 	private readonly props: MssStackProps;
@@ -18,37 +17,28 @@ export class MmSsStack extends Stack {
 			allowedUploadOrigins: this.props.allowedUploadOrigins,
 			envName: this.props.envName
 		});
-		createLambdas({
-			scope: this,
-			envName: this.props.envName,
-			mainStoreId: this.props.mainStoreId,
-			tables,
-			buckets
-		});
 
 		// Create Main store policies
 		const bucketObjectArns = Object.entries(buckets)
 			.map((entry) => entry[1])
 			.map((bucket) => bucket.arnForObjects('*'));
 
-		const bucketListArns = [buckets.filesBucket, buckets.reportsBucket].map(
-			(entry) => entry.bucketArn
-		);
+		const bucketListArns = [buckets.filesBucket.bucketArn];
 
-		const storeTableArns = [...Object.entries(tables.storeTables)]
+		const storeTableArns = Object.entries(tables.storeTables)
 			.map((entry) => entry[1])
 			.map((tableInfo) => tableInfo.table.tableArn);
 
-		const analyticsTableArns = [...Object.entries(tables.analyticsTables)]
+		const analyticsTableArns = Object.entries(tables.analyticsTables)
 			.map((entry) => entry[1])
 			.map((tableInfo) => tableInfo.table.tableArn);
 
-		const publicTableArns = [...Object.entries(tables.storeTables)]
+		const publicTableArns = Object.entries(tables.storeTables)
 			.map((entry) => entry[1])
 			.filter((tableInfo) => tableInfo.primaryIndexIsPublic)
 			.map((tableInfo) => tableInfo.table.tableArn);
 
-		const publicSecondaryIndexArns = [...Object.entries(tables.storeTables)]
+		const publicSecondaryIndexArns = Object.entries(tables.storeTables)
 			.map((entry) => entry[1])
 			.filter((tableInfo) => tableInfo.publicSecondaryIndexes.length > 0)
 			.map((tableInfo) =>

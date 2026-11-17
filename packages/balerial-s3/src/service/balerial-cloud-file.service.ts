@@ -4,11 +4,11 @@ import {
 	GetObjectCommand,
 	HeadObjectCommand,
 	PutObjectCommand,
-	PutObjectCommandInput,
+	type PutObjectCommandInput,
 	PutObjectTaggingCommand,
 	S3Client,
 	StorageClass,
-	Tag
+	type Tag
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { type AwsCredentialIdentity } from '@smithy/types';
@@ -171,7 +171,9 @@ export class BalerialCloudFileService {
 		try {
 			await this.s3Client.send(command);
 		} catch (error) {
-			throw new Error(`Failed to tag file ${key} with tags ${JSON.stringify(tags)}: ${error}`, { cause: error });
+			throw new Error(`Failed to tag file ${key} with tags ${JSON.stringify(tags)}: ${error}`, {
+				cause: error
+			});
 		}
 	}
 }

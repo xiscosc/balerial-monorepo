@@ -1,4 +1,8 @@
-import { CalculatedItemPart, OrderDimensions, PPDimensions } from '../types/order.type';
+import {
+	type CalculatedItemPart,
+	type OrderDimensions,
+	type PPDimensions
+} from '../types/order.type';
 import { PricingType } from '../types/pricing.type';
 
 export const cornersId = 'cantoneras_extra';

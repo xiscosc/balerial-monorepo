@@ -1,6 +1,6 @@
 # marcos — backoffice app
 
-SvelteKit (Svelte 5) backoffice application for the Marcos MMSS order management system: orders, quotes, customers, pricing, file attachments, reports, and a public order-tracking interface. Deployed on Vercel.
+SvelteKit (Svelte 5) backoffice application for the Marcos MMSS order management system: orders, quotes, customers, pricing, file attachments, and a public order-tracking interface. Deployed on Vercel.
 
 UI text is in **Spanish** (the shop's working language).
 
@@ -28,10 +28,8 @@ The dev server runs on `http://localhost:5173` (Vite with `--host`, so it is als
 | `bun run preview`     | Preview a production build        |
 | `bun run check`       | `svelte-check` type checking      |
 | `bun run check:watch` | Type checking in watch mode       |
-| `bun run lint`        | ESLint                            |
-| `bun run format`      | Prettier                          |
 
-There are no automated tests; run `lint`, `format`, and `check` before pushing.
+There are no automated tests; run `check` here and `lint` + `format` from the repo root before pushing.
 
 ## Project layout
 

@@ -1,15 +1,12 @@
 import { ConfigRepositoryDynamoDb } from '../repository/dynamodb/config.repository.dynamodb';
 import type { ConfigDto } from '../repository/dto/config.dto';
 import { LOCATIONS_CONFIG_ID, type LocationsConfigType } from './constants/config.constants';
-import {
-	ICoreConfiguration,
-	ICoreConfigurationForAWSLambda
-} from '../configuration/core-configuration.interface';
+import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 
 export class ConfigService {
 	private repository: ConfigRepositoryDynamoDb;
 
-	constructor(private readonly config: ICoreConfiguration | ICoreConfigurationForAWSLambda) {
+	constructor(private readonly config: ICoreConfiguration) {
 		this.repository = new ConfigRepositoryDynamoDb(config);
 	}
 

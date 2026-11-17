@@ -90,7 +90,7 @@ Env var: `FILE_TABLE` · DTO: [`file.dto.ts`](../src/repository/dto/file.dto.ts)
 | ------- | --------------- | -------------- |
 | Primary | `orderUuid` (S) | `fileUuid` (S) |
 
-Attributes: `orderUuid`, `fileUuid`, `type`, `key` (S3 object key in the files bucket), `originalFilename`, and optional `thumbnailKey` / `optimizedKey` (written by the image-optimization Lambda).
+Attributes: `orderUuid`, `fileUuid`, `type`, `key` (S3 object key in the files bucket), `originalFilename`, and optional `optimizedKey` (set when a photo is uploaded as the browser-optimized variant) / `thumbnailKey` (only on older records; nothing writes it any more).
 
 ### `${env}-config` — per-store configuration
 
@@ -123,4 +123,4 @@ Env var: `ORDER_AUDIT_TRAIL_TABLE` · DTO: [`order-audit-trail-entry.dto.ts`](..
 | GSI `order` | `orderUuid` (S) | `timestamp` (N) |
 | GSI `store` | `storeId` (S)   | `timestamp` (N) |
 
-Append-only log of order changes. Attributes: `uuid`, `orderUuid`, `userId`, `userName`, `storeId`, `type` (what changed), `oldValue` / `newValue` (scalar or full `OrderDto` snapshot), `timestamp`. The `store` GSI is what the daily report Lambda queries (by store and time range). See [orders.md](orders.md) for the audit-trail semantics.
+Append-only log of order changes. Attributes: `uuid`, `orderUuid`, `userId`, `userName`, `storeId`, `type` (what changed), `oldValue` / `newValue` (scalar or full `OrderDto` snapshot), `timestamp`. See [orders.md](orders.md) for the audit-trail semantics.

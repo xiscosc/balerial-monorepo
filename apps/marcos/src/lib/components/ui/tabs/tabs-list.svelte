@@ -7,6 +7,6 @@
 
 <TabsPrimitive.List
 	bind:ref
-	class={cn('inline-flex h-10 items-center rounded-md p-1 text-muted-foreground', className)}
+	class={cn('text-muted-foreground inline-flex h-10 items-center rounded-md p-1', className)}
 	{...restProps}
 />

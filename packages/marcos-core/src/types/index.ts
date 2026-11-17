@@ -4,5 +4,4 @@ export * from './file.type';
 export * from './order.type';
 export * from './pricing.type';
 export * from './user.type';
-export * from './report.type';
 export * from './order-set.type';

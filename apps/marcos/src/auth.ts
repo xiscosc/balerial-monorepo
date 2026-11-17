@@ -51,7 +51,6 @@ export const auth = betterAuth({
 					providerId: 'auth0',
 					clientId: AUTH_AUTH0_ID,
 					clientSecret: AUTH_AUTH0_SECRET,
-					accountIssuer: `${auth0Issuer}/`,
 					discoveryUrl: `${auth0Issuer}/.well-known/openid-configuration`,
 					authorizationUrl: `${auth0Issuer}/authorize`,
 					tokenUrl: `${auth0Issuer}/oauth/token`,

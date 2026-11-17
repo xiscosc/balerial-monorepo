@@ -126,6 +126,7 @@
 					</Box>
 				</div>
 			{:else}
+				{@const fullOrder = info.fullOrder}
 				<OrderHeader
 					fullOrder={info.fullOrder}
 					locations={info.locations}
@@ -144,8 +145,7 @@
 								icon={IconType.ORDER_DEFAULT}
 								textVariant={ButtonTextVariant.GRAY}
 								variant={ButtonVariant.ORDER_GENERIC}
-								onclick={() =>
-									goto(resolve(`/customers/${info.fullOrder.order.customer.id}/orders`))}
+								onclick={() => goto(resolve(`/customers/${fullOrder.order.customer.id}/orders`))}
 							>
 								Pedidos del cliente
 							</MarcosButton>
@@ -153,7 +153,7 @@
 								icon={IconType.DAY}
 								textVariant={ButtonTextVariant.GRAY}
 								variant={ButtonVariant.ORDER_GENERIC}
-								onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/day`))}
+								onclick={() => goto(resolve(`/orders/${fullOrder.order.id}/day`))}
 							>
 								Pedidos del día
 							</MarcosButton>
@@ -171,7 +171,7 @@
 							<MarcosButton
 								disabled={!info.hasFiles}
 								icon={IconType.PRINTER}
-								onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/print`))}
+								onclick={() => goto(resolve(`/orders/${fullOrder.order.id}/print`))}
 							>
 								Imprimir
 							</MarcosButton>
@@ -179,13 +179,13 @@
 
 						<MarcosButton
 							icon={IconType.EDIT}
-							onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/edit`))}
+							onclick={() => goto(resolve(`/orders/${fullOrder.order.id}/edit`))}
 						>
 							Editar
 						</MarcosButton>
 						<MarcosButton
 							icon={IconType.COPY}
-							onclick={() => goto(resolve(`/orders/new?originId=${info.fullOrder.order.id}`))}
+							onclick={() => goto(resolve(`/orders/new?originId=${fullOrder.order.id}`))}
 						>
 							Copiar
 						</MarcosButton>
@@ -193,7 +193,7 @@
 						<Divider hideOnDesktop={true}></Divider>
 						<MarcosButton
 							icon={IconType.CAMERA}
-							onclick={() => goto(resolve(`/orders/${info.fullOrder.order.id}/files`))}
+							onclick={() => goto(resolve(`/orders/${fullOrder.order.id}/files`))}
 						>
 							Cámara
 						</MarcosButton>

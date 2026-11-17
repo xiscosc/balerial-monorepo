@@ -1,9 +1,9 @@
-import { Customer } from '../../types/customer.type';
+import { type Customer } from '../../types/customer.type';
 import {
-	CalculatedItemPart,
+	type CalculatedItemPart,
 	DimensionsType,
-	PPDimensions,
-	PreCalculatedItemPart
+	type PPDimensions,
+	type PreCalculatedItemPart
 } from '../../types/order.type';
 
 export type OrderCreationDtoBase = {

@@ -48,13 +48,7 @@ export function createBuckets({
 		blockPublicAccess: BlockPublicAccess.BLOCK_ALL
 	};
 
-	const reportsBucketProps: BucketProps = {
-		bucketName: `mmss-${envName}-reports`,
-		blockPublicAccess: BlockPublicAccess.BLOCK_ALL
-	};
-
 	const moldPricesBucket = new Bucket(scope, `mmss-${envName}-mold-prices`, moldPricesBucketProps);
 	const filesBucket = new Bucket(scope, `mmss-${envName}-files`, filesBucketProps);
-	const reportsBucket = new Bucket(scope, `mmss-${envName}-reports`, reportsBucketProps);
-	return { moldPricesBucket, filesBucket, reportsBucket };
+	return { moldPricesBucket, filesBucket };
 }
