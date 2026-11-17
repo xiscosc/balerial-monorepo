@@ -146,6 +146,7 @@ These scripts are defined at the repo root and run across the workspace via Turb
 | `bun run dev:down`        | Stop the offline emulators (wipes local data)          |
 | `bun run dev:aws`         | Start development mode against real AWS and Auth0      |
 | `bun run build`           | Build all packages and apps                            |
+| `bun run test`            | Run the marcos-core tests against the AWS Emulator     |
 | `bun run lint`            | Lint the whole repo with Oxlint                        |
 | `bun run format`          | Format the whole repo with Oxfmt                       |
 | `bun run update-packages` | Update dependencies across the workspace and reinstall |
