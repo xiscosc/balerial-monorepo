@@ -126,7 +126,7 @@ In-depth documentation for the core business logic (pricing, orders, services) l
 # Install dependencies
 bun install
 
-# Start the dev server
+# Start the dev server (offline, needs Docker)
 bun run dev
 
 # Build all packages
@@ -142,7 +142,9 @@ These scripts are defined at the repo root and run across the workspace via Turb
 | Command                   | Description                                            |
 | ------------------------- | ------------------------------------------------------ |
 | `bun install`             | Install all workspace dependencies                     |
-| `bun run dev`             | Start development mode for all apps                    |
+| `bun run dev`             | Start the app offline (Docker emulators, seeded)       |
+| `bun run dev:down`        | Stop the offline emulators (wipes local data)          |
+| `bun run dev:aws`         | Start development mode against real AWS and Auth0      |
 | `bun run build`           | Build all packages and apps                            |
 | `bun run lint`            | Lint the whole repo with Oxlint                        |
 | `bun run format`          | Format the whole repo with Oxfmt                       |
@@ -151,7 +153,26 @@ These scripts are defined at the repo root and run across the workspace via Turb
 
 ## How to Develop
 
-The backoffice app (`apps/marcos`) talks to **real AWS resources** (DynamoDB tables and S3 buckets) — there is no local emulator. To develop locally you therefore need those resources to exist in an AWS account and a set of credentials that are allowed to use them. The high-level flow is:
+### Offline (default, no AWS or Auth0 account needed)
+
+Requires Docker. From the repo root:
+
+```bash
+bun run dev       # start emulators, create tables/buckets, load the snapshot, run the app
+bun run dev:down  # stop the emulators (wipes local data)
+```
+
+Open **http://127.0.0.1:5173** (not `localhost`: presigned S3 URLs point at `127.0.0.1`). Log in with any username on the mock login page: a username starting with `ext` (e.g. `ext-tienda1`) is an external store whose store id is that username, anything else is a price manager in the main store (`local-store`).
+
+- AWS (DynamoDB + S3) runs in [AWS Emulator](https://github.com/aws/aws-emulator), Auth0 is replaced by [mock-oauth2-server](https://github.com/navikt/mock-oauth2-server). Both are defined in `apps/marcos-aws/local/`.
+- Data lives in memory only: restarting the containers wipes it, and `seed.ts` recreates empty tables and buckets on every run.
+- Config comes from `apps/marcos/.env.offline` (Vite `--mode offline`), which overrides every variable in `.env`.
+- **Realistic data:** `bun run data:snapshot` (with prod read-only AWS credentials in your shell, e.g. `AWS_PROFILE`, and `SOURCE_MAIN_STORE_ID=<prod main store id>`) downloads the main store's last month of orders (with their customers and calculated items) plus pricing and config, anonymizes customers, phones, staff, store ids and free text in memory, and writes the gitignored `apps/marcos-aws/local/.data/snapshot.json`. Every `bun run dev` loads it if present. Order sets, files/photos and the audit trail are not copied. Never commit or share the snapshot.
+- The first run needs network to build the emulator image and pull the mock image. Google Fonts don't load offline, so the UI falls back to system fonts.
+
+### Against real AWS
+
+`bun run dev:aws` talks to **real AWS resources** (DynamoDB tables and S3 buckets). You therefore need those resources to exist in an AWS account and a set of credentials that are allowed to use them. The high-level flow is:
 
 1. Deploy the CDK infrastructure to an AWS account (creates the tables, buckets, and IAM policies).
 2. Create an AWS access key for a user/role that holds those policies.
@@ -220,10 +241,10 @@ Copy [`apps/marcos/.env.example`](apps/marcos/.env.example) to `apps/marcos/.env
 
 ```bash
 # From the repo root
-bun run dev
+bun run dev:aws
 
 # …or scope it to just the backoffice app
-bun run dev --filter=mmss-marcos-app
+bun run dev:aws --filter=mmss-marcos-app
 ```
 
 The dev server is served by Vite (`vite dev --host`) and listens on `http://localhost:5173` by default. Because it runs with `--host` it is also reachable from other devices on your network.

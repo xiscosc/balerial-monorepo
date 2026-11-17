@@ -1,0 +1,36 @@
+{
+	"interactiveLogin": true,
+	"tokenCallbacks": [
+		{
+			"issuerId": "default",
+			"requestMappings": [
+				{
+					"requestParam": "subject",
+					"match": "ext.*",
+					"claims": {
+						"email": "${subject}@local.test",
+						"email_verified": true,
+						"name": "${subject}",
+						"app_metadata": {
+							"storeId": "${subject}",
+							"priceManager": false
+						}
+					}
+				},
+				{
+					"requestParam": "subject",
+					"match": ".*",
+					"claims": {
+						"email": "${subject}@local.test",
+						"email_verified": true,
+						"name": "${subject}",
+						"app_metadata": {
+							"storeId": "local-store",
+							"priceManager": true
+						}
+					}
+				}
+			]
+		}
+	]
+}

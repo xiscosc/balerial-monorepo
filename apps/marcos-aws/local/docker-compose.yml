@@ -1,0 +1,23 @@
+name: marcos-local
+
+services:
+  aws:
+    build:
+      context: .
+      dockerfile: emulator.Dockerfile
+    image: marcos-aws-emulator
+    command: ['-p', '9297', '--auth', 'off', '--telemetry', 'off']
+    ports: ['127.0.0.1:9297:9297']
+    mem_limit: 2g
+    memswap_limit: 2g
+    healthcheck:
+      test: ['CMD', 'curl', '-fsk', 'https://127.0.0.1:9297/__admin/health']
+      interval: 2s
+      retries: 30
+
+  oidc:
+    image: ghcr.io/navikt/mock-oauth2-server:6.1.5
+    ports: ['127.0.0.1:9298:8080']
+    environment:
+      JSON_CONFIG_PATH: /config/oidc.json
+    volumes: ['./oidc.json:/config/oidc.json:ro']
