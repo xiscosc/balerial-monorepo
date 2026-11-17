@@ -9,6 +9,7 @@ import {
 	type ScanCommandInput
 } from '@aws-sdk/lib-dynamodb';
 import { OrderSecondaryIndexNames } from '@marcsimolduressonsardina/core/db';
+import { tempCustomerUuid } from '@marcsimolduressonsardina/core/util';
 
 type Item = Record<string, any>;
 
@@ -75,6 +76,28 @@ const externalStoreN = counter();
 const store = (id: string) => (id === MAIN_STORE_ID ? 'local-store' : `ext-${externalStoreN(id)}`);
 const stripPhones = (text?: string) => text?.replace(/\+?\d[\d\s.-]{7,}\d/g, '[tel]');
 
+const uuids = new Map<string, string>();
+const uuid = (id: string) => {
+	if (id === tempCustomerUuid) return id;
+	if (!uuids.has(id)) uuids.set(id, crypto.randomUUID());
+	return uuids.get(id)!;
+};
+
+const alphabet = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
+const randomChars = (n: number) =>
+	Array.from(crypto.getRandomValues(new Uint8Array(n)), (b) => alphabet[b % alphabet.length]).join(
+		''
+	);
+const publicIds = new Set<string>();
+const publicId = (original: string, phone: string) => {
+	const date = original.split('/')[0];
+	let id;
+	do id = `${date}/${randomChars(2)}/${phone}`;
+	while (publicIds.has(id));
+	publicIds.add(id);
+	return id;
+};
+
 console.log(`Reading ${SOURCE_ENV} since ${cutoff.toISOString().slice(0, 10)}`);
 const orders: Item[] = [];
 for await (const result of paginateQuery(
@@ -99,11 +122,29 @@ const calculatedItems = await getByKey(
 const listPricing = await scan('list-pricing-v2');
 const config = await scan('config');
 
+const anonymizedCustomers = customers.map((c): Item => {
+	const name = `Cliente ${String(customerN(c.uuid)).padStart(4, '0')}`;
+	return {
+		...c,
+		uuid: uuid(c.uuid),
+		name,
+		normalizedName: name.toLowerCase(),
+		phone: `+346${String(phoneN(c.phone)).padStart(8, '0')}`,
+		storeId: store(c.storeId)
+	};
+});
+const phoneByCustomer = new Map(customers.map((c, i) => [c.uuid, anonymizedCustomers[i]!.phone]));
+
 const snapshot = {
 	ORDER_TABLE: orders.map((o) => {
 		const n = staffN(o.userId);
+		const phone = (phoneByCustomer.get(o.customerUuid) ?? '+34612345678').replace('+', '');
 		return {
 			...o,
+			uuid: uuid(o.uuid),
+			customerUuid: uuid(o.customerUuid),
+			publicId: publicId(o.publicId, phone),
+			shortId: crypto.randomUUID().replaceAll('-', '').slice(0, 10),
 			userId: `empleado${n}@local.test`,
 			userName: `Empleado ${n}`,
 			storeId: store(o.storeId),
@@ -115,21 +156,13 @@ const snapshot = {
 			}
 		};
 	}),
-	CUSTOMER_TABLE: customers.map((c) => {
-		const name = `Cliente ${String(customerN(c.uuid)).padStart(4, '0')}`;
-		return {
-			...c,
-			name,
-			normalizedName: name.toLowerCase(),
-			phone: `+346${String(phoneN(c.phone)).padStart(8, '0')}`,
-			storeId: store(c.storeId)
-		};
-	}),
+	CUSTOMER_TABLE: anonymizedCustomers,
 	CALCULATED_ITEM_ORDER_TABLE: calculatedItems.map((c) => ({
 		...c,
+		orderUuid: uuid(c.orderUuid),
 		parts: (c.parts as Item[]).map((p) => ({ ...p, description: stripPhones(p.description) }))
 	})),
-	LIST_PRICING_TABLE: listPricing,
+	LIST_PRICING_TABLE: listPricing.map((p) => ({ ...p, uuid: uuid(p.uuid) })),
 	CONFIG_TABLE: config.map((c) => ({ ...c, storeId: store(c.storeId) }))
 };
 
