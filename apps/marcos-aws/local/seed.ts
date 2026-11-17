@@ -1,12 +1,20 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import {
 	CreateTableCommand,
+	DeleteTableCommand,
 	waitUntilTableExists,
+	waitUntilTableNotExists,
 	DynamoDBClient,
 	type AttributeDefinition,
 	type KeySchemaElement
 } from '@aws-sdk/client-dynamodb';
-import { CreateBucketCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+	CreateBucketCommand,
+	DeleteObjectsCommand,
+	ListObjectsV2Command,
+	S3Client
+} from '@aws-sdk/client-s3';
 import { DynamoDBDocument, type BatchWriteCommandInput } from '@aws-sdk/lib-dynamodb';
 import type { IDynamoDbIndex } from '@balerial/dynamo/type';
 import {
@@ -55,13 +63,25 @@ const ignoreExisting = (e: unknown) => {
 	return 'already exists';
 };
 
-console.log('Seeding local AWS emulator');
+const reset = process.env.SEED_RESET === 'true';
+
+console.log(`Seeding local AWS emulator${reset ? ' (reset)' : ''}`);
 const dynamo = new DynamoDBClient(config);
 for (const [envKey, builder] of Object.entries(tables)) {
 	const table = builder.setTableName(process.env[envKey]!).build();
 	const primary = table.getPrimaryIndex();
 	const secondary = table.getSecondaryIndexes();
 	const attributeDefinitions = [primary, ...secondary].flatMap(attributes);
+
+	if (reset) {
+		await dynamo.send(new DeleteTableCommand({ TableName: table.getTableName() })).catch((e) => {
+			if ((e as Error).name !== 'ResourceNotFoundException') throw e;
+		});
+		await waitUntilTableNotExists(
+			{ client: dynamo, maxWaitTime: 60 },
+			{ TableName: table.getTableName() }
+		);
+	}
 
 	const status = await dynamo
 		.send(
@@ -99,14 +119,26 @@ for (const bucket of [process.env.FILES_BUCKET!, process.env.MOLD_PRICES_BUCKET!
 			})
 		)
 		.then(() => 'created', ignoreExisting);
+	if (reset) {
+		const { Contents = [] } = await s3.send(new ListObjectsV2Command({ Bucket: bucket }));
+		if (Contents.length > 0) {
+			await s3.send(
+				new DeleteObjectsCommand({
+					Bucket: bucket,
+					Delete: { Objects: Contents.map(({ Key }) => ({ Key })) }
+				})
+			);
+		}
+	}
 	console.log(`  bucket ${bucket}: ${status}`);
 }
 
-const snapshot = new URL('.data/snapshot.json', import.meta.url);
+const snapshot =
+	process.env.SEED_FILE ?? fileURLToPath(new URL('.data/snapshot.json', import.meta.url));
 if (!existsSync(snapshot)) {
-	console.log('No .data/snapshot.json, starting with empty tables (see `bun run data:snapshot`)');
+	console.log(`No ${snapshot}, starting with empty tables (see \`bun run data:snapshot\`)`);
 } else {
-	console.log('Loading .data/snapshot.json');
+	console.log(`Loading ${snapshot}`);
 	const doc = DynamoDBDocument.from(dynamo);
 	const data: Record<string, Record<string, unknown>[]> = JSON.parse(
 		readFileSync(snapshot, 'utf8')

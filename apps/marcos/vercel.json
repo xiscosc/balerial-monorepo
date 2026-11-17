@@ -1,0 +1,5 @@
+{
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"ignoreCommand": "exit 1",
+	"buildCommand": "bash ../marcos-aws/local/vercel-test.sh && vite build"
+}

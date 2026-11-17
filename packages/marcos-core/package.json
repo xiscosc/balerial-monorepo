@@ -1,6 +1,9 @@
 {
 	"name": "@marcsimolduressonsardina/core",
 	"version": "2.0.0",
+	"scripts": {
+		"test": "bun test test/read && bun test test/write"
+	},
 	"exports": {
 		"./util": "./src/utilities/index.ts",
 		"./type": "./src/types/index.ts",
@@ -18,6 +21,7 @@
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
 		"@smithy/types": "4.19.0",
+		"@types/bun": "1.4.4",
 		"@types/luxon": "3.7.6",
 		"@types/mime-types": "3.0.1",
 		"@types/node": "26.6.5",
