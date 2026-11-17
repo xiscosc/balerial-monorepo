@@ -1,44 +1,37 @@
 import { describe, expect, test } from 'bun:test';
 import { OrderStatus } from '../../src/types/order.type';
-import { fixture, fixtureIds, liveOrders, services } from '../support';
+import { fixture, fixtureIds, inBatches, liveOrders, services } from '../support';
 
 const { customerService, orderService } = services();
 const ids = (orders: { order: { id: string } }[]) => orders.map((o) => o.order.id).sort();
 
 describe('customer pages (customers/[id], customers/[id]/orders, customers/[id]/edit)', () => {
 	test('every customer loads with its orders and quotes', async () => {
-		await Promise.all(
-			fixture.CUSTOMER_TABLE.map(async (dto) => {
-				expect(await customerService.getCustomerById(dto.uuid)).toEqual({
-					id: dto.uuid,
-					name: dto.name,
-					phone: dto.phone,
-					storeId: dto.storeId
-				});
-				const own = liveOrders.filter((o) => o.customerUuid === dto.uuid);
+		await inBatches(fixture.CUSTOMER_TABLE, async (dto) => {
+			expect(await customerService.getCustomerById(dto.uuid)).toEqual({
+				id: dto.uuid,
+				name: dto.name,
+				phone: dto.phone,
+				storeId: dto.storeId
+			});
+			const own = liveOrders.filter((o) => o.customerUuid === dto.uuid);
 
-				const orders = await orderService.getOrdersByCustomerId(dto.uuid);
-				expect(ids(orders)).toEqual(fixtureIds(own.filter((o) => o.status !== 'quote')));
-				const times = orders.map((o) => o.order.createdAt.getTime());
-				expect(times).toEqual([...times].sort((a, b) => b - a));
+			const orders = await orderService.getOrdersByCustomerId(dto.uuid);
+			expect(ids(orders)).toEqual(fixtureIds(own.filter((o) => o.status !== 'quote')));
+			const times = orders.map((o) => o.order.createdAt.getTime());
+			expect(times).toEqual([...times].sort((a, b) => b - a));
 
-				const quotes = await orderService.getOrdersByCustomerIdAndStatus(
-					dto.uuid,
-					OrderStatus.QUOTE
-				);
-				expect(ids(quotes)).toEqual(fixtureIds(own.filter((o) => o.status === 'quote')));
-			})
-		);
+			const quotes = await orderService.getOrdersByCustomerIdAndStatus(dto.uuid, OrderStatus.QUOTE);
+			expect(ids(quotes)).toEqual(fixtureIds(own.filter((o) => o.status === 'quote')));
+		});
 	}, 60_000);
 });
 
 describe('customer search (customers/search, customers/new, api/customers/search)', () => {
 	test('every customer is found by phone', async () => {
-		await Promise.all(
-			fixture.CUSTOMER_TABLE.map(async (dto) => {
-				expect((await customerService.getCustomerByPhone(dto.phone))?.id).toBe(dto.uuid);
-			})
-		);
+		await inBatches(fixture.CUSTOMER_TABLE, async (dto) => {
+			expect((await customerService.getCustomerByPhone(dto.phone))?.id).toBe(dto.uuid);
+		});
 	}, 60_000);
 
 	test('name search matches the normalized name', async () => {

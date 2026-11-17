@@ -7,6 +7,7 @@ import {
 	calculatedItemOf,
 	deletedMolds,
 	fixture,
+	inBatches,
 	liveOrders,
 	repriced,
 	services
@@ -47,10 +48,8 @@ describe('price list page (config/prices/list via PricingHelper)', () => {
 
 describe('price detail page (config/prices/[id])', () => {
 	test('every price loads by its internal id', async () => {
-		await Promise.all(
-			fixture.LIST_PRICING_TABLE.map(async (dto) =>
-				expect(await pricingService.getPriceListByInternalId(dto.uuid)).toEqual(fromDto(dto))
-			)
+		await inBatches(fixture.LIST_PRICING_TABLE, async (dto) =>
+			expect(await pricingService.getPriceListByInternalId(dto.uuid)).toEqual(fromDto(dto))
 		);
 	}, 60_000);
 });
@@ -60,38 +59,40 @@ describe('order form pricing (api/prices)', () => {
 		const calculatedItemService = createCalculatedItemServiceWithMarkup(0);
 		const checked = { same: 0, repriced: 0, deleted: 0 };
 
-		for (const dto of liveOrders) {
+		await inBatches(liveOrders, async (dto) => {
 			const { item } = (await orderService.getOrderById(dto.uuid))!;
 			const dimensions = item.ppDimensions
 				? CalculatedItemUtilities.getOrderDimensions(item.width, item.height, 0, item.ppDimensions)
 				: CalculatedItemUtilities.getOrderDimensions(item.width, item.height, item.pp);
 			const stored = calculatedItemOf(dto.uuid).parts;
 
-			for (const [index, pre] of item.partsToCalculate.entries()) {
-				if (deletedMolds.has(pre.id)) {
-					expect(calculatedItemService.calculatePart(pre, dimensions)).rejects.toThrow(
-						'Price not found'
-					);
-					checked.deleted++;
-					continue;
-				}
+			await Promise.all(
+				item.partsToCalculate.map(async (pre, index) => {
+					if (deletedMolds.has(pre.id)) {
+						await expect(calculatedItemService.calculatePart(pre, dimensions)).rejects.toThrow(
+							'Price not found'
+						);
+						checked.deleted++;
+						return;
+					}
 
-				const part = await calculatedItemService.calculatePart(pre, dimensions);
-				const change = repriced[`${dto.uuid}|${pre.id}`];
-				expect(part).toEqual({
-					...stored[index]!,
-					discountAllowed: stored[index]!.discountAllowed!,
-					floating: stored[index]!.floating!,
-					price: change?.now ?? stored[index]!.price
-				});
-				if (change) {
-					expect(stored[index]!.price).toBe(change.stored);
-					checked.repriced++;
-				} else {
-					checked.same++;
-				}
-			}
-		}
+					const part = await calculatedItemService.calculatePart(pre, dimensions);
+					const change = repriced[`${dto.uuid}|${pre.id}`];
+					expect(part).toEqual({
+						...stored[index]!,
+						discountAllowed: stored[index]!.discountAllowed!,
+						floating: stored[index]!.floating!,
+						price: change?.now ?? stored[index]!.price
+					});
+					if (change) {
+						expect(stored[index]!.price).toBe(change.stored);
+						checked.repriced++;
+					} else {
+						checked.same++;
+					}
+				})
+			);
+		});
 
 		expect(checked.deleted).toBe(3);
 		expect(checked.repriced).toBe(Object.keys(repriced).length);

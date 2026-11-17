@@ -19,7 +19,7 @@ import data from './fixtures/data.json';
 for (const [key, value] of Object.entries(
 	parseEnv(readFileSync(join(__dirname, '../.env.test'), 'utf8'))
 )) {
-	process.env[key] ??= value;
+	process.env[key] = value;
 }
 
 export const fixture = data as unknown as {
@@ -145,4 +145,10 @@ export const reserveSameCustomer = (count: number) => {
 		([, o]) => o.length >= count
 	)!;
 	return reserve(count, (o) => o.customerUuid === customerUuid);
+};
+
+export const inBatches = async <T>(items: T[], check: (item: T) => Promise<unknown>, size = 25) => {
+	for (let i = 0; i < items.length; i += size) {
+		await Promise.all(items.slice(i, i + size).map(check));
+	}
 };

@@ -67,71 +67,75 @@ const reset = process.env.SEED_RESET === 'true';
 
 console.log(`Seeding local AWS emulator${reset ? ' (reset)' : ''}`);
 const dynamo = new DynamoDBClient(config);
-for (const [envKey, builder] of Object.entries(tables)) {
-	const table = builder.setTableName(process.env[envKey]!).build();
-	const primary = table.getPrimaryIndex();
-	const secondary = table.getSecondaryIndexes();
-	const attributeDefinitions = [primary, ...secondary].flatMap(attributes);
+await Promise.all(
+	Object.entries(tables).map(async ([envKey, builder]) => {
+		const table = builder.setTableName(process.env[envKey]!).build();
+		const primary = table.getPrimaryIndex();
+		const secondary = table.getSecondaryIndexes();
+		const attributeDefinitions = [primary, ...secondary].flatMap(attributes);
 
-	if (reset) {
-		await dynamo.send(new DeleteTableCommand({ TableName: table.getTableName() })).catch((e) => {
-			if ((e as Error).name !== 'ResourceNotFoundException') throw e;
-		});
-		await waitUntilTableNotExists(
+		if (reset) {
+			await dynamo.send(new DeleteTableCommand({ TableName: table.getTableName() })).catch((e) => {
+				if ((e as Error).name !== 'ResourceNotFoundException') throw e;
+			});
+			await waitUntilTableNotExists(
+				{ client: dynamo, maxWaitTime: 60 },
+				{ TableName: table.getTableName() }
+			);
+		}
+
+		const status = await dynamo
+			.send(
+				new CreateTableCommand({
+					TableName: table.getTableName(),
+					BillingMode: 'PAY_PER_REQUEST',
+					KeySchema: keySchema(primary),
+					AttributeDefinitions: [
+						...new Map(attributeDefinitions.map((a) => [a.AttributeName, a])).values()
+					],
+					GlobalSecondaryIndexes: secondary.length
+						? secondary.map((i) => ({
+								IndexName: i.indexName,
+								KeySchema: keySchema(i),
+								Projection: { ProjectionType: 'ALL' }
+							}))
+						: undefined
+				})
+			)
+			.then(() => 'created', ignoreExisting);
+		await waitUntilTableExists(
 			{ client: dynamo, maxWaitTime: 60 },
 			{ TableName: table.getTableName() }
 		);
-	}
-
-	const status = await dynamo
-		.send(
-			new CreateTableCommand({
-				TableName: table.getTableName(),
-				BillingMode: 'PAY_PER_REQUEST',
-				KeySchema: keySchema(primary),
-				AttributeDefinitions: [
-					...new Map(attributeDefinitions.map((a) => [a.AttributeName, a])).values()
-				],
-				GlobalSecondaryIndexes: secondary.length
-					? secondary.map((i) => ({
-							IndexName: i.indexName,
-							KeySchema: keySchema(i),
-							Projection: { ProjectionType: 'ALL' }
-						}))
-					: undefined
-			})
-		)
-		.then(() => 'created', ignoreExisting);
-	await waitUntilTableExists(
-		{ client: dynamo, maxWaitTime: 60 },
-		{ TableName: table.getTableName() }
-	);
-	console.log(`  table ${table.getTableName()}: ${status}`);
-}
+		console.log(`  table ${table.getTableName()}: ${status}`);
+	})
+);
 
 const s3 = new S3Client(config);
-for (const bucket of [process.env.FILES_BUCKET!, process.env.MOLD_PRICES_BUCKET!]) {
-	const status = await s3
-		.send(
-			new CreateBucketCommand({
-				Bucket: bucket,
-				CreateBucketConfiguration: { LocationConstraint: config.region as 'eu-central-1' }
-			})
-		)
-		.then(() => 'created', ignoreExisting);
-	if (reset) {
-		const { Contents = [] } = await s3.send(new ListObjectsV2Command({ Bucket: bucket }));
-		if (Contents.length > 0) {
-			await s3.send(
-				new DeleteObjectsCommand({
+await Promise.all(
+	[process.env.FILES_BUCKET!, process.env.MOLD_PRICES_BUCKET!].map(async (bucket) => {
+		const status = await s3
+			.send(
+				new CreateBucketCommand({
 					Bucket: bucket,
-					Delete: { Objects: Contents.map(({ Key }) => ({ Key })) }
+					CreateBucketConfiguration: { LocationConstraint: config.region as 'eu-central-1' }
 				})
-			);
+			)
+			.then(() => 'created', ignoreExisting);
+		if (reset) {
+			const { Contents = [] } = await s3.send(new ListObjectsV2Command({ Bucket: bucket }));
+			if (Contents.length > 0) {
+				await s3.send(
+					new DeleteObjectsCommand({
+						Bucket: bucket,
+						Delete: { Objects: Contents.map(({ Key }) => ({ Key })) }
+					})
+				);
+			}
 		}
-	}
-	console.log(`  bucket ${bucket}: ${status}`);
-}
+		console.log(`  bucket ${bucket}: ${status}`);
+	})
+);
 
 const snapshot =
 	process.env.SEED_FILE ?? fileURLToPath(new URL('.data/snapshot.json', import.meta.url));

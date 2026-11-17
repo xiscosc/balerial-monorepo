@@ -23,5 +23,9 @@ for _ in $(seq 30); do
 	sleep 1
 done
 
-bun --env-file=packages/marcos-core/.env.test apps/marcos-aws/local/seed.ts
+set -a
+. packages/marcos-core/.env.test
+set +a
+
+bun apps/marcos-aws/local/seed.ts
 bun run --cwd packages/marcos-core test

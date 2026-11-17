@@ -8,6 +8,7 @@ import {
 	expectedTotal,
 	fixture,
 	groupBy,
+	inBatches,
 	liveOrders,
 	locations,
 	services
@@ -103,6 +104,9 @@ describe('order detail page (orders/[id], orders/[id]/print)', () => {
 				pendingCount: sameDay.filter((o) => o.status === 'pending').length
 			});
 		};
-		await Promise.all(liveOrders.filter((o) => customersById.has(o.customerUuid)).map(check));
+		await inBatches(
+			liveOrders.filter((o) => customersById.has(o.customerUuid)),
+			check
+		);
 	}, 60_000);
 });
