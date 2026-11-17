@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "vite dev --host",
+		"dev:offline": "AWS_ENDPOINT_URL=http://127.0.0.1:5173/__aws vite dev --mode offline --host 127.0.0.1 --strictPort",
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",

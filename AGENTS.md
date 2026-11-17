@@ -23,7 +23,9 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 
 ```bash
 bun install           # Install dependencies
-bun run dev           # Start dev server
+bun run dev           # Dev fully offline: Docker AWS Emulator + mock OIDC, seeded (see README)
+bun run dev:down      # Stop the offline emulators (wipes local data)
+bun run dev:aws       # Dev against real AWS + Auth0 (needs apps/marcos/.env)
 bun run build         # Build all packages
 bun run lint          # Lint with Oxlint (incl. .svelte <script> blocks)
 bun run format        # Format with Oxfmt (.svelte via its bundled Prettier)

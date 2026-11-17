@@ -3,7 +3,11 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo build",
-		"dev": "turbo dev",
+		"dev": "docker compose -f apps/marcos-aws/local/docker-compose.yml up -d --wait && NODE_TLS_REJECT_UNAUTHORIZED=0 bun --env-file=apps/marcos/.env.offline apps/marcos-aws/local/seed.ts && bun run --cwd apps/marcos dev:offline",
+		"dev:down": "docker compose -f apps/marcos-aws/local/docker-compose.yml down",
+		"test": "docker compose -f apps/marcos-aws/local/docker-compose.yml up -d --wait aws && bun --env-file=packages/marcos-core/.env.test apps/marcos-aws/local/seed.ts && bun run --cwd packages/marcos-core test",
+		"dev:aws": "turbo dev",
+		"data:snapshot": "bun apps/marcos-aws/local/snapshot.ts",
 		"lint": "oxlint",
 		"update-packages": "bunx npm-check-updates -u --workspaces && bun i",
 		"update-packages-patch": "bunx npm-check-updates -u --target patch --workspaces && bun i",
@@ -27,5 +31,5 @@
 		"turbo": "^2.11.10",
 		"typescript": "7.0.2"
 	},
-	"packageManager": "bun@1.3.14"
+	"packageManager": "bun@1.4.4"
 }
