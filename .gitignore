@@ -48,3 +48,8 @@ sharp-layer.zip
 apps/marcos/static/vendor/
 
 .codex
+# Playwright (apps/marcos e2e)
+playwright/.auth
+test-results
+playwright-report
+blob-report

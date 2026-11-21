@@ -147,6 +147,8 @@ These scripts are defined at the repo root and run across the workspace via Turb
 | `bun run dev:aws`         | Start development mode against real AWS and Auth0      |
 | `bun run build`           | Build all packages and apps                            |
 | `bun run test`            | Run the marcos-core tests against the AWS Emulator     |
+| `bun run test:e2e`        | Run the app's Playwright e2e tests (Docker)            |
+| `bun run test:e2e:ui`     | Same, in Playwright's interactive UI mode              |
 | `bun run lint`            | Lint the whole repo with Oxlint                        |
 | `bun run format`          | Format the whole repo with Oxfmt                       |
 | `bun run update-packages` | Update dependencies across the workspace and reinstall |
@@ -268,12 +270,14 @@ bun run --cwd apps/marcos preview      # preview a production build
 
 ### Before committing
 
-There are no automated tests in CI; quality is enforced by linting, formatting, and type checks. Run these before pushing:
+Pull requests into `main` run the marcos-core tests (`marcos-core-tests.yml`) and the app's e2e tests (`marcos-e2e.yml`). Run these before pushing:
 
 ```bash
 bun run lint      # Oxlint across the repo (incl. .svelte <script> blocks)
 bun run format    # Oxfmt (.svelte via its bundled Prettier)
 bun run --cwd apps/marcos check   # Svelte/TypeScript type checking
+bun run test      # marcos-core tests (Docker)
+bun run test:e2e  # app e2e tests (Docker), see apps/marcos/e2e/README.md
 ```
 
 ### Disabling analytics locally
