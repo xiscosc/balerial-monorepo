@@ -48,7 +48,13 @@ runs:
         fi
 
         case "$STATUS" in
-          success) icon=":white_check_mark:"; result="passed" ;;
+          success)
+            if [ "${FLAKY:-0}" != "0" ]; then
+              icon=":warning:"; result="passed with flaky tests"
+            else
+              icon=":white_check_mark:"; result="passed"
+            fi
+            ;;
           cancelled) icon=":heavy_minus_sign:"; result="was cancelled" ;;
           *) icon=":x:"; result="failed" ;;
         esac

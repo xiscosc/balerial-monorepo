@@ -27,16 +27,6 @@ jobs:
       - name: Run e2e tests
         run: bash apps/marcos-aws/local/e2e-native.sh
 
-      - name: Upload Playwright report
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report
-          path: |
-            apps/marcos/playwright-report/
-            apps/marcos/test-results/
-          retention-days: 7
-
       - name: Read test results
         id: results
         if: always()
@@ -45,6 +35,16 @@ jobs:
           if [ -f "$file" ]; then
             jq -r '.stats | "passed=\(.expected)\nfailed=\(.unexpected)\nflaky=\(.flaky)\nskipped=\(.skipped)"' "$file" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Upload Playwright report
+        if: failure() || (steps.results.outputs.flaky != '' && steps.results.outputs.flaky != '0')
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            apps/marcos/playwright-report/
+            apps/marcos/test-results/
+          retention-days: 7
 
       - name: Report to Slack
         if: always()

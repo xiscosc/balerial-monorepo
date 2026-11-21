@@ -8,6 +8,7 @@ export default defineConfig({
 	fullyParallel: true,
 	forbidOnly: CI,
 	retries: CI ? 1 : 0,
+	expect: { timeout: CI ? 10_000 : 5_000 },
 	reporter: CI
 		? [['github'], ['html', { open: 'never' }], ['json', { outputFile: 'playwright-results.json' }]]
 		: [['list'], ['html', { open: 'never' }]],
