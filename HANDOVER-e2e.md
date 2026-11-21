@@ -1,6 +1,6 @@
 # Handover: Playwright e2e for `apps/marcos`
 
-Branch: `claude/epic-ritchie-0behku` (based on `main` @ `8b338b7`). Delete this file before merging.
+Branch: `claude/epic-ritchie-0behku` (based on `preview` @ `8b338b7`). Delete this file before merging.
 
 ## Goal
 
@@ -54,7 +54,7 @@ Verified:
    - `waitForURL` in `auth.setup.ts`: where the app lands after login (`/` for the manager, maybe `/external` for `ext-e2e`)
    - the better-auth warning "Base URL is not set": it derives the origin from the request, and that worked in offline dev
 3. Run it a second time (the seed reset should keep it green), and once with `bun run dev` active on 5173 (there should be no clash).
-4. Open a PR and check that the `marcos-e2e` workflow goes green.
+4. Open a PR. Note: `marcos-e2e` (like `marcos-core-tests`) only triggers on PRs into `main`, so a PR into `preview` will not run it.
 5. Pending decision: move the fixture to `apps/marcos-aws/local/fixtures/data.json`, next to `seed.ts` and `snapshot.ts`,
    since both test suites now use it. Four references change:
    - `packages/marcos-core/.env.test` (`SEED_FILE`)
