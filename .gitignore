@@ -49,7 +49,7 @@ apps/marcos/static/vendor/
 
 .codex
 # Playwright (apps/marcos e2e)
-playwright/.auth
+apps/marcos/playwright/.auth
 test-results
 playwright-report
 blob-report

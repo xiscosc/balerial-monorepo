@@ -3,7 +3,7 @@
 Playwright tests that drive the real app in Chromium: SvelteKit routes, load functions, form actions,
 hooks and the better-auth login. They run against the same offline stack as `bun run dev` (AWS Emulator +
 mock OIDC), but on their own port (5174) and their own `e2e-*` tables, seeded from the anonymized fixture
-in `packages/marcos-core/test/fixtures/data.json`.
+in `apps/marcos-aws/local/fixtures/data.json`.
 
 ## Run
 

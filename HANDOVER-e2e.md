@@ -7,14 +7,14 @@ Branch: `claude/epic-ritchie-0behku` (based on `preview` @ `8b338b7`). Delete th
 Browser e2e tests for the SvelteKit app, runnable the same way locally (Docker) and in CI.
 Agreed scope so far: **scaffolding only, no specs**. Specs come in a later step.
 
-## What's on the branch (commit `66fa98a`)
+## What's on the branch
 
 - `apps/marcos/playwright.config.ts`: projects `setup`, `manager`, `external`, `anonymous`. The file suffix picks the role
   (`*.manager.spec.ts`, `*.external.spec.ts`, `*.public.spec.ts`). Playwright starts the app itself with `bun run dev:e2e`.
 - `apps/marcos/e2e/auth.setup.ts`: logs in once per role through the real better-auth → mock OIDC form and saves
   `apps/marcos/playwright/.auth/{manager,external}.json` (gitignored).
 - `apps/marcos/e2e/support/env.ts`: base URL `http://127.0.0.1:5174`, role → mock username (`e2e-manager`, `ext-e2e`).
-- `apps/marcos/e2e/support/fixture.ts`: reads `packages/marcos-core/test/fixtures/data.json`, plus `uniquePhone()` / `runId`.
+- `apps/marcos/e2e/support/fixture.ts`: reads `apps/marcos-aws/local/fixtures/data.json` (shared with the marcos-core tests), plus `uniquePhone()` / `runId`.
 - `apps/marcos/e2e/README.md`: how to run and write tests, with conventions.
 - `apps/marcos/.env.e2e` (Vite `--mode e2e`): `e2e-*` tables/buckets, issuer on port 5174.
 - `apps/marcos/e2e/.env.seed`: same table names, `SEED_FILE` = the fixture, `SEED_RESET=true`.
@@ -28,54 +28,34 @@ Agreed scope so far: **scaffolding only, no specs**. Specs come in a later step.
 - Docs: README (scripts table and "Before committing"), AGENTS.md/CLAUDE.md commands.
 - `@playwright/test` pinned at `1.65.1`.
 
-## Verified vs not verified
+## Status
 
-The cloud session had no Docker, and the network policy blocked `downloads.aws.com` and `pkg-containers.githubusercontent.com`.
+Verified locally (Colima): `bun run test:e2e` passes (2/2 logins, both `.auth/*.json` written), stays green on rerun
+and with `bun run dev` running on 5173. `bun run test` (marcos-core) passes with the moved fixture.
 
-Verified:
+Done:
 
-- `playwright test --list` finds the 2 setup tests.
-- `dev:e2e` boots on 5174, `/` → 303 `/auth/signin`, and the proxies target 9297/9298.
-- `tsc --strict` passes on the e2e files.
-- `bun run lint` is clean.
+- Fixture moved to `apps/marcos-aws/local/fixtures/data.json`.
+- `.gitignore` now matches `apps/marcos/playwright/.auth` (the old `playwright/.auth` only matched at the repo root).
 
-**Not verified:** a real run. The full login flow (mock form → better-auth callback → app) has never been executed.
+Note: `marcos-e2e` (like `marcos-core-tests`) only triggers on PRs into `main`, so the PR into `preview` does not run it.
 
-## Next steps on your machine
+## Next: first specs (not started)
 
-1. Get the branch and install:
-   ```bash
-   git fetch origin claude/epic-ritchie-0behku && git checkout claude/epic-ritchie-0behku
-   bun install
-   (cd apps/marcos && bunx playwright install chromium)
-   ```
-2. Run `bun run test:e2e`. You should get 2 passed tests and both `.auth/*.json` files. If something fails, open the trace
-   with `cd apps/marcos && bunx playwright show-report`. Places to look first:
-   - `waitForURL` in `auth.setup.ts`: where the app lands after login (`/` for the manager, maybe `/external` for `ext-e2e`)
-   - the better-auth warning "Base URL is not set": it derives the origin from the request, and that worked in offline dev
-3. Run it a second time (the seed reset should keep it green), and once with `bun run dev` active on 5173 (there should be no clash).
-4. Open a PR. Note: `marcos-e2e` (like `marcos-core-tests`) only triggers on PRs into `main`, so a PR into `preview` will not run it.
-5. Pending decision: move the fixture to `apps/marcos-aws/local/fixtures/data.json`, next to `seed.ts` and `snapshot.ts`,
-   since both test suites now use it. Four references change:
-   - `packages/marcos-core/.env.test` (`SEED_FILE`)
-   - `packages/marcos-core/test/support.ts` (import)
-   - `apps/marcos/e2e/.env.seed`
-   - `apps/marcos/e2e/support/fixture.ts`
-6. Then the first specs (plan, not started):
+| Spec                           | Covers                                                             |
+| ------------------------------ | ------------------------------------------------------------------ |
+| `track.public.spec.ts`         | anon redirect to sign-in; `/track/<shortId>` works without login   |
+| `orders-read.manager.spec.ts`  | order list with fixture orders, order detail totals/customer       |
+| `customers.manager.spec.ts`    | search a fixture customer, create a new one                        |
+| `order-create.manager.spec.ts` | order via `OrderForm` for a new customer, computed total           |
+| `order-status.manager.spec.ts` | status/payment/location bottom sheets on an order the test created |
+| `external.external.spec.ts`    | `/external`, create an external order, main-store routes blocked   |
 
-   | Spec                           | Covers                                                             |
-   | ------------------------------ | ------------------------------------------------------------------ |
-   | `track.public.spec.ts`         | anon redirect to sign-in; `/track/<shortId>` works without login   |
-   | `orders-read.manager.spec.ts`  | order list with fixture orders, order detail totals/customer       |
-   | `customers.manager.spec.ts`    | search a fixture customer, create a new one                        |
-   | `order-create.manager.spec.ts` | order via `OrderForm` for a new customer, computed total           |
-   | `order-status.manager.spec.ts` | status/payment/location bottom sheets on an order the test created |
-   | `external.external.spec.ts`    | `/external`, create an external order, main-store routes blocked   |
+Still to check when writing them:
 
-   Still to check when writing them:
-   - that formsnap `Form.Label` links to the input, so `getByLabel` works
-   - that `MarcosButton` renders a `<button>` named by its text
-   - that `/track` shows `publicId` as text
+- that formsnap `Form.Label` links to the input, so `getByLabel` works
+- that `MarcosButton` renders a `<button>` named by its text
+- that `/track` shows `publicId` as text
 
 ## Gotchas
 

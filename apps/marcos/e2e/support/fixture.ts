@@ -1,7 +1,5 @@
 import { readFileSync } from 'node:fs';
 
-// The anonymized dataset `bun run e2e:seed` loads into the e2e tables (same one the marcos-core tests use).
-// Read-only tests pick their rows from here instead of hardcoding ids.
 type Row = Record<string, unknown>;
 
 export type Fixture = {
@@ -20,12 +18,8 @@ export type Fixture = {
 };
 
 export const fixture: Fixture = JSON.parse(
-	readFileSync(
-		new URL('../../../../packages/marcos-core/test/fixtures/data.json', import.meta.url),
-		'utf8'
-	)
+	readFileSync(new URL('../../../marcos-aws/local/fixtures/data.json', import.meta.url), 'utf8')
 );
 
-// Tests that write create their own rows; make them unique per run so reruns without a reseed still pass
 export const runId = Date.now().toString(36);
 export const uniquePhone = () => `6${Date.now().toString().slice(-8)}`;

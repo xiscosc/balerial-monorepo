@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
-# CI runner for the apps/marcos e2e tests. Locally use `bun run test:e2e` (Docker) instead.
-# Needs Docker for the mock OIDC server and Playwright's Chromium (`bunx playwright install chromium`).
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
 
 . apps/marcos-aws/local/emulator-native.sh
 
-# Same image and config as the `oidc` service in docker-compose.yml
 oidc=$(docker run -d --rm -p 127.0.0.1:9298:8080 \
 	-e JSON_CONFIG_PATH=/config/oidc.json \
 	-v "$PWD/apps/marcos-aws/local/oidc.json:/config/oidc.json:ro" \

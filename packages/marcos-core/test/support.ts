@@ -14,7 +14,7 @@ import type { OrderCreationDto } from '../src/service/dto/order-creation.dto';
 import type { FullOrder } from '../src/types/order.type';
 import { cornersId, otherExtraId } from '../src/utilities/calculated-item.utilites';
 import { quoteDeliveryDate, tempCustomerUuid } from '../src/utilities/order.utilities';
-import data from './fixtures/data.json';
+import data from '../../../apps/marcos-aws/local/fixtures/data.json';
 
 for (const [key, value] of Object.entries(
 	parseEnv(readFileSync(join(__dirname, '../.env.test'), 'utf8'))
