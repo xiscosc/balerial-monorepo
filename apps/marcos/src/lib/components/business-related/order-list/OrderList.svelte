@@ -141,6 +141,7 @@
 					iconSize={IconSize.SMALL}
 					size={ButtonSize.SMALL}
 					variant={ButtonVariant.DELETE}
+					aria-label="Eliminar pedidos"
 					onclick={() => {
 						orderListBulkOperationState.prepareBulkOperation(BatchOperation.DELETE);
 					}}
@@ -154,6 +155,7 @@
 					<MarcosButton
 						disabled={!orderListState.getSelectedOrdersAreFromSameCustomer()}
 						onclick={orderListBulkOperationState.generateOrderSet}
+						aria-label="Imprimir listado"
 						iconSize={IconSize.SMALL}
 						size={ButtonSize.SMALL}
 						icon={IconType.PRINTER}
@@ -168,6 +170,7 @@
 							onclick={() => {
 								orderListBulkOperationState.prepareBulkOperation(BatchOperation.NOTIFY_ORDERS);
 							}}
+							aria-label="Notificar pedidos"
 							variant={ButtonVariant.WHATSAPP}
 							icon={IconType.WHATSAPP}
 						></MarcosButton>
@@ -178,6 +181,7 @@
 						onclick={() => {
 							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PAID);
 						}}
+						aria-label="Marcar como pagados"
 						variant={ButtonVariant.ORDER_PICKED_UP_VARIANT}
 						textVariant={ButtonTextVariant.NO_COLOR}
 						icon={IconType.COINS}
@@ -190,6 +194,7 @@
 							onclick={() => {
 								orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_PICKED_UP);
 							}}
+							aria-label="Marcar como recogidos"
 							icon={IconType.TRUCK}
 						></MarcosButton>
 					{/if}
@@ -200,6 +205,7 @@
 						onclick={() => {
 							orderListBulkOperationState.prepareBulkOperation(BatchOperation.SET_INVOICED);
 						}}
+						aria-label="Marcar como facturados"
 						textVariant={ButtonTextVariant.NO_COLOR}
 						icon={IconType.INVOICED}
 					></MarcosButton>

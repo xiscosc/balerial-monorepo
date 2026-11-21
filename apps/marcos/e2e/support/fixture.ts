@@ -11,6 +11,7 @@ export type Fixture = {
 		customerUuid: string;
 		amountPayed: number;
 		invoiced: boolean;
+		notified: boolean;
 		timestamp: number;
 		item: Row & { description: string };
 	})[];
