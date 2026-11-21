@@ -35,7 +35,12 @@
 						<Input bind:value={$form.phone} id="phone" type="tel" name="phone" />
 					</div>
 
-					<MarcosButton icon={IconType.SEARCH} type="submit" variant={ButtonVariant.CUSTOMER}>
+					<MarcosButton
+						icon={IconType.SEARCH}
+						type="submit"
+						variant={ButtonVariant.CUSTOMER}
+						aria-label="Buscar por teléfono"
+					>
 						Buscar
 					</MarcosButton>
 				</form>
@@ -46,12 +51,20 @@
 			<div class="flex flex-col gap-2">
 				<div>
 					<label class="block text-sm font-medium text-gray-700" for="phone">Nombre:</label>
-					<Input bind:value={searchQuery} id="name" required type="text" name="name" />
+					<Input
+						bind:value={searchQuery}
+						id="name"
+						aria-label="Nombre"
+						required
+						type="text"
+						name="name"
+					/>
 				</div>
 
 				<MarcosButton
 					icon={IconType.SEARCH}
 					disabled={searchQuery.length < 3}
+					aria-label="Buscar por nombre"
 					onclick={triggerSearch}
 					variant={ButtonVariant.CUSTOMER}
 				>

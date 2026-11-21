@@ -1,11 +1,11 @@
 import { test, expect, type Page } from '@playwright/test';
 import { fixture, ordersNewestFirst } from './support/fixture';
 
-const descriptionWords = [
-	...new Set(fixture.ORDER_TABLE.map((o) => o.item.description.split(' ')[0]))
-];
+const listedDescriptions = fixture.ORDER_TABLE.filter((o) => o.status !== 'quote').map(
+	(o) => o.item.description
+);
 const descriptions = (page: Page) =>
-	page.getByText(new RegExp(`^(${descriptionWords.join('|')}) \\d{4}$`));
+	page.getByText(new RegExp(`^(${listedDescriptions.join('|')})$`));
 const firstDescription = (page: Page) => descriptions(page).first();
 
 const isUnlinked = (o: { customerUuid: string }) => o.customerUuid === 'temp-customer';

@@ -1098,7 +1098,11 @@
 									class:lg:col-span-2={$form.instantDelivery}
 								>
 									<Label for="instantDelivery">Al momento</Label>
-									<Switch name="instantDelivery" bind:checked={$form.instantDelivery} />
+									<Switch
+										name="instantDelivery"
+										aria-label="Al momento"
+										bind:checked={$form.instantDelivery}
+									/>
 								</div>
 
 								<div class="flex flex-col gap-2">
