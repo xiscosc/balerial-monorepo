@@ -1,5 +1,6 @@
 name: marcos-e2e
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -8,6 +9,9 @@ jobs:
   marcos-e2e:
     runs-on: ubuntu-latest
     steps:
+      - name: Record start time
+        run: echo "STARTED_AT=$(date +%s)" >> "$GITHUB_ENV"
+
       - name: Checkout
         uses: actions/checkout@v6
 
@@ -32,3 +36,24 @@ jobs:
             apps/marcos/playwright-report/
             apps/marcos/test-results/
           retention-days: 7
+
+      - name: Read test results
+        id: results
+        if: always()
+        run: |
+          file=apps/marcos/playwright-results.json
+          if [ -f "$file" ]; then
+            jq -r '.stats | "passed=\(.expected)\nfailed=\(.unexpected)\nflaky=\(.flaky)\nskipped=\(.skipped)"' "$file" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Report to Slack
+        if: always()
+        uses: ./.github/actions/slack-test-report
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          suite: marcos-e2e
+          status: ${{ job.status }}
+          passed: ${{ steps.results.outputs.passed }}
+          failed: ${{ steps.results.outputs.failed }}
+          flaky: ${{ steps.results.outputs.flaky }}
+          skipped: ${{ steps.results.outputs.skipped }}

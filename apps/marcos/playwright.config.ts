@@ -9,7 +9,7 @@ export default defineConfig({
 	forbidOnly: CI,
 	retries: CI ? 1 : 0,
 	reporter: CI
-		? [['github'], ['html', { open: 'never' }]]
+		? [['github'], ['html', { open: 'never' }], ['json', { outputFile: 'playwright-results.json' }]]
 		: [['list'], ['html', { open: 'never' }]],
 	use: {
 		...devices['Desktop Chrome'],
