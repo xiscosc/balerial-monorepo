@@ -666,6 +666,7 @@
 										type="number"
 										step="0.01"
 										name="height"
+										aria-label="Alto (cm)"
 										onchange={() => handleDimensionsChangeEvent()}
 										bind:value={$form.height}
 										success={$form.height > 10}
@@ -679,6 +680,7 @@
 										type="number"
 										step="0.01"
 										name="width"
+										aria-label="Ancho (cm)"
 										onchange={() => handleDimensionsChangeEvent()}
 										bind:value={$form.width}
 										success={$form.width > 10}
@@ -700,6 +702,7 @@
 											type="number"
 											step="0.01"
 											name="pp"
+											aria-label="Medidas PP o Fondo (cm)"
 											onchange={() => handleDimensionsChangeEvent()}
 											bind:value={$form.pp}
 											success={addedPPMeaseures}
@@ -835,6 +838,7 @@
 											type="number"
 											step="0.01"
 											name="exteriorHeight"
+											aria-label="Alto Exterior (cm)"
 											bind:value={$form.exteriorHeight}
 											success={$form.exteriorHeight != null && $form.exteriorHeight > 0}
 										/>
@@ -846,6 +850,7 @@
 											type="number"
 											step="0.01"
 											name="exteriorWidth"
+											aria-label="Ancho Exterior (cm)"
 											bind:value={$form.exteriorWidth}
 											success={$form.exteriorWidth != null && $form.exteriorWidth > 0}
 										/>
@@ -870,6 +875,7 @@
 										step="0.01"
 										min="0.00"
 										name="floatingDistance"
+										aria-label="Distancia flotante (cm)"
 										bind:value={$form.floatingDistance}
 										success={addedFloatingDistance}
 										onchange={() => handleDimensionsChangeEvent()}
@@ -957,7 +963,12 @@
 
 								<div class="flex flex-col gap-2 lg:col-span-2">
 									<Label for="otherElementName">Nombre del elemento:</Label>
-									<Input type="text" name="otherElementName" bind:value={otherName} />
+									<Input
+										type="text"
+										name="otherElementName"
+										aria-label="Nombre del elemento"
+										bind:value={otherName}
+									/>
 								</div>
 
 								<div class="flex flex-col gap-2">
@@ -967,13 +978,18 @@
 										step="0.01"
 										min="0"
 										name="otherElementPrice"
+										aria-label="Precio del elemento"
 										bind:value={otherPrice}
 									/>
 								</div>
 
 								<div class="flex flex-col gap-2">
 									<Label for="otherQuantityElements">Cantidad</Label>
-									<NativeSelect.Root name="otherQuantityElements" bind:value={otherQuantity}>
+									<NativeSelect.Root
+										name="otherQuantityElements"
+										aria-label="Cantidad del elemento"
+										bind:value={otherQuantity}
+									>
 										{#each GenericTools.getIterableStringList(10, 1) as i (i)}
 											<option value={i}>{i}</option>
 										{/each}
@@ -983,6 +999,7 @@
 								<div class="lg:col-span-2">
 									<MarcosButton
 										onclick={() => addOtherElement()}
+										aria-label="Añadir a la lista (elemento extra)"
 										icon={IconType.PLUS}
 										iconSize={IconSize.BIG}
 									>
@@ -999,6 +1016,7 @@
 									<Textarea
 										success={addedDescription}
 										name="description"
+										aria-label="Descripción"
 										bind:value={$form.description}
 									></Textarea>
 								</div>
@@ -1015,6 +1033,7 @@
 									<Textarea
 										success={addedObservations}
 										name="observations"
+										aria-label="Observaciones"
 										bind:value={$form.observations}
 									></Textarea>
 								</div>
@@ -1066,6 +1085,7 @@
 										<Label for="deliveryDate">Fecha de entrega (Sólo pedidos):</Label>
 										<Input
 											name="deliveryDate"
+											aria-label="Fecha de entrega"
 											type="date"
 											bind:value={$proxyDate}
 											error={$errors.deliveryDate ? true : false}
@@ -1078,13 +1098,18 @@
 									class:lg:col-span-2={$form.instantDelivery}
 								>
 									<Label for="instantDelivery">Al momento</Label>
-									<Switch name="instantDelivery" bind:checked={$form.instantDelivery} />
+									<Switch
+										name="instantDelivery"
+										aria-label="Al momento"
+										bind:checked={$form.instantDelivery}
+									/>
 								</div>
 
 								<div class="flex flex-col gap-2">
 									<Label for="discount">Descuento:</Label>
 									<NativeSelect.Root
 										name="discount"
+										aria-label="Descuento"
 										bind:value={$form.discount}
 										success={addedDiscount}
 									>

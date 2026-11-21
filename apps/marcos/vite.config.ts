@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig(({ mode }) => ({
 	plugins: [tailwindcss(), sveltekit()],
 	server:
-		mode === 'offline'
+		mode === 'offline' || mode === 'e2e'
 			? {
 					proxy: {
 						'/__aws': {

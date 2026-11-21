@@ -73,6 +73,7 @@
 						variant={ButtonVariant.SOFT_DELETE}
 						textVariant={ButtonTextVariant.GRAY}
 						size={ButtonSize.DEFAULT}
+						aria-label={`Eliminar ${title.trim()}`}
 						onclick={() => deleteFunction()}
 					></MarcosButton>
 				{:else}
@@ -87,6 +88,7 @@
 								variant={ButtonVariant.SOFT_DELETE}
 								textVariant={ButtonTextVariant.GRAY}
 								size={ButtonSize.DEFAULT}
+								aria-label={`Eliminar ${title.trim()}`}
 								{...props}
 							></MarcosButton>
 						{/snippet}
