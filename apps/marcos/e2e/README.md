@@ -57,7 +57,8 @@ import { uniquePhone } from './support/fixture';
 test('create customer', async ({ page }) => {
 	await page.goto('/customers/new');
 	await page.getByLabel('Nombre').fill('E2E Cliente');
-	await page.getByLabel('Teléfono').fill(uniquePhone());
+	await page.getByLabel('Teléfono').click();
+	await page.getByLabel('Teléfono').pressSequentially(uniquePhone());
 	await page.getByRole('button', { name: 'Crear' }).click();
 	await expect(page).toHaveURL(/\/customers\/[^/]+$/);
 });

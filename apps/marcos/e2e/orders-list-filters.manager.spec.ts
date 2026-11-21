@@ -32,9 +32,8 @@ test('status, unlinked and sort filters on the orders list', async ({ page }) =>
 	await expect(firstDescription(page)).toHaveText(pending[0].item.description);
 
 	await filterButton(page, 'Sin vincular').click();
-	await expect(filterButton(page, 'Vincular')).toHaveCount(unlinkedPending.length);
 	await expect(filterButton(page, 'Ver')).toHaveCount(0);
-	await expect(firstDescription(page)).toHaveText(unlinkedPending[0].item.description);
+	await expect(descriptions(page)).toHaveText(unlinkedPending.map((o) => o.item.description));
 
 	await filterButton(page, 'Finalizados').click();
 	await expect(firstDescription(page)).toHaveText(finished[0].item.description);

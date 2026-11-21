@@ -34,12 +34,13 @@
 
 <Spacer title={sectionTitle} />
 
-<div class="flex flex-col gap-2 lg:col-span-2">
+<div class="flex flex-col gap-2 lg:col-span-2" role="group" aria-label={sectionTitle}>
 	<div class="flex flex-col gap-2 lg:flex-row">
 		<div class="flex flex-1 flex-col gap-2">
 			<Label for="predefinedElements">{label}:</Label>
 			<NativeSelect.Root
 				name="predefinedElements"
+				aria-label={label}
 				bind:value={selectedId}
 				success={selectorState.isAdded()}
 			>
@@ -54,7 +55,11 @@
 
 		<div class="flex flex-1 flex-col gap-2">
 			<Label for="predefinedQuantityElements">Cantidad:</Label>
-			<NativeSelect.Root name="predefinedQuantityElements" bind:value={selectedQuantity}>
+			<NativeSelect.Root
+				name="predefinedQuantityElements"
+				aria-label="Cantidad"
+				bind:value={selectedQuantity}
+			>
 				{#each GenericTools.getIterableStringList(10, 1) as num (num)}
 					<option value={num}>{num}</option>
 				{/each}

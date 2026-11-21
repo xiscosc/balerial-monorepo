@@ -17,7 +17,7 @@ export type Fixture = {
 	})[];
 	CUSTOMER_TABLE: (Row & { uuid: string; name: string; phone: string })[];
 	CALCULATED_ITEM_ORDER_TABLE: (Row & { orderUuid: string })[];
-	LIST_PRICING_TABLE: (Row & { id: string; type: string })[];
+	LIST_PRICING_TABLE: (Row & { id: string; type: string; description: string })[];
 	CONFIG_TABLE: (Row & { id: string; value: unknown })[];
 	FILE_TABLE: (Row & { orderUuid: string })[];
 };
