@@ -1,12 +1,21 @@
 import { test, expect } from '@playwright/test';
-import { fullOrders, locations } from './support/fixture';
+import { fixture, fullOrders, locations, orderIdsWithFiles } from './support/fixture';
+
+const onlyOrderOfCustomer = (customerUuid: string) =>
+	fixture.ORDER_TABLE.filter((o) => o.customerUuid === customerUuid && o.status !== 'quote')
+		.length === 1;
 
 const order = fullOrders.findLast(
-	(o) => o.status === 'pending' && o.amountPayed === 0 && !o.invoiced
+	(o) =>
+		o.status === 'pending' &&
+		o.amountPayed === 0 &&
+		!o.invoiced &&
+		orderIdsWithFiles.has(o.uuid) &&
+		onlyOrderOfCustomer(o.customerUuid)
 )!;
 const [finishedLocation, newLocation] = locations;
 
-test('finish an order with a location, move it, mark it picked up, pay part of it and invoice it', async ({
+test('finish an order with a location, notify the customer, move it, mark it picked up, pay part of it and invoice it', async ({
 	page
 }) => {
 	await page.goto(`/orders/${order.uuid}`);
@@ -18,6 +27,15 @@ test('finish an order with a location, move it, mark it picked up, pay part of i
 	await expect(statusDialog).toBeHidden();
 	await expect(page.getByRole('button', { name: 'Estado: Finalizado' })).toBeVisible();
 	await expect(page.getByRole('button', { name: `Ubicación: ${finishedLocation}` })).toBeVisible();
+
+	await page.getByRole('button', { name: 'Enviar mensaje finalizado' }).click();
+	const whatsappDialog = page.getByRole('dialog', { name: 'WhatsApp' });
+	await expect(
+		whatsappDialog.getByRole('link', { name: 'Enviar mensaje finalizado' })
+	).toHaveAttribute('href', /^https:\/\/wa\.me\//);
+	await page.keyboard.press('Escape');
+	await expect(whatsappDialog).toBeHidden();
+	await expect(page.getByText('Cliente avisado')).toBeVisible();
 
 	await page.getByRole('button', { name: `Ubicación: ${finishedLocation}` }).click();
 	const locationDialog = page.getByRole('dialog', { name: 'Cambiar ubicación' });
@@ -48,6 +66,7 @@ test('finish an order with a location, move it, mark it picked up, pay part of i
 
 	await page.reload();
 	await expect(page.getByRole('button', { name: 'Estado: Recogido' })).toBeVisible();
+	await expect(page.getByText('Avisos al cliente')).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Parcialmente pagado' })).toBeVisible();
 	await expect(page.getByText('1.00 € pagado')).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Facturado', exact: true })).toBeVisible();

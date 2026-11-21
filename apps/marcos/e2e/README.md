@@ -33,7 +33,9 @@ If the Chromium on your machine doesn't match the pinned Playwright version, poi
 
 - `../playwright.config.ts`: projects, web server (`bun run dev:e2e`), base URL
 - `auth.setup.ts`: logs in once per role through the mock OIDC form, stores the session in `playwright/.auth/`
-- `support/env.ts`: base URL, role → mock username, store id
+- `support/env.ts`: base URL, role → mock username, store id. The mock OIDC users are mapped in
+  `apps/marcos-aws/local/oidc.json` by username: `ext*` → external store, `staff*` → main store without
+  price manager, anything else → price manager in the main store
 - `support/fixture.ts`: the seeded dataset, to pick rows from in read-only tests
 
 ## Write a test
@@ -43,6 +45,7 @@ The file suffix decides who the test runs as:
 | Suffix               | Logged in as                                                 |
 | -------------------- | ------------------------------------------------------------ |
 | `*.manager.spec.ts`  | `e2e-manager`: price manager in the main store `local-store` |
+| `*.staff.spec.ts`    | `staff-e2e`: main store `local-store`, not a price manager   |
 | `*.external.spec.ts` | `ext-e2e`: external store                                    |
 | `*.public.spec.ts`   | nobody                                                       |
 

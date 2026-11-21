@@ -29,6 +29,12 @@ export default defineConfig({
 			use: { storageState: authFile('manager') }
 		},
 		{
+			name: 'staff',
+			testMatch: /.*\.staff\.spec\.ts/,
+			dependencies: ['setup'],
+			use: { storageState: authFile('staff') }
+		},
+		{
 			name: 'external',
 			testMatch: /.*\.external\.spec\.ts/,
 			dependencies: ['setup'],

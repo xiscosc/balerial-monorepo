@@ -4,6 +4,7 @@ export const BASE_URL = 'http://127.0.0.1:5174';
 
 export const ROLES = {
 	manager: 'e2e-manager',
+	staff: 'staff-e2e',
 	external: 'ext-e2e'
 } as const;
 
