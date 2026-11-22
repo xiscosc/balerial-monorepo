@@ -54,7 +54,7 @@ export class MoldPriceLoader {
 
 		let count = 2;
 		const prices = new Map<string, ListPrice>();
-		while (count < maxrow) {
+		while (count <= maxrow) {
 			const internalId = sheet[`A${count}`];
 			const externalId = sheet[`B${count}`];
 			const price = sheet[`C${count}`];
@@ -65,7 +65,7 @@ export class MoldPriceLoader {
 				if (Number.isNaN(Number(price.v))) {
 					const cleanPrice = price.v.toString().replace(' ', '').replace(',', '.');
 					if (!Number.isNaN(Number(cleanPrice))) {
-						const calcPrice = Math.ceil(Number(cleanPrice) * 100) / 100;
+						const calcPrice = MoldPriceLoader.ceilToCents(Number(cleanPrice));
 						prices.set(
 							id,
 							MoldPriceLoader.createPricing(
@@ -82,7 +82,7 @@ export class MoldPriceLoader {
 						id,
 						MoldPriceLoader.createPricing(
 							id,
-							Math.ceil(Number(price.v) * 100) / 100,
+							MoldPriceLoader.ceilToCents(Number(price.v)),
 							externalId.v,
 							internalId.v,
 							MoldPriceLoader.getFloating(floating)
@@ -117,6 +117,10 @@ export class MoldPriceLoader {
 			priority: 0,
 			floating
 		};
+	}
+
+	private static ceilToCents(price: number): number {
+		return Math.ceil(Number((price * 100).toFixed(6))) / 100;
 	}
 
 	private static getFloating(floating?: { v: string }): boolean {
