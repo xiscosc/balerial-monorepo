@@ -1,5 +1,5 @@
 name: CI test report
-description: Writes a GitHub job summary and sends a condensed report to Slack
+description: Publishes test results to the GitHub job summary, pull request, and Slack
 inputs:
   webhook-url:
     description: Slack incoming webhook URL
@@ -22,10 +22,11 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Write job summary and report to Slack
+    - name: Publish test results
       shell: bash
       env:
         WEBHOOK_URL: ${{ inputs.webhook-url }}
+        GH_TOKEN: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' && github.token || '' }}
         SUITE: ${{ inputs.suite }}
         STATUS: ${{ inputs.status }}
         RESULTS_FORMAT: ${{ inputs.format }}
@@ -40,6 +41,11 @@ runs:
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
         payload=$(python3 "$GITHUB_ACTION_PATH/report.py")
+        if [[ -n "$GH_TOKEN" && -n "$PR_NUMBER" ]]; then
+          if ! bash "$GITHUB_ACTION_PATH/comment.sh"; then
+            echo '::warning::Could not publish the test report to the pull request'
+          fi
+        fi
         if [[ -n "$WEBHOOK_URL" ]]; then
           if ! curl --fail --silent --max-time 15 -H 'Content-Type: application/json' \
             --data-binary @- "$WEBHOOK_URL" <<< "$payload" > /dev/null; then
