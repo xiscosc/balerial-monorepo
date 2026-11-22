@@ -10,6 +10,7 @@ test('finish an order with a location, notify the customer, move it, mark it pic
 }) => {
 	const partlyPaid = page.getByRole('button', { name: 'Parcialmente pagado' });
 	const invoiced = page.getByRole('button', { name: 'Facturado', exact: true });
+	const customerNotices = page.getByText('Avisos al cliente', { exact: true });
 
 	await orderPage.open(order.uuid);
 	await orderPage.changeStatus('Pendiente', 'Finalizado', finishedLocation);
@@ -25,6 +26,9 @@ test('finish an order with a location, notify the customer, move it, mark it pic
 	await expect(whatsapp).toBeHidden();
 	await expect(page.getByText('Cliente avisado')).toBeVisible();
 
+	await page.reload();
+	await expect(customerNotices).toBeVisible();
+
 	await orderPage.changeLocation(finishedLocation, newLocation);
 	await orderPage.changeStatus('Finalizado', 'Recogido');
 	await expect(orderPage.anyLocation()).toBeHidden();
@@ -38,7 +42,7 @@ test('finish an order with a location, notify the customer, move it, mark it pic
 
 	await page.reload();
 	await expect(orderPage.status('Recogido')).toBeVisible();
-	await expect(page.getByText('Avisos al cliente')).toBeVisible();
+	await expect(customerNotices).toBeVisible();
 	await expect(partlyPaid).toBeVisible();
 	await expect(page.getByText('1.00 € pagado')).toBeVisible();
 	await expect(invoiced).toBeVisible();

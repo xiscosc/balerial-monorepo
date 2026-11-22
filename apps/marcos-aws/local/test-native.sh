@@ -9,4 +9,10 @@ set -a
 set +a
 
 bun apps/marcos-aws/local/seed.ts
-bun run --cwd packages/marcos-core test
+if [[ -n ${1:-} ]]; then
+	cd packages/marcos-core
+	bun test test/read --reporter=junit --reporter-outfile="$1/read.xml"
+	bun test test/write --reporter=junit --reporter-outfile="$1/write.xml"
+else
+	bun run --cwd packages/marcos-core test
+fi

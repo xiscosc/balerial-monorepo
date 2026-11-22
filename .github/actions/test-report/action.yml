@@ -1,0 +1,54 @@
+name: CI test report
+description: Publishes test results to the GitHub job summary, pull request, and Slack
+inputs:
+  webhook-url:
+    description: Slack incoming webhook URL
+    required: false
+  suite:
+    description: Display name of the test suite
+    required: true
+  status:
+    description: Job status
+    required: true
+  format:
+    description: playwright or junit
+    required: true
+  results-path:
+    description: Playwright JSON file or directory containing JUnit reports
+    required: true
+  artifact-url:
+    description: Download URL for the test report artifact
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Publish test results
+      shell: bash
+      env:
+        WEBHOOK_URL: ${{ inputs.webhook-url }}
+        GH_TOKEN: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]' && github.token || '' }}
+        SUITE: ${{ inputs.suite }}
+        STATUS: ${{ inputs.status }}
+        RESULTS_FORMAT: ${{ inputs.format }}
+        RESULTS_PATH: ${{ inputs.results-path }}
+        ARTIFACT_URL: ${{ inputs.artifact-url }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
+        BRANCH: ${{ github.head_ref || github.ref_name }}
+        COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        AUTHOR: ${{ github.event.pull_request.user.login || github.actor }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        payload=$(python3 "$GITHUB_ACTION_PATH/report.py")
+        if [[ -n "$GH_TOKEN" && -n "$PR_NUMBER" ]]; then
+          if ! bash "$GITHUB_ACTION_PATH/comment.sh"; then
+            echo '::warning::Could not publish the test report to the pull request'
+          fi
+        fi
+        if [[ -n "$WEBHOOK_URL" ]]; then
+          if ! curl --fail --silent --max-time 15 -H 'Content-Type: application/json' \
+            --data-binary @- "$WEBHOOK_URL" <<< "$payload" > /dev/null; then
+            echo '::warning::Could not deliver the test report to Slack'
+          fi
+        fi
