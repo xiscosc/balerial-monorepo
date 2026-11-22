@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
@@ -17,7 +17,7 @@ import type { PageServerLoad, Actions } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
 
 async function getListPrice(id: string, pricingService: PricingService): Promise<ListPrice> {
-	if (id == null) throw fail(400);
+	if (id == null) error(400);
 	const pricing = await pricingService.getPriceListByInternalId(id);
 	if (pricing == null) {
 		redirect(302, '/config/prices/list');
@@ -82,8 +82,8 @@ export const actions = {
 			listPrice.priority = form.data.priority;
 			listPrice.discountAllowed = form.data.discountAllowed;
 			await pricingService.updatePricing(listPrice);
-		} catch (error: unknown) {
-			if (error instanceof InvalidKeyError) {
+		} catch (err: unknown) {
+			if (err instanceof InvalidKeyError) {
 				return setError(form, 'id', 'Este id ya está en uso');
 			}
 			return setError(form, '', 'Error actualizando el item. Intente de nuevo.');
