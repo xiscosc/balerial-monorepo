@@ -40,6 +40,7 @@
 
 		<div class="flex" class:md:hidden={allowCol}>
 			<MarcosButton
+				aria-label="Editar cliente"
 				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
 				variant={ButtonVariant.SOFT_DELETE}
@@ -49,6 +50,7 @@
 
 		<div class="hidden" class:md:flex={allowCol}>
 			<MarcosButton
+				aria-label="Editar cliente"
 				onclick={() => goto(resolve(`/customers/${customer.id}/edit`))}
 				icon={IconType.EDIT}
 				variant={ButtonVariant.SOFT_DELETE}

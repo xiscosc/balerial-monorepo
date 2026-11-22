@@ -14,3 +14,9 @@ export const MAIN_STORE_ID = 'local-store';
 
 export const authFile = (role: Role) =>
 	fileURLToPath(new URL(`../../playwright/.auth/${role}.json`, import.meta.url));
+
+export const cameraScenarios = ['existing-order', 'unknown-order', 'not-a-receipt'] as const;
+export type CameraScenario = (typeof cameraScenarios)[number];
+
+export const cameraVideoFile = (scenario: CameraScenario) =>
+	fileURLToPath(new URL(`../../playwright/.camera/${scenario}.y4m`, import.meta.url));

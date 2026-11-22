@@ -10,10 +10,10 @@ test('staff cannot see the customer list', async ({ page, open }) => {
 	expect(response?.status()).toBe(403);
 });
 
-test('staff can create a customer but cannot delete it', async ({ page, customerForm }) => {
+test('staff can create a customer but cannot delete it', async ({ page, customerForm, open }) => {
 	const name = `Cliente staff ${runId}`;
 
-	await page.goto('/customers/new');
+	await open('/customers/new');
 	await customerForm.fill(name, uniquePhone());
 	await page.getByRole('button', { name: 'Crear', exact: true }).click();
 

@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
-import { authFile, BASE_URL } from './e2e/support/env';
+import { authFile, BASE_URL, cameraScenarios, cameraVideoFile } from './e2e/support/env';
 
 const CI = !!process.env.CI;
+const executablePath = process.env.E2E_CHROMIUM_PATH || undefined;
 
 export default defineConfig({
 	testDir: 'e2e',
@@ -13,13 +14,13 @@ export default defineConfig({
 		? [['github'], ['html', { open: 'never' }], ['json', { outputFile: 'playwright-results.json' }]]
 		: [['list'], ['html', { open: 'never' }]],
 	use: {
-		...devices['Desktop Chrome'],
+		...devices['Galaxy S24'],
 		baseURL: BASE_URL,
 		locale: 'es-ES',
 		timezoneId: 'Europe/Madrid',
 		trace: 'retain-on-failure',
 		screenshot: 'only-on-failure',
-		launchOptions: { executablePath: process.env.E2E_CHROMIUM_PATH || undefined }
+		launchOptions: { executablePath }
 	},
 	projects: [
 		{ name: 'setup', testMatch: /.*\.setup\.ts/ },
@@ -42,6 +43,23 @@ export default defineConfig({
 			use: { storageState: authFile('external') }
 		},
 		{ name: 'anonymous', testMatch: /.*\.public\.spec\.ts/ },
+		...cameraScenarios.map((scenario) => ({
+			name: `manager (camera: ${scenario})`,
+			testMatch: new RegExp(`scan-${scenario}\\.manager\\.camera\\.spec\\.ts$`),
+			dependencies: ['setup'],
+			use: {
+				storageState: authFile('manager'),
+				permissions: ['camera'],
+				launchOptions: {
+					executablePath,
+					args: [
+						'--use-fake-ui-for-media-stream',
+						'--use-fake-device-for-media-stream',
+						`--use-file-for-fake-video-capture=${cameraVideoFile(scenario)}`
+					]
+				}
+			}
+		})),
 		{
 			name: 'manager (last)',
 			testMatch: /.*\.manager\.last\.spec\.ts/,

@@ -128,6 +128,7 @@
 		</button>
 		<div class="absolute top-4 right-4 flex flex-row gap-1">
 			<button
+				aria-label="Cerrar"
 				class="rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
 				onclick={(e) => {
 					e.stopPropagation();
@@ -144,6 +145,7 @@
 				{#snippet trigger({ props }: { props: Record<string, unknown> })}
 					<button
 						{...props}
+						aria-label="Eliminar imagen"
 						class="rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
 						type="button"
 					>

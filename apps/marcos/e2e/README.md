@@ -5,6 +5,8 @@ hooks and the better-auth login. They run against the same offline stack as `bun
 mock OIDC), but on their own port (5174) and their own `e2e-*` tables, seeded from the anonymized fixture
 in `apps/marcos-aws/local/fixtures/data.json`.
 
+They emulate a Galaxy S24 (Android Chrome, 360 px wide), because the shop uses the app on phones.
+
 ## Run
 
 One-time, in `apps/marcos`: `bunx playwright install chromium`.
@@ -34,6 +36,7 @@ If the Chromium on your machine doesn't match the pinned Playwright version, poi
 ```
 e2e/
 ├── auth.setup.ts          logs in once per role, stores the session in playwright/.auth/
+├── camera.setup.ts        writes one fake camera video per scan scenario to playwright/.camera/
 ├── orders/                create, edit, duplicate, delete, quote ↔ order, status, same day, print, lookup, bulk
 ├── order-list/            orders list, its filters and search
 ├── customers/             create, edit, delete, list and search customers
@@ -58,13 +61,14 @@ The mock OIDC users are mapped in `apps/marcos-aws/local/oidc.json` by username:
 1. **Pick the folder and role.** Put the spec in the folder of the feature. The file suffix decides who it
    runs as:
 
-   | Suffix                   | Logged in as                                                 |
-   | ------------------------ | ------------------------------------------------------------ |
-   | `*.manager.spec.ts`      | `e2e-manager`: price manager in the main store `local-store` |
-   | `*.staff.spec.ts`        | `staff-e2e`: main store `local-store`, not a price manager   |
-   | `*.external.spec.ts`     | `ext-e2e`: external store                                    |
-   | `*.public.spec.ts`       | nobody                                                       |
-   | `*.manager.last.spec.ts` | `e2e-manager`, but only after every other test has finished  |
+   | Suffix                                   | Logged in as                                                                                                            |
+   | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+   | `*.manager.spec.ts`                      | `e2e-manager`: price manager in the main store `local-store`                                                            |
+   | `*.staff.spec.ts`                        | `staff-e2e`: main store `local-store`, not a price manager                                                              |
+   | `*.external.spec.ts`                     | `ext-e2e`: external store                                                                                               |
+   | `*.public.spec.ts`                       | nobody                                                                                                                  |
+   | `*.manager.last.spec.ts`                 | `e2e-manager`, but only after every other test has finished                                                             |
+   | `scan-<scenario>.manager.camera.spec.ts` | `e2e-manager`, with a fake camera showing the QR of that scenario: `existing-order`, `unknown-order` or `not-a-receipt` |
 
    Use `.last` for tests that replace data the whole suite shares, like uploading a mold file (it
    replaces every mold price). They are skipped if an earlier test fails, and after them the e2e data no

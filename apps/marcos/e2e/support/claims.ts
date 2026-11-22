@@ -259,6 +259,38 @@ export const tracking = {
 	quote: readOrder('tracking', fullOrders.filter(withStatus('quote')))
 };
 
+const pendingWithoutFiles = notInListSearch.filter(
+	(o) => withStatus('pending')(o) && !orderIdsWithFiles.has(o.uuid)
+);
+export const orderWithoutArtwork = claimOrder('no artwork file', pendingWithoutFiles);
+export const orderToDeletePhotoFrom = claimOrder('delete photo', pendingWithoutFiles);
+
+const readCustomer = (owner: string, match: (customer: FixtureCustomer) => boolean) => {
+	const customer = fixture.CUSTOMER_TABLE.find((c) => customerIsFree(c.uuid) && match(c));
+	if (customer == null) {
+		throw new Error(`No unclaimed seeded customer for "${owner}"`);
+	}
+	owners.set(customerKey(customer.uuid), { owner, exclusive: false });
+	readOrders(owner, ordersOfCustomer(customer.uuid));
+	return customer;
+};
+
+export const customerWithOrdersAndQuotes = readCustomer('customer orders', (c) => {
+	const orders = ordersOfCustomer(c.uuid);
+	return (
+		orders.filter((o) => o.status !== 'quote').length >= 2 &&
+		orders.some((o) => o.status === 'quote') &&
+		orders.every((o) => fullOrderIds.has(o.uuid))
+	);
+});
+export const customerToLinkByName = claimCustomer('link by name', () => true);
+
+export const orderToScan = readOrder('scan', fullOrders.filter(withStatus('pending')));
+export const unknownOrderId = '0f0e0d0c-0b0a-4908-8706-050403020100';
+if (fixture.ORDER_TABLE.some((o) => o.uuid === unknownOrderId)) {
+	throw new Error('The unknown order id used by the scan test exists in the seed');
+}
+
 export const customerWithOnlyQuotes = claimCustomer('order for customer', (c) =>
 	ordersOfCustomer(c.uuid).every((o) => o.status === 'quote')
 );

@@ -50,6 +50,7 @@ apps/marcos/static/vendor/
 .codex
 # Playwright (apps/marcos e2e)
 apps/marcos/playwright/.auth
+apps/marcos/playwright/.camera
 test-results
 playwright-report
 playwright-results.json

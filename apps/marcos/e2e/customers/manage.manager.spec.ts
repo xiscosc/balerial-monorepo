@@ -20,7 +20,7 @@ test('create a customer, edit it and delete it', async ({ page, open, customerFo
 	await expect(page.getByText(name, { exact: true })).toBeVisible();
 	await expect(page.getByText(`+34${phone}`, { exact: true })).toBeVisible();
 
-	await page.getByRole('button', { name: 'Editar', exact: true }).click();
+	await page.getByRole('button', { name: 'Editar cliente' }).click();
 	await page.waitForURL(`${customerUrl}/edit`);
 	await expect(customerForm.name()).toHaveValue(name);
 	await expect(customerForm.phone()).toHaveValue(`+34${phone}`);
@@ -50,9 +50,10 @@ test('create a customer, edit it and delete it', async ({ page, open, customerFo
 
 test('creating a customer with an existing phone opens that customer', async ({
 	page,
-	customerForm
+	customerForm,
+	open
 }) => {
-	await page.goto('/customers/new');
+	await open('/customers/new');
 	await customerForm.fill('Cliente repetido', nationalNumber(customerWithOrders.phone));
 	await page.getByRole('button', { name: 'Crear', exact: true }).click();
 
