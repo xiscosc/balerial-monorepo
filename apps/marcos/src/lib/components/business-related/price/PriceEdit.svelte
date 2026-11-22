@@ -198,6 +198,7 @@
 										{:else}
 											<NativeSelect.Root
 												name={props.name}
+												aria-label="Tipo"
 												bind:value={$formData.type}
 												disabled={!isNew}
 											>
@@ -222,6 +223,7 @@
 										{:else}
 											<NativeSelect.Root
 												name={props.name}
+												aria-label="Cómo calcular"
 												onchange={handleFormulaChange}
 												bind:value={$formData.formula}
 												disabled={!isNew}

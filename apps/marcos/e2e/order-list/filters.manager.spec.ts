@@ -1,5 +1,7 @@
-import { test, expect, type Page } from '@playwright/test';
-import { fixture, ordersNewestFirst } from './support/fixture';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../support/test';
+import { listSearchTerm as searchTerm } from '../support/claims';
+import { fixture, ordersNewestFirst } from '../support/fixture';
 
 const listedDescriptions = fixture.ORDER_TABLE.filter((o) => o.status !== 'quote').map(
 	(o) => o.item.description
@@ -9,7 +11,6 @@ const descriptions = (page: Page) =>
 const firstDescription = (page: Page) => descriptions(page).first();
 
 const isUnlinked = (o: { customerUuid: string }) => o.customerUuid === 'temp-customer';
-const searchTerm = 'Lienzo';
 const matchesSearch = (o: { item: { description: string } }) =>
 	o.item.description.startsWith(searchTerm);
 

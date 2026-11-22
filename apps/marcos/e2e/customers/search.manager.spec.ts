@@ -1,13 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { fixture } from './support/fixture';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../support/test';
+import { fixture } from '../support/fixture';
 
 const query = 'CLÍENTE 042';
 const matches = fixture.CUSTOMER_TABLE.filter((c) => c.normalizedName.includes('cliente 042'));
-const results = (page: import('@playwright/test').Page) =>
-	page.getByRole('button', { name: /^Cliente \d{4}$/ });
+const results = (page: Page) => page.getByRole('button', { name: /^Cliente \d{4}$/ });
 
-test('search customers by name ignoring case and accents and open one', async ({ page }) => {
-	await page.goto('/customers/search');
+test('search customers by name ignoring case and accents and open one', async ({ page, open }) => {
+	await open('/customers/search');
 	const name = page.getByLabel('Nombre', { exact: true });
 	const search = page.getByRole('button', { name: 'Buscar por nombre' });
 
@@ -29,8 +29,8 @@ test('search customers by name ignoring case and accents and open one', async ({
 	await expect(page.getByText(customer.name, { exact: true })).toBeVisible();
 });
 
-test('searching a name nobody has shows no results', async ({ page }) => {
-	await page.goto('/customers/search');
+test('searching a name nobody has shows no results', async ({ page, open }) => {
+	await open('/customers/search');
 	await page.getByLabel('Nombre', { exact: true }).fill('Nadie con este nombre');
 	await page.getByRole('button', { name: 'Buscar por nombre' }).click();
 

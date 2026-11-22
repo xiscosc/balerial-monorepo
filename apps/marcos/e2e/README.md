@@ -31,44 +31,80 @@ If the Chromium on your machine doesn't match the pinned Playwright version, poi
 
 ## Layout
 
-- `../playwright.config.ts`: projects, web server (`bun run dev:e2e`), base URL
-- `auth.setup.ts`: logs in once per role through the mock OIDC form, stores the session in `playwright/.auth/`
-- `support/env.ts`: base URL, role → mock username, store id. The mock OIDC users are mapped in
-  `apps/marcos-aws/local/oidc.json` by username: `ext*` → external store, `staff*` → main store without
-  price manager, anything else → price manager in the main store
-- `support/fixture.ts`: the seeded dataset, to pick rows from in read-only tests
+```
+e2e/
+├── auth.setup.ts          logs in once per role, stores the session in playwright/.auth/
+├── orders/                create, edit, duplicate, delete, quote ↔ order, status, same day, print, lookup, bulk
+├── order-list/            orders list, its filters and search
+├── customers/             create, edit, delete, list and search customers
+├── config/                prices and locations
+├── public/                receipt and tracking pages
+├── fixtures/              files tests upload (molds.xlsx)
+└── support/
+    ├── test.ts            the `test` and `expect` every spec imports
+    ├── claims.ts          which seeded orders and customers each test may use
+    ├── fixture.ts         the seeded dataset and helpers to query it
+    ├── dates.ts           ISO dates and the app's dd/MM/yyyy format
+    ├── env.ts             base URL, role → mock username
+    ├── qr.ts              decodes a QR image
+    └── pages/             helpers for the order page, order form, files page, customer form and new-order flow
+```
+
+The mock OIDC users are mapped in `apps/marcos-aws/local/oidc.json` by username: `ext*` → external store,
+`staff*` → main store without price manager, anything else → price manager in the main store.
 
 ## Write a test
 
-The file suffix decides who the test runs as:
+1. **Pick the folder and role.** Put the spec in the folder of the feature. The file suffix decides who it
+   runs as:
 
-| Suffix               | Logged in as                                                 |
-| -------------------- | ------------------------------------------------------------ |
-| `*.manager.spec.ts`  | `e2e-manager`: price manager in the main store `local-store` |
-| `*.staff.spec.ts`    | `staff-e2e`: main store `local-store`, not a price manager   |
-| `*.external.spec.ts` | `ext-e2e`: external store                                    |
-| `*.public.spec.ts`   | nobody                                                       |
+   | Suffix                   | Logged in as                                                 |
+   | ------------------------ | ------------------------------------------------------------ |
+   | `*.manager.spec.ts`      | `e2e-manager`: price manager in the main store `local-store` |
+   | `*.staff.spec.ts`        | `staff-e2e`: main store `local-store`, not a price manager   |
+   | `*.external.spec.ts`     | `ext-e2e`: external store                                    |
+   | `*.public.spec.ts`       | nobody                                                       |
+   | `*.manager.last.spec.ts` | `e2e-manager`, but only after every other test has finished  |
+
+   Use `.last` for tests that replace data the whole suite shares, like uploading a mold file (it
+   replaces every mold price). They are skipped if an earlier test fails, and after them the e2e data no
+   longer matches the seed, so run `bun run e2e:seed` before running other tests again.
+
+2. **Import `test` and `expect` from `support/test.ts`**, not from `@playwright/test`. Besides `page`, a
+   test can ask for:
+
+   | Fixture        | What it does                                                                               |
+   | -------------- | ------------------------------------------------------------------------------------------ |
+   | `open(path)`   | goes to a page and waits until it's hydrated, before clicking buttons that navigate        |
+   | `orderPage`    | the order page: open, status, location, payment, invoice, convert, edit, duplicate, delete |
+   | `orderForm`    | the order form: fields, sections, molds, missing reasons, `fillWholeOrder()`               |
+   | `newOrder`     | after the form: create, link the order to a new or existing customer                       |
+   | `filesPage`    | "Archivos y fotos": upload a picture, "Volver al pedido"                                   |
+   | `customerForm` | the customer form; `typePhone` types a number after the prefilled `+34`                    |
+
+3. **Claim the seeded data you use in `support/claims.ts`.** Tests run in parallel against the same seed.
+   A test that changes an order or customer claims it with `claimOrder` / `claimCustomer`; a test that
+   only reads uses `readOrder` / `readOrders`. Claims run in a fixed order and the suite fails as soon as it
+   loads if a test needs data another test changes. Data a test creates itself (a new customer or order)
+   needs no claim, but give it a name or description that doesn't match seeded data, so list and search
+   tests don't pick it up.
+
+4. **Find elements the way a user does:** `getByRole`, `getByLabel`, visible Spanish text. When an element
+   has no accessible name, add an `aria-label` to the component (it must not change behaviour or looks).
 
 ```ts
-// e2e/customers.manager.spec.ts
-import { test, expect } from '@playwright/test';
-import { uniquePhone } from './support/fixture';
+import { test, expect } from '../support/test';
+import { orderToEdit as order } from '../support/claims';
 
-test('create customer', async ({ page }) => {
-	await page.goto('/customers/new');
-	await page.getByLabel('Nombre').fill('E2E Cliente');
-	await page.getByLabel('Teléfono').click();
-	await page.getByLabel('Teléfono').pressSequentially(uniquePhone());
-	await page.getByRole('button', { name: 'Crear' }).click();
-	await expect(page).toHaveURL(/\/customers\/[^/]+$/);
+test('mark an order as invoiced', async ({ page, orderPage }) => {
+	await orderPage.open(order.uuid);
+	await orderPage.markInvoiced();
+	await expect(page.getByRole('button', { name: 'Facturado', exact: true })).toBeVisible();
 });
 ```
 
 Rules:
 
-- Find elements the way a user does: `getByRole`, `getByLabel`, visible Spanish text. Add a `data-testid`
-  only when an element has no accessible name (e.g. icon-only buttons).
-- No `waitForTimeout`. `expect(...)` assertions retry until they pass or time out.
-- Tests run in parallel. Read-only tests use fixture rows; tests that write create their own customer/order
-  first and never change fixture rows other tests read.
-- Shared flows (create a customer, create an order) go in `support/` as functions taking `page`.
+- No `waitForTimeout`. `expect(...)` assertions retry until they pass or time out (5s locally, 10s in CI).
+- Don't rely on list positions that other tests can change by creating data.
+- `bun run --cwd apps/marcos check` type-checks the e2e folder too.

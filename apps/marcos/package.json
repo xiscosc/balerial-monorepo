@@ -11,7 +11,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync",
-		"check": "svelte-kit sync && svelte-check --tsgo --tsconfig ./tsconfig.json",
+		"check": "svelte-kit sync && svelte-check --tsgo --tsconfig ./tsconfig.json && tsc --noEmit -p e2e",
 		"check:watch": "svelte-kit sync && svelte-check --tsgo --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {

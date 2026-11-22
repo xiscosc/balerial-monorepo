@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { newestPendingOrder } from './support/fixture';
+import { test, expect } from '../support/test';
+import { newestPendingOrder } from '../support/claims';
 
 test('admins see the pending orders list without searching', async ({ page }) => {
 	await page.goto('/orders/list');

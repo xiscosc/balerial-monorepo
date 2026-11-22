@@ -1,15 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { fullOrders, runId } from './support/fixture';
-import { readQr } from './support/qr';
-
-const receiptOrder = (match: (order: (typeof fullOrders)[number]) => boolean) => {
-	const order = fullOrders.find(match);
-	if (order == null) throw new Error('No fixture order matches');
-	return order;
-};
+import { test, expect } from '../support/test';
+import { receipt } from '../support/claims';
+import { runId } from '../support/fixture';
+import { readQr } from '../support/qr';
 
 test('order link shows the receipt with its payment status and customer QR', async ({ page }) => {
-	const order = receiptOrder((o) => o.status === 'pending' && o.amountPayed === 0);
+	const { order } = receipt;
 
 	await page.goto(`/s/${order.shortId}`);
 
@@ -22,7 +17,7 @@ test('order link shows the receipt with its payment status and customer QR', asy
 });
 
 test('quote link shows the receipt as a quote with its customer QR', async ({ page }) => {
-	const quote = receiptOrder((o) => o.status === 'quote');
+	const { quote } = receipt;
 
 	await page.goto(`/s/${quote.shortId}`);
 

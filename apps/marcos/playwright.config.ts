@@ -41,7 +41,13 @@ export default defineConfig({
 			dependencies: ['setup'],
 			use: { storageState: authFile('external') }
 		},
-		{ name: 'anonymous', testMatch: /.*\.public\.spec\.ts/ }
+		{ name: 'anonymous', testMatch: /.*\.public\.spec\.ts/ },
+		{
+			name: 'manager (last)',
+			testMatch: /.*\.manager\.last\.spec\.ts/,
+			dependencies: ['manager', 'staff', 'external', 'anonymous'],
+			use: { storageState: authFile('manager') }
+		}
 	],
 	webServer: {
 		command: 'bun run dev:e2e',

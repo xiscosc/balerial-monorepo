@@ -1,43 +1,9 @@
-import { test, expect, type Page } from '@playwright/test';
-import { fullOrders, ordersNewestFirst } from './support/fixture';
+import type { Page } from '@playwright/test';
+import { test, expect } from '../support/test';
+import { bulk } from '../support/claims';
+import type { FixtureOrder } from '../support/fixture';
 
-type FixtureOrder = (typeof fullOrders)[number];
-
-const isLienzo = (o: FixtureOrder) => o.item.description.startsWith('Lienzo');
-const readByListTests = new Set(
-	[
-		ordersNewestFirst('finished')[0],
-		ordersNewestFirst('finished').at(-1)!,
-		ordersNewestFirst('finished', isLienzo)[0],
-		ordersNewestFirst('finished', isLienzo).at(-1)!
-	].map((o) => o.uuid)
-);
-const newestPickedUp = ordersNewestFirst('picked_up')[0].timestamp;
-
-const usedCustomers = new Set<string>();
-const twoFinishedOrdersOfOneCustomer = (eligible: (o: FixtureOrder) => boolean) => {
-	const byCustomer = new Map<string, FixtureOrder[]>();
-	for (const o of fullOrders) {
-		if (
-			o.status === 'finished' &&
-			!readByListTests.has(o.uuid) &&
-			o.timestamp < newestPickedUp &&
-			!usedCustomers.has(o.customerUuid) &&
-			eligible(o)
-		) {
-			byCustomer.set(o.customerUuid, [...(byCustomer.get(o.customerUuid) ?? []), o]);
-		}
-	}
-	const [customerUuid, orders] = [...byCustomer].find(([, os]) => os.length >= 2)!;
-	usedCustomers.add(customerUuid);
-	return { customerUuid, orders: orders.slice(0, 2) };
-};
-
-const toNotify = twoFinishedOrdersOfOneCustomer((o) => !o.notified);
-const toPay = twoFinishedOrdersOfOneCustomer((o) => o.amountPayed === 0);
-const toInvoice = twoFinishedOrdersOfOneCustomer((o) => !o.invoiced);
-const toPickUp = twoFinishedOrdersOfOneCustomer(() => true);
-const toPrint = twoFinishedOrdersOfOneCustomer(() => true);
+const { toNotify, toPay, toInvoice, toPickUp, toPrint } = bulk;
 
 const card = (page: Page, order: FixtureOrder) =>
 	page
@@ -67,7 +33,7 @@ const runBulkOperation = async (page: Page, action: string, confirm: string) => 
 	return dialog;
 };
 
-test('notify finished orders in bulk', async ({ page }) => {
+test('notify finished orders in bulk', async ({ page, orderPage }) => {
 	await selectOrders(page, toNotify.customerUuid, toNotify.orders);
 	const dialog = await runBulkOperation(
 		page,
@@ -79,7 +45,7 @@ test('notify finished orders in bulk', async ({ page }) => {
 	).toHaveAttribute('href', /^https:\/\/wa\.me\//);
 
 	for (const order of toNotify.orders) {
-		await page.goto(`/orders/${order.uuid}`);
+		await orderPage.open(order.uuid);
 		await expect(page.getByText('Cliente avisado')).toBeVisible();
 	}
 });
@@ -94,12 +60,12 @@ test('mark orders as paid in bulk', async ({ page }) => {
 	}
 });
 
-test('mark orders as invoiced in bulk', async ({ page }) => {
+test('mark orders as invoiced in bulk', async ({ page, orderPage }) => {
 	await selectOrders(page, toInvoice.customerUuid, toInvoice.orders);
 	await runBulkOperation(page, 'Marcar como facturados', 'Marcar pedidos como facturados');
 
 	for (const order of toInvoice.orders) {
-		await page.goto(`/orders/${order.uuid}`);
+		await orderPage.open(order.uuid);
 		await expect(page.getByRole('button', { name: 'Facturado', exact: true })).toBeVisible();
 	}
 });
