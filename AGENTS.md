@@ -19,6 +19,24 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 - `packages/balerial-dynamo` — DynamoDB utilities
 - `packages/typescript-config` — Shared TypeScript config
 
+## Package boundaries
+
+The packages are isolated on purpose. Keep this dependency graph and don't add edges to it:
+
+```
+apps/marcos      ──▶ marcos-core
+apps/marcos-aws  ──▶ marcos-core, balerial-dynamo, AWS SDK / CDK
+marcos-core      ──▶ balerial-dynamo, balerial-s3
+balerial-dynamo  ──▶ AWS SDK (DynamoDB), aws-cdk-lib
+balerial-s3      ──▶ AWS SDK (S3)
+```
+
+- AWS and database libraries (`@aws-sdk/*`, any DB client) only live in `balerial-*` packages and `apps/marcos-aws`. Never add them to `marcos-core` or `apps/marcos`. The only AWS reference in core today is the type-only `@smithy/types` credentials type in `ICoreConfiguration`.
+- `apps/marcos` depends on `marcos-core` only. It must never import `balerial-*` packages, AWS libraries, or any database adapter.
+- `marcos-core` talks to storage only through the `balerial-*` APIs. Swapping the database or a DB library happens inside the `balerial-*` package, so core changes as little as possible.
+- No cycles, including in tests: a package's tests can't import a package that depends on it, and relative imports into another package (`../../other-package/src/...`) aren't allowed.
+- Before creating a package or adding a dependency between packages, show the resulting graph and get it agreed first.
+
 ## Commands
 
 ```bash
