@@ -1,15 +1,15 @@
-import { BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { AttributeType, BillingMode, ProjectionType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
-import type { DynamoTableSet, TableInfo } from '../types.js';
+import type { DynamoTableSet, TableInfo } from '../types';
+import { configTableKeys } from './config-table';
+import { orderAuditTrailTableKeys } from './order-audit-trail-table';
+import { orderSetTableKeys } from './order-set-table';
 import {
 	customerTableBuilder,
-	configTableBuilder,
 	fileTableBuilder,
 	orderTableBuilder,
 	listPricingTableBuilder,
-	calculatedItemTableBuilder,
-	orderAuditTrailTableBuilder,
-	orderSetTableBuilder
+	calculatedItemTableBuilder
 } from '@marcsimolduressonsardina/core/db';
 
 import { IPrimaryDynamoDbIndex, ISecondaryDynamoDbIndex } from '@balerial/dynamo/type';
@@ -56,14 +56,18 @@ function createCustomerTable(scope: Construct, envName: string): TableInfo {
 }
 
 function createConfigTable(scope: Construct, envName: string): TableInfo {
-	const balerialTable = configTableBuilder.setTableName(`${envName}-config`).build();
-	const table = createTable(scope, envName, `${envName}-config`, balerialTable.getPrimaryIndex());
-
-	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
+	const tableName = `${envName}-config`;
+	const table = new Table(scope, `${tableName}-table`, {
+		tableName,
+		partitionKey: { name: configTableKeys.partitionKey, type: AttributeType.STRING },
+		sortKey: { name: configTableKeys.sortKey, type: AttributeType.STRING },
+		billingMode: BillingMode.PAY_PER_REQUEST,
+		pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: envName === 'prod' }
+	});
 	return {
 		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
+		primaryIndexIsPublic: false,
+		publicSecondaryIndexes: []
 	};
 }
 
@@ -79,18 +83,23 @@ function createFileTable(scope: Construct, envName: string): TableInfo {
 }
 
 function createOrderSetTable(scope: Construct, envName: string): TableInfo {
-	const balerialTable = orderSetTableBuilder.setTableName(`${envName}-order-set`).build();
-	const table = createTable(
-		scope,
-		envName,
-		`${envName}-order-set`,
-		balerialTable.getPrimaryIndex()
-	);
-	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
+	const tableName = `${envName}-order-set`;
+	const { partitionKey, hashIndex } = orderSetTableKeys;
+	const table = new Table(scope, `${tableName}-table`, {
+		tableName,
+		partitionKey: { name: partitionKey, type: AttributeType.STRING },
+		billingMode: BillingMode.PAY_PER_REQUEST,
+		pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: envName === 'prod' }
+	});
+	table.addGlobalSecondaryIndex({
+		indexName: hashIndex.name,
+		partitionKey: { name: hashIndex.partitionKey, type: AttributeType.STRING },
+		projectionType: ProjectionType.ALL
+	});
 	return {
 		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
+		primaryIndexIsPublic: false,
+		publicSecondaryIndexes: []
 	};
 }
 
@@ -140,21 +149,26 @@ function createCalculatedItemOrderTable(scope: Construct, envName: string): Tabl
 }
 
 function createOrderAuditTrailTable(scope: Construct, envName: string): TableInfo {
-	const balerialTable = orderAuditTrailTableBuilder
-		.setTableName(`${envName}-order-audit-trail-v3`)
-		.build();
-	const table = createTable(
-		scope,
-		envName,
-		`${envName}-order-audit-trail-v3`,
-		balerialTable.getPrimaryIndex()
-	);
-
-	addSecondaryIndexes(balerialTable.getSecondaryIndexes(), table);
+	const tableName = `${envName}-order-audit-trail-v3`;
+	const { partitionKey, indexSortKey, indexes } = orderAuditTrailTableKeys;
+	const table = new Table(scope, `${tableName}-table`, {
+		tableName,
+		partitionKey: { name: partitionKey, type: AttributeType.STRING },
+		billingMode: BillingMode.PAY_PER_REQUEST,
+		pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: envName === 'prod' }
+	});
+	for (const index of indexes) {
+		table.addGlobalSecondaryIndex({
+			indexName: index.name,
+			partitionKey: { name: index.partitionKey, type: AttributeType.STRING },
+			sortKey: { name: indexSortKey, type: AttributeType.NUMBER },
+			projectionType: ProjectionType.ALL
+		});
+	}
 	return {
 		table,
-		primaryIndexIsPublic: balerialTable.getPrimaryIndexIsPublic(),
-		publicSecondaryIndexes: balerialTable.getPublicSecondaryIndexNames()
+		primaryIndexIsPublic: false,
+		publicSecondaryIndexes: []
 	};
 }
 

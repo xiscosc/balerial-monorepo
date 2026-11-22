@@ -106,6 +106,22 @@
         "typescript": "7.0.2",
       },
     },
+    "packages/balerial-marcos-dynamo": {
+      "name": "@balerial/marcos-dynamo",
+      "version": "0.1.0",
+      "dependencies": {
+        "@aws-sdk/client-dynamodb": "3.1161.0",
+        "@aws-sdk/lib-dynamodb": "3.1161.0",
+        "@aws-sdk/util-dynamodb": "3.996.9",
+        "@marcsimolduressonsardina/contracts": "workspace:*",
+        "dynamodb-toolbox": "2.11.1",
+      },
+      "devDependencies": {
+        "@repo/typescript-config": "workspace:*",
+        "@types/node": "26.6.5",
+        "typescript": "7.0.2",
+      },
+    },
     "packages/balerial-s3": {
       "name": "@balerial/s3",
       "version": "1.0.0",
@@ -136,6 +152,7 @@
       "version": "2.0.0",
       "dependencies": {
         "@balerial/dynamo": "workspace:*",
+        "@balerial/marcos-dynamo": "workspace:*",
         "@balerial/s3": "workspace:*",
         "@marcsimolduressonsardina/contracts": "workspace:*",
         "luxon": "3.7.2",
@@ -229,6 +246,8 @@
     "@balena/dockerignore": ["@balena/dockerignore@1.0.2", "", {}, "sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q=="],
 
     "@balerial/dynamo": ["@balerial/dynamo@workspace:packages/balerial-dynamo"],
+
+    "@balerial/marcos-dynamo": ["@balerial/marcos-dynamo@workspace:packages/balerial-marcos-dynamo"],
 
     "@balerial/s3": ["@balerial/s3@workspace:packages/balerial-s3"],
 
@@ -752,6 +771,8 @@
 
     "dompurify": ["dompurify@3.4.17", "", { "optionalDependencies": { "@types/trusted-types": "^2.0.7" } }, "sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w=="],
 
+    "dynamodb-toolbox": ["dynamodb-toolbox@2.11.1", "", { "dependencies": { "hotscript": "^1.0.13" }, "peerDependencies": { "@aws-sdk/client-dynamodb": "^3.0.0", "@aws-sdk/lib-dynamodb": "^3.0.0", "@aws-sdk/util-dynamodb": "^3.0.0" } }, "sha512-Vz9OlWf5GzPKpV1gNwJ7/4eVnxeGpgvgMsGVXEZQnfLE6arvXORanQUBBoKp/MfwCQ9RVNZvDco/zPZH91XK2w=="],
+
     "effect": ["effect@3.22.4", "", { "dependencies": { "@standard-schema/spec": "^1.0.0", "fast-check": "^3.23.1" } }, "sha512-RNshu7AXVxxDh6aS4lothhJ+QoZ4xSykbWNaaVdvDN72RMyVwhCGdALkyl1TbEydgAmRIdD1eTyJqBUGwSBGDA=="],
 
     "emoji-regex": ["emoji-regex@8.0.0", "", {}, "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="],
@@ -801,6 +822,8 @@
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
     "help-me": ["help-me@5.0.0", "", {}, "sha512-7xgomUX6ADmcYzFik0HzAxh/73YlKR9bmFzf51CZwR+b6YtzU2m0u49hQCqV6SvlqIqsaxovfwdvbnsw3b/zpg=="],
+
+    "hotscript": ["hotscript@1.0.13", "", {}, "sha512-C++tTF1GqkGYecL+2S1wJTfoH6APGAsbb7PAWQ3iVIwgG/EFseAfEVOKFgAFq4yK3+6j1EjUD4UQ9dRJHX/sSQ=="],
 
     "html5-qrcode": ["html5-qrcode@2.3.8", "", {}, "sha512-jsr4vafJhwoLVEDW3n1KvPnCCXWaQfRng0/EEYk1vNcQGcG/htAdhJX0be8YyqMoSz7+hZvOZSTAepsabiuhiQ=="],
 

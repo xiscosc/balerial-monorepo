@@ -16,6 +16,7 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 - `apps/marcos-aws` — AWS CDK infrastructure
 - `packages/marcos-core` — Core business logic and services
 - `packages/marcos-contracts` — Shared domain types and repository DTOs (no dependencies)
+- `packages/balerial-marcos-dynamo` — Marcos persistence adapters using DynamoDB Toolbox
 - `packages/balerial-s3` — S3 utilities
 - `packages/balerial-dynamo` — DynamoDB utilities
 - `packages/typescript-config` — Shared TypeScript config
@@ -25,12 +26,13 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 The packages are isolated on purpose. Keep this dependency graph and don't add edges to it:
 
 ```
-apps/marcos      ──▶ marcos-core, marcos-contracts
-apps/marcos-aws  ──▶ marcos-core, balerial-dynamo, AWS SDK / CDK
-marcos-core      ──▶ marcos-contracts, balerial-dynamo, balerial-s3
-marcos-contracts ──▶ nothing
-balerial-dynamo  ──▶ AWS SDK (DynamoDB), aws-cdk-lib
-balerial-s3      ──▶ AWS SDK (S3)
+apps/marcos           ──▶ marcos-core, marcos-contracts
+apps/marcos-aws       ──▶ marcos-core, balerial-dynamo, AWS SDK / CDK
+marcos-core           ──▶ marcos-contracts, balerial-marcos-dynamo, balerial-dynamo, balerial-s3
+marcos-contracts      ──▶ nothing
+balerial-marcos-dynamo ──▶ marcos-contracts, DynamoDB Toolbox, AWS SDK (DynamoDB)
+balerial-dynamo       ──▶ AWS SDK (DynamoDB), aws-cdk-lib
+balerial-s3           ──▶ AWS SDK (S3)
 ```
 
 - AWS and database libraries (`@aws-sdk/*`, any DB client) only live in `balerial-*` packages and `apps/marcos-aws`. Never add them to `marcos-core` or `apps/marcos`. The only AWS reference in core today is the type-only `@smithy/types` credentials type in `ICoreConfiguration`.

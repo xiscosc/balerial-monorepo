@@ -7,6 +7,7 @@ import {
 	waitUntilTableNotExists,
 	DynamoDBClient,
 	type AttributeDefinition,
+	type CreateTableCommandInput,
 	type KeySchemaElement
 } from '@aws-sdk/client-dynamodb';
 import {
@@ -19,14 +20,14 @@ import { DynamoDBDocument, type BatchWriteCommandInput } from '@aws-sdk/lib-dyna
 import type { IDynamoDbIndex } from '@balerial/dynamo/type';
 import {
 	calculatedItemTableBuilder,
-	configTableBuilder,
 	customerTableBuilder,
 	fileTableBuilder,
 	listPricingTableBuilder,
-	orderAuditTrailTableBuilder,
-	orderSetTableBuilder,
 	orderTableBuilder
 } from '@marcsimolduressonsardina/core/db';
+import { configTableKeys } from '../lib/database/config-table';
+import { orderAuditTrailTableKeys } from '../lib/database/order-audit-trail-table';
+import { orderSetTableKeys } from '../lib/database/order-set-table';
 
 const config = {
 	endpoint: 'https://127.0.0.1:9297',
@@ -34,15 +35,12 @@ const config = {
 	credentials: { accessKeyId: 'local', secretAccessKey: 'local' }
 };
 
-const tables = {
+const legacyTableBuilders = {
 	ORDER_TABLE: orderTableBuilder,
 	CUSTOMER_TABLE: customerTableBuilder,
 	CALCULATED_ITEM_ORDER_TABLE: calculatedItemTableBuilder,
 	LIST_PRICING_TABLE: listPricingTableBuilder,
-	FILE_TABLE: fileTableBuilder,
-	CONFIG_TABLE: configTableBuilder,
-	ORDER_SET_TABLE: orderSetTableBuilder,
-	ORDER_AUDIT_TRAIL_TABLE: orderAuditTrailTableBuilder
+	FILE_TABLE: fileTableBuilder
 };
 
 const keySchema = (i: IDynamoDbIndex): KeySchemaElement[] => [
@@ -64,50 +62,106 @@ const ignoreExisting = (e: unknown) => {
 };
 
 const reset = process.env.SEED_RESET === 'true';
+const configTableName = process.env.CONFIG_TABLE;
+const orderSetTableName = process.env.ORDER_SET_TABLE;
+const orderAuditTrailTableName = process.env.ORDER_AUDIT_TRAIL_TABLE;
+if (!configTableName || !orderSetTableName || !orderAuditTrailTableName) {
+	throw new Error('Table name must be set');
+}
 
-console.log(`Seeding local AWS emulator${reset ? ' (reset)' : ''}`);
-const dynamo = new DynamoDBClient(config);
-await Promise.all(
-	Object.entries(tables).map(async ([envKey, builder]) => {
+const tables: CreateTableCommandInput[] = Object.entries(legacyTableBuilders).map(
+	([envKey, builder]) => {
 		const table = builder.setTableName(process.env[envKey]!).build();
 		const primary = table.getPrimaryIndex();
 		const secondary = table.getSecondaryIndexes();
 		const attributeDefinitions = [primary, ...secondary].flatMap(attributes);
+		return {
+			TableName: table.getTableName(),
+			BillingMode: 'PAY_PER_REQUEST',
+			KeySchema: keySchema(primary),
+			AttributeDefinitions: [
+				...new Map(attributeDefinitions.map((a) => [a.AttributeName, a])).values()
+			],
+			GlobalSecondaryIndexes: secondary.length
+				? secondary.map((i) => ({
+						IndexName: i.indexName,
+						KeySchema: keySchema(i),
+						Projection: { ProjectionType: 'ALL' }
+					}))
+				: undefined
+		};
+	}
+);
 
+tables.push({
+	TableName: configTableName,
+	BillingMode: 'PAY_PER_REQUEST',
+	KeySchema: [
+		{ AttributeName: configTableKeys.partitionKey, KeyType: 'HASH' },
+		{ AttributeName: configTableKeys.sortKey, KeyType: 'RANGE' }
+	],
+	AttributeDefinitions: [
+		{ AttributeName: configTableKeys.partitionKey, AttributeType: 'S' },
+		{ AttributeName: configTableKeys.sortKey, AttributeType: 'S' }
+	]
+});
+
+tables.push({
+	TableName: orderSetTableName,
+	BillingMode: 'PAY_PER_REQUEST',
+	KeySchema: [{ AttributeName: orderSetTableKeys.partitionKey, KeyType: 'HASH' }],
+	AttributeDefinitions: [
+		{ AttributeName: orderSetTableKeys.partitionKey, AttributeType: 'S' },
+		{ AttributeName: orderSetTableKeys.hashIndex.partitionKey, AttributeType: 'S' }
+	],
+	GlobalSecondaryIndexes: [
+		{
+			IndexName: orderSetTableKeys.hashIndex.name,
+			KeySchema: [{ AttributeName: orderSetTableKeys.hashIndex.partitionKey, KeyType: 'HASH' }],
+			Projection: { ProjectionType: 'ALL' }
+		}
+	]
+});
+
+tables.push({
+	TableName: orderAuditTrailTableName,
+	BillingMode: 'PAY_PER_REQUEST',
+	KeySchema: [{ AttributeName: orderAuditTrailTableKeys.partitionKey, KeyType: 'HASH' }],
+	AttributeDefinitions: [
+		{ AttributeName: orderAuditTrailTableKeys.partitionKey, AttributeType: 'S' },
+		{ AttributeName: orderAuditTrailTableKeys.indexSortKey, AttributeType: 'N' },
+		...orderAuditTrailTableKeys.indexes.map((index) => ({
+			AttributeName: index.partitionKey,
+			AttributeType: 'S' as const
+		}))
+	],
+	GlobalSecondaryIndexes: orderAuditTrailTableKeys.indexes.map((index) => ({
+		IndexName: index.name,
+		KeySchema: [
+			{ AttributeName: index.partitionKey, KeyType: 'HASH' },
+			{ AttributeName: orderAuditTrailTableKeys.indexSortKey, KeyType: 'RANGE' }
+		],
+		Projection: { ProjectionType: 'ALL' }
+	}))
+});
+
+console.log(`Seeding local AWS emulator${reset ? ' (reset)' : ''}`);
+const dynamo = new DynamoDBClient(config);
+await Promise.all(
+	tables.map(async (table) => {
+		const { TableName } = table;
 		if (reset) {
-			await dynamo.send(new DeleteTableCommand({ TableName: table.getTableName() })).catch((e) => {
+			await dynamo.send(new DeleteTableCommand({ TableName })).catch((e) => {
 				if ((e as Error).name !== 'ResourceNotFoundException') throw e;
 			});
-			await waitUntilTableNotExists(
-				{ client: dynamo, maxWaitTime: 60 },
-				{ TableName: table.getTableName() }
-			);
+			await waitUntilTableNotExists({ client: dynamo, maxWaitTime: 60 }, { TableName });
 		}
 
 		const status = await dynamo
-			.send(
-				new CreateTableCommand({
-					TableName: table.getTableName(),
-					BillingMode: 'PAY_PER_REQUEST',
-					KeySchema: keySchema(primary),
-					AttributeDefinitions: [
-						...new Map(attributeDefinitions.map((a) => [a.AttributeName, a])).values()
-					],
-					GlobalSecondaryIndexes: secondary.length
-						? secondary.map((i) => ({
-								IndexName: i.indexName,
-								KeySchema: keySchema(i),
-								Projection: { ProjectionType: 'ALL' }
-							}))
-						: undefined
-				})
-			)
+			.send(new CreateTableCommand(table))
 			.then(() => 'created', ignoreExisting);
-		await waitUntilTableExists(
-			{ client: dynamo, maxWaitTime: 60 },
-			{ TableName: table.getTableName() }
-		);
-		console.log(`  table ${table.getTableName()}: ${status}`);
+		await waitUntilTableExists({ client: dynamo, maxWaitTime: 60 }, { TableName });
+		console.log(`  table ${TableName}: ${status}`);
 	})
 );
 

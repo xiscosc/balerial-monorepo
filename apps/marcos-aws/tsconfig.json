@@ -1,6 +1,8 @@
 {
 	"extends": "@tsconfig/node24/tsconfig",
 	"compilerOptions": {
+		"module": "preserve",
+		"moduleResolution": "bundler",
 		"exactOptionalPropertyTypes": false,
 		"inlineSourceMap": true,
 		"inlineSources": true,

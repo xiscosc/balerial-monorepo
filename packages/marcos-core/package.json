@@ -28,6 +28,7 @@
 	},
 	"dependencies": {
 		"@balerial/dynamo": "workspace:*",
+		"@balerial/marcos-dynamo": "workspace:*",
 		"@balerial/s3": "workspace:*",
 		"@marcsimolduressonsardina/contracts": "workspace:*",
 		"luxon": "3.7.2",

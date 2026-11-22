@@ -1,0 +1,22 @@
+{
+	"name": "@balerial/marcos-dynamo",
+	"version": "0.1.0",
+	"private": true,
+	"exports": {
+		"./config": "./src/config.ts",
+		"./order-audit-trail": "./src/order-audit-trail.ts",
+		"./order-set": "./src/order-set.ts"
+	},
+	"devDependencies": {
+		"@repo/typescript-config": "workspace:*",
+		"@types/node": "26.6.5",
+		"typescript": "7.0.2"
+	},
+	"dependencies": {
+		"@aws-sdk/client-dynamodb": "3.1161.0",
+		"@aws-sdk/lib-dynamodb": "3.1161.0",
+		"@aws-sdk/util-dynamodb": "3.996.9",
+		"@marcsimolduressonsardina/contracts": "workspace:*",
+		"dynamodb-toolbox": "2.11.1"
+	}
+}

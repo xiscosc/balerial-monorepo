@@ -1,5 +1,5 @@
+import { OrderAuditTrailRepositoryDynamoDb } from '@balerial/marcos-dynamo/order-audit-trail';
 import type { OrderAuditTrailEntryDto } from '@marcsimolduressonsardina/contracts/dto';
-import { OrderAuditTrailRepositoryDynamoDb } from '../repository/dynamodb/order-audit-trail.repository.dynamodb';
 import { OrderService } from './order.service';
 import { v4 as uuidv4 } from 'uuid';
 import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
@@ -14,10 +14,13 @@ import {
 import { DateTime } from 'luxon';
 
 export class OrderAuditTrailService {
-	private auditRepository: OrderAuditTrailRepositoryDynamoDb;
+	private readonly auditRepository: OrderAuditTrailRepositoryDynamoDb;
 
 	constructor(private readonly config: ICoreConfiguration) {
-		this.auditRepository = new OrderAuditTrailRepositoryDynamoDb(config);
+		this.auditRepository = new OrderAuditTrailRepositoryDynamoDb(config.orderAuditTrailTable, {
+			region: config.region,
+			credentials: config.credentials
+		});
 	}
 
 	async logOrderStatusChanged(orderId: string, newStatus: OrderStatus, oldStatus?: OrderStatus) {
