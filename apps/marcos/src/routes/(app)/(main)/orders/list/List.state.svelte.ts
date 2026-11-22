@@ -36,7 +36,8 @@ export class ListStateClass implements ListState {
 	private paginatedOrders: Promise<FullOrder[]> | undefined = $state(undefined);
 	private lastKey: Record<string, string | number> | undefined = $state();
 	private showMinCharsAlert: boolean = $derived(
-		this.searchValueDebounced.current.length > 0 && this.searchValueDebounced.current.length < 3
+		this.searchValueDebounced.current.length < 3 &&
+			(this.searchValueDebounced.current.length > 0 || !this.isAdmin)
 	);
 	private paginationAvailable: boolean = $derived(
 		this.searchValueDebounced.current.length === 0 && this.lastKey != null
