@@ -27,17 +27,18 @@ jobs:
       - name: Run e2e tests
         run: bash apps/marcos-aws/local/e2e-native.sh
 
-      - name: Read test results
+      - name: Check for flaky tests
         id: results
         if: always()
         run: |
           file=apps/marcos/playwright-results.json
           if [ -f "$file" ]; then
-            jq -r '.stats | "passed=\(.expected)\nfailed=\(.unexpected)\nflaky=\(.flaky)\nskipped=\(.skipped)"' "$file" >> "$GITHUB_OUTPUT"
+            jq -r '"flaky=\(.stats.flaky > 0)"' "$file" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Upload Playwright report
-        if: failure() || (steps.results.outputs.flaky != '' && steps.results.outputs.flaky != '0')
+        id: playwright-report
+        if: failure() || steps.results.outputs.flaky == 'true'
         uses: actions/upload-artifact@v7
         with:
           name: playwright-report
@@ -46,14 +47,13 @@ jobs:
             apps/marcos/test-results/
           retention-days: 7
 
-      - name: Report to Slack
+      - name: Publish test summary
         if: always()
-        uses: ./.github/actions/slack-test-report
+        uses: ./.github/actions/test-report
         with:
           webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-          suite: marcos-e2e
+          suite: Marcos E2E
           status: ${{ job.status }}
-          passed: ${{ steps.results.outputs.passed }}
-          failed: ${{ steps.results.outputs.failed }}
-          flaky: ${{ steps.results.outputs.flaky }}
-          skipped: ${{ steps.results.outputs.skipped }}
+          format: playwright
+          results-path: apps/marcos/playwright-results.json
+          artifact-url: ${{ steps.playwright-report.outputs.artifact-url }}
