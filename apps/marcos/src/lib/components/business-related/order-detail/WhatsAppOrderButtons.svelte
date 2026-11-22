@@ -4,7 +4,7 @@
 	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Divider from '@/components/generic/Divider.svelte';
-	import { OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus, type Order } from '@marcsimolduressonsardina/contracts/type';
 	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';

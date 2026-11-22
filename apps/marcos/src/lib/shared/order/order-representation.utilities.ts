@@ -7,7 +7,7 @@ import {
 	type FullOrder,
 	type Order,
 	type OrderSet
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 import { CalculatedItemUtilities, otherExtraId } from '@marcsimolduressonsardina/core/util';
 import { customerMoldIds, discountMap } from '../mappings/order.mapping';
 import { browser } from '$app/environment';

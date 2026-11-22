@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Loading from '@/components/generic/Loading.svelte';
-	import type { Customer } from '@marcsimolduressonsardina/core/type';
+	import type { Customer } from '@marcsimolduressonsardina/contracts/type';
 	import { onMount } from 'svelte';
 	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';

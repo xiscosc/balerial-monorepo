@@ -17,6 +17,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@imagemagick/magick-wasm": "0.0.45",
+        "@marcsimolduressonsardina/contracts": "workspace:*",
         "@marcsimolduressonsardina/core": "workspace:*",
         "@sveltejs/adapter-auto": "7.0.1",
         "@sveltejs/adapter-vercel": "6.3.4",
@@ -121,12 +122,22 @@
         "typescript": "7.0.2",
       },
     },
+    "packages/marcos-contracts": {
+      "name": "@marcsimolduressonsardina/contracts",
+      "version": "1.0.0",
+      "devDependencies": {
+        "@repo/typescript-config": "workspace:*",
+        "@types/node": "26.6.5",
+        "typescript": "7.0.2",
+      },
+    },
     "packages/marcos-core": {
       "name": "@marcsimolduressonsardina/core",
       "version": "2.0.0",
       "dependencies": {
         "@balerial/dynamo": "workspace:*",
         "@balerial/s3": "workspace:*",
+        "@marcsimolduressonsardina/contracts": "workspace:*",
         "luxon": "3.7.2",
         "mime-types": "3.0.2",
         "nanoid": "5.1.16",
@@ -324,6 +335,8 @@
     "@lucide/svelte": ["@lucide/svelte@1.67.0", "", { "peerDependencies": { "svelte": "^5" } }, "sha512-DeqoOkMm3QihcNsrQB5drR/8azWDGuozfagDpm/anIqaJdflLUMhwLFPEANl/W3FLhXx6HmQwEWz7zBtZ6KXcQ=="],
 
     "@mapbox/node-pre-gyp": ["@mapbox/node-pre-gyp@2.0.3", "", { "dependencies": { "consola": "^3.2.3", "detect-libc": "^2.0.0", "https-proxy-agent": "^7.0.5", "node-fetch": "^2.6.7", "nopt": "^8.0.0", "semver": "^7.5.3", "tar": "^7.4.0" }, "bin": { "node-pre-gyp": "bin/node-pre-gyp" } }, "sha512-uwPAhccfFJlsfCxMYTwOdVfOz3xqyj8xYL3zJj8f0pb30tLohnnFPhLuqp4/qoEz8sNxe4SESZedcBojRefIzg=="],
+
+    "@marcsimolduressonsardina/contracts": ["@marcsimolduressonsardina/contracts@workspace:packages/marcos-contracts"],
 
     "@marcsimolduressonsardina/core": ["@marcsimolduressonsardina/core@workspace:packages/marcos-core"],
 

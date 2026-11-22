@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { OrderStatus } from '../../src/types/order.type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { fixture, fixtureIds, inBatches, liveOrders, services } from '../support';
 
 const { customerService, orderService } = services();

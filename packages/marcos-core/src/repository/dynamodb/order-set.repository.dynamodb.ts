@@ -1,5 +1,5 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
-import { type OrderSetDto } from '../dto/order-set.dto';
+import type { OrderSetDto } from '@marcsimolduressonsardina/contracts/dto';
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { OrderSetSecondaryIndexNames, orderSetTableBuilder } from './table/table.builders.dynamodb';

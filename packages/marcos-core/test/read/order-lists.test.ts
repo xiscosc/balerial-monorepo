@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { OrderStatus, type FullOrder } from '../../src/types/order.type';
+import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 import { tempCustomerUuid } from '../../src/utilities/order.utilities';
 import { fixtureIds, liveOrders, services } from '../support';
 

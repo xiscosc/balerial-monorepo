@@ -2,7 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { read } from 'xlsx';
 
 import { PricingService } from '../service';
-import { type ListPrice, PricingFormula, PricingType } from '../types';
+import {
+	type ListPrice,
+	PricingFormula,
+	PricingType
+} from '@marcsimolduressonsardina/contracts/type';
 import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 import { getClientConfiguration } from '../configuration/configuration.util';
 import { BalerialCloudFileService } from '@balerial/s3/service';

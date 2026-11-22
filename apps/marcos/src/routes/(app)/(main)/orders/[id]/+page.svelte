@@ -22,7 +22,7 @@
 		OrderStatus,
 		type Order,
 		type OrderAuditTrailEntry
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import Step from '@/components/generic/Step.svelte';
 	import { DateTime } from 'luxon';
 	import OrderPriceDetails from '@/components/business-related/order-detail/OrderPriceDetails.svelte';

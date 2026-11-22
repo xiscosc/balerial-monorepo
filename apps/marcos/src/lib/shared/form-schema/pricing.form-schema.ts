@@ -1,4 +1,4 @@
-import { PricingFormula } from '@marcsimolduressonsardina/core/type';
+import { PricingFormula } from '@marcsimolduressonsardina/contracts/type';
 import { editablePricingTypes, newEditablePricingTypes } from '@marcsimolduressonsardina/core/util';
 import { z } from 'zod';
 

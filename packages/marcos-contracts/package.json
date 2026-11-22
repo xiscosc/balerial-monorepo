@@ -1,0 +1,16 @@
+{
+	"name": "@marcsimolduressonsardina/contracts",
+	"version": "1.0.0",
+	"exports": {
+		"./type": "./src/types/index.ts",
+		"./dto": "./src/dto/index.ts"
+	},
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"@repo/typescript-config": "workspace:*",
+		"@types/node": "26.6.5",
+		"typescript": "7.0.2"
+	}
+}

@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { AppUser } from '@marcsimolduressonsardina/contracts/type';
 import type { HandleClientError } from '@sveltejs/kit';
 import type { IClientTracking } from './tracking.interface';
 import type { ClientFeature } from './client.features';

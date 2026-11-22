@@ -1,6 +1,6 @@
 import type { RequestHandler } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';
-import { FileType, ImageVariant } from '@marcsimolduressonsardina/core/type';
+import { FileType, ImageVariant } from '@marcsimolduressonsardina/contracts/type';
 import { json } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request, locals, params }) => {

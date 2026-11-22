@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
+	import { type FullOrder, OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 	import OrderCard from '@/components/business-related/order-list/OrderCard.svelte';
 	import Box from '@/components/generic/Box.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';

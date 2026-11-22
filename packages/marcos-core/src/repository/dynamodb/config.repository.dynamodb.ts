@@ -1,7 +1,7 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 
-import type { ConfigDto, ConfigValue } from '../dto/config.dto';
+import type { ConfigDto, ConfigValue } from '@marcsimolduressonsardina/contracts/dto';
 import { configTableBuilder } from './table/table.builders.dynamodb';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { DynamoQueryExpression } from '@balerial/dynamo/type';

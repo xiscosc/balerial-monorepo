@@ -22,7 +22,7 @@ import {
 	type ICoreConfiguration,
 	type ICorePublicConfiguration
 } from '@marcsimolduressonsardina/core/config';
-import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { AppUser } from '@marcsimolduressonsardina/contracts/type';
 import { redirect } from '@sveltejs/kit';
 export class AuthService {
 	public static generateConfiguration(user: AppUser): ICoreConfiguration {

@@ -1,5 +1,5 @@
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
-import type { OrderAuditTrailEntryDto } from '../dto/order-audit-trail-entry.dto';
+import type { OrderAuditTrailEntryDto } from '@marcsimolduressonsardina/contracts/dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import {

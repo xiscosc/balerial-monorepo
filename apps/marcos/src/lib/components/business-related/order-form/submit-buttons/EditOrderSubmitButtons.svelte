@@ -2,7 +2,7 @@
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { OrderActionNames } from '@/shared/mappings/order.mapping';
-	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 
 	interface Props {
 		orderStatus?: OrderStatus;

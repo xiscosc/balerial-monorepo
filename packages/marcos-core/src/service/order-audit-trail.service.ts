@@ -1,4 +1,4 @@
-import type { OrderAuditTrailEntryDto } from '../repository/dto/order-audit-trail-entry.dto';
+import type { OrderAuditTrailEntryDto } from '@marcsimolduressonsardina/contracts/dto';
 import { OrderAuditTrailRepositoryDynamoDb } from '../repository/dynamodb/order-audit-trail.repository.dynamodb';
 import { OrderService } from './order.service';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,7 +10,7 @@ import {
 	OrderAuditTrailType,
 	type OrderAuditTrailValue,
 	OrderStatus
-} from '../types/order.type';
+} from '@marcsimolduressonsardina/contracts/type';
 import { DateTime } from 'luxon';
 
 export class OrderAuditTrailService {

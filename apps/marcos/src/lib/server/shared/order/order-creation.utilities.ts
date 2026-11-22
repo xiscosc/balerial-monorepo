@@ -12,7 +12,7 @@ import {
 	type CalculatedItemPart,
 	type ExternalFullOrder,
 	type PricingType
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 import type {
 	ExternalOrderCreationDto,
 	OrderCreationDto,

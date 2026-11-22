@@ -1,5 +1,5 @@
 <script lang="ts" generics="T">
-	import type { CalculatedItemPart } from '@marcsimolduressonsardina/core/type';
+	import type { CalculatedItemPart } from '@marcsimolduressonsardina/contracts/type';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Step from '@/components/generic/Step.svelte';
 

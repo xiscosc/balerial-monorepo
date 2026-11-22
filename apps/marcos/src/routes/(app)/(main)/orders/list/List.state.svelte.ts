@@ -1,8 +1,8 @@
 import { Debounced, watch } from 'runed';
 import { browser } from '$app/environment';
 import { OrderApiGateway } from '@/gateway/order-api.gateway';
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
-import type { FullOrder } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
+import type { FullOrder } from '@marcsimolduressonsardina/contracts/type';
 import { ActionBarState } from '@/state/action-bar/action-bar.state.svelte';
 
 export type OrderListSort = 'newest' | 'oldest';

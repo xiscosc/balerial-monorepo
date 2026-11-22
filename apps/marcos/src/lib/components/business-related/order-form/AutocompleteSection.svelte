@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
-	import { type ListPrice, type PricingType } from '@marcsimolduressonsardina/core/type';
+	import { type ListPrice, type PricingType } from '@marcsimolduressonsardina/contracts/type';
 	import { formulasStringMap } from '@/shared/mappings/pricing.mapping';
 	import { ScrollArea } from '@/components/ui/scroll-area/index.js';
 	import { Separator } from '@/components/ui/separator/index.js';

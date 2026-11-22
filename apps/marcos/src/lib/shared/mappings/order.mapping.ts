@@ -1,4 +1,4 @@
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { BatchOperation } from '@/type/api.type';
 
 export const customerMoldIds = ['2_MARCO DEL CLIENTE', '1_SIN MARCO'];

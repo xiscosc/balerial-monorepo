@@ -1,4 +1,4 @@
-import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { AppUser } from '@marcsimolduressonsardina/contracts/type';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import type { ServerFeature } from './server.features';
 

@@ -2,9 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { InvalidDataError } from '../error/invalid-data.error';
 import { CustomerRepositoryDynamoDb } from '../repository/dynamodb/customer.repository.dynamodb';
-import type { CustomerDto } from '../repository/dto/customer.dto';
+import type { CustomerDto } from '@marcsimolduressonsardina/contracts/dto';
 import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
-import { type Customer } from '../types/customer.type';
+import type { Customer } from '@marcsimolduressonsardina/contracts/type';
 import { SearchUtilities } from '../utilities/search.utilities';
 
 interface PaginatedCustomers {

@@ -11,7 +11,7 @@ import {
 	type FullOrder,
 	type Order,
 	type OrderAuditTrailEntry
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 import { AuthService } from '$lib/server/service/auth.service';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';

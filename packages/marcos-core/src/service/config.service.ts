@@ -1,5 +1,5 @@
 import { ConfigRepositoryDynamoDb } from '../repository/dynamodb/config.repository.dynamodb';
-import type { ConfigDto } from '../repository/dto/config.dto';
+import type { ConfigDto } from '@marcsimolduressonsardina/contracts/dto';
 import { LOCATIONS_CONFIG_ID, type LocationsConfigType } from './constants/config.constants';
 import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 

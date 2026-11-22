@@ -1,7 +1,7 @@
 import { type ICorePublicConfiguration } from '../configuration/core-configuration.interface';
 import { PublicCustomerRepositoryDynamoDb } from '../repository/dynamodb/public-customer.repository.dynamodb';
 import { PublicOrderRepositoryDynamoDb } from '../repository/dynamodb/public-order.repository.dynamodb';
-import { type FullOrder } from '../types';
+import type { FullOrder } from '@marcsimolduressonsardina/contracts/type';
 import { CalculatedItemService } from './calculated-item.service';
 import { CustomerService } from './customer.service';
 import { OrderService } from './order.service';

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { OrderSet } from '@marcsimolduressonsardina/core/type';
+	import type { OrderSet } from '@marcsimolduressonsardina/contracts/type';
 	import { QrUtilities } from '@/shared/order/qr.utilities';
 	import Qr from '@/components/generic/Qr.svelte';
 	import { asset, resolve } from '$app/paths';

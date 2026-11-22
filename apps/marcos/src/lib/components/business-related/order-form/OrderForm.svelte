@@ -8,7 +8,7 @@
 		type PreCalculatedItemPart,
 		PricingType,
 		DimensionsType
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import CartItem from '@/components/business-related/order/CartItem.svelte';
 	import PricingSelectorSection from '@/components/business-related/order-form/PricingSelectorSection.svelte';
 	import PricingSelectorWithQuantitySection from '@/components/business-related/order-form/PricingSelectorWithQuantitySection.svelte';

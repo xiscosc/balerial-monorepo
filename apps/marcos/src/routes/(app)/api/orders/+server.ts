@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { type Order, OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { type Order, OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { json } from '@sveltejs/kit';
 import { BatchOperation } from '@/type/api.type';
 import { ServerTracking } from '@/server/shared/tracking';

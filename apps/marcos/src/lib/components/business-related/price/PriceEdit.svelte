@@ -16,7 +16,7 @@
 		PricingType,
 		type MaxArea,
 		type MaxAreaM2
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Banner from '@/components/generic/Banner.svelte';

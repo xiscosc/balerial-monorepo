@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { OrderStatus } from '../../src/types/order.type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { tempCustomerUuid } from '../../src/utilities/order.utilities';
 import {
 	calculatedItemOf,
