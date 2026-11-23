@@ -35,7 +35,9 @@ export class NoOpServerTracking implements IServerTracking {
 			user_agent: event.request.headers.get('user-agent'),
 			current_url: event.url.toString(),
 			path: event.url.pathname,
-			referrer: event.request.headers.get('referer')
+			referrer: event.request.headers.get('referer'),
+			sessionId: event.request.headers.get('x-posthog-session-id') ?? undefined,
+			windowId: event.request.headers.get('x-posthog-window-id') ?? undefined
 		};
 
 		return resolve(event);
