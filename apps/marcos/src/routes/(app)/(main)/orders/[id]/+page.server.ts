@@ -1,4 +1,4 @@
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, RouteParams, Actions } from './$types';
 import {
 	type ServiceFactory,
@@ -32,14 +32,14 @@ async function setOrderStatus(
 	const { id } = params;
 
 	if (!AuthService.isAdmin(locals.user) && status === OrderStatus.DELETED) {
-		throw fail(403, {});
+		error(403);
 	}
 
 	const { orderService } = locals.services!;
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
-		throw fail(500, { missing: true });
+		error(404);
 	}
 
 	if (
@@ -47,7 +47,7 @@ async function setOrderStatus(
 		status !== OrderStatus.DELETED &&
 		order.status === OrderStatus.QUOTE
 	) {
-		throw fail(400, { missing: true });
+		error(400);
 	}
 
 	await orderService.setOrderStatus(order, status, location);
@@ -71,7 +71,7 @@ async function setInvoiced(
 
 	const order = await orderService.getOrderById(id);
 	if (!order) {
-		throw fail(500, { missing: true });
+		error(404);
 	}
 
 	await orderService.setOrderInvoiced(order, invoiced);

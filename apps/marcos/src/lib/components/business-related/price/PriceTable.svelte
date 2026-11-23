@@ -72,6 +72,7 @@
 						onclick={() =>
 							goto(resolve(`/(app)/(main)/config/prices/[id]`, { id: price.internalId }))}
 						class="hover:cursor-pointer"
+						aria-label={`Editar ${price.id}`}
 					>
 						<Icon type={IconType.EDIT}></Icon>
 					</button>

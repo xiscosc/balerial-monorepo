@@ -60,12 +60,13 @@
 </script>
 
 <Spacer title={sectionTitle} />
-<div class="lg:col-span-2">
+<div class="lg:col-span-2" role="group" aria-label={sectionTitle}>
 	<div class="flex flex-col justify-center gap-3 lg:grid lg:grid-cols-2 lg:items-end">
 		<div class="flex flex-col gap-2">
 			<Label for="priceId">{label}:</Label>
 			<NativeSelect.Root
 				name="priceId"
+				aria-label={label}
 				bind:value={selectedId}
 				onchange={() => selectorState.setSelectedId(selectedId)}
 				success={selectorState.isAdded()}
@@ -85,6 +86,7 @@
 				<Input
 					type="text"
 					name="extraInfoValue"
+					aria-label="Número"
 					bind:value={extraInfo}
 					oninput={() => selectorState.setExtraInfo(extraInfo)}
 					success={selectorState.isAdded()}

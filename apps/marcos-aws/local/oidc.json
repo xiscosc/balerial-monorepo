@@ -19,6 +19,19 @@
 				},
 				{
 					"requestParam": "subject",
+					"match": "staff.*",
+					"claims": {
+						"email": "${subject}@local.test",
+						"email_verified": true,
+						"name": "${subject}",
+						"app_metadata": {
+							"storeId": "local-store",
+							"priceManager": false
+						}
+					}
+				},
+				{
+					"requestParam": "subject",
 					"match": ".*",
 					"claims": {
 						"email": "${subject}@local.test",

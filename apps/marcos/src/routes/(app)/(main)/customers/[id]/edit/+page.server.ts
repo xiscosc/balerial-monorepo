@@ -2,7 +2,7 @@ import { superValidate, setError } from 'sveltekit-superforms';
 import type { PageServerLoad, Actions } from './$types';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { customerSchema } from '$lib/shared/form-schema/customer.form-schema';
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
 import { ServerTracking } from '@/server/shared/tracking';
 
@@ -37,11 +37,11 @@ export const actions = {
 
 		try {
 			await customerService.updateCustomerData(existingCustomer, form.data.name, form.data.phone);
-		} catch (error) {
-			if (error instanceof InvalidKeyError) {
+		} catch (err) {
+			if (err instanceof InvalidKeyError) {
 				return setError(form, 'phone', 'Número de teléfono ya en uso');
 			}
-			throw fail(500);
+			error(500);
 		}
 
 		await ServerTracking.event('customer_updated', {
