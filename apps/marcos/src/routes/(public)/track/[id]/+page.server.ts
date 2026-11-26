@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 import { ServiceFactory } from '@marcsimolduressonsardina/core/service';
 import { AuthService } from '$lib/server/service/auth.service';
 import { ServerTracking } from '@/server/shared/tracking';
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params as { id: string };

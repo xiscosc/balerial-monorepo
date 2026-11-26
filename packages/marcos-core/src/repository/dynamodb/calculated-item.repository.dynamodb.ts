@@ -1,6 +1,6 @@
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
-import type { CalculatedItemDto } from '../dto/calculated-item.dto';
+import type { CalculatedItemDto } from '@marcsimolduressonsardina/contracts/dto';
 import { calculatedItemTableBuilder } from './table/table.builders.dynamodb';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 

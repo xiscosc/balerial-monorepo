@@ -1,8 +1,8 @@
 import { CfnOutput, Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { createDynamoTables } from './database/dynamo-db.construct.js';
-import type { MssStackProps } from './types.js';
-import { createBuckets } from './file/s3.construct.js';
+import { createDynamoTables } from './database/dynamo-db.construct';
+import type { MssStackProps } from './types';
+import { createBuckets } from './file/s3.construct';
 import { ManagedPolicy, PolicyStatement } from 'aws-cdk-lib/aws-iam';
 
 export class MmSsStack extends Stack {

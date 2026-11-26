@@ -1,5 +1,5 @@
 import { BaseApiGateway } from '@/gateway/base-api.gateway';
-import type { Customer } from '@marcsimolduressonsardina/core/type';
+import type { Customer } from '@marcsimolduressonsardina/contracts/type';
 
 export class CustomerApiGateway extends BaseApiGateway {
 	public static async searchCustomers(query: string): Promise<Customer[]> {

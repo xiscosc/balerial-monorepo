@@ -15,6 +15,8 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 - `apps/marcos` — SvelteKit backoffice app (deployed on Vercel)
 - `apps/marcos-aws` — AWS CDK infrastructure
 - `packages/marcos-core` — Core business logic and services
+- `packages/marcos-contracts` — Shared domain types and repository DTOs (no dependencies)
+- `packages/balerial-marcos-dynamo` — Marcos persistence adapters using DynamoDB Toolbox
 - `packages/balerial-s3` — S3 utilities
 - `packages/balerial-dynamo` — DynamoDB utilities
 - `packages/typescript-config` — Shared TypeScript config
@@ -24,15 +26,18 @@ Order management and back-office system for a print/mold shop. Turborepo monorep
 The packages are isolated on purpose. Keep this dependency graph and don't add edges to it:
 
 ```
-apps/marcos      ──▶ marcos-core
-apps/marcos-aws  ──▶ marcos-core, balerial-dynamo, AWS SDK / CDK
-marcos-core      ──▶ balerial-dynamo, balerial-s3
-balerial-dynamo  ──▶ AWS SDK (DynamoDB), aws-cdk-lib
-balerial-s3      ──▶ AWS SDK (S3)
+apps/marcos           ──▶ marcos-core, marcos-contracts
+apps/marcos-aws       ──▶ marcos-core, balerial-dynamo, AWS SDK / CDK
+marcos-core           ──▶ marcos-contracts, balerial-marcos-dynamo, balerial-dynamo, balerial-s3
+marcos-contracts      ──▶ nothing
+balerial-marcos-dynamo ──▶ marcos-contracts, DynamoDB Toolbox, AWS SDK (DynamoDB)
+balerial-dynamo       ──▶ AWS SDK (DynamoDB), aws-cdk-lib
+balerial-s3           ──▶ AWS SDK (S3)
 ```
 
 - AWS and database libraries (`@aws-sdk/*`, any DB client) only live in `balerial-*` packages and `apps/marcos-aws`. Never add them to `marcos-core` or `apps/marcos`. The only AWS reference in core today is the type-only `@smithy/types` credentials type in `ICoreConfiguration`.
-- `apps/marcos` depends on `marcos-core` only. It must never import `balerial-*` packages, AWS libraries, or any database adapter.
+- `apps/marcos` depends on `marcos-core` and `marcos-contracts` only. It must never import `balerial-*` packages, AWS libraries, or any database adapter.
+- `marcos-contracts` holds types only (domain types, enums, repository DTOs) and depends on nothing. Business logic stays in `marcos-core`. Import types from `@marcsimolduressonsardina/contracts`, never re-export them from core.
 - `marcos-core` talks to storage only through the `balerial-*` APIs. Swapping the database or a DB library happens inside the `balerial-*` package, so core changes as little as possible.
 - No cycles, including in tests: a package's tests can't import a package that depends on it, and relative imports into another package (`../../other-package/src/...`) aren't allowed.
 - Before creating a package or adding a dependency between packages, show the resulting graph and get it agreed first.

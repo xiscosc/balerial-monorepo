@@ -5,7 +5,7 @@
 		FileType,
 		ImageVariant,
 		type File as MMSSFile
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import { ImageConverter } from '@/images/image-converter';
 	import Loading from '@/components/generic/Loading.svelte';
 	import UploadedFile from '@/components/business-related/file/UploadedFile.svelte';

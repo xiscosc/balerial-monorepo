@@ -4,7 +4,7 @@ import { linkCustomerSchema } from '$lib/shared/form-schema/customer.form-schema
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail, redirect } from '@sveltejs/kit';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { ServerTracking } from '@/server/shared/tracking';
 
 export const load = (async ({ params, locals }) => {

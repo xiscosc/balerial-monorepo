@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 import { AuthService } from '$lib/server/service/auth.service';
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 
 export const load = (async ({ params, locals }) => {
 	const { id } = params;

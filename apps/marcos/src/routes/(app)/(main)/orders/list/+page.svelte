@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Box from '@/components/generic/Box.svelte';
-	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 	import FilterButton from '@/components/generic/button/FilterButton.svelte';
 	import Input from '@/components/ui/input/input.svelte';
 	import * as NativeSelect from '@/components/ui/native-select/index.js';

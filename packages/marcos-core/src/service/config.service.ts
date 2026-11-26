@@ -1,13 +1,18 @@
-import { ConfigRepositoryDynamoDb } from '../repository/dynamodb/config.repository.dynamodb';
-import type { ConfigDto } from '../repository/dto/config.dto';
+import { ConfigRepositoryDynamoDb } from '@balerial/marcos-dynamo/config';
+import type { ConfigDto } from '@marcsimolduressonsardina/contracts/dto';
+import type { ICoreConfiguration } from '../configuration/core-configuration.interface';
 import { LOCATIONS_CONFIG_ID, type LocationsConfigType } from './constants/config.constants';
-import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
 
 export class ConfigService {
-	private repository: ConfigRepositoryDynamoDb;
+	private readonly repository: ConfigRepositoryDynamoDb;
+	private readonly storeId: string;
 
-	constructor(private readonly config: ICoreConfiguration) {
-		this.repository = new ConfigRepositoryDynamoDb(config);
+	constructor(config: ICoreConfiguration) {
+		this.storeId = config.storeId;
+		this.repository = new ConfigRepositoryDynamoDb(config.configTable, this.storeId, {
+			region: config.region,
+			credentials: config.credentials
+		});
 	}
 
 	public async getLocationsList(): Promise<LocationsConfigType> {
@@ -23,7 +28,7 @@ export class ConfigService {
 
 	public async storeLocationsList(locations: LocationsConfigType) {
 		const locationsDto: ConfigDto = {
-			storeId: this.config.storeId,
+			storeId: this.storeId,
 			id: LOCATIONS_CONFIG_ID,
 			value: locations
 		};

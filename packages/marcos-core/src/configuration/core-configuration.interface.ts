@@ -1,5 +1,5 @@
 import { type AwsCredentialIdentity } from '@smithy/types';
-import { type AppUser } from '../types/user.type';
+import type { AppUser } from '@marcsimolduressonsardina/contracts/type';
 
 export interface ICoreConfiguration {
 	storeId: string;

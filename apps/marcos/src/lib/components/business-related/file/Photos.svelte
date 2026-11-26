@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { File as MMSSFile } from '@marcsimolduressonsardina/core/type';
+	import type { File as MMSSFile } from '@marcsimolduressonsardina/contracts/type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Loading from '@/components/generic/Loading.svelte';

@@ -1,5 +1,5 @@
 import type { PricingService } from '@marcsimolduressonsardina/core/service';
-import { PricingType, type AllPrices } from '@marcsimolduressonsardina/core/type';
+import { PricingType, type AllPrices } from '@marcsimolduressonsardina/contracts/type';
 
 export class PricingHelper {
 	public static async getPricing(pricingProvider: PricingService): Promise<AllPrices> {

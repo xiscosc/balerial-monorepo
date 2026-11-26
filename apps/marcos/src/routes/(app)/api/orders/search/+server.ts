@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { tempCustomerUuid } from '@marcsimolduressonsardina/core/util';
 import { json } from '@sveltejs/kit';
 

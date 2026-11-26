@@ -1,6 +1,6 @@
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { InvalidKeyError } from '../../error/invalid-key.error';
-import type { ListPriceDto } from '../dto/list-price.dto';
+import type { ListPriceDto } from '@marcsimolduressonsardina/contracts/dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import {

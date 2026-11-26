@@ -7,7 +7,7 @@
 		DimensionsType,
 		PricingType,
 		type ExternalFullOrder
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import { weekDayMap } from '@/shared/mappings/order.mapping';
 
 	let { fullOrder, print = false }: { fullOrder: ExternalFullOrder; print?: boolean } = $props();

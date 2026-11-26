@@ -1,4 +1,4 @@
-import type { OrderSet } from '@marcsimolduressonsardina/core/type';
+import type { OrderSet } from '@marcsimolduressonsardina/contracts/type';
 import { BaseApiGateway } from '@/gateway/base-api.gateway';
 
 export class OrderSetApiGateway extends BaseApiGateway {

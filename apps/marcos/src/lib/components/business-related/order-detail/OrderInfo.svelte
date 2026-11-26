@@ -2,7 +2,11 @@
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import { DateTime } from 'luxon';
 	import Box from '@/components/generic/Box.svelte';
-	import { DimensionsType, OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
+	import {
+		DimensionsType,
+		OrderStatus,
+		type Order
+	} from '@marcsimolduressonsardina/contracts/type';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import OrderInfoStep from '@/components/business-related/order-detail/OrderInfoStep.svelte';
 

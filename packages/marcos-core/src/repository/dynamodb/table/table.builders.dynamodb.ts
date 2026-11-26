@@ -9,11 +9,6 @@ export enum ListPricingSecondaryIndexNames {
 	Type = 'type'
 }
 
-export enum OrderAuditTrailSecondaryIndexNames {
-	Order = 'order',
-	Store = 'store'
-}
-
 export enum OrderSecondaryIndexNames {
 	Customer = 'customer',
 	ShortId = 'shortId',
@@ -22,24 +17,9 @@ export enum OrderSecondaryIndexNames {
 	PublicId = 'publicId'
 }
 
-export enum OrderSetSecondaryIndexNames {
-	Hash = 'hash'
-}
-
-export const orderSetTableBuilder = new BalerialDynamoTableBuilder()
-	.setPrimaryIndex('uuid', DynamoDbIndexKeyType.string)
-	.addSecondaryIndex(OrderSetSecondaryIndexNames.Hash, 'hash', DynamoDbIndexKeyType.string);
-
 export const calculatedItemTableBuilder = new BalerialDynamoTableBuilder()
 	.setPrimaryIndex('orderUuid', DynamoDbIndexKeyType.string)
 	.setPublicPrimaryIndex();
-
-export const configTableBuilder = new BalerialDynamoTableBuilder().setPrimaryIndex(
-	'storeId',
-	DynamoDbIndexKeyType.string,
-	'id',
-	DynamoDbIndexKeyType.string
-);
 
 export const customerTableBuilder = new BalerialDynamoTableBuilder()
 	.setPrimaryIndex('uuid', DynamoDbIndexKeyType.string)
@@ -67,23 +47,6 @@ export const listPricingTableBuilder = new BalerialDynamoTableBuilder()
 		DynamoDbIndexKeyType.string,
 		'id',
 		DynamoDbIndexKeyType.string
-	);
-
-export const orderAuditTrailTableBuilder = new BalerialDynamoTableBuilder()
-	.setPrimaryIndex('uuid', DynamoDbIndexKeyType.string)
-	.addSecondaryIndex(
-		OrderAuditTrailSecondaryIndexNames.Order,
-		'orderUuid',
-		DynamoDbIndexKeyType.string,
-		'timestamp',
-		DynamoDbIndexKeyType.number
-	)
-	.addSecondaryIndex(
-		OrderAuditTrailSecondaryIndexNames.Store,
-		'storeId',
-		DynamoDbIndexKeyType.string,
-		'timestamp',
-		DynamoDbIndexKeyType.number
 	);
 
 export const orderTableBuilder = new BalerialDynamoTableBuilder()

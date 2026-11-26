@@ -1,4 +1,4 @@
-import { type StaticUser } from '../types/user.type';
+import type { StaticUser } from '@marcsimolduressonsardina/contracts/type';
 
 export class UserService {
 	public static generateStaticUser(id: string, name: string, storeId: string): StaticUser {

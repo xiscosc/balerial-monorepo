@@ -6,7 +6,6 @@
 	},
 	"exports": {
 		"./util": "./src/utilities/index.ts",
-		"./type": "./src/types/index.ts",
 		"./service": "./src/service/index.ts",
 		"./dto": "./src/service/dto/order-creation.dto.ts",
 		"./db": "./src/repository/dynamodb/table/table.builders.dynamodb.ts",
@@ -29,7 +28,9 @@
 	},
 	"dependencies": {
 		"@balerial/dynamo": "workspace:*",
+		"@balerial/marcos-dynamo": "workspace:*",
 		"@balerial/s3": "workspace:*",
+		"@marcsimolduressonsardina/contracts": "workspace:*",
 		"luxon": "3.7.2",
 		"mime-types": "3.0.2",
 		"nanoid": "5.1.16",

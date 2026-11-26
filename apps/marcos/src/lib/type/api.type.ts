@@ -1,4 +1,7 @@
-import type { OrderDimensions, PreCalculatedItemPart } from '@marcsimolduressonsardina/core/type';
+import type {
+	OrderDimensions,
+	PreCalculatedItemPart
+} from '@marcsimolduressonsardina/contracts/type';
 
 export type PreCalculatedItemPartRequest = {
 	partsToCalculateWithKey: { key: string; part: PreCalculatedItemPart }[];

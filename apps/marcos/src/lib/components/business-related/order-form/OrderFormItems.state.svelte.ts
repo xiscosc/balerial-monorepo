@@ -6,7 +6,7 @@ import {
 	type ListPriceWithMold,
 	type OrderDimensions,
 	type PreCalculatedItemPart
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 import {
 	CalculatedItemUtilities,
 	fabricDefaultPricing,

@@ -3,7 +3,7 @@
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import { OrderActionNames } from '@/shared/mappings/order.mapping';

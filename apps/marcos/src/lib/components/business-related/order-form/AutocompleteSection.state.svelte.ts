@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js';
-import type { ListPrice, PricingType } from '@marcsimolduressonsardina/core/type';
+import type { ListPrice, PricingType } from '@marcsimolduressonsardina/contracts/type';
 
 interface AutocompleteSectionState {
 	isAdded: () => boolean;

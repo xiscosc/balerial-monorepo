@@ -3,7 +3,7 @@
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import { ButtonVariant, ButtonTextVariant } from '@/components/generic/button/button.enum';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
-	import { PaymentStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { PaymentStatus, type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import Divider from '@/components/generic/Divider.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import Input from '@/components/ui/input/input.svelte';

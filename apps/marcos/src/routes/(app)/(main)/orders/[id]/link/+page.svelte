@@ -10,7 +10,7 @@
 	import Banner from '@/components/generic/Banner.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { Input } from '@/components/ui/input';
-	import type { Customer } from '@marcsimolduressonsardina/core/type';
+	import type { Customer } from '@marcsimolduressonsardina/contracts/type';
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import Loading from '@/components/generic/Loading.svelte';

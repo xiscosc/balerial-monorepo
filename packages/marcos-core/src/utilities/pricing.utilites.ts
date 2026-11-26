@@ -6,7 +6,7 @@ import {
 	type MaxAreaM2,
 	PricingFormula,
 	PricingType
-} from '../types/pricing.type';
+} from '@marcsimolduressonsardina/contracts/type';
 
 export const fabricIds = {
 	labour: 'fabric',

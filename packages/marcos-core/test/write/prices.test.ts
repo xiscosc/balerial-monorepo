@@ -2,7 +2,11 @@ import { afterAll, beforeAll, describe, expect, test } from 'bun:test';
 import { utils, write } from 'xlsx';
 import { MoldPriceLoader } from '../../src/data/mold-price.loader';
 import { InvalidKeyError } from '../../src/error';
-import { PricingType, type ListPrice, type PricingFormula } from '../../src/types/pricing.type';
+import {
+	PricingType,
+	type ListPrice,
+	type PricingFormula
+} from '@marcsimolduressonsardina/contracts/type';
 import { config, fixture, services } from '../support';
 
 const { pricingService } = services();

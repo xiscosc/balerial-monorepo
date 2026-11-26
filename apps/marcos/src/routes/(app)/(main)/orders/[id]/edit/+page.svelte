@@ -1,7 +1,7 @@
 <script lang="ts">
 	import OrderForm from '@/components/business-related/order-form/OrderForm.svelte';
 	import type { PageData } from './$types';
-	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 	import EditOrderSubmitButtons from '@/components/business-related/order-form/submit-buttons/EditOrderSubmitButtons.svelte';
 	interface Props {
 		data: PageData;

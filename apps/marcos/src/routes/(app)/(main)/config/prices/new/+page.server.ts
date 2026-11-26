@@ -9,7 +9,7 @@ import type {
 	MaxAreaM2,
 	PricingFormula,
 	PricingType
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 import { InvalidKeyError } from '@marcsimolduressonsardina/core/error';
 import type { PageServerLoad, Actions } from './$types';
 import { ServerTracking } from '@/server/shared/tracking';

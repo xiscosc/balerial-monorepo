@@ -4,7 +4,7 @@
 	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
-	import { OrderStatus, type Order } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus, type Order } from '@marcsimolduressonsardina/contracts/type';
 	import { OrderActionNames } from '@/shared/mappings/order.mapping';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	let sheetLoading = $state(false);

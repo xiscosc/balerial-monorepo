@@ -9,7 +9,7 @@
 	} from '@/shared/form-schema/order.form-schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { zod4Client } from 'sveltekit-superforms/adapters';
-	import type { Order } from '@marcsimolduressonsardina/core/type';
+	import type { Order } from '@marcsimolduressonsardina/contracts/type';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import * as NativeSelect from '@/components/ui/native-select/index.js';

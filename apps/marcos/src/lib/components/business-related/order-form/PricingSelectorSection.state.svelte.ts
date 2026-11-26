@@ -1,4 +1,4 @@
-import type { ListPriceWithMold, PricingType } from '@marcsimolduressonsardina/core/type';
+import type { ListPriceWithMold, PricingType } from '@marcsimolduressonsardina/contracts/type';
 import { SvelteMap } from 'svelte/reactivity';
 
 interface PricingSelectorSectionState {
