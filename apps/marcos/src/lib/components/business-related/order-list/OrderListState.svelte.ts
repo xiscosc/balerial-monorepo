@@ -1,4 +1,8 @@
-import { type Customer, type FullOrder, OrderStatus } from '@marcsimolduressonsardina/core/type';
+import {
+	type Customer,
+	type FullOrder,
+	OrderStatus
+} from '@marcsimolduressonsardina/contracts/type';
 import { SvelteMap, SvelteSet } from 'svelte/reactivity';
 import { BatchOperation } from '@/type/api.type';
 import { OrderUtilities } from '@marcsimolduressonsardina/core/util';

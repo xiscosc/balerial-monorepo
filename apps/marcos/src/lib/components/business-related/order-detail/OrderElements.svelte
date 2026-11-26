@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Box from '@/components/generic/Box.svelte';
-	import { type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import CartItem from '@/components/business-related/order/CartItem.svelte';
 
 	interface Props {

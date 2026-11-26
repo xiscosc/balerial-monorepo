@@ -4,7 +4,7 @@
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import OrderList from '@/components/business-related/order-list/OrderList.svelte';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
-	import type { FullOrder } from '@marcsimolduressonsardina/core/type';
+	import type { FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';

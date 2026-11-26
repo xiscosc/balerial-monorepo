@@ -7,7 +7,7 @@
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import { SearchCustomerState } from '@/state/search/search-customer.state.svelte';
 	import { CustomerApiGateway } from '@/gateway/customer-api.gateway';
-	import type { Customer } from '@marcsimolduressonsardina/core/type';
+	import type { Customer } from '@marcsimolduressonsardina/contracts/type';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';

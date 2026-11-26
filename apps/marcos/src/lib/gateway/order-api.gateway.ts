@@ -6,7 +6,7 @@ import type {
 	OrderStatus,
 	File,
 	ImageVariant
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 import type { BatchOperation } from '@/type/api.type';
 
 export type OrderListRequest = {

@@ -1,9 +1,8 @@
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { CustomerService } from './customer.service';
-import type { OrderDto } from '../repository/dto/order.dto';
+import type { OrderDto, ItemDto } from '@marcsimolduressonsardina/contracts/dto';
 import { OrderRepositoryDynamoDb } from '../repository/dynamodb/order.repository.dynamodb';
 import { CalculatedItemService } from './calculated-item.service';
-import type { ItemDto } from '../repository/dto/item.dto';
 import { InvalidDataError } from '../error/invalid-data.error';
 import type {
 	ExternalOrderCreationDto,
@@ -26,12 +25,12 @@ import {
 	OrderStatus,
 	type OrderTotals,
 	type OrderTotalsBase,
-	type PreCalculatedItemPart
-} from '../types/order.type';
+	type PreCalculatedItemPart,
+	type Customer,
+	PricingType
+} from '@marcsimolduressonsardina/contracts/type';
 import { SearchUtilities } from '../utilities/search.utilities';
-import { type Customer } from '../types/customer.type';
 import { CalculatedItemUtilities } from '../utilities/calculated-item.utilites';
-import { PricingType } from '../types/pricing.type';
 import { UserService } from './user.service';
 import { tempCustomerUuid, OrderUtilities, quoteDeliveryDate } from '../utilities/order.utilities';
 import { PricingService } from './pricing.service';

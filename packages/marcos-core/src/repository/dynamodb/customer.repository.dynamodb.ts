@@ -1,6 +1,6 @@
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
 import { InvalidKeyError } from '../../error/invalid-key.error';
-import type { CustomerDto } from '../dto/customer.dto';
+import type { CustomerDto } from '@marcsimolduressonsardina/contracts/dto';
 import { CustomerSecondaryIndexNames, customerTableBuilder } from './table/table.builders.dynamodb';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';

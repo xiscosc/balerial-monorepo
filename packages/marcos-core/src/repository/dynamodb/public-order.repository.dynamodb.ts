@@ -1,5 +1,5 @@
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
-import { type OrderDto } from '../dto/order.dto';
+import type { OrderDto } from '@marcsimolduressonsardina/contracts/dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { type DynamoFilterElement, DynamoFilterExpression } from '@balerial/dynamo/type';

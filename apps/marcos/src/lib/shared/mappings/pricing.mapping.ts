@@ -1,4 +1,4 @@
-import { PricingFormula, PricingType } from '@marcsimolduressonsardina/core/type';
+import { PricingFormula, PricingType } from '@marcsimolduressonsardina/contracts/type';
 import { type EditablePricingTypes } from '@marcsimolduressonsardina/core/util';
 
 export const otherForPrintPricingTypes = [

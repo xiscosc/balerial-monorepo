@@ -1,6 +1,9 @@
 import { describe, expect, test } from 'bun:test';
-import { FileType, ImageVariant } from '../../src/types/file.type';
-import { OrderAuditTrailType } from '../../src/types/order.type';
+import {
+	FileType,
+	ImageVariant,
+	OrderAuditTrailType
+} from '@marcsimolduressonsardina/contracts/type';
 import {
 	customersById,
 	fixture,

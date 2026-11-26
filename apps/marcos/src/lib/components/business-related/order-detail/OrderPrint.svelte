@@ -9,7 +9,7 @@
 		OrderStatus,
 		PricingType,
 		type FullOrder
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import Qr from '@/components/generic/Qr.svelte';
 	import { weekDayMap } from '@/shared/mappings/order.mapping';
 	import { QrOrigin } from '@/type/qr.type';

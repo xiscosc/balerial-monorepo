@@ -14,7 +14,7 @@
 	import LocationOrderBottomSheet from '@/components/business-related/order-detail/edit/LocationOrderBottomSheet.svelte';
 	import StatusOrderBottomSheet from '@/components/business-related/order-detail/edit/StatusOrderBottomSheet.svelte';
 	import PaymentOrderBottomSheet from '@/components/business-related/order-detail/edit/PaymentOrderBottomSheet.svelte';
-	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import CustomerDetails from '@/components/business-related/customer/CustomerDetails.svelte';
 	import BottomSheet from '@/components/generic/BottomSheet.svelte';
 	import InvoiceOrderBottomSheet from '@/components/business-related/order-detail/edit/InvoiceOrderBottomSheet.svelte';

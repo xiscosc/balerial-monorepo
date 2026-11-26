@@ -1,10 +1,10 @@
-import { type Customer } from '../../types/customer.type';
 import {
+	type Customer,
 	type CalculatedItemPart,
 	DimensionsType,
 	type PPDimensions,
 	type PreCalculatedItemPart
-} from '../../types/order.type';
+} from '@marcsimolduressonsardina/contracts/type';
 
 export type OrderCreationDtoBase = {
 	width: number;

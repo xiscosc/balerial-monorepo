@@ -7,7 +7,7 @@ import type {
 	PreCalculatedItemPart,
 	CalculatedItemPart,
 	OrderDimensions
-} from '@marcsimolduressonsardina/core/type';
+} from '@marcsimolduressonsardina/contracts/type';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const pricingRequest = (await request.json()) as PreCalculatedItemPartRequest;

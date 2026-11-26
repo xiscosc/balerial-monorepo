@@ -1,21 +1,24 @@
+import { OrderSetRepositoryDynamoDb } from '@balerial/marcos-dynamo/order-set';
 import { createHash } from 'crypto';
 import { v4 as uuid } from 'uuid';
 import { type ICoreConfiguration } from '../configuration/core-configuration.interface';
-import { OrderSetRepositoryDynamoDb } from '../repository/dynamodb/order-set.repository.dynamodb';
 import { OrderService } from './order.service';
-import { type FullOrder, type OrderSet } from '../types';
-import { type OrderSetDto } from '../repository/dto/order-set.dto';
+import type { FullOrder, OrderSet } from '@marcsimolduressonsardina/contracts/type';
+import type { OrderSetDto } from '@marcsimolduressonsardina/contracts/dto';
 import { UserService } from './user.service';
 
 export class OrderSetService {
-	private repository: OrderSetRepositoryDynamoDb;
+	private readonly repository: OrderSetRepositoryDynamoDb;
 	private orderService: OrderService;
 
 	constructor(
 		private readonly config: ICoreConfiguration,
 		orderService: OrderService
 	) {
-		this.repository = new OrderSetRepositoryDynamoDb(config);
+		this.repository = new OrderSetRepositoryDynamoDb(config.orderSetTable, {
+			region: config.region,
+			credentials: config.credentials
+		});
 		this.orderService = orderService;
 	}
 

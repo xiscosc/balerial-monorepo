@@ -9,7 +9,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { getStatusUIInfo, getStatusUIInfoWithPaymentInfo } from '@/ui/ui.helper';
 	import Divider from '@/components/generic/Divider.svelte';
-	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import BottomSheetLoading from '@/components/generic/BottomSheetLoading.svelte';
 	import type { StatusOrderSchema } from '@/shared/form-schema/order.form-schema';
 	interface Props {

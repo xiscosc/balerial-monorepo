@@ -11,7 +11,7 @@ import {
 	linearPricingShortSide,
 	leftoverPricing12
 } from '../data/static-pricing';
-import type { ListPriceDto } from '../repository/dto/list-price.dto';
+import type { ListPriceDto } from '@marcsimolduressonsardina/contracts/dto';
 import { ListPricingRepositoryDynamoDb } from '../repository/dynamodb/list-pricing.repository.dynamodb';
 import { InvalidSizeError } from '../error';
 import {
@@ -29,7 +29,7 @@ import {
 	PricingFormula,
 	PricingType,
 	type OrderDimensions
-} from '../types';
+} from '@marcsimolduressonsardina/contracts/type';
 
 export class PricingService {
 	private listPricingRepository: ListPricingRepositoryDynamoDb;

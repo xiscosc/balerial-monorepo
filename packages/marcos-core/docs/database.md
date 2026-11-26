@@ -104,7 +104,7 @@ Key-value store scoped by store. `value` is arbitrary JSON (primitives, lists, o
 
 ### `${env}-order-set` — printable order groupings
 
-Env var: `ORDER_SET_TABLE` · DTO: [`order-set.dto.ts`](../src/repository/dto/order-set.dto.ts)
+Env var: `ORDER_SET_TABLE` · DTO: [`order-set.dto.ts`](../../marcos-contracts/src/dto/order-set.dto.ts)
 
 | Index      | Partition key | Sort key |
 | ---------- | ------------- | -------- |
@@ -115,7 +115,7 @@ Attributes: `uuid`, `hash` (deduplicates identical sets), `timestamp`, `userId`,
 
 ### `${env}-order-audit-trail-v3` — audit trail (analytics)
 
-Env var: `ORDER_AUDIT_TRAIL_TABLE` · DTO: [`order-audit-trail-entry.dto.ts`](../src/repository/dto/order-audit-trail-entry.dto.ts)
+Env var: `ORDER_AUDIT_TRAIL_TABLE` · DTO: [`order-audit-trail-entry.dto.ts`](../../marcos-contracts/src/dto/order-audit-trail-entry.dto.ts)
 
 | Index       | Partition key   | Sort key        |
 | ----------- | --------------- | --------------- |

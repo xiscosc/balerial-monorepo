@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'bun:test';
-import { OrderAuditTrailType, OrderStatus } from '../../src/types/order.type';
+import { OrderAuditTrailType, OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { quoteDeliveryDate, tempCustomerUuid } from '../../src/utilities/order.utilities';
 import {
 	calculatedItemOf,

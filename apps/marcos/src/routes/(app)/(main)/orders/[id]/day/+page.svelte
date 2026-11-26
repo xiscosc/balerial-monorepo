@@ -4,7 +4,7 @@
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import Banner from '@/components/generic/Banner.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
-	import { type Order, OrderStatus } from '@marcsimolduressonsardina/core/type';
+	import { type Order, OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import SimpleHeading from '@/components/generic/SimpleHeading.svelte';
 	import OrderList from '@/components/business-related/order-list/OrderList.svelte';

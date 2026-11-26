@@ -1,4 +1,4 @@
-import type { ListPrice, MaxArea, MaxAreaM2 } from '../types/pricing.type';
+import type { ListPrice, MaxArea, MaxAreaM2 } from '@marcsimolduressonsardina/contracts/type';
 import { InvalidSizeError } from '../error/invalid-size.error';
 import { moldMatrix } from './mold-matrix';
 

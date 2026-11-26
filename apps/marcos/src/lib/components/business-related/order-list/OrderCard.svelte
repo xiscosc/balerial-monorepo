@@ -8,7 +8,7 @@
 	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
-	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus, type FullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import { goto } from '$app/navigation';

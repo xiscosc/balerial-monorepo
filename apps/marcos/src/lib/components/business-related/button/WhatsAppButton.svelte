@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Customer, Order } from '@marcsimolduressonsardina/core/type';
+	import type { Customer, Order } from '@marcsimolduressonsardina/contracts/type';
 	import { ButtonVariant } from '@/components/generic/button/button.enum';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { OrderApiGateway } from '@/gateway/order-api.gateway';

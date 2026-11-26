@@ -1,5 +1,5 @@
 import { type ICoreConfiguration } from '../../configuration/core-configuration.interface';
-import { type CustomerDto } from '../dto/customer.dto';
+import type { CustomerDto } from '@marcsimolduressonsardina/contracts/dto';
 import { BalerialDynamoRepository } from '@balerial/dynamo/repository';
 import { getClientConfiguration } from '../../configuration/configuration.util';
 import { customerTableBuilder } from './table/table.builders.dynamodb';

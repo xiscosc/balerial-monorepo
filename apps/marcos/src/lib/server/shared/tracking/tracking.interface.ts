@@ -1,4 +1,4 @@
-import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { AppUser } from '@marcsimolduressonsardina/contracts/type';
 import type { Handle, HandleServerError } from '@sveltejs/kit';
 import type { ServerFeature } from './server.features';
 
@@ -8,6 +8,8 @@ export interface TrackingContext {
 	current_url: string;
 	path: string;
 	referrer: string | null;
+	sessionId?: string;
+	windowId?: string;
 }
 
 export interface ServerEventOptions {

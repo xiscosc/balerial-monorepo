@@ -93,8 +93,16 @@ config, not created here.
 
 ## Persistence layer (DynamoDB)
 
-Repositories wrap `@balerial/dynamo`'s `BalerialDynamoRepository` and own the
-DTO ⇄ domain translation. Table + index shapes are declared once in
+`ConfigService`, `OrderSetService`, and `OrderAuditTrailService` call their
+repositories in `@balerial/marcos-dynamo`. These repositories define the Toolbox
+entities. The config repository scopes operations to the configured store. The
+order set repository reads by `uuid` or the `hash` index. The audit trail
+repository reads an order's entries newest first. `apps/marcos-aws` defines the
+keys and indexes for CDK and local seeding.
+
+The other repositories wrap `@balerial/dynamo`'s `BalerialDynamoRepository` and
+own the DTO ⇄ domain translation.
+Their table and index shapes are defined in
 **`src/repository/dynamodb/table/table.builders.dynamodb.ts`** (exported via the
 `.../core/db` entry point so the CDK app in `apps/marcos-aws` can provision
 matching tables).
@@ -105,10 +113,7 @@ matching tables).
 | `calculatedItemTableBuilder`  | `orderUuid`             | public primary index                                                                                                                              |
 | `customerTableBuilder`        | `uuid`                  | `store (storeId,phone)` — public primary index                                                                                                    |
 | `listPricingTableBuilder`     | `uuid`                  | `type (type,id)`                                                                                                                                  |
-| `orderAuditTrailTableBuilder` | `uuid`                  | `order (orderUuid,timestamp)`, `store (storeId,timestamp)`                                                                                        |
-| `orderSetTableBuilder`        | `uuid`                  | `hash`                                                                                                                                            |
 | `fileTableBuilder`            | `(orderUuid, fileUuid)` | —                                                                                                                                                 |
-| `configTableBuilder`          | `(storeId, id)`         | —                                                                                                                                                 |
 
 The `timestamp` sort keys make the time-range queries possible
 (same-day orders, audit entries for a day, etc.). `setPublicPrimaryIndex` /

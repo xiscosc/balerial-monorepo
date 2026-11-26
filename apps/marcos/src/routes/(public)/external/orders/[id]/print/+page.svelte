@@ -3,7 +3,7 @@
 	import { Tracking } from '@/shared/tracking';
 	import ExternalOrderPrint from '@/components/business-related/order-detail/ExternalOrderPrint.svelte';
 	import { onMount } from 'svelte';
-	import type { ExternalFullOrder } from '@marcsimolduressonsardina/core/type';
+	import type { ExternalFullOrder } from '@marcsimolduressonsardina/contracts/type';
 	import { browser } from '$app/environment';
 	import { page } from '$app/state';
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';

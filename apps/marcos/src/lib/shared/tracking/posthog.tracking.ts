@@ -1,7 +1,7 @@
 import posthog, { type Properties } from 'posthog-js';
 import { PUBLIC_POSTHOG_KEY, PUBLIC_POSTHOG_PROXY } from '$env/static/public';
 import { browser } from '$app/environment';
-import type { AppUser } from '@marcsimolduressonsardina/core/type';
+import type { AppUser } from '@marcsimolduressonsardina/contracts/type';
 import type { HandleClientError } from '@sveltejs/kit';
 import type { IClientTracking } from './tracking.interface';
 import type { ClientFeature } from './client.features';
@@ -24,6 +24,9 @@ export class PostHogTracking implements IClientTracking {
 			defaults: '2026-01-30',
 			person_profiles: 'identified_only',
 			autocapture: false,
+			// Adds X-POSTHOG-SESSION-ID / X-POSTHOG-WINDOW-ID to same-origin fetch/XHR so
+			// server-side events can be linked to the browser session (and its replay).
+			tracing_headers: [window.location.hostname],
 			loaded: (ph) => {
 				ph.register({
 					env: envName,

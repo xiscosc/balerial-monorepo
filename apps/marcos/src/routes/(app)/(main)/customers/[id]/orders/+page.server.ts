@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 
 export const load = (async ({ params, locals, url }) => {
 	const { id } = params;

@@ -3,15 +3,17 @@ import { join } from 'node:path';
 import { parseEnv } from 'node:util';
 import type { ICoreConfiguration } from '../src/configuration/core-configuration.interface';
 import { PUBLIC_REPOSITORY } from '../src/configuration/core-configuration.interface';
-import type { CalculatedItemDto } from '../src/repository/dto/calculated-item.dto';
-import type { ConfigDto } from '../src/repository/dto/config.dto';
-import type { CustomerDto } from '../src/repository/dto/customer.dto';
-import type { FileDto } from '../src/repository/dto/file.dto';
-import type { ListPriceDto } from '../src/repository/dto/list-price.dto';
-import type { OrderDto } from '../src/repository/dto/order.dto';
+import type {
+	CalculatedItemDto,
+	ConfigDto,
+	CustomerDto,
+	FileDto,
+	ListPriceDto,
+	OrderDto
+} from '@marcsimolduressonsardina/contracts/dto';
 import { ServiceFactory } from '../src/service/service-factory';
 import type { OrderCreationDto } from '../src/service/dto/order-creation.dto';
-import type { FullOrder } from '../src/types/order.type';
+import type { FullOrder } from '@marcsimolduressonsardina/contracts/type';
 import { cornersId, otherExtraId } from '../src/utilities/calculated-item.utilites';
 import { quoteDeliveryDate, tempCustomerUuid } from '../src/utilities/order.utilities';
 import data from '../../../apps/marcos-aws/local/fixtures/data.json';

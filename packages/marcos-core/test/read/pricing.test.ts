@@ -1,7 +1,11 @@
 import { describe, expect, test } from 'bun:test';
 import { InvalidSizeError } from '../../src/error';
-import type { ListPriceDto } from '../../src/repository/dto/list-price.dto';
-import { PricingType, type ListPrice, type PricingFormula } from '../../src/types/pricing.type';
+import type { ListPriceDto } from '@marcsimolduressonsardina/contracts/dto';
+import {
+	PricingType,
+	type ListPrice,
+	type PricingFormula
+} from '@marcsimolduressonsardina/contracts/type';
 import { CalculatedItemUtilities } from '../../src/utilities/calculated-item.utilites';
 import {
 	calculatedItemOf,

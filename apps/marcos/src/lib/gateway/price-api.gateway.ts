@@ -1,5 +1,5 @@
 import type { PreCalculatedItemPartRequest } from '@/type/api.type';
-import type { CalculatedItemPart } from '@marcsimolduressonsardina/core/type';
+import type { CalculatedItemPart } from '@marcsimolduressonsardina/contracts/type';
 
 export class PriceApiGateway {
 	public static async getUploadMoldParams(): Promise<{ filename: string; url: string }> {

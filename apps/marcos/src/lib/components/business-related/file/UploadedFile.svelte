@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Step from '@/components/generic/Step.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
-	import { FileType } from '@marcsimolduressonsardina/core/type';
+	import { FileType } from '@marcsimolduressonsardina/contracts/type';
 	import MarcosLink from '@/components/generic/button/MarcosLink.svelte';
 
 	interface Props {

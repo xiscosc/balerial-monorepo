@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Customer } from '@marcsimolduressonsardina/core/type';
+	import type { Customer } from '@marcsimolduressonsardina/contracts/type';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';

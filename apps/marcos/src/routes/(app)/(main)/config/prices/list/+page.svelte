@@ -11,7 +11,11 @@
 	import Box from '@/components/generic/Box.svelte';
 	import * as Tabs from '@/components/ui/tabs/index.js';
 	import PriceTable from '@/components/business-related/price/PriceTable.svelte';
-	import { PricingType, type AllPrices, type ListPrice } from '@marcsimolduressonsardina/core/type';
+	import {
+		PricingType,
+		type AllPrices,
+		type ListPrice
+	} from '@marcsimolduressonsardina/contracts/type';
 	let { data }: { data: PageData } = $props();
 	let selectedType: PricingType = $state(data.pricingType);
 	let measuredPricing = data.pricing;

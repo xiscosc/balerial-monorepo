@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types';
 import { PricingHelper } from '$lib/server/shared/pricing/pricing.helper';
-import { PricingType } from '@marcsimolduressonsardina/core/type';
+import { PricingType } from '@marcsimolduressonsardina/contracts/type';
 
 function getPricingType(value?: string): PricingType {
 	if (!Object.values(PricingType).includes(value as PricingType) || value === PricingType.FABRIC) {

@@ -4,7 +4,7 @@
 	import { OrderRepresentationUtilities } from '@/shared/order/order-representation.utilities';
 	import type { PageData } from './$types';
 
-	import { OrderStatus } from '@marcsimolduressonsardina/core/type';
+	import { OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 	import WhatsAppButton from '@/components/business-related/button/WhatsAppButton.svelte';
 	import { getStatusUIInfo } from '@/ui/ui.helper';
 	import Banner from '@/components/generic/Banner.svelte';

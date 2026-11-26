@@ -25,6 +25,8 @@ export class PostHogServerTracking implements IServerTracking {
 			$user_agent: context.user_agent,
 			$referrer: context.referrer,
 			$current_url: context.current_url,
+			...(context.sessionId && { $session_id: context.sessionId }),
+			...(context.windowId && { $window_id: context.windowId }),
 			env: ENV_NAME
 		};
 	}
@@ -124,6 +126,8 @@ export class PostHogServerTracking implements IServerTracking {
 				$current_url: context?.current_url,
 				$ip: context?.ip,
 				$user_agent: context?.user_agent,
+				...(context?.sessionId && { $session_id: context.sessionId }),
+				...(context?.windowId && { $window_id: context.windowId }),
 				env: ENV_NAME
 			});
 			client.shutdown().catch((e) => {
@@ -140,7 +144,9 @@ export class PostHogServerTracking implements IServerTracking {
 			user_agent: event.request.headers.get('user-agent'),
 			current_url: event.url.toString(),
 			path: event.url.pathname,
-			referrer: event.request.headers.get('referer')
+			referrer: event.request.headers.get('referer'),
+			sessionId: event.request.headers.get('x-posthog-session-id') ?? undefined,
+			windowId: event.request.headers.get('x-posthog-window-id') ?? undefined
 		};
 
 		return resolve(event);

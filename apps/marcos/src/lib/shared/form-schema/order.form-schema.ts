@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { DimensionsType, OrderStatus } from '@marcsimolduressonsardina/core/type';
+import { DimensionsType, OrderStatus } from '@marcsimolduressonsardina/contracts/type';
 import { allPricingTypes, otherExtraId } from '@marcsimolduressonsardina/core/util';
 import { DateTime } from 'luxon';
 

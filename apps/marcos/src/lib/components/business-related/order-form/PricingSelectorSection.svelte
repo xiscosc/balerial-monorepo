@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Spacer from '@/components/business-related/order-form/Spacer.svelte';
-	import type { ListPriceWithMold, PricingType } from '@marcsimolduressonsardina/core/type';
+	import type { ListPriceWithMold, PricingType } from '@marcsimolduressonsardina/contracts/type';
 	import MarcosButton from '@/components/generic/button/MarcosButton.svelte';
 	import TooltipButtonWrapper from '@/components/generic/button/TooltipButtonWrapper.svelte';
 	import { IconSize, IconType } from '@/components/generic/icon/icon.enum';

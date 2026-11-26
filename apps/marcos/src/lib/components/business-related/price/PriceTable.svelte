@@ -6,7 +6,7 @@
 		type MaxArea,
 		type MaxAreaM2,
 		type PricingFormula
-	} from '@marcsimolduressonsardina/core/type';
+	} from '@marcsimolduressonsardina/contracts/type';
 	import Icon from '@/components/generic/icon/Icon.svelte';
 	import { IconType } from '@/components/generic/icon/icon.enum';
 	import { goto } from '$app/navigation';

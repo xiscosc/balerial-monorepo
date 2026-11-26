@@ -8,7 +8,7 @@ import {
 	LifecycleRule
 } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
-import type { BucketSet } from '../types.js';
+import type { BucketSet } from '../types';
 
 export function createBuckets({
 	scope,

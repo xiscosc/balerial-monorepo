@@ -1,9 +1,9 @@
 import {
 	type CalculatedItemPart,
 	type OrderDimensions,
-	type PPDimensions
-} from '../types/order.type';
-import { PricingType } from '../types/pricing.type';
+	type PPDimensions,
+	PricingType
+} from '@marcsimolduressonsardina/contracts/type';
 
 export const cornersId = 'cantoneras_extra';
 export const otherExtraId = 'other_extra';
