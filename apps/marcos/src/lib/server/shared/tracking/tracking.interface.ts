@@ -8,6 +8,8 @@ export interface TrackingContext {
 	current_url: string;
 	path: string;
 	referrer: string | null;
+	sessionId?: string;
+	windowId?: string;
 }
 
 export interface ServerEventOptions {
