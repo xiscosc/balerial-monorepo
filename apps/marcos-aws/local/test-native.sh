@@ -10,6 +10,7 @@ set +a
 
 bun apps/marcos-aws/local/seed.ts
 if [[ -n ${1:-} ]]; then
+	mkdir -p "$1"
 	cd packages/marcos-core
 	bun test test/read --reporter=junit --reporter-outfile="$1/read.xml"
 	bun test test/write --reporter=junit --reporter-outfile="$1/write.xml"
